@@ -1,0 +1,1019 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+
+
+$qry="select * from   modir_daneshkade,modir_daneshkade_tarh where modir_daneshkade_tarh.cod_modir =modir_daneshkade.cod_modir  and modir_daneshkade_tarh.cod_tarh='$cod_tarh' and modir_daneshkade.modir_type='5' ";
+
+$rsss=mysql_query($qry) or dir("error");
+
+$rfff=mysql_fetch_array($rsss);
+
+$sub_subadmin=$rfff["modir_english_family"];
+ 
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 2 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+ 
+ // $cod_tarh="84-02-06-008";
+ 
+ 
+  $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ 
+  $result=mysql_query($query) or die("Error10");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$mojri=$row_fetched["mojri_code"];
+ 	$heiat_elmi=$row_fetched["heiat_elmi"];
+ 	$start_time=$row_fetched["start_time"];
+    $start_time_tmp=$start_time;
+ 	$pish_pardakht=$row_fetched["pish_pardakht"];
+ 	$payanname=$row_fetched["payanname"];
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+ 	$time_month=$row_fetched["time_month"];
+ 	$zarib_maliat=$row_fetched["maliat"];
+    $exists=1; 	
+    
+ } 	
+ else
+ {
+ 	$payanname="0";
+ 	$mojri="0";
+ 	$heiat_elmi="0";
+ 	$start_time="0";
+ 	$pish_pardakht="0";
+ 	$nazerin="0";
+ 	$time_month="0";
+ 	$unnazerin="0";
+    $exists=0;
+ }
+ 
+ //$start_time="1385-02-12";
+// $time_month="15";
+ if( $start_time > 0 && $time_month > 0 )
+ {
+   $year=substr($start_time,0,4);
+   $month=substr($start_time,5,2);
+   $day=substr($start_time,8,2);
+   $start_time=$day."/".$month."/".$year;
+  // $month_add=$time_month+$month;
+   $month_add=$time_month;
+  // echo $month_add;
+  // exit();
+   for($i=1; $i<=$month_add;$i++)
+   {
+   	$month=$month+1;
+    if($month >12 )
+    {
+      //$year_add=(int)($month_add/12); 
+      $year_add++;
+ 	  $year=$year+1;	 	 	
+      //$month=$month_add-($year_add*12); 
+	  $month=1;    
+     // if($month==0)
+ 	 //   $month=12;  
+    }
+    //else
+     // $month=$month_add;
+   }
+  
+   $end_time=$day."/".$month."/".$year;
+ }
+ else
+ {
+   $end_time="تعريف نشده";   
+ }
+   
+    
+    $query1="select * from jalase_shora , jalase_shora_tarh where jalase_shora.creator=jalase_shora_tarh.creator and jalase_shora.shomare_jalase=jalase_shora_tarh.shomare_jalase  and jalase_shora_tarh.cod_tarh='$cod_tarh'";
+    $result10=mysql_query($query1) or die("Error11");
+    if(mysql_num_rows($result10) >0)
+    {
+      $rf100=mysql_fetch_array($result10);
+	  $tarikh_jalase=$rf100["tarikh_jalase"];	
+	  $year=substr($tarikh_jalase,0,4);
+      $month=substr($tarikh_jalase,5,2);
+      $day=substr($tarikh_jalase,8,2);
+      $tarikh_jalase=$day."/".$month."/".$year;
+      
+    }
+    else
+      $tarikh_jalase=" نا معلوم ";
+ 
+   
+   
+   $query1="select * from gozaresh_gharardad where cod_tarh='$cod_tarh'";
+   $result500=mysql_query($query1)or die("error12");
+   if(mysql_num_rows($result500) > 0)
+   {
+   	$gozaresh_cnt=mysql_num_rows($result500);
+   }
+   else
+   	$gozaresh_cnt=0;
+
+   
+   
+   $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	
+   $result1=mysql_query($query1) or die("Error14");
+   $query="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+    
+   if(mysql_num_rows($result) > 0 || mysql_num_rows($result1) > 0)
+   {
+   	$i=0;
+  
+	while($row_fetched1=mysql_fetch_array($result1))
+    {
+      
+      $cod_mojri=$row_fetched1["email"];
+      if($exists==1)
+      if(strcmp($cod_mojri,$mojri)==0)
+      {
+   	    $checked="1";
+      }
+      else
+      {
+   	    $checked="";
+      }
+  
+     if(strcmp($checked,"1")==0)
+     { 
+      $name_family=$row_fetched1["name"]." ".$row_fetched1["family"];
+     }
+ 
+   }
+ 
+ 
+ 
+   while($row_fetched=mysql_fetch_array($result))
+   {
+  
+    $cod_mojri=$row_fetched["mojri_code"];
+    
+    if($exists==1)
+      if(strcmp($cod_mojri,$mojri)==0)
+      {
+      	
+   	    $checked1="1";
+      }
+     else
+      {
+   	    $checked1="";
+      }
+   
+ 
+    if(strcmp($checked1,"1")==0)
+    {  
+      
+      $name_family=$row_fetched["name"]." ".$row_fetched["family"];
+  
+    }
+    
+   }
+ }
+else // if reccount of tarh  < =0
+{
+ $name_family="توسط مجري تعيين نشده";
+}
+
+//--------------------------------------------------------------------------
+if(strlen(trim($name_family)) <= 0)
+   $name_family="توسط مجري تعيين نشده";
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version=\"-1\" ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $eatebare_sazmanha=$row_fetched["eatebare_sazmanha"];
+  $tarh_type= $row_fetched["tarh_type"];
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  
+   $cod_daneshkade = $row_fetched["cod_daneshkade"];
+  $query="select * from daneshkade where cod_daneshkade='$cod_daneshkade' ";
+  
+  $result_daneshkade=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched_daneshkade=mysql_fetch_array($result_daneshkade);
+  $daneshkade_name=$row_fetched_daneshkade["daneshkade_name"];
+  $daneshkade_tel =$row_fetched_daneshkade["daneshkade_tel"];
+  $daneshkade_fax =$row_fetched_daneshkade["daneshkade_fax"];
+  $signer_address  =$row_fetched_daneshkade["signer_address"];
+   $percent_nezarat  =$row_fetched_daneshkade["percent_nezarat"];
+   $entezar_nezarat  =$row_fetched_daneshkade["entezar_nezarat"];
+   $static_second_part  =$row_fetched_daneshkade["static_second_part"];
+  $signer_name=$row_fetched_daneshkade["signer_name"];
+  
+$tarh_name=str_replace("&#61537;",".",$tarh_name); 
+$tarh_name=str_replace("&#61543;",".",$tarh_name); 
+$tarh_name=str_replace("&#61541;",".",$tarh_name);  
+$tarh_name=str_replace("&#1740;","ي",$tarh_name); 
+$tarh_name=str_replace("&#1740","ي",$tarh_name);
+  
+  $q="select * from tarhtype where tarh_type='$tarh_type'";
+  $q_res=mysql_query($q) or die("Error");
+  $rf=mysql_fetch_array($q_res) or die("Error");
+  $tarh_type_desc=trim($rf["tarh_type_english_desc"]);
+   $tarh_type_desc="";
+  if(strcmp($tarh_type_desc,"HSR")==0)
+    $tarh_type_desc="(اچ اس آر)";
+  else
+  {
+  	$q="select * from tarh,tarhtype_2 where tarh.tarh_type_2=tarhtype_2.tarh_type and cod_tarh='$cod_tarh' and grant_tarh='1'";
+  	$q_res=mysql_query($q) or die("Error");
+  	if(mysql_num_rows($q_res) > 0)
+  	{
+  	  $rf_grant=mysql_fetch_array($q_res);
+	  $tarh_type_desc=$rf_grant["tarh_type_desc"];		
+	}  
+  }
+    
+  $q_payan_name="select * from tarh,darajeelmi  where  payan_name='1' and  cod_tarh='$cod_tarh' and darajeelmi.darajeelmi = tarh.payan_name_daraje_elmi";
+  $q_res=mysql_query($q_payan_name) or die("Error");
+  if(mysql_num_rows($q_res) > 0 )
+  {
+  	$rf_payanname=mysql_fetch_array($q_res);
+  	$maghtaa_payan_name=$rf_payanname["darajeelmi_english_desc"];
+  	$tarh_type_desc=$tarh_type_desc."($maghtaa_payan_name مقطع پايان نامه :)";
+  }
+    
+  if(strcmp($eatebare_sazmanha,'1')==0)
+   $eatebar_sazmanha="با تامين اعتبار از سازمانهاي ديگر";
+  else
+   $eatebar_sazmanha=""; 
+  
+  //-------------------- قسمت مربوط به عقد قرارداد
+  
+  $mablagh_aghd_gharardad = $row_fetched["mablagh_aghd_gharardad"];
+  
+  if($mablagh_aghd_gharardad  > 0)
+  {
+  	$a=($gozaresh_cnt-1)*$static_second_part;
+  	$b=($mablagh_aghd_gharardad*$percent_nezarat)/100;
+  	// محاسبه گزارش دوم تا ماه نهايي ضربدر 5000 ريال
+  	$qr="select * from gozaresh_gharardad where cod_tarh='$cod_tarh' and marhale='2'";
+	$resultr=mysql_query($qr) or die("error15");
+	$rft=mysql_fetch_array($resultr);	
+	$second_gozaresh=$rft["date_gozaresh"]; 
+	 
+	$year=substr($second_gozaresh,0,4);
+    $month=substr($second_gozaresh,5,2);
+    $day=substr($second_gozaresh,8,2);
+  //  echo $year.":".$month.":".$day;
+    $month_remain=0;
+  //  echo $end_time."<br>";
+    for($k=1;$k<=$time_month;$k++)
+    {      	
+      $month=$month+1;
+      if($month>12)
+      {
+        $month=1;
+        $year=$year+1;
+      }
+      //$month1=str_replace($month,"0","");
+     // $month1=trim($month1);
+     
+      $my_end_time=substr($end_time,3,7);
+	  //$date_tmp=$day."/".$month."/".$year;
+       $date_tmp=$month."/".$year; 
+      if(strcmp($my_end_time,$date_tmp)==0)
+      {
+        $month_remain=$k;  // mohasebe teadad mahe dovvom ta gozaresh akhar
+        
+      }
+     // echo $date_tmp.":".$my_end_time."<br>";  
+     }
+    // echo $month_remain.":".$date_tmp.":".$my_end_time.":".$second_gozaresh.":".$month_remain.":".$time_month.":".$month.":".$year.":".$end_time.":".$date_tmp.":".$my_end_time.":". $date_tmp.":".$end_time;
+   //  exit();
+  // exit();
+     $c=$month_remain*$entezar_nezarat;
+     $c1=$c;
+	 //echo $a."<br>".$b."<br>".$c."<br>".$month_remain;
+	 //exit();
+	 $nezarat_koll=$a+$b+$c; // نظارت بخش اول کار
+
+	 
+	  // محاسبه هزينه پرسنلي و محاسبه ماليات آن
+ 	  $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+      $result00=mysql_query($query) or die("Error in selecting data from hazine personnel");
+      if(mysql_num_rows($result00) > 0)
+      {
+     
+        $mycount=0;
+       while($row_fetched00=mysql_fetch_array($result00))
+       {
+  
+       $my_summary = $row_fetched00["per_hour"]*$row_fetched00["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       }       
+      }
+      $hazine_personnel=$mycount;
+      
+      $darsad_50=$mablagh_aghd_gharardad*50/100;
+      
+      
+      if($hazine_personnel > $darsad_50)
+	  {	    	
+	   //$x=($mablagh_aghd_gharardad*5)/100; 	
+	   $y=($nezarat_koll*100)/(100-$zarib_maliat);
+	   //$maliat_koll=$x+$y;
+	   $aa=($mablagh_aghd_gharardad-$hazine_personnel)*100/(100-$zarib_maliat);
+	   $mablagh_koll=$hazine_personnel+$y+$aa;
+	   $nezarat_maliat=$nezarat_koll*100/(100-$zarib_maliat);
+	  }
+	  else
+	   {
+	   //	$mablagh_aghd_gharardad=($mablagh_aghd_gharardad*100)/95;
+	   	//$maliat_koll=($mablagh_aghd_gharardad+$nezarat_koll)*100/95;
+	   	$mablagh_koll=$mablagh_aghd_gharardad+$nezarat_koll;
+	   	$mablagh_koll=$mablagh_koll*100/(100-$zarib_maliat);
+	   	$nezarat_maliat=$nezarat_koll*100/(100-$zarib_maliat);
+	   }
+	  
+	  /*
+      $x=($hazine_personnel*5)/100;
+     	  
+      $y=($nezarat_koll*5)/100;
+      $maliat_koll=$x+$y;
+	  */
+
+  	 //-------------------marhale 1 ------------------------------------------
+ 
+	  
+	  $query="select * from gozaresh_gharardad where marhale='0' and cod_tarh='$cod_tarh'";
+      $result88=mysql_query($query) or die("Error");
+      if(mysql_num_rows($result88) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result88);
+	    if($hazine_personnel > $darsad_50)
+	    {
+	      $mablagh_marhale_0=$rf66["mablagh"]*$mablagh_koll/100;
+	      $maliat_marhale_0=$mablagh_marhale_0*$zarib_maliat/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0;
+		   $mablagh_khales_mojri_0= $mablagh_khales_mojri_0-$hagh_ol_zahme_karshenasi_0;
+	      
+	  		
+	    }
+	    else
+	    {
+	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	      $mablagh_marhale_0=($darsad_marhale+($darsad_marhale/100))*100/(100-$zarib_maliat);
+	      $maliat_marhale_0=$mablagh_marhale_0*$zarib_maliat/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0-$hagh_ol_zahme_karshenasi_0;	      	      
+	  		      
+	    }
+	    
+	    
+	  	
+	  }
+	//  echo "mohsen <br>".$end_time."<br>".$month_remain."<br>".$mablagh_marhale_0."<br>".$mablagh_aghd_gharardad."<br>".$maliat_1."<br>".$hazine_personnel;
+	  //exit();
+	   //$mablagh_koll_tarh=$maliat_koll+$nezarat_koll+$mablagh_aghd_gharardad;
+	  
+	  //-------------------marhale Nahayee ------------------------------------------
+	  
+	  $a=$static_second_part;
+	  $query="select * from gozaresh_gharardad where marhale='100' and cod_tarh='$cod_tarh'";
+      $result=mysql_query($query) or die("Error");
+      $b=0;
+	  if(mysql_num_rows($result) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result);
+	   if($hazine_personnel > $darsad_50)
+       {
+  	      $mablagh_marhale_end=$rf66["mablagh"]*$mablagh_koll/100;
+  	      
+  	      $nezarat=125000+$mablagh_marhale_end/100;
+      	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	      $maliat_marhale_end=$mablagh_marhale_end*$zarib_maliat/100;
+	      $hagh_ol_zahme_karshenasi_end=$static_second_part+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100+$month_remain*5000;
+	  	
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end;
+	      $mablagh_khales_mojri_end=$mablagh_khales_mojri_end-$hagh_ol_zahme_karshenasi_end;
+	      $hagh_ol_zahme_karshenasi_end=$static_second_part+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100+$month_remain*5000;
+	  		
+        }
+        else
+        {
+  	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+  	      $hagh_ol_zahme_karshenasi_end=$static_second_part+($darsad_marhale/100)+$month_remain*5000;    	      
+	      $mablagh_marhale_end=($darsad_marhale+$hagh_ol_zahme_karshenasi_end)*100/(100-$zarib_maliat);
+	      $maliat_marhale_end=$mablagh_marhale_end*$zarib_maliat/100;
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end-$hagh_ol_zahme_karshenasi_end;
+	      //echo $darsad_marhale.":".$hagh_ol_zahme_karshenasi_end.":".$mablagh_marhale_end.":".$month_remain;
+	      ///();
+	     
+	     
+        }
+        
+        
+	 $date=$rf66["date_gozaresh"];
+ $year=substr($date,0,4);
+ $month=substr($date,5,2);
+ $day=substr($date,8,2);
+ $date_end=$day."/".$month."/".$year; 
+	   
+	  } 
+	   
+	 
+  }
+  
+ 
+ 
+//$mablagh=$nezarat_koll+$maliat_koll+$mablagh_aghd_gharardad;
+
+  
+  $emtiaz1=($mablagh_koll/10000000)*2.5;
+  $int_emtiaz=(int)$emtiaz1;
+  $real_emtiaz=$emtiaz1-$int_emtiaz;
+  if($real_emtiaz > .75)
+    $int_emtiaz++;  
+
+    
+ 
+  if(strlen(trim($daneshkade_name)) <=0)
+    $daneshkade_name="تعريف نشده";
+  
+if($start_time==0)
+  $start_time="تعريف نشده";
+    
+//if($end_time==0)
+ // $end_time="تعريف نشده";
+  
+if($time_month==0)
+  $time_month="تعريف نشده"; 
+
+$mablagh_koll_tarh=number_format($mablagh_koll_tarh);
+ $year_tarh=substr($cod_tarh,0,2);
+ $rank=substr($cod_tarh,4,1);
+ $query="select * from rank where rank='$rank' and year='$year_tarh'";
+  
+ $res=mysql_query($query) or die("Rank Error");
+ if(mysql_num_rows($res) > 0)
+ {
+ 	$rf_rank=mysql_fetch_array($res);
+ 	$jalase_date=$rf_rank["jalase_date"];
+ }
+ else
+   $jalase_date="تعريف نشده";
+    
+ $tarikh_jalase="6/4/1385";
+ $tarikh_jalase=$jalase_date;
+$y=substr($tarikh_jalase,0,4);
+$m=substr($tarikh_jalase,5,2);
+$d=substr($tarikh_jalase,8,2); 
+$tarikh_jalase="$d / $m / $y";
+ /*
+if(strcmp($tarh_type_desc,'HSR')==0) 
+$tarh_type_desc="(HSR)"; 
+else 
+$tarh_type_desc="";
+
+*/
+ 
+header('Content-type: application/msword');
+?>
+{\rtf1\adeflang1065\ansi\ansicpg1256\uc1\adeff40\deff0\stshfdbch0\stshfloch0\stshfhich0\stshfbi0\deflang1033\deflangfe1033\themelang1033\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f1\fbidi \fswiss\fcharset0\fprq2{\*\panose 020b0604020202020204}Arial;}
+{\f34\fbidi \froman\fcharset0\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f38\fbidi \fswiss\fcharset0\fprq2{\*\panose 020b0604030504040204}Tahoma;}
+{\f39\fbidi \fnil\fcharset178\fprq2{\*\panose 00000400000000000000}Traffic{\*\falt Times New Roman};}{\f40\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Traditional Arabic;}
+{\f41\fbidi \fnil\fcharset178\fprq2{\*\panose 00000400000000000000}Yagut;}{\f42\fbidi \fnil\fcharset178\fprq2{\*\panose 00000400000000000000}Zar{\*\falt Courier New};}
+{\flomajor\f31500\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\fdbmajor\f31501\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}
+{\fhimajor\f31502\fbidi \froman\fcharset0\fprq2{\*\panose 02040503050406030204}Cambria;}{\fbimajor\f31503\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}
+{\flominor\f31504\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\fdbminor\f31505\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}
+{\fhiminor\f31506\fbidi \fswiss\fcharset0\fprq2{\*\panose 020f0502020204030204}Calibri;}{\fbiminor\f31507\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f49\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}
+{\f50\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\f52\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\f53\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\f54\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}
+{\f55\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\f56\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\f57\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\f59\fbidi \fswiss\fcharset238\fprq2 Arial CE;}
+{\f60\fbidi \fswiss\fcharset204\fprq2 Arial Cyr;}{\f62\fbidi \fswiss\fcharset161\fprq2 Arial Greek;}{\f63\fbidi \fswiss\fcharset162\fprq2 Arial Tur;}{\f64\fbidi \fswiss\fcharset177\fprq2 Arial (Hebrew);}
+{\f65\fbidi \fswiss\fcharset178\fprq2 Arial (Arabic);}{\f66\fbidi \fswiss\fcharset186\fprq2 Arial Baltic;}{\f67\fbidi \fswiss\fcharset163\fprq2 Arial (Vietnamese);}{\f389\fbidi \froman\fcharset238\fprq2 Cambria Math CE;}
+{\f390\fbidi \froman\fcharset204\fprq2 Cambria Math Cyr;}{\f392\fbidi \froman\fcharset161\fprq2 Cambria Math Greek;}{\f393\fbidi \froman\fcharset162\fprq2 Cambria Math Tur;}{\f396\fbidi \froman\fcharset186\fprq2 Cambria Math Baltic;}
+{\f397\fbidi \froman\fcharset163\fprq2 Cambria Math (Vietnamese);}{\f429\fbidi \fswiss\fcharset238\fprq2 Tahoma CE;}{\f430\fbidi \fswiss\fcharset204\fprq2 Tahoma Cyr;}{\f432\fbidi \fswiss\fcharset161\fprq2 Tahoma Greek;}
+{\f433\fbidi \fswiss\fcharset162\fprq2 Tahoma Tur;}{\f4\fbidi \fswiss\fcharset177\fprq2 Tahoma (Hebrew);}{\f435\fbidi \fswiss\fcharset178\fprq2 Tahoma (Arabic);}{\f436\fbidi \fswiss\fcharset186\fprq2 Tahoma Baltic;}
+{\f437\fbidi \fswiss\fcharset163\fprq2 Tahoma (Vietnamese);}{\f438\fbidi \fswiss\fcharset222\fprq2 Tahoma (Thai);}{\f455\fbidi \froman\fcharset178\fprq2 Traditional Arabic (Arabic);}{\flomajor\f31508\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}
+{\flomajor\f31509\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\flomajor\f31511\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\flomajor\f31512\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}
+{\flomajor\f31513\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\flomajor\f31514\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\flomajor\f31515\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}
+{\flomajor\f31516\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\fdbmajor\f31518\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\fdbmajor\f31519\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}
+{\fdbmajor\f31521\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\fdbmajor\f31522\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\fdbmajor\f31523\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}
+{\fdbmajor\f31524\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\fdbmajor\f31525\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\fdbmajor\f31526\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}
+{\fhimajor\f31528\fbidi \froman\fcharset238\fprq2 Cambria CE;}{\fhimajor\f31529\fbidi \froman\fcharset204\fprq2 Cambria Cyr;}{\fhimajor\f31531\fbidi \froman\fcharset161\fprq2 Cambria Greek;}{\fhimajor\f31532\fbidi \froman\fcharset162\fprq2 Cambria Tur;}
+{\fhimajor\f31535\fbidi \froman\fcharset186\fprq2 Cambria Baltic;}{\fhimajor\f31536\fbidi \froman\fcharset163\fprq2 Cambria (Vietnamese);}{\fbimajor\f31538\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}
+{\fbimajor\f31539\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fbimajor\f31541\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\fbimajor\f31542\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}
+{\fbimajor\f31543\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fbimajor\f31544\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\fbimajor\f31545\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}
+{\fbimajor\f31546\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\flominor\f31548\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\flominor\f31549\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}
+{\flominor\f31551\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\flominor\f31552\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\flominor\f31553\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}
+{\flominor\f31554\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\flominor\f31555\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\flominor\f31556\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}
+{\fdbminor\f31558\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\fdbminor\f31559\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fdbminor\f31561\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}
+{\fdbminor\f31562\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\fdbminor\f31563\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fdbminor\f31564\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}
+{\fdbminor\f31565\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\fdbminor\f31566\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\fhiminor\f31568\fbidi \fswiss\fcharset238\fprq2 Calibri CE;}
+{\fhiminor\f31569\fbidi \fswiss\fcharset204\fprq2 Calibri Cyr;}{\fhiminor\f31571\fbidi \fswiss\fcharset161\fprq2 Calibri Greek;}{\fhiminor\f31572\fbidi \fswiss\fcharset162\fprq2 Calibri Tur;}
+{\fhiminor\f31575\fbidi \fswiss\fcharset186\fprq2 Calibri Baltic;}{\fhiminor\f31576\fbidi \fswiss\fcharset163\fprq2 Calibri (Vietnamese);}{\fbiminor\f31578\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}
+{\fbiminor\f31579\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fbiminor\f31581\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\fbiminor\f31582\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}
+{\fbiminor\f31583\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fbiminor\f31584\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\fbiminor\f31585\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}
+{\fbiminor\f31586\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;\red255\green255\blue0;
+\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\*\defchp \fs22 }{\*\defpap 
+\ql \li0\ri0\sa200\sl276\slmult1\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 }\noqfpromote {\stylesheet{\rtlpar \qr \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 
+\af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \snext0 \sqformat \spriority0 Normal;}{\s1 \rtlpar \qr \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 
+\rtlch\fcs1 \af41\afs28\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \slink15 \sqformat heading 1;}{\s2 \rtlpar 
+\qr \qk0\li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel1\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af41\afs28\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \slink16 \sqformat 
+heading 2;}{\s3 \rtlpar \qc \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel2\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \ab\af42\afs24\alang1065 \ltrch\fcs0 \b\fs24\cf6\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 
+\sbasedon0 \snext0 \slink17 \sqformat heading 3;}{\s4 \rtlpar \qr \qk0\li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel3\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af41\afs32\alang1025 \ltrch\fcs0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \slink18 \sqformat heading 4;}{\*\cs10 \additive \ssemihidden Default Paragraph Font;}{\*
+\ts11\tsrowd\trftsWidthB3\trpaddl108\trpaddr108\trpaddfl3\trpaddft3\trpaddfb3\trpaddfr3\trcbpat1\trcfpat1\tblind0\tblindtype3\tsvertalt\tsbrdrt\tsbrdrl\tsbrdrb\tsbrdrr\tsbrdrdgl\tsbrdrdgr\tsbrdrh\tsbrdrv \ql \li0\ri0\sa200\sl276\slmult1
+\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af0\afs22\alang1065 \ltrch\fcs0 \fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \snext11 \ssemihidden \sunhideused Normal Table;}{\*\cs15 \additive \rtlch\fcs1 
+\ab\af0\afs32 \ltrch\fcs0 \b\fs32\kerning32\loch\f31502\hich\af31502\dbch\af31501 \sbasedon10 \slink1 \slocked \spriority9 Heading 1 Char;}{\*\cs16 \additive \rtlch\fcs1 \ab\ai\af0\afs28 \ltrch\fcs0 \b\i\fs28\loch\f31502\hich\af31502\dbch\af31501 
+\sbasedon10 \slink2 \slocked \ssemihidden \spriority9 Heading 2 Char;}{\*\cs17 \additive \rtlch\fcs1 \ab\af0\afs26 \ltrch\fcs0 \b\fs26\loch\f31502\hich\af31502\dbch\af31501 \sbasedon10 \slink3 \slocked \ssemihidden \spriority9 Heading 3 Char;}{\*\cs18 
+\additive \rtlch\fcs1 \ab\af1\afs28 \ltrch\fcs0 \b\fs28\loch\f31506\hich\af31506\dbch\af31505 \sbasedon10 \slink4 \slocked \ssemihidden \spriority9 Heading 4 Char;}{\s19 \rtlpar 
+\qr \qk0\li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af41\afs28\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext19 \slink20 Body Text;}{\*\cs20 \additive 
+\rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20 \sbasedon10 \slink19 \slocked \ssemihidden Body Text Char;}{\s21 \rtlpar \qr \qk0\fi720\li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af41\afs28\alang1025 
+\ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext21 \slink22 Body Text Indent;}{\*\cs22 \additive \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20 \sbasedon10 \slink21 \slocked \ssemihidden Body Text Indent Char;}{
+\s23 \rtlpar \qr \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af38\afs16\alang1025 \ltrch\fcs0 \f38\fs16\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext23 \slink24 \ssemihidden 
+Balloon Text;}{\*\cs24 \additive \rtlch\fcs1 \af38\afs16 \ltrch\fcs0 \f38\fs16 \sbasedon10 \slink23 \slocked \ssemihidden Balloon Text Char;}{\s25 \rtlpar \qr \li0\ri0\widctlpar
+\tqc\tx4320\tqr\tx8640\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext25 \slink26 \styrsid2914481 header;}{\*\cs26 
+\additive \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20 \sbasedon10 \slink25 \slocked \ssemihidden Header Char;}{\s27 \rtlpar \qr \li0\ri0\widctlpar\tqc\tx4320\tqr\tx8640\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 
+\af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext27 \slink28 \styrsid2914481 footer;}{\*\cs28 \additive \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20 
+\sbasedon10 \slink27 \slocked \ssemihidden Footer Char;}{\*\cs29 \additive \rtlch\fcs1 \af0 \ltrch\fcs0 \ul\cf2 \sbasedon10 \styrsid2914481 Hyperlink;}}{\*\rsidtbl \rsid16267\rsid343431\rsid608186\rsid673844\rsid798937\rsid853461\rsid919319\rsid919858
+\rsid927716\rsid1049511\rsid1066059\rsid1250279\rsid1266861\rsid1472089\rsid1587388\rsid1640416\rsid1777417\rsid1795208\rsid1854815\rsid2045652\rsid2107697\rsid2318492\rsid2825459\rsid2914481\rsid2958171\rsid3218730\rsid3355649\rsid3554799\rsid3627238
+\rsid3828176\rsid4069544\rsid4161533\rsid4396541\rsid4399856\rsid4407687\rsid4417574\rsid4470025\rsid4659032\rsid4731379\rsid4749634\rsid4991052\rsid5129094\rsid5178594\rsid5250191\rsid5325060\rsid5387996\rsid5390848\rsid5464774\rsid5853334\rsid5909492
+\rsid6050599\rsid6244751\rsid6503205\rsid6506495\rsid6705909\rsid6885610\rsid6890229\rsid6903222\rsid6905490\rsid6960945\rsid7079046\rsid7090319\rsid7289320\rsid7407566\rsid7484636\rsid7543827\rsid7680668\rsid7864761\rsid7882282\rsid7891092\rsid8002676
+\rsid8065312\rsid8078368\rsid8280521\rsid8592691\rsid8982371\rsid8999455\rsid9117681\rsid9241301\rsid9324933\rsid9376798\rsid9400036\rsid9515313\rsid9634394\rsid9659425\rsid9700382\rsid9772757\rsid10182945\rsid10490937\rsid10492271\rsid10500659
+\rsid10640281\rsid10642672\rsid10757660\rsid10767921\rsid10903096\rsid11097075\rsid11148059\rsid11287442\rsid11419279\rsid11608666\rsid11615256\rsid11823105\rsid11953766\rsid12024141\rsid12132612\rsid12199305\rsid12414589\rsid12484260\rsid12517466
+\rsid12681127\rsid12863335\rsid13189995\rsid13378619\rsid13384352\rsid13978958\rsid14028665\rsid14032289\rsid14099708\rsid14106594\rsid14242203\rsid14365183\rsid14382240\rsid14634023\rsid14638574\rsid14770377\rsid14901185\rsid14970624\rsid15231179
+\rsid15293878\rsid15533339\rsid15732841\rsid15887377\rsid16153969\rsid16274844\rsid16451038\rsid16525789\rsid16531818\rsid16593965\rsid16723515}{\mmathPr\mmathFont34\mbrkBin0\mbrkBinSub0\msmallFrac0\mdispDef1\mlMargin0\mrMargin0\mdefJc1\mwrapIndent1440
+\mintLim0\mnaryLim1}{\info{\title \'c8\'c7\'d3\'e3\'e5 \'ca\'da\'c7\'e1\'ed}{\author sce}{\operator niazi}{\creatim\yr2012\mo5\dy19\hr20\min44}{\revtim\yr2012\mo5\dy19\hr21\min7}{\printim\yr2006\mo10\dy16\hr11\min14}{\version6}{\edmins21}{\nofpages3}
+{\nofwords1200}{\nofchars6846}{\*\company MRT www.Win2Farsi.com}{\nofcharsws8030}{\vern49273}}{\*\xmlnstbl {\xmlns1 http://schemas.microsoft.com/office/word/2003/wordml}}
+\paperw11906\paperh16838\margl1008\margr1008\margt1008\margb1008\gutter0\rtlsect\rtlgutter 
+\widowctrl\ftnbj\aenddoc\trackmoves0\trackformatting1\donotembedsysfont0\relyonvml0\donotembedlingdata1\grfdocevents0\validatexml0\showplaceholdtext0\ignoremixedcontent0\saveinvalidxml0\showxmlerrors0\noxlattoyen
+\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\formshade\horzdoc\dgmargin\dghspace180\dgvspace180\dghorigin1008\dgvorigin1008\dghshow1\dgvshow1
+\jexpand\viewkind1\viewscale150\pgbrdrhead\pgbrdrfoot\splytwnine\ftnlytwnine\htmautsp\nolnhtadjtbl\useltbaln\alntblind\lytcalctblwd\lyttblrtgr\lnbrkrule\ApplyBrkRules\nojkernpunct\rsidroot10903096 \fet0{\*\wgrffmtfilter 2450}\ilfomacatclnup0{\*\ftnsep 
+\rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch\fcs1 \af40 \ltrch\fcs0 
+\insrsid9324933 \chftnsep 
+\par }}{\*\ftnsepc \rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch\fcs1 \af40 
+\ltrch\fcs0 \insrsid9324933 \chftnsepc 
+\par }}{\*\aftnsep \rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch\fcs1 \af40 
+\ltrch\fcs0 \insrsid9324933 \chftnsep 
+\par }}{\*\aftnsepc \rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch\fcs1 \af40 
+\ltrch\fcs0 \insrsid9324933 \chftnsepc 
+\par }}\rtlpar \sectd \rtlsect\rtlgutter\linex0\headery706\footery706\colsx708\endnhere\sectlinegrid360\sectdefaultcl\sectrsid10757660\sftnbj {\footerr \rtlpar \pard\plain \rtlpar\s27\qc \li0\ri0\widctlpar
+\tqc\tx4320\tqr\tx8640\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid16267 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \afs16 \rtlch\fcs0 
+\f39\fs16\lang1065\insrsid10492271 
+\par }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\lang1065\insrsid5853334 <? echo $signer_address; ?>}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\lang1065\insrsid2914481 
+\par }\pard \rtlpar\s27\qc \li0\ri0\widctlpar\tqc\tx4320\tqr\tx8640\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5853334 {\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\lang1065\insrsid10492271 \'ca\'e1\'dd\'e4: }{\ltrch\fcs1 \afs16 
+\rtlch\fcs0 \f39\fs16\lang1065\insrsid5853334  <? echo $daneshkade_tel; ?> }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\lang1065\insrsid10492271   \'dd\'df\'d3: }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\lang1065\insrsid5853334   <? echo $daneshkade_fax; ?> }{\ltrch\fcs1 \afs16 \rtlch\fcs0 
+\f39\fs16\lang1065\insrsid10492271\charrsid1250279 
+\par }\pard \rtlpar\s27\qc \li0\ri0\widctlpar\tqc\tx4320\tqr\tx8640\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid10492271 {\rtlch\fcs1 \af40\alang1065 \ltrch\fcs0 \insrsid2914481 
+\par }}{\*\pnseclvl1\pnucrm\pnqc\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl2\pnucltr\pnqc\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl3\pndec\pnqc\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl4\pnlcltr\pnqc\pnstart1\pnindent720\pnhang 
+{\pntxta )}}{\*\pnseclvl5\pndec\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}
+{\*\pnseclvl8\pnlcltr\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}\pard\plain \rtlpar\qr \li0\ri0\widctlpar
+\tx725\tx2660\tx4715\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid798937 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch\fcs1 \af40\alang1065 \ltrch\fcs0 
+\lang1024\langfe1024\noproof\insrsid9324933 {\shp{\*\shpinst\shpleft4851\shptop1080\shpright6660\shpbottom2590\shpfhdr0\shpbxcolumn\shpbxignore\shpbypara\shpbyignore\shpwr3\shpwrk0\shpfblwtxt0\shpz0\shplid1026
+{\sp{\sn shapeType}{\sv 202}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}{\sp{\sn lTxid}{\sv 65536}}{\sp{\sn hspNext}{\sv 1026}}{\sp{\sn fRecolorFillAsPicture}{\sv 0}}{\sp{\sn fUseShapeAnchor}{\sv 0}}{\sp{\sn fFilled}{\sv 0}}{\sp{\sn fLine}{\sv 0}}
+{\sp{\sn dhgt}{\sv 251658240}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}{\shptxt \rtlpar \pard\plain \rtlpar\qc \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid14365183 \rtlch\fcs1 
+\af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \ab\ai\afs12 \rtlch\fcs0 \b\i\f39\fs12\lang1065\insrsid9659425 <? echo $daneshkade_name; ?>}{\ltrch\fcs1 \ab\ai\afs12 \rtlch\fcs0 
+\b\i\f39\fs12\lang1065\insrsid14365183\charrsid9376798 
+\par }{\rtlch\fcs1 \ab\ai\af39\afs16\alang1065 \ltrch\fcs0 \b\i\fs16\insrsid14365183\charrsid14901185 
+\par }}}{\shprslt{\*\do\dobxcolumn\dobypara\dodhgt8192\dptxbx\dptxlrtb{\dptxbxtext\rtlpar \pard\plain \rtlpar\qc \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid14365183 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \ab\ai\afs12 \rtlch\fcs0 \b\i\f39\fs12\lang1065\insrsid9659425 3451}{\ltrch\fcs1 \ab\ai\afs12 \rtlch\fcs0 \b\i\f39\fs12\lang1065\insrsid14365183\charrsid9376798 
+\par }{\rtlch\fcs1 \ab\ai\af39\afs16\alang1065 \ltrch\fcs0 \b\i\fs16\insrsid14365183\charrsid14901185 
+\par }}\dpx4851\dpy1080\dpxsize1809\dpysize1510\dpfillfgcr255\dpfillfgcg255\dpfillfgcb255\dpfillbgcr255\dpfillbgcg255\dpfillbgcb255\dpfillpat0\dplinehollow}}}
+{\shp{\*\shpinst\shpleft360\shptop180\shpright2520\shpbottom1440\shpfhdr0\shpbxcolumn\shpbxignore\shpbypara\shpbyignore\shpwr2\shpwrk0\shpfblwtxt0\shpz1\shplid1027{\sp{\sn shapeType}{\sv 202}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}
+{\sp{\sn lTxid}{\sv 131072}}{\sp{\sn hspNext}{\sv 1027}}{\sp{\sn fRecolorFillAsPicture}{\sv 0}}{\sp{\sn fUseShapeAnchor}{\sv 0}}{\sp{\sn fFilled}{\sv 0}}{\sp{\sn fLine}{\sv 0}}
+{\sp{\sn dhgt}{\sv 251659264}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}{\shptxt \rtlpar \pard\plain \rtlpar\qc \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5387996 \rtlch\fcs1 
+\af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid14242203\charrsid343431 \'ca\'c7\'d1\'ed\'ce}{\ltrch\fcs1 \rtlch\fcs0 
+\f39\fs20\lang1065\insrsid7882282\charrsid343431  :}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid14242203\charrsid343431  }{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431 ...........................}{\ltrch\fcs1 
+\rtlch\fcs0 \f39\fs20\lang1065\insrsid13378619\charrsid343431 
+\par }{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid14242203\charrsid343431 \'d4\'e3\'c7\'d1\'e5}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431  : .........................}{\ltrch\fcs1 \rtlch\fcs0 
+\f39\fs20\lang1065\insrsid14242203\charrsid343431 
+\par \'81\'ed\'e6\'d3\'ca}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431  : ......................}{\rtlch\fcs1 \af39\alang1065 \ltrch\fcs0 \insrsid14242203\charrsid343431 
+\par }}}{\shprslt{\*\do\dobxcolumn\dobypara\dodhgt8193\dptxbx\dptxlrtb{\dptxbxtext\rtlpar \pard\plain \rtlpar\qc \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5387996 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid14242203\charrsid343431 \'ca\'c7\'d1\'ed\'ce}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431  :}{\ltrch\fcs1 \rtlch\fcs0 
+\f39\fs20\lang1065\insrsid14242203\charrsid343431  }{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431 ...........................}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid13378619\charrsid343431 
+\par }{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid14242203\charrsid343431 \'d4\'e3\'c7\'d1\'e5}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431  : .........................}{\ltrch\fcs1 \rtlch\fcs0 
+\f39\fs20\lang1065\insrsid14242203\charrsid343431 
+\par \'81\'ed\'e6\'d3\'ca}{\ltrch\fcs1 \rtlch\fcs0 \f39\fs20\lang1065\insrsid7882282\charrsid343431  : ......................}{\rtlch\fcs1 \af39\alang1065 \ltrch\fcs0 \insrsid14242203\charrsid343431 
+\par }}\dpx360\dpy180\dpxsize2160\dpysize1260\dpfillfgcr255\dpfillfgcg255\dpfillfgcb255\dpfillbgcr255\dpfillbgcg255\dpfillbgcb255\dpfillpat0\dplinehollow}}}}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid3554799\charrsid15732841 \tab }{
+\rtlch\fcs1 \af39\afs16\alang1065 \ltrch\fcs0 \fs16\cf1\insrsid7090319\charrsid15732841 {\*\shppict{\pict{\*\picprop\shplid1025{\sp{\sn shapeType}{\sv 75}}{\sp{\sn fFlipH}{\sv 0}}
+{\sp{\sn fFlipV}{\sv 0}}{\sp{\sn pibFlags}{\sv 2}}{\sp{\sn fRecolorFillAsPicture}{\sv 0}}{\sp{\sn fUseShapeAnchor}{\sv 0}}{\sp{\sn fLine}{\sv 0}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}}
+\picscalex706\picscaley673\piccropl0\piccropr0\piccropt0\piccropb0\picw356\pich314\picwgoal202\pichgoal178\jpegblip\bliptag-1890754380{\*\blipuid 8f4d60b4fe90953d2b38f07b9b10621e}
+ffd8ffe000104a46494600010101025802580000ffdb0043000402030303020403030304040404050906050505050b080806090d0b0d0d0d0b0c0c0e1014110e
+0f130f0c0c1218121315161717170e11191b19161a14161716ffdb0043010404040505050a06060a160f0c0f1616161616161616161616161616161616161616
+161616161616161616161616161616161616161616161616161616161616ffc0001108004a005403012200021101031101ffc4001f0000010501010101010100
+000000000000000102030405060708090a0bffc400b5100002010303020403050504040000017d01020300041105122131410613516107227114328191a10823
+42b1c11552d1f02433627282090a161718191a25262728292a3435363738393a434445464748494a535455565758595a636465666768696a737475767778797a
+838485868788898a92939495969798999aa2a3a4a5a6a7a8a9aab2b3b4b5b6b7b8b9bac2c3c4c5c6c7c8c9cad2d3d4d5d6d7d8d9dae1e2e3e4e5e6e7e8e9eaf1
+f2f3f4f5f6f7f8f9faffc4001f0100030101010101010101010000000000000102030405060708090a0bffc400b5110002010204040304070504040001027700
+0102031104052131061241510761711322328108144291a1b1c109233352f0156272d10a162434e125f11718191a262728292a35363738393a43444546474849
+4a535455565758595a636465666768696a737475767778797a82838485868788898a92939495969798999aa2a3a4a5a6a7a8a9aab2b3b4b5b6b7b8b9bac2c3c4
+c5c6c7c8c9cad2d3d4d5d6d7d8d9dae2e3e4e5e6e7e8e9eaf2f3f4f5f6f7f8f9faffda000c03010002110311003f00fbfa9ace8a70cea0fb9a757e6aff00c15b
+ae6ea1fda86cd21bbb8897fe11bb63b63999467ce9fb034d2b89bb1fa4fe6c5ff3d13fefa1479b17fcf44ffbe857e2c68fe11f893ab68e9ab695e1bf16df69f2
+2b325e5b5a5cc9032a92188900db8041c9cf18359fe1fd37c5baf6a4da76876bae6a7788096b6b2f3a69401d4ed5c9e29f28b98fdb95218654823d452d7e3efc
+32f1e7c5ef809e39b1d7bcaf12e91199435c69bab433c56fa8c40fcd1b24800248ce1872a7906bddbfe0a45f1cfc67e21f885a7fc32f04ddea965a53e976b797
+36fa717171a94b71109550ecf98a2c6c9f28ea49ce7030ac3b9fa13e6c5ff3d13fefa1479b17fcf44ffbe857e2b6bfe14f88da169a751d77c3de2bd2ecc30537
+17d6b7304793d06e70067da93c39e16f887e20b037da0681e2ad5ad436c33d85b5c4e81bd0b20201f6a7615cfdaaf362ff009e89ff007d0a7d7e20d8cdab5af8
+920b4bbb9d4209e0bd48e68659a4578d838055949c820820835fb7907fa94ff74526ac34ee3a8a28a430afcd0ff82ba7fc9d2597fd8b56dffa3a7afd2fafcd0f
+f82ba7fc9d2597fd8b56dffa3a7a71dc52d8c7f8c7f10fc43a3fec37f097e1fe937f7167a7eb76ba85e6a9e4c850dca477b22a44c473b32598af4242e7a56378
+0fe1c7c54f889e0af0a789fe107c2e1a54be1b125acde21d2b5548ae351bb470de7387752acb9038c8393ce300657c7bff00937af8263fea05a9ff00e9c24afa
+c3fe0947f123c1765f00b56f0a6a3af5ad8ea9a25edcea97915d38882da3053e7063c155da437f778cf5154f412dcdcf177c77f82be22f838ff0d3f682d560d3
+fc5034f5b4f11e9cfa7cb2b595e84c3491bc68ca181c3a943c669fe1af88bfb3b7c21f897a86ade2bf14411f8bf50d274b8bed1269d3c8f0d9a5840b1aa32a10
+a1f05ce0e4ee00fddaf833f6a3f13e91e33fda03c63e2ad02779f4bd5354966b495d0a1923c001b07900e3233db15d2fedc441f8f7c1ff00996f45ff00d37414
+ac173d9bf681f097c74f8dff001b6d7e24695e039fc57f0f60b8867f0ed84da8c705a5f580dadb8c66457533004b12036180ec05796fecb1f14754f0afed83a6
+6a9e18b15f0fe8fe23d7e3b1bdf0fdacccf6a96f34a23f2c03d4c658156c7047180715f697eca9f1abe1ae9bfb12e91addff00896dede0f086910e9fac452713
+c170a9b44623eac5c8f931f7bf038fcf0f8112acdfb45f83a75c8597c5762e33d706ed08fe742017e3267fe1a43c539393ff000975e73ff6f8f5fb3507fa84ff
+00747f2afc65f8cbff002725e2affb1baf3ff4b1ebf66a0ff509fee8fe543088ea28a2a4a0afcd0ff82ba7fc9d2597fd8b56dffa3a7afd2fafcd0ff82ba7fc9d
+2597fd8b56dffa3a7a71dc52d8f5af865f05bc1bf173fe09c3e1493c457d6da2ea3a1d9df5c69faf4a42ad8e2e662c2527ac270370ed8c8e457c0d729e45d4d0
+c77092aa3347e6c2c764ab9c646704a9c6791d3b57bb7c6df18f88ecbf637f845e08b2d4a4b7d0f54d3efef6feda2f97ed5225f48a81cf52a3aede99e4e70317
+ff0063cfd94f58f8dde0ed5fc5575aea689a5c024b5d2e408257babc500fcebfc312e464f539e3a1aad891bff04eaf831e10f8b9f14ae5fc63ac5ab59e828973
+fd81bcacfaa73d4ffd31538dd8e4e40e01cd7d31ff00052ff817e06d6be19dcfc4c8eff4ff000cebba05aa442693f770ea7128c476c540ff00598f9632067f84
+fcbcafc13a847e33f83df172e208af1f48f147856fda3f3ad650c23953d08e1918763c1070476af5dff828d7c41f1678b3e2fd8e89acea6cfa5e9ba269d776b6
+510d90a4d71691cb2c857bb1672013d170077c96d46b63e7904ed2b9215882573c123a647b64fe66bed3ff0082577c11f06789a493e29ebdaa596ada8e8b79e5
+d8e8a8d93a74a395b89d4f563d63fe118ce4b0f978af84bfb17f8bbc6ffb3949f10a2d620b6d6750856f341d21b063bab7c13fbd93f81dc60a761c6efbdf2f98
+7ec81e2ff13781ff00690f0bcde1fd465b27d4758b6d335087ac77304b3aa3c722f43d4907a8201143d44b7317e30ffc9c778a7fec6dbbff00d2b7afd9b83fd4
+27fba3f957e32fc6418fda43c54076f175e7fe963d7ecd41fea13fdd1fca931c4751451525057e687fc15d3fe4e92cbfec5ab6ff00d1d3d7e97d7e687fc15d3f
+e4e92cbfec5ab6ff00d1d3d38ee296c79e7c7c8a51fb397c119cc6c227d1754457c70586a0e48fae08fcebdb3f613fda97e18fc1ff008143c21e2d8f5e6d47fb
+52e2eb36360258f63eddbf36f1cfca7b5792c9f1abc01acfecb1a0fc20f16fc3ed5aeaefc3ad34b61af58ea71472412c923be55190e54870aca4f38cf04023c3
+a4d9bdb66edb9f97775c7bd56e4dced3f697f16695e3bf8e9e2cf186842e069dacea0f736a2e23d926c2a00dcb9383c7ad75ff00b77db5c5a7ed01e55cc2f13f
+fc237a37caeb83c5842a7f26561f506a2fd8c62f82edf1774d9be2fea3a8dbc315d2358c5e4aff0067c92820afdaa4cee55dd8e36ed3fc440cd7d39ff055c5f8
+2575169926bbaa5f43e3e86d3fe25e9a444933496c492a2e8310ab1eedc54e7772d804134750e83fe017ed9bf077c19f027c2de0fd622f129d4347d1a0b2ba30
+6981e3f31102b6d6de3233debe39f800af7bfb49f833ecd1b399fc5964e8a07241ba43d3e95c3d7ae7eca1f13fc01f08fc651f8cb5df036abe27d76d370d3c8d
+42282d6cc90419021425a4c1201270327033c82d60b9ccfc65ff009391f157fd8dd79ffa58f5fb3507fa84ff00747f2afc4ff146b49e25f8afa8788e3b66b64d
+635c92f96067dc6212ce5f6923a91bb19f6afdb083fd427fba3f95290e23a8a28a9282be7ffda7bf64ff000afc6cf88d178c35af156b7a65cc3a7c76420b2484
+c65519d837cea4e7e73f957d0145007c73ff000ef0f87dff004503c55ff7eedbff008dd1ff000ef0f87dff004503c55ff7eedbff008dd7d8d453bb1591f057c6
+2ff827d4fa7f85ae350f873e32bad56fede32ffd99ab411a7dab03eea4a980ac7b06183ea3ad79d7eccffb2ef8ff00e3dcf3f8b7c67af5d687a45b38d3fed775
+0996f6e9add443e5c68c40558c2042cddd4800906bf4eab3bc2f0436fa53456f0c7127daee5b6a2851933b92703b92493ee68bb0b23e4a1ff04f0f87f8e7e20f
+8a73ff005cedbff8dd1ff0ef0f87dff4503c55ff007eedbff8dd7d8d451761647c7b69ff0004f5f87f05dc53af8ffc524c522b8063b6c120e7fe79fb57d82836a05f418a5a295c760a28a2803fffd9}}{\nonshppict{\pict\picscalex709\picscaley676\piccropl0\piccropr0\piccropt0\piccropb0
+\picw356\pich314\picwgoal202\pichgoal178\wmetafile8\bliptag-1890754380\blipupi600{\*\blipuid 8f4d60b4fe90953d2b38f07b9b10621e}010009000003b624000000008d24000000000400000003010800050000000b0200000000050000000c020d000e00030000001e00040000000701040004000000
+070104008d240000410b2000cc004a005400000000000c000d000000000028000000540000004a0000000100180000000000d848000000000000000000000000
+000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffcececeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffefefef7b7b7b
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c9c9c181818d6d6d6ff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdedede292929101010525252ffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcecece3939391010101818180808086b6363efefefffffff
+f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f7f79c94943131311010101818181810102121180808084a4a4ab5b5b5ffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffff7f7f7adadadadadadb5b5b5b5b5b5b5b5b5b5b5b5bdb5b5b5b5b5b5b5b5b5b5b5bdb5b5b5b5b5b5b5b5b5b5b5bdb5b5b5b5b5b5
+b5b5b5b5b5bdb5b5b5b5b5b5b5b5adadadbdb5b59c9c9c7b7b7b3931311008081818101010101818181010101810101818180000001010104a4a4a848484b5ad
+adb5b5b5b5adadb5b5b5b5b5b5bdb5b5b5b5adb5b5b5b5b5b5bdb5b5b5b5b5b5b5b5b5b5b5bdb5b5b5b5b5b5b5b5b5b5adbdb5b5b5b5b5b5b5b5b5b5b5bdb5b5
+b5adadc6c6c6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffcecece1818180808080808081010100808081010080808081008080808081010080808081008080808081010080808081008080808081010
+08080808100808080808101010101008101010000000101010181818181010181818181818181818212118181818292121181010101008080808100808080808
+10080808080810100808080810080808080810100808080810080808080810100808080810080808080810100808080810100808080810080808080810080831
+2929ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffcecece181818101010181818181818181818181010181810181810181818181010181810181810181818181010181810181810181818181010181810
+1818101818181010102118181010082121182118181810101818101818102121217b737310080818181018101018181018181018181018101018181018181018
+1818181010181810181810181818181010181810181810181818181010181810181810181818181010181818181010181818101010181818101010424242fff7
+f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+d6d6d618181821212118101018101018181818181818181021181818181021181818181021181818181021181818181021181818181021181818181021181818
+18102118181818102118181818102118181818101818181008086b6b6befefe73939311810102118181810102121182118182118181818102118181818101818
+18181810211818181810211818181810211818181810211818181810211818181810181818101010181818181818181818181010101010424239ffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce18
+18181010102118181810101818101810101818101010101818181818101818101010101818181818102118181810101818101810102118181810101818101818
+18181810101008211818181810181810080808312929e7dedeffffffadadad101010181010181810181810181810181010211818181010181810181010211818
+181010181810181810181010181818181810181818181810101008181810181810181010181810181010181010211818101010424242fff7f7ffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d61818181818
+10181810211818181810181810212121181810101010181818212118101010181810181810181810211818181810211818181010211818181810181810181810
+181810211818080808100808393131cececeffffffffffffffffff9c9c9421181810080818181018181021181818181021181818181021181818181021181818
+1810211818181810181010212118101010181810292921181810211818211818212118181810211818181810101010423939ffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818
+18181018181018101010101000000010100808080008000010100808080818181018181018101021181818181018181018101021181818181018181018181021
+1818211818636363efe7e7ffffffffffffffffffffffffffffffc6c6bd524a4a1818101818181810101818101810102118181810101818101818101818181810
+101818101810101008080808080000000808080808080808001818101810101818181010102118181810104a4242f7f7f7ffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d618181818181018181021181818
+1810181810212121635a5a5252525a5a5252525273736b5a5a5a3131292118181818101818102121181818102118181818101810101818182118186b6b63e7de
+deffffffffffffffffffffffffffffffffffffffffffffffffffffffbdbdb5524a4a211818181810211818181810211818181810211818181810211818181818
+4242395a5a5a63635a5a5a5a5a5a525a5a5a5a5252181810181810181810211818181810181010424239ffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce1818181810102118181810101818101010
+10393931f7f7f7ffffffffffffffffffdedede73736b2929212121181010081818101818102118181810101818102118182118181810103931316b6b6bcecece
+ffffffffffffffffffffffffffffffffffffffffffb5b5ad635a5a2929211810102118181810101818101818101818181810101818101818102118184239399c
+9c94ffffffffffffffffffffffffc6c6bd212118101008181810212118181810080808424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181810393931
+fffff7ffffffffffffcec6c6292921101008212118181810181818181810211818181810181818181810181810181810212118101008101008313129b5b5b5ff
+ffffffffffffffffffffffffffff8c8484181010101008100808211818181810211818181810211818181810211818181810181010181810181810080800524a
+4af7f7efffffffffffffdedede181010211818101010211818181810181818424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818181810181810100808424239f7f7efff
+ffffdeded6212121101010101008101008181810181810211818181010181810181010181818181010211818101010181810101010101010181810d6ceceffff
+ffffffffffffff9c9c9c08000018181810100829212118101018181018181018181818101018181018181018181821181818181018181018181008080052524a
+fffff7ffffffc6c6c6181010211818181810101008181810101010393939f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810211818393131fffff7ffffff6363
+5a080808181818181818211818181810211818181810181818181810211818181810212118101008212118181810181818181818181010524a4affffffffffff
+efefef211818211818101010212118181810211818181810211818181810211818181810211818181810181818181010212118181010212118100808a5a59cff
+ffffd6d6ce181010181010211818212118181010181810424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce181818181010211818181010181810101010423939fff7f7ded6d6212121181010
+101010211818101010181818181818101010181818181810181010181818181010211818181010181010181810181818181010181010cececeffffff8c8c8408
+0808181810211818181010181810181818101010181818212118101010212118101010181810101010212118181010181818181010181818423939ffffffd6d6
+ce181810181010181810181810181818101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181010393939ffffffb5b5b518101018101021181818
+10102121211810101818181008081008080808001010080808081010081810102118181818101818181810101818181010109c9c9cffffff635a5a1010081818
+18181810211818181810212118100808080800080808080808080808080808100808181818181010181818181818211818181010312929efe7e7ded6d6181810
+211818181810211818181810181010424239ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818181810211810101008393939fffff79c9c940808081810102118181818181810
+101010103131296363635a5a52635a5a63636363636363635a3939311010081818181818101818181818101008087b7b7bffffff423939181810181810181810
+181810181818080808525252636363636363635a5a6363635a5a5a635a5a292121181010181010181818181010181010181818dededed6cece18181018181018
+1810181010181810101010424242f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181818393131ffffff949494181010181818211818181818181818181010
+7b7b7bffffffffffffffffffffffffffffffffffff8c8484211818181010181818181010211818101010848484ffffff4a4a4a10101021211818181018181018
+1810181818c6c6c6ffffffffffffffffffffffffffffffffffff423939101010181818181010181818181010211818dedededed6d61810102118181818102118
+18181810181810424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffd6d6ce181818181010211818181010181810181010393939fff7f79c9c941010102118181010082118181818181008086b6b6bff
+ffffffffffffffffffffffffffffffffff847b7b100808211818181818181818101010100808848484ffffff4a42421010101810101818181810101818181010
+10cececefffffffffffffffffffffffffffffffff7f7393939101010181010181818181810181818181010dededed6d6ce181810181010181810181810181818
+101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffded6d6181818181810181810211818181810181010423939ffffff9c9494101010211818181810181810181818101008737373ffffffffff
+ffffffffffffffffffffffffff8c8c84181810181810181818101010211818101010848484ffffff424242181818181810181810212118181010181010c6c6c6
+fffffffffffffffffffffffffffffffff7f7424242101010181818181818211818181010211818ded6d6ded6d618181021181818181021181818181018101042
+4239ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffd6d6d6211818101010181818181810211810101010423939ffffffa59c9c100808211818181810181818181010181010736b6bffffffffffffffffff
+fffffffffffffffff78c8484100808181810181010181818181818101010847b7bffffff424242181818181010181818181810181810100808cecec6ffffffff
+fffffffffffffffffffffff7f7ef393939101010101010181818101010181010211818dededed6cece181810181810181810181010181810101010424242f7f7
+f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ded6d6181818181810181810211818181810181818393131ffffffa59c9c181810181010211818181818181818101010737373ffffffffffffffffffffffffff
+ffffffffff8c8c84101010181818211818181010181818101010848484ffffff52524a080808211818181818181810211818181818c6c6bdffffffffffffffff
+fffffffffffffff7f7f7423939101010181818181818211818181010212121ded6d6ded6d6181010211818181810211818181810181810424242ffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce18
+1818181010211818181010181810181010423939fff7f79c9494101010181810181818181818101010181818736b6bffffffffffffffffffffffffffffffffff
+ff8c8484100808181010181818211818101010101010848484ffffff4a4242101008181818212121181010181818101008d6d6cefffff7ffffffffffffffffff
+fffffffffff7393939181818101010181810212121181810181010dededed6d6ce181810181010181810181810181818101010424242fff7f7ffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d61818181818
+10181810211818181810101010423939ffffff9c94941818182121211010101818182118181010105a5a5affffffffffffffffffffffffffffffffffff7b7373
+181010211818212118100808212121101010848484ffffff525252181010181818181010212118181818181810a5a5a5fffffffffffffffffffffff7ffffffef
+e7e7393131101008292121101010181810181010211821ded6d6ded6d6181810211818181810211818181810181810424239ffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818
+181810211810101010424242ffffff9c9494080808181818211818181810181010101010212118847b7bffffffffffffffffffffffff94948c10100810101021
+21181010102118181818181010108c8484ffffff524a4a080808181810211818181010181818181010292929c6c6c6fffffffffffffffffff7f7ef52524a1810
+10181810181810211818211818181010181010e7deded6cece181810181810181810181010181818101010424242f7f7f7ffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d618181818181018181021181818
+1810211818393131ffffffa59c9c1810101010102121211810101818181818181010101010108c8484ffffffffffff94948c1818101810102121181810101818
+18181010212121101010848484ffffff4a4242100810211818101010292121181010181010101010312929c6c6bdfffffff7f7ef52524a080808211818181818
+181818181818181010211818212121d6d6ceded6d6181010211818181810181818181810181810424242ffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce1818181810102118181810101818101008
+08423939ffffff948c8c1010101818101810102118181818102118181810101810101010108484848c8484181818101008211818181010211818181818211818
+0808080808087b7b7bffffff393131181010181818212118181010211818211818181010101008292921b5b5ad52524a08080018181818181818181010101018
+1818181818101010101010dededed6cece181810181810181810181810181818101008424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181818424242
+fff7f7e7dede31313110080821181818101018181810101021181818181818181810101018181810080818181021181818101018181018181818181018181829
+2929d6ceceffffffada5a51008081818181810102118181818102118181810101818101818101010081010082921211810101818101818101818181810101818
+180808086b6363fff7f7d6d6d6181010211818181810181818181810181010424239ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818181810211810101008423939f7f7efff
+ffffded6d6393939080808181818181010181818181010181818101010181818181010212118212118181010181810181810181818080808292121cececeffff
+ffffffffffffffa59c9c1010081810101810102118181010101818181810101818181810101810101818102118181818101818102118181010100800006b6363
+f7efefffffffcecece181010181810181818181010181810101010424242f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181810393131f7f7f7ffffffffff
+ffd6d6ce393939100808181818181818181818181010211818181818181810181810181010211818181818181810101010313131c6c6c6ffffffffffffffffff
+ffffffffffff9c9c9c10101021181818101021181818101021181818181021211818181018181018181021211810100818181810101063635af7f7f7ffffffff
+ffffd6d6ce101010211818181810181818181810181810424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce181818181010211818181010181810181010313131fff7f7ffffffffffffffffff
+d6d6d6313131100808211818181010181010181810181010181818181810181010212118101008101008292121cececeffffffffffffffffffffffffffffffff
+ffffffffff9c9c9c1010081818101818181818101810101818181810101818101818101818101010101818180808085a5252f7f7f7ffffffffffffffffffcece
+ce181818181010181810181810181810101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181010393939f7efefffffffffffffffffffffffffde
+d6d6424242101010212121181010212121212121181010181810212118101008211818393939cec6c6ffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffa5a59c212121181810181818181818212118211818181818181810181810212118181810635a5affffffffffffffffffffffffffffffd6cece181810
+181818181010212118181810181810424239ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818181810181810101010423939f7f7f7ffffffffffffffffffffffffffffff7b73
+732118181010101810101010101818180808082121181818102118180808086b6b63ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffff313131101008211818181010181810181010211818101010212118101008181810bdb5b5ffffffffffffffffffffffffffffffcecec618181018101018
+1810181810181810101010424242f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181810313131ffffffffffffffffffffffffffffff848484211818101010
+2121181818181818182118182921211810101818102118182118181818108c8c84fffffffffffffffffffffffffffffffffffffffffffffffff7efef524a4a18
+1818211818181010211818181010211818181810212118181810212118101010313131c6c6c6ffffffffffffffffffffffffd6cece1818102118181818102118
+18181810181818424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffd6d6ce181818181010211818181010181810101008393939f7f7efffffffffffffffffff94949418181018101021181810080821
+18181818101010081810101818101810101818101010081010081010107b7b7bffffffffffffffffffffffffffffffffffffefefef5252521010101818181818
+10181818181010211818181010211818181810181010101008212121000000212121c6c6c6ffffffffffffffffffcecece181818181010181810181810181810
+101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffded6d6181818181810181810211818181810181818393939ffffffffffffffffff8c8c8c1810100808082118182118181818181810102118
+182118182118181810101818182118182118181818181818181010107b7b7bfffffffffffffffffffffffff7f7f75a5a52100808181010181010211818181818
+181810211818101008181810181810181818212118101010212121101010212121c6c6bdffffffffffffd6cece18181018181818101021211818181018181042
+4239ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffd6d6d6211818101010181818181810181810101010393931eff7efffffff949494101010181010181818181010181010181818212121100808181010
+1008082118181818101810101818101818101010101018101010107b7b7bffffffffffffefefef42424208000021212118101018181818101021181810100818
+1010181810181810101008212118101010181010101810181818081008181818c6c6c6ffffffcecec6181810181010181810181810181810101010424242f7f7
+f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ded6d6181818181810181810211818181810101010423939ffffffb5b5ad18101010101018181818181818181818181821181818181818101031313139313110
+0808211818181810181818181810211818181818181010101010a5a5a5ffffff6b63630808082121211008082921211818181818181810102121181008084242
+42181818181010181010181818181810181818181818181818101010292929efe7e7d6cece181810211818181810211818181810181818424242ffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce18
+1818181010211818181010181810101010423939fff7f79c9c94101008181810181810181810181810101010101010101010292929d6d6d6dedede3131310808
+00292121101008181810181810181818181810080808847b7bffffff424242101008181010181810181010181810181818101010080808635a5af7f7f7a5a5a5
+101010181010101010211818181810181810181010181818181010deded6d6d6ce181810181010181810181810181818101010424242fff7f7ffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d61818181818
+10181810211818181810181810423939ffffff9c9494181010181810211818181810181010212118101810212121d6d6d6ffffffffffffdedede423939080000
+2118182121181818181810102118181810108c8484ffffff4a4a421010082118181818102118181818101010101010086b6b6bf7f7efffffffffffff9c9c9c18
+1010181818181010181818181810211818181818211818ded6d6ded6d6181810211818181810181818181810181010424242ffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818
+181810211810101010423939fff7f79c9c9c100808181810181810181810101010181010313131c6c6c6ffffffffffffffffffffffffd6cece42393910101018
+181818101021181818181010100884847bffffff4a4242181010181010181810181810181818101008636363efefefffffffffffffffffffffffff9c9c9c2121
+18101010181010181818181010181818181818dededed6cece181810181810181810181010181810101010424242f7f7f7ffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d618181818181018181021181818
+1810181010393939ffffff9c9c941810101818102121181818102121181010086b6b6bffffffffffffffffffffffffffffffffffff847b7b1810102118181818
+181818101818181010088c8484ffffff4a4a4a181010211818181810211818181810101010cececeffffffffffffffffffffffffffffffffffff393939101010
+181818181818181818181010212121dedededed6d6181010211818181810181818181810181810424242ffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce1818181810102118181810101818101010
+10423939fff7f79c9c9c10100818181018181018181018181010101073736bffffffffffffffffffffffffffffffffffff8c8c8c080808181818181010101010
+18101018101084847bffffff424242101010181010181818181010181818101010cececefffffffffffffffffffffffffffffff7f7f742393918101018101018
+1818181010181818181818dededed6d6ce181810181010181810181810181818101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181010423939
+ffffff9c9494181010181810211818181810211818080800737373ffffffffffffffffffffffffffffffffffff84847b10101010101021181818101021211810
+10108c8484ffffff4a4a4a101010181818181810181818181010181810bdbdbdfffffffffffffffffffffffffffffff7f7ef4242421010101818181818102118
+18181810211818ded6d6ded6d6181810211818181810181818181810181010424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818181810211810101008423939fff7f79c
+9c9c101008181810181810181810181810101008737373ffffffffffffffffffffffffffffffffffff7b7b7b181010181818181010181010181010101010847b
+7bffffff424242101010181010181818181810181818101010c6c6c6fffffffffffffffffffffffffffffff7f7f7393939101010181818181810181818181818
+181010dededed6cece181810181810181810181010181810101010424242f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181010393939ffffff9c9c9c1810
+10181810211818181810181810101010736b6bffffffffffffffffffffffffffffffffffff8c8c8c101010181818181818181818181818101010848484ffffff
+4a4a4a101010181818181810211818181818181810c6c6c6fffffffffffffffffffffffffffffff7f7f7424242101010212118101010211818181818211818de
+dededed6d6181010211818181810181818181810181810424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce181818181010211818181010181810181010393939fffff79c9494101008181818
+211818181010181810101010737373ffffffffffffffffffffffffffffffffffff8c8c8c0000001010101010081008081010100808087b7b7bffffff4a424208
+0808101010101010080808101010080800d6d6d6ffffffffffffffffffffffffffffffffffff393939181010181810211818100808212121181818dededed6ce
+ce181810181810181810181810181818101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810101010423939ffffff9c9c9418181018101018181018
+181029292108080063635adedededededed6d6d6d6d6d6d6d6d6d6d6d67b73733931312929293939393939393131312921219c9c9cffffff5a5a5a3131312929
+29313131393939313131313129a5a5a5d6d6d6d6d6d6e7e7e7cececee7e7decec6c6393939101008181818181818292121181010181818d6d6ceded6d6181810
+211818181810181818181810181010424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffd6d6d6211818101010181818181810211810181010393131ffffffa5a5a50808001818102121182118181008
+08181818181010292121181818211818211821211818181818737373e7e7e7f7efefe7e7e7efefefefe7e7f7f7f7cececef7f7f7deded6efefefefefefe7e7e7
+efefefefefefdedede4a4a4a181810181818181818292121101010212121101010212121181010181010101010181810212121e7e7e7d6cece18181018181018
+1810101010181810101010424242f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffded6d6181818181810181810211818181810181818393131ffffffc6c6c6211818181810100808181810181818101010
+100808080808181010101010181818181818080808ada5a5ffffffffffffffffffffffffffffffffffffcec6c6fff7f7d6cecefff7f7ffffffffffffffffffff
+ffffffffff5a5a5a080808181818181818080808181818101010181010181010181010181818292121181010313129f7efefd6d6ce1810102118181818101818
+18181810181810424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffd6d6ce181818181010211818181010181810101008424239f7f7f7efefef313129181810181810212118101010635a5aded6d673
+7373101010181818211818100810212121e7e7e7ffffffffffffffffffffffffffffffdedede8c8c8cffffff737373ffffffffffffffffffffffffffffffffff
+ffa5ada5080808181818181010181818181818949494bdbdbd31313118181818181818101008080863635affffffcecec6181010181010181810181810181818
+101010424242fff7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffded6d6181818181810181810211818181810181818393939ffffffffffff949494080808181818181810181810b5adadffffffcec6c62118
+18211818181818080808847b7bffffffffffffffffffffffffffffffffffff737373848484ffffff4a4a4ab5b5b5fffffffffffffffffffffffffffffff7f7f7
+424242080808181818181818393939ffffffffffff7b7373101010181010181010212121d6ceceffffffd6d6ce18101021181818181021181818181018101042
+4239ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffd6d6d6211818101010181818181810181810101010393939f7efefffffffffffff5a5a5a080800181810100808524a4aa5a5a55a5252181010101010
+080000525252f7f7f7fffffff7f7f7ffffffffffffffffffadadad0808087b7b7bffffff424242292929cececeffffffffffffffffffffffffffffffcecec621
+21210808081810101010107373739c94942929211010101810100808089c9c9cffffffffffffd6cece181810181810181818181010181810101010424242f7f7
+f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ded6d6181818181810181810211818181810181810393939ffffffffffffffffffffffff84847b212121211818080800101010101010181818211818737373ff
+f7f7ffffffffffffffffffffffffffffff949494212121080808848484ffffff4a4a4a080808313131bdbdbdffffffffffffffffffffffffffffffdedede4a4a
+4a181810212121101008080808181818181818313131b5b5b5ffffffffffffffffffdeded6181810212118181810181818181810181810424242ffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6cece21
+1818181010211810181010211818181010313129c6c6c6ded6d6cecec6d6d6ceded6d68c8c8c3939312118181010082118183131298c8484cececed6d6d6d6ce
+ced6d6d6c6c6bd8c8c8c424242101010101008101010847b7bffffff4242421010100808081810105a5a5aa5a5a5cececed6d6cecececededed6c6c6bd73736b
+21211818181018181021211852524aadadaddeded6ded6d6cec6c6ded6d6a59c9c212118101008181010181810211818101008424242fff7f7ffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdeded62118182118
+18211810181810181010212118101008212118101008181810181810212118312929292121181810181818181810181818212118292921181810211818080808
+1818101010081010101010101818181010108c8c8cffffff4a4a4a10101018181810101018101008080810100818181818181018101029292121212121181818
+1810211818211818292121212118211818181810181818181810212118101008292121181810212118181810101010424239ffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce211818181008211818
+18181021181818181021181810101021181818101021181808080018101018101018181018181021181821181818181010100818181010080818181818181818
+1818101008211818181818080808adadadffffff6b6b6b0808081818181818101010101818181810102118181810101810101810101818181818101818181010
+101818181818101818101010081810101810101818101008082121181810101810102118181818101010104a4242fff7f7ffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdeded618181818181018181021181818
+18101818101010102118181818101818101818102929211810101818181818101818101810102118181010101818102118182121210808081818182118181810
+10181810181818292929e7e7e7ffffffbdbdbd100808181010181818181818181818211818101008181810211818212118181010181810181818212118181010
+181810181810212118181810181810181010212118211810181010211818211818101008181818424242ffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd6d6ce2118181810102118181810101818101818
+10211818181810181810212118101010181010181818181010181810181810211818181810211818181810211818181818181818181818181010212118181010
+0000008c8c8cfffff7fffffffff7f74a4a4a08080810101018181818181818181818181818101018181810101018181818181818181818181821181818181818
+1010101010181818181818211818101010181010181010292121101008181818101010424239fff7f7ffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffded6d6181818181810181810181818181810211818181818
+181810181010212118181810181810211818212118181810211818181810181810181810212118101010181818181818101010101010181810080808635a5aff
+ffffffffffffffffffffffdedede3131310808081810101818181818181818182118181818181818181818181818181010101010101818102118181810101818
+18181818181818101010292121181818181810181810181810211818101010424242ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcecece18181808080810080808080810100808080810100810080810
+1010080800181010101010080808080800080808100808101010080808101010100808100808080808101010080808101010101010737373fff7f7ffffffffff
+fffffffffffffffffff7d6d6d64a4a4a101010100808100808100808080808101010080808100808080808101010101010101008080808101010100808101010
+080808101010080800101008080808101010100808080808000000424239f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe7e7e74239394242424242394242394242394242423939394a4a4a3939394242
+42423939424242424242424242424242424242423939424242423939424239424242424242393939524a4a6b6b6bcececeffffffffffffffffffffffffffffff
+fffffffffffffffffff7f7f7b5b5b5635a5a42424242424242424242393942424242424242424242393942424242393942424242393942424242393942424242
+4239424242424239424242424239424242423939424242635a5affffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f7fffffff7f7f7fffffff7f7f7fffff7f7f7f7fff7f7f7f7f7fffff7
+f7f7f7fff7f7f7f7f7fffff7f7f7f7fff7f7f7f7f7fffff7f7f7f7fff7f7f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffff7f7f7fffff7f7f7f7fff7f7f7f7f7fffff7f7f7f7fff7f7f7f7f7fffff7f7f7f7fff7f7f7f7f7fffff7f7f7f7fff7f7f7f7
+f7fffff7f7f7f7fff7f7f7f7f7fffff7f7f7f7f7f7f7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff040000002701ffff030000000000}}}{\rtlch\fcs1 \af39\afs16\alang1065 
+\ltrch\fcs0 \fs16\cf1\insrsid798937\charrsid15732841 \tab \tab }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid12199305\charrsid15732841  }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid798937\charrsid15732841 \'c8\'c7\'d3
+\'e3\'e5 \'ca\'da\'c7\'e1\'ed}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid13378619\charrsid15732841 
+\par }\pard \rtlpar\qr \li0\ri0\widctlpar\tx725\tqc\tx4945\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid1777417 {\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid13378619\charrsid15732841 \tab }{\ltrch\fcs1 \afs16 
+\rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid3554799\charrsid15732841 \tab }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid7484636\charrsid15732841      }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par }\pard \rtlpar\qc \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid9659425 {\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'d8\'d1\'cd\'e5\'c7\'ed \'81\'8e\'e6\'e5\'d4\'ed }
+{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid12414589  }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid9659425 <? echo  $daneshkade_name;  ?>}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }\pard \rtlpar\qc \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid11953766 {\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid9659425 <? echo $sub_subadmin; ?>}{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 
+\b\f39\fs18\cf1\lang1065\insrsid14770377 
+\par }{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }{\rtlch\fcs1 \ab\af39\afs18\alang1065 \ltrch\fcs0 \b\fs18\cf1\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\s3\qc \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel2\adjustright\rin0\lin0\itap0\pararsid9659425 \rtlch\fcs1 \ab\af42\afs24\alang1065 \ltrch\fcs0 
+\b\fs24\cf6\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1065\insrsid3218730\charrsid15732841     }{\ltrch\fcs1 \afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'98\'cf \'d8
+\'d1\'cd : }{\ltrch\fcs1 \afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1065\insrsid9659425 <? echo $cod_tarh;?>}{\rtlch\fcs1 \af39\afs18 \ltrch\fcs0 \fs18\cf1\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch\fcs1 \af41\afs28\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\rtlch\fcs1 \af41 \ltrch\fcs0 \insrsid6960945  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 1 - \'d8\'d1\'dd\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par }\pard \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid9659425 {\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c7\'ed\'e4 \'de\'d1\'c7
+\'d1\'cf\'c7\'cf}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'ed\'e4}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 
+\f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid9659425    <? echo $name_family;?>  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'e5 \'e4\'e3
+\'c7\'ed\'e4\'cf\'90\'ed \'c7\'d2 \'d8\'d1\'dd \'e3\'cc\'d1\'ed\'c7\'e4 \'d8\'d1\'cd \'ca\'cd\'de\'ed\'de\'c7\'ca\'ed \'df\'e5 \'cf\'d1 \'81\'ed\'d4 \'e4\'e6\'ed\'d3 \'d8\'d1\'cd }{\rtlch\fcs1 \af39\afs16 \ltrch\fcs0 
+\i\fs16\cf1\insrsid14770377\charrsid15732841  ( proposal )}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 (\'81\'ed\'e6\'d3\'ca \'d4\'e3\'c7\'d1\'e5 \'ed\'df \'de\'d1\'c7\'d1\'cf\'c7\'cf)\'a1 \'c7\'d3\'c7\'e3
+\'ed \'c2\'e4\'c7\'e4 \'de\'ed\'cf \'90\'d1\'cf\'ed\'cf\'e5 \'e6 \'c7\'d2 \'c7\'ed\'e4 \'81\'d3\'a1 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e4\'c7\'e3\'ed\'cf\'e5 \'e3\'ed \'d4\'e6\'cf \'c8\'e5 \'e4\'d4\'c7\'e4\'ed }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 
+\b\f39\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 :}{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{
+\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid9659425 <? echo $daneshkade_name; ?>}{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  (}{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid9659425 
+  <? echo $sub_subadmin; ?>  }{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 )}{\ltrch\fcs1 \ai\afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   }{\rtlch\fcs1 \af39\afs18\alang1065 \ltrch\fcs0 
+\i\fs18\cf1\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid9659425 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \ai\afs16 
+\rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e6\'c7\'d2 \'d8\'d1\'dd \'cf\'ed\'90\'d1\'a1 }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid10492271  \'d3\'d1\'81\'d1\'d3\'ca }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 
+\f39\fs16\cf1\lang1025\insrsid9659425  3457}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'da\'e1\'e6\'e3 \'81\'d2\'d4\'df\'ed \'ca\'e5\'d1\'c7\'e4 \'c8\'e5 \'e4\'d4\'c7\'e4\'ed:}
+{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14028665\charrsid15732841  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid9659425  3458 }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 
+\f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'df\'e5 \'c7\'d2 \'c7\'ed\'e4 \'81\'d3\'a1 }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid10492271  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid9659425 
+ 3459 }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e4\'c7\'e3\'ed\'cf\'e5 \'e3\'ed \'d4\'e6\'cf  \'e3\'e4\'da\'de\'cf \'e3\'ed\'fe\'90\'d1\'cf\'cf \'e6 \'d8\'d1\'dd\'ed\'e4 \'c8\'c7 \'c7\'e3\'d6\'c7\'c1 
+\'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'ce\'e6\'cf \'d1\'c7 \'e3\'e1\'d2\'e3 \'e6 \'e3\'ca\'da\'e5\'cf \'c8\'e5 \'d1\'da\'c7\'ed\'ca \'c7\'cc\'d1\'c7\'ed \'df\'c7\'e3\'e1 \'e6 \'ca\'e3\'c7\'e3 \'e3\'dd\'c7\'cf \'c2\'e4 \'e3\'ed\'fe\'cf\'c7\'e4\'e4\'cf
+ \'e6 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'cf\'d1 \'c7\'cc\'d1\'c7\'ed \'e3\'dd\'c7\'cf \'81\'ed\'e3\'c7\'e4 \'c8\'e5 \'da\'d0\'d1 \'da\'cf\'e3 \'c7\'d8\'e1\'c7\'da \'e4\'e3\'ed \'ca\'e6\'c7\'e4\'cf \'e3\'ca\'da\'d0\'d1\'90\'d1\'cf\'cf.
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch\fcs1 \af41\afs28\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 2 - \'e3\'e6\'d6\'e6\'da \'de\'d1\'c7\'d1\'cf\'c7\'cf 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid9659425 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \ai\afs16 
+\rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c7\'cc\'dc\'dc\'dc\'dc\'dc\'d1\'c7\'ed \'d8\'d1\'cd \'81\'dc\'8e\'e6\'e5\'d4\'ed }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'c8\'c7}{
+\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'da\'e4\'dc\'e6\'c7\'e4}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 
+\b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid9659425 <? echo $tarh_name; ?>}{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 
+\ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e3\'d8\'c7\'c8\'de \'81\'ed\'d4 \'e4\'e6\'ed\'d3 \'d8\'d1\'cd  \'81\'ed\'e6\'d3\'ca \'df\'e5 \'de\'d3\'e3\'ca\'e5\'c7\'ed \'e3\'ce\'ca\'e1\'dd \'c2\'e4 \'ca\'e6\'d3\'d8  \'e3
+\'cc\'d1\'ed\'c7\'e4\'a1\'ca\'df\'e3\'ed\'e1 \'e6 \'cf\'d1 \'d3\'c7\'ed\'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'cf\'d1\'cc  \'e6 \'e4\'d3\'ce\'e5 \'e3\'df\'ca\'e6\'c8 \'c2\'e4 \'c7\'e3\'d6\'c7\'c1 \'90\'d1\'cf\'ed\'cf\'e5 \'e6 \'c8\'d1\'c7\'d3\'c7\'d3}{
+\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e3\'de\'d1\'d1\'c7\'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'ca\'e6\'d3\'d8 \'d4\'e6\'d1\'c7\'ed \'81\'8e\'e6\'e5\'d4\'ed }{\ltrch\fcs1 \afs16 \rtlch\fcs0 
+\f39\fs16\cf1\lang1025\insrsid9659425  3461}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid10492271  }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'cf\'d1 \'ca\'c7\'d1
+\'ed\'ce}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ab\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \afs18 \rtlch\fcs0 
+\f39\fs18\cf1\lang1025\insrsid12414589 (}{\ltrch\fcs1 \afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1025\insrsid9659425  <?  echo $tarikh_jalase; ?> }{\ltrch\fcs1 \afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1025\insrsid12414589 )}{\ltrch\fcs1 \afs18 \rtlch\fcs0 
+\f39\fs18\cf1\lang1025\insrsid14770377\charrsid11953766 \'c8\'e5}{\ltrch\fcs1 \afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'ca\'d5\'e6
+\'ed\'c8 \'d1\'d3\'ed\'cf\'e5 \'c7\'d3\'ca.}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\wrapdefault\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch\fcs1 \af41\afs28\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 3 - \'cd\'cf\'e6\'cf \'ce\'cf\'e3\'c7\'ca \'81\'8e\'e6\'e5\'d4\'90\'d1 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid12414589 \rtlch\fcs1 \af40\afs20\alang1025 \ltrch\fcs0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch\fcs1 \ai\afs16 
+\rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'cd\'cf\'e6\'cf \'ce\'cf\'e3\'c7\'ca \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e6 \'e3\'d1\'c7\'cd\'e1 \'c7\'e4\'cc\'c7\'e3 \'df\'c7\'d1 \'c8\'d1 \'c7\'d3\'c7\'d3 \'cc\'cf\'e6\'e1 \'d2\'e3\'c7\'e4
+\'fe\'c8\'e4\'cf\'ed }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'e3\'e4\'cf\'d1\'cc \'cf\'d1}{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'81\'ed\'d4 \'e4
+\'e6\'ed\'d3 \'d8\'d1\'cd \'e6 \'cf\'d1 }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ab\ai\afs18 \rtlch\fcs0 \b\f39\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 
+\ai\afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1025\insrsid14770377\charrsid11953766 \'e3\'d1\'cd\'e1\'e5}{\ltrch\fcs1 \ai\afs18 \rtlch\fcs0 \f39\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch\fcs1 \ai\afs16 \rtlch\fcs0 
+\f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'90\'d2\'c7\'d1\'d4 \'e3\'ed\'fe\'c8\'c7\'d4\'cf. }{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e3\'ca\'da\'e5\'cf \'e3\'ed}
+{\rtlch\fcs1 \af39\afs16\alang1065 \ltrch\fcs0 \f55\fs16\cf1\insrsid14770377\charrsid15732841 \zwbo}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'90\'d1\'cf\'cf \'8d\'e4\'c7\'e4\'8d\'e5 \'e3\'e6\'cc\'c8 \'d6\'d1
+\'d1}{\ltrch\fcs1 \afs16 \rtlch\fcs0 \f39\fs16\cf1\

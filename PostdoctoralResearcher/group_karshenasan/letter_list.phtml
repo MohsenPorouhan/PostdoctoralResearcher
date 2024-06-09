@@ -1,0 +1,72 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br><br><br>";
+ $query="select * from letter_to_mojri where to_letter='$admin' order by id desc";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	echo "<tr>";
+	 
+ 	echo "<td width=\"10%\" colspan='5' align='center' class=\"tahoma1\">نامه هاي ارسالي به شما</td>";
+ 	echo "</tr>";
+ 	
+	echo "<tr>";
+	echo "<td width=\"5%\" align='center' class=\"tahoma1\">طرح مربوطه</td>";
+	echo "<td width=\"5%\" align='center' class=\"tahoma1\">نوع نامه</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">عنوان نامه</td>";
+ 	echo "<td width=\"10%\" align='center' class=\"tahoma1\">شماره</td>";
+ 	echo "<td width=\"10%\" align='center' class=\"tahoma1\">تاريخ</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];
+ 	 echo "<tr>";
+     $atf_to=$row_fetched["atf_to_letter"];
+     $cod_tarh=$row_fetched["cod_tarh"];
+	 if(strlen(trim($atf_to)) > 0)	  
+	    $letter_type="پاسخ مجري";	  
+	  else
+	    $letter_type="نامه به مجري";
+	  
+	 $letterno=$row_fetched["id"];
+
+	 
+	   $startdate = $row_fetched["letter_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+ 	 //echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=letter_to_mojri_body.phtml&admin=$admin&seed=$seed&action=delete_tarh&cod_tarh=$cod_tarh&delete_id=".$row_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+     echo "<td width=\"5%\" align='center' class=\"tahoma1\" dir=\"rtl\"><a href='view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh'>طرح</a></td>";
+ 	 echo "<td width=\"5%\" align='right' class=\"tahoma1\" dir=\"rtl\"><a href='letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$letterno'>".$letter_type."</a></td>";
+ 	 echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\"><a href='letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$letterno'>".$row_fetched["letter_subject"]."</a></td>";
+ 	 echo "<td width=\"10%\" align='right' class=\"tahoma1\"><a href='letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$letterno'>".$row_fetched["letter_no"]."</a></td>";
+ 	 echo "<td width=\"10%\" align='center' class=\"tahoma1\"><a href='letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$letterno'>".$farsistartdate."</a></td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ else 
+ message_show(".نامه جديدي يافت نشد","red");
+ ?>
+  
+
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

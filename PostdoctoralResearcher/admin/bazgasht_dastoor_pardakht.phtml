@@ -1,0 +1,119 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+if ( ! isset($current))
+    $current = 1;
+
+$query="select * from modir_daneshkade where accept_gharardad='on'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$modir_count=mysql_num_rows($result);
+
+$query="select * from modir_daneshkade where modir_username='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+$dastresi=$row_fetched["dastresi"];
+$modir_name=$row_fetched["modir_name"];
+$modir_family=$row_fetched["modir_family"];
+$modir_email=$row_fetched["modir_email"];
+$modir_cod=$row_fetched["cod_modir"];
+
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+  $query="select * from modir_accept_pardakht where paperno=\"$paperno\" and modir_username='$admin' ";
+    $result=mysql_query($query) or die("Error in updating data into tarh");
+    if(mysql_num_rows($result) > 0)
+    {
+           
+    $query="update modir_accept_pardakht set accept_pardakht='-1',modir_comment='$modir_comment', confirm_date='".date("Y-m-d")."'  where paperno=\"$paperno\" and modir_username='$admin' ";
+      mysql_query($query) or die("Error in updating data into tarh");
+      $query="select * from modir_accept_gharardad where cod_tarh=\"$cod_tarh\" and accept_gharardad='1' ";
+	    $result=mysql_query($query) or die("Error in updating data into tarh");
+	    $accept_count=mysql_num_rows($result);
+	    if($accept_count<$modir_count)
+	    {
+	    	$query="update dastoor_pardakht set accept_modir='0' where paperno='$paperno'";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    }
+    }
+    else{
+    	$query="insert into modir_accept_pardakht set accept_pardakht='-1',modir_comment='$modir_comment', confirm_date='".date("Y-m-d")."',modir_name='$modir_name',modir_family='$modir_family',modir_username='$admin',modir_cod='$modir_cod',paperno='$paperno'";
+		echo $query;
+    	mysql_query($query) or die("Error in updating data into tarh");
+    	
+    }
+    ?>
+    <script language="javascript">
+           window.location="<? echo "dastoor_pardakht_list.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&current=$current";  ?>";
+    </script>
+    
+    <?
+    
+  }
+}
+
+ 
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&paperno=$paperno&unarch=$unarch&current=$current\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."کد دستور پرداخت   : ".$paperno ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+  <TD align=right width="100%" class="tahoma1"   >
+     بازگشت دستور پرداخت به ناظر مالي
+      </TD>
+</tr>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+   <tr>
+    <td width="80%" align="right"><textarea   rows="7"  name="modir_comment"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="20%" class="tahoma1" valign="top"><span class="star-message">*</span></td>
+  </tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>

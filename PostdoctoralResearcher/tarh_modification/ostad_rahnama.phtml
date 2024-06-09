@@ -1,0 +1,389 @@
+<?
+   $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+   
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+ 
+
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+	//echo "aaa";
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='15'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}  
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=search&admin=$admin&seed=$seed&tarh_select=$tarh_select&cod_tarh=$cod_tarh&ostad=$ostad\">"; ?>
+<br>
+<TABLE cellSpacing=0 width="500"  cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+      <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+     
+  </TR>
+  </TBODY>
+  </TABLE>
+<br>
+<table  border="0" align="center" style="background-color:#dfdfff;" height="120" width="600" cellspacing="5" cellpadding="5">
+<tr>
+      <TD align=center width="100%" style="background-position:right; background-repeat:no-repeat"  class='tahoma1' height=19><b>&nbsp;&nbsp;: براي انتخاب اساتيد راهنما و مشاور لازم است به ترتيب زير عمل نمائيد.  &nbsp;&nbsp;</b></TD>
+      </tr>
+	<tr>
+		<td  class='tahoma1'  align=right width="100%">
+		
+		مربوطه انتخاب کنيد  Box ابتدا سمت فرد مورد نظر را از -
+		<br>اين انتخاب از الزامات جستجو ميباشد و اگر قبل از جستجو انتخابي صورت نگيرد جستجو نتيجه اي نخواهد داشت		</td>
+	</tr>
+	<tr>
+	<td align='right' class='tahoma1' width="50%">
+	:براي انتخاب فرد مورد نظر که در پژوهشيار عضو مي باشد، به يکي از روشهاي ذيل عمل کنيد -
+<br><br>الف) اگر نام کاربري استاد يا مشاور مربوطه در پژوهشيار ( ايميل ثبت شده براي ورود به پژوهشيار ) را مي دانيد در فيلد ايميل وارد نموده و جستجو را کليک کنيد
+<br><br>
+ب) نام خانوادگي يا قسمتي از نام خانوادگي را در فيلد نام خانوادگي وارد نمائيد
+<br><br> توضيح اينکه به علت عدم مشابهت کيبورد هاي دستگاههاي مختلف با همديگر بعضا نام خانوادگي که داراي حروف ک و ي مي باشد -عليرغم موجود بودن در سامانه- ممکن است توسط جستجو يافت نشود به اين منظور قسمتي از نام خانوادگي را درج کنيد که حروف ک يا ي را نداشته باشد
+<br><br>
+براي محدود کردن جستجو مي توانيد نام کوچک يا بخشي از آن را هم وارد نمائيد
+	 </td>
+	</tr>
+	<tr>
+		<td align='right' class='tahoma1' width="50%"> 
+		
+		پس از جستجو درصورتيکه تعداد موارد يافت شده زياد باشد براي انتخاب فرد مورد نظر خود، به تخصص فرد توجه نمائيد -
+		</td>
+	</tr>
+	<tr>
+		<td align='right' class='tahoma1' width="50%"> 
+		 از ليست ارائه شده فرد مورد نظر را انتخاب نموده <b>-  با کليک بر روي دايره ي روبروي نام فرد مورد نظر، زير ستون انتخاب-</b> و روي گزينه " اعمال " در پايين صفحه کليک نمائيد-
+		 <br><br>
+		 در صورت ثبت صحيح ،نام استاد مورد نظر در ذيل صفحه به نمايش درخواهد آمد 
+		</td>
+	</tr>
+</table><br>
+<table border="0" width="550" bgcolor="#EEE7F8"   cellspacing="5" cellpadding="0"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"8\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+
+  if (strcmp($status,"not_found")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">جستجو نتيجه نداشت.لطفا به راهنماي بالاي صفحه مراجعه نماييد</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td align="right" width="70%" colspan='6'><select size="1" name="ostad" class="edit-user" dir="rtl">
+    <? if (strcmp($ostad,"-1")==0)
+    	$selected="selected";
+    else 
+    $selected="";?>
+   
+    <option <?php echo $selected;?> value="-1" class="tahoma1">انتخاب کنيد</option>
+    <? if (strcmp($ostad,"0")==0)
+    	$selected="selected";
+    else 
+    $selected="";?>
+     
+    <option <?php echo $selected;?> value="0" class="tahoma1">استاد راهنماي اول</option>
+    <?if (strcmp($ostad,"1")==0)
+    	$selected="selected";
+    else 
+    $selected="";?>
+  
+    <option <?php echo $selected;?> value="1" class="tahoma1">استاد راهنماي دوم</option>
+    <?    if (strcmp($ostad,"2")==0)
+    	$selected="selected";
+    else 
+    $selected="";?>
+    
+    <option <?php echo $selected;?> value="2" class="tahoma1">استاد مشاور اول</option>
+    <?  if (strcmp($ostad,"3")==0)
+    	$selected="selected";
+    else 
+    $selected="";
+  
+    ?>
+    <option <?php echo $selected;?> value="3" class="tahoma1">استاد مشاور دوم</option>
+    </select> 
+    </td>
+    
+    <td width="30%" align='left' class="tahoma1"><span class="star-message">*</span>سمت فرد مورد نظر</td>
+  </tr>
+ 
+ <tr>
+    <td width="30%" align="right" class="tahoma1"><input tabindex='4' type="text" class="tahoma1" name="takhasos" size="15" value="<?echo $takhasos ?>"   dir=RTL   ></td>
+    <td width="10%" class="tahoma1">تخصص</td>
+    <td width="30%" align="right"><input tabindex='3' type="text" name="email" class="tahoma1" size="30" value="<?echo $email ?>"  dir=RTL ></td>
+    <td width="10%" class="tahoma1">ايميل</td>
+    <td width="30%" align="right"><input tabindex='2' type="text" name="family" class="tahoma1" size="15" value="<?echo $family ?>"  dir=RTL   ></td>
+    <td width="10%" class="tahoma1">نام خانوادگي</td>
+    <td width="30%" align="right"><input tabindex='1' type="text" name="name" class="tahoma1" size="15" value="<?echo $name ?>"  dir=RTL   ></td>
+    <td width="10%" class="tahoma1">نام</td>
+    </tr>
+    
+   <tr><td width="150" class="tahoma1" colspan='8' ></td></tr> 
+   <tr>
+     <td width="100%" colspan='8' >
+      <p align="center"><input type="submit" value="جستجو" name="B1" class="but-small"></td>
+  </tr> 
+  
+  </table>
+ 
+  </form>
+ <?
+ 
+ if(isset($action))
+{
+ if (strcmp($action,"search")==0)
+  {
+  	
+    if(isset($name) )
+	{
+		$name_caution=" name like '%$name%' ";
+	}
+	else 
+		$name_caution="";
+		
+	 if(isset($family) )
+	{
+		$family_caution=" family like '%$family%' ";
+	}
+	else 
+		$family_caution="1";
+		
+	 if(isset($email) )
+	{
+		$email_caution=" email like '%$email%' ";
+	}
+	else 
+		$email_caution="1";
+		
+	 if(isset($takhasos) )
+	{
+		$takhasos_caution=" takhasos like '%$takhasos%' ";
+	}
+	else 
+		$takhasos_caution="1";
+  }
+  
+if (strcmp($action,"delete")==0)
+ {//echo $semat;
+ if($semat=='0'){
+ 	 $query1="update tarh set first_ostad='' where cod_tarh='$cod_tarh'";}
+	 else if($semat=='1'){
+	 $query1="update tarh set second_ostad=''  where cod_tarh='$cod_tarh' ";}
+	 else if($semat=='2'){
+	 $query1="update tarh set first_ostad_moshaver=''  where cod_tarh='$cod_tarh' ";}
+	 else if($semat=='3'){
+	 $query1="update tarh set second_ostad_moshaver=''  where cod_tarh='$cod_tarh' ";}
+//echo $query1;
+    $result=mysql_query($query1) or die("Error in  delete data from karshenas_elmi");
+    
+    $action="استاد مورد نظر حذف شد "." با کد ".$cod_tarh;
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+ }
+ 
+if (strcmp($action,"sabt")==0){
+ 	//echo $ostad;
+ 	$color="PALETURQUOISE";
+ 	 if($ostad=='0'){
+ 	 $query1="update tarh set first_ostad='$ostad_name' where cod_tarh='$cod_tarh' ";}
+	 else if($ostad=='1'){
+	 $query1="update tarh set second_ostad='$ostad_name'  where cod_tarh='$cod_tarh' ";}
+	 else if($ostad=='2'){
+	 $query1="update tarh set first_ostad_moshaver='$ostad_name'  where cod_tarh='$cod_tarh' ";}
+	 else if($ostad=='3'){
+	 $query1="update tarh set second_ostad_moshaver='$ostad_name'  where cod_tarh='$cod_tarh' ";}
+	// echo $query1;
+	 
+	$result=mysql_query($query1) or die("Error in selecting data from user_login1");
+}
+}
+//echo "huhjkjk";
+$color="PALETURQUOISE";
+	$query2="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+	$result2=mysql_query($query2) or die("Error in selecting data from user_login11");
+	$row_fetched2=mysql_fetch_array($result2);
+	$first_ostad=$row_fetched2['first_ostad'];
+	$second_ostad=$row_fetched2['second_ostad'];
+	$first_ostad_moshaver=$row_fetched2['first_ostad_moshaver'];
+	$second_ostad_moshaver=$row_fetched2['second_ostad_moshaver'];
+	$email=$row_fetched2['creator'];
+	if (strcmp($first_ostad," ")!=0 or strcmp($second_ostad," ")!=0 or strcmp($first_ostad_moshaver," ")!=0 or strcmp($second_ostad_moshaver," ")!=0)
+	{
+	echo "<table border=\"1\" width=\"500\" dir='rtl' cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+	echo "<tr>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\"><b>سمت</b></td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\"><b>نام</b></td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\"><b>نام خانوادگي</b></td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\"><b>تخصص</b></td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\"><b>حذف</b></td>";
+	echo "</tr>";
+	}
+	$qu="select * from user_login where email='$first_ostad'";
+	$rsl=mysql_query($qu) or die("Error in selecting data from user_login21");
+	$rf=mysql_fetch_array($rsl);
+	$name1=$rf['name'];
+	$family1=$rf['family'];
+	$takhasos1=$rf['takhasos'];
+	
+	
+	
+	 
+	 echo "<input type='hidden' name='ostad' value='$ostad'>";
+	 
+    if(strcmp($first_ostad,"")!=0 ){
+     echo "<tr>";
+     echo "<td width=\"2%\" bgcolor=$color align='center' class=\"tahoma1\">استاد راهنماي اول</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$name1."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$family1."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$takhasos1."</td>";
+ 	 echo "<td  bgcolor=$color><p align=\"center\"><a href=\"ostad_rahnama.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&action=delete&deleteid=$second_ostad&semat=0\"> <img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 echo "</tr>";
+    }
+    if(strcmp($second_ostad,"")!=0 ){
+    	$qu="select * from user_login where email='$second_ostad'";
+	$rsl=mysql_query($qu) or die("Error in selecting data from user_login21");
+	$rf=mysql_fetch_array($rsl);
+	$name2=$rf['name'];
+	$family2=$rf['family'];
+	$takhasos2=$rf['takhasos'];
+    		echo "<tr>";
+ 	 echo "<td width=\"2%\" bgcolor=$color align='center' class=\"tahoma1\">استاد راهنماي دوم</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$name2."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$family2."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$takhasos2."</td>";
+ 	 echo "<td  bgcolor=$color><p align=\"center\"><a href=\"ostad_rahnama.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&action=delete&deleteid=$second_ostad&semat=1\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 echo "</tr>";
+ 	 
+    }
+	 if(strcmp($first_ostad_moshaver,"")!=0 ){
+      $qu="select * from user_login where email='$first_ostad_moshaver'";
+	$rsl=mysql_query($qu) or die("Error in selecting data from user_login21");
+	$rf=mysql_fetch_array($rsl);
+	$name3=$rf['name'];
+	$family3=$rf['family'];
+	$takhasos3=$rf['takhasos'];
+   	echo "<tr>";
+ 	 echo "<td width=\"2%\" bgcolor=$color align='center' class=\"tahoma1\">استاد مشاور اول</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$name3."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$family3."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$takhasos3."</td>";
+ 	 echo "<td  bgcolor=$color><p align=\"center\"><a href=\"ostad_rahnama.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&action=delete&deleteid=$second_ostad&semat=2\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 echo "</tr>";
+ 	 
+    }
+	 if(strcmp($second_ostad_moshaver,"")!=0 ){
+    $qu="select * from user_login where email='$second_ostad_moshaver'";
+	$rsl=mysql_query($qu) or die("Error in selecting data from user_login21");
+	$rf=mysql_fetch_array($rsl);
+	$name4=$rf['name'];
+	$family4=$rf['family'];
+	$takhasos4=$rf['takhasos'];
+	 echo "<tr>";
+ 	 echo "<td width=\"2%\" bgcolor=$color align='center' class=\"tahoma1\">استاد مشاور دوم</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$name4."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$family4."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$takhasos4."</td>";
+ 	 echo "<td  bgcolor=$color><p align=\"center\"><a href=\"ostad_rahnama.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&action=delete&deleteid=$second_ostad&semat=3\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 echo "</tr>";
+ 	 
+    }
+	echo "</table>";	
+	
+
+
+ $title_color="#EFEFEF";
+ $color="PALETURQUOISE";
+  	if (strcmp($action,"search")==0){
+  		if($ostad != -1){
+ 
+  	//$myname_search="name like '%$name%' or family like '%$family%' or email like '$email' or takhasos like '%$takhasos%' ";
+  	$query="select * from user_login where $name_caution and $family_caution and $email_caution and $takhasos_caution and payan_name='0' ";
+      // echo $query;
+  	$qresult=mysql_query($query) or die("Error in selecting data from user_login2");
+  
+       
+    if(mysql_num_rows($qresult) > 0)
+ {
+ 	
+ 	echo "<form name=\"sabt\" method=\"post\"  action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&tarh_select=$tarh_select&cod_tarh=$cod_tarh\">"; 
+ 	echo "<table border=\"1\" width=\"500\" dir='rtl' cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+	echo "<tr>";
+	echo "<td width=\"2%\" align='center' bgcolor='$color' class=\"tahoma1\">انتخاب</td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\">نام</td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\">نام خانوادگي</td>";
+	echo "<td width=\"10%\" align='center' bgcolor='$color' class=\"tahoma1\">تخصص</td>";
+	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($qresult))
+ 	{
+	 echo "<tr>";
+	 echo "<input type='hidden' name='ostad' value='$ostad'>";
+ 	 echo "<td width=\"2%\" bgcolor=$color align='center' class=\"tahoma1\"><input type='radio' name='ostad_name' value=\"".$row_fetched["email"]."\"></td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$row_fetched['name']."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$row_fetched['family']."</td>";
+ 	 echo "<td width=\"10%\" bgcolor=$color align='center' class=\"tahoma1\">".$row_fetched['takhasos']."</td>";
+ 	 echo "</tr>";
+    } 	
+    echo "<tr>";
+    echo "<td width='100%' colspan='4'>";
+    echo "<p align='center'><input type='submit' value='اعمال' name='B1' class='but-small'>";
+    echo "</td>";
+    echo "</tr>";
+ 	echo "</table>";
+ 	echo "</form>";
+  }
+   else
+  		$status="not_found";
+  	}
+  	else 
+  		$status="entry_error";
+  	}
+ ?> 

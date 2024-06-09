@@ -1,0 +1,153 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+      $query="select * from tarh where cod_tarh='$cod_tarh' ";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+      
+      if ( mysql_num_rows($result)>0  )
+      {
+      	$query="select * from group_karshenasan where username='$admin'";
+   		$result=mysql_query($query) or die ("Error in selecting data");
+   		$row_fetched=mysql_fetch_array($result);
+   		$karshenas_id=$row_fetched["cod_karshenas"];
+    	$query="update group_karshenasan_tarh set  finished='0' where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'  ";
+	
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="ارسال طرح به طرح جد?د"."<br>".$tarh_name;
+   
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show("طرح به طرحها? جد?د انتقال ?افت","green");
+		footer_forms($admin,$seed);
+		exit();		
+      }
+    
+  }
+}
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+  
+  
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+
+
+
+
+  <TABLE width="100%" cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  
+  
+    <TR>
+     <TD align=right width="100%" class="tahoma1"   >
+      ارسال طرح به طرحهاي جديد
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+  <tr>
+   
+    <td width="100%" class="tahoma1" valign="top" align="right"><span class="star-message">در اين حالت طرح به طرحهاي جديد مي رود</span></td>
+  </tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

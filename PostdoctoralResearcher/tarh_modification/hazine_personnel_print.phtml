@@ -1,0 +1,155 @@
+<?
+//header_forms($admin,$seed);
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+
+include("include/styles.phtml");
+
+
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1'  ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+     echo "<tr>";
+     
+    echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">امضاء</td>";
+	 echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">جمع</td>";
+     echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">حق الزحمه در ساعت</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">مجموع ساعات</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">تخصص</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">درجه علمي</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma1\">تعداد افراد</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نوع فعاليت</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام مجري / همکار / ديگر افراي</td>";
+     echo "</tr>";
+
+   
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $daraje_mojri="";
+       $mojri_name_family="*";
+       $takhasos=$row_fetched["takhasos"];
+       $mojri_code=$row_fetched["mojri_code"];
+      // echo $mojri_code;
+       if(strcmp($mojri_code,'-1')!=0 && strcmp($mojri_code,'-2')!=0)
+       {
+        $query1="select distinct user_login.* from user_login  where user_login.email='$mojri_code'";
+        $result1=mysql_query($query1) or die("Error");
+        
+        if(mysql_num_rows($result1)>0)		   
+	    {
+	   	
+	   	 $myrf=mysql_fetch_array($result1);
+	   	 $mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+	   	
+	   	 $darajeelmi=$myrf["darajeelmi"];
+	   	 $takhasos=$myrf["takhasos"];
+	     $daraje_query_result=mysql_query("select * from darajeelmi where darajeelmi='$darajeelmi'");
+	   
+	     if(mysql_num_rows($daraje_query_result)>0)
+	     {
+	    	$daraje_rf=mysql_fetch_array($daraje_query_result);
+	    	///$mojri_name_family=$mojri_name_family."-".$daraje_rf["darajeelmi_desc"];
+	    	$daraje_mojri=$daraje_rf["darajeelmi_desc"];
+	    	// echo $darajeelmi."a".$daraje_mojri;
+	     }
+	   	
+	     }
+	
+       $query2="select distinct mojri.* from  mojri  where mojri.mojri_code= '$mojri_code'";
+       $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+      // if(strlen($daraje_mojri)<=0)
+        if(mysql_num_rows($result2)>0)		   
+	   {
+	   	
+	   	$myrf=mysql_fetch_array($result2);
+	   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+	    $darajeelmi=$myrf["darajeelmi"];
+	    $takhasos=$myrf["takhasos"];
+	    $daraje_query_result=mysql_query("select * from darajeelmi where darajeelmi='$darajeelmi'");
+	   
+	    if(mysql_num_rows($daraje_query_result)>0)
+	    {
+	    	$daraje_rf=mysql_fetch_array($daraje_query_result);
+	    	///$mojri_name_family=$mojri_name_family."-".$daraje_rf["darajeelmi_desc"];
+	    	$daraje_mojri=$daraje_rf["darajeelmi_desc"];
+	    	//echo $darajeelmi."a".$daraje_mojri;
+	    }
+	   	
+	   }
+       }
+       echo "<tr>";
+       $cod_hazine=$row_fetched["cod_hazine"];
+//       echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+      $a=$row_fetched["per_hour"];
+       $b=$row_fetched["majmoa_saat"];
+       $c=$row_fetched["persons"];
+       if(strcmp($mojri_code,'-1')!=0 && strcmp($mojri_code,'-2')!=0)          
+         $my_summary = $a*$b;
+       else 
+         $my_summary = $a*$b;  
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"35%\" height=\"80\" align=\"center\" class=\"tahoma1\">&nbsp;</td>";
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".number_format($my_summary)."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".number_format($row_fetched["per_hour"])."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".number_format($row_fetched["majmoa_saat"])."</td>";
+      //  echo "b".$daraje_mojri;
+         if(strcmp($mojri_code,'-1')==0 || strcmp($mojri_code,'-2')==0)
+       {
+         $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+        // echo $query;
+         $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+         if(mysql_num_rows($qresult) > 0 )
+         {
+           $row_degree = mysql_fetch_array($qresult);
+           $degree_result = $row_degree["darajeelmi_desc"];
+           $daraje_mojri=$degree_result;
+           //echo "a".$daraje_mojri;
+         }
+         else
+           $degree_result = "ثبت نشده";
+           
+          // $daraje_mojri=$degree_result;
+           
+       }   
+       
+        echo "<td align=\"center\"  class=\"tahoma1\">".$takhasos."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$daraje_mojri."</td>";
+        if(strcmp($mojri_code,'-1')!=0 && strcmp($mojri_code,'-2')!=0)
+          $persons=1;
+        else 
+          $persons=  number_format($row_fetched["persons"]);
+       
+       echo "<td align=\"center\"  class=\"tahoma1\">".$persons."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["activity_type"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$mojri_name_family."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";      
+      echo "<td align=\"center\" colspan=\"1\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">".number_format($mycount)."</td>";
+      echo "<td align=\"right\" colspan=\"7\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+      echo "<tr>";
+      
+      echo "<td align=\"center\" colspan=\"10\"  class=\"tahoma1\"><a target='_blank' href='hazine_personnel_print.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh'>چاپ فرم امضاي مجريان / همکاران</a></td>";
+       
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+
+?>
+

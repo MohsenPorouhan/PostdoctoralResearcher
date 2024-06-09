@@ -1,0 +1,237 @@
+<?
+echo "<br>";
+?>
+
+<center>
+
+
+<table border="0"  width="380" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+  <TD align=left width="129"   >
+     <a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=middle width="251"  background="image/hazineha.gif"  height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+
+
+
+<table border="0" bgcolor="#EEE7F8" width="380"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+    <tr>
+    <td width="500" class="tahoma1" align="middle"><b>مجري محترم ، در وارد کردن کليه هزينه هاي طرح خود از اعداد بدون جدا کننده (, - / ) استفاده کنيد <br></b></td>
+  </tr>
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "sazmanhayedigar.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">تامين اعتبار از سازمانهاي ديگر</a></td>
+  </tr>
+
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "hazine_personnel.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">هزينه پرسنلي</a></td>
+  </tr>
+  
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "hazine_azmayesh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>"> هزينه هاي آزمايشات وخدمات تخصصي</a></td>
+  </tr>
+  
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "fehrest_kharid.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">فهرست وسايل و مواردي که بايد خريداري شود</a></td>
+  </tr>
+  
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "hazine_mosaferat.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">هزينه مسافرت</a></td>
+  </tr>
+
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "hazineha_others.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">هزينه هاي ديگر</a></td>
+  </tr>
+
+  
+</table>
+
+</div>
+</td>
+</tr>
+</table>
+</center>
+
+
+
+<?
+
+
+ $color="PALETURQUOISE";
+   $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    $eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+     
+
+   }
+
+   }
+
+
+
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+     }
+      $personnel_sum=$mycount;
+   }
+
+   
+   
+   
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='-1' order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='-1' order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='-1' order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='-1'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+?>
+<br>
+ 
+ <?
+  $color="PALETURQUOISE";
+	 $sum_sayer=$hazine_digar+$hazine_taksir;
+     echo "<table width=\"380\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color  align=\"center\" class=\"tahoma1\"><b>(مجموع(ريال<b></td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\"><b>هزينه<b></td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\">".number_format($personnel_sum)."</td>";
+     echo "<td width=\"80%\" bgcolor=$color  align=\"center\"  class=\"tahoma1\">جمع هزينه پرسنلي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\">".number_format($lab_sum)."</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزينه هاي آزمايشات وخدمات تخصصي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\"  bgcolor=$color  align=\"center\" class=\"tahoma1\">".number_format($trip_sum)."</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزينه هاي مسافرت</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\">".number_format($vasile_sum)."</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزِينه هاي وسايل</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\"  bgcolor=$color  align=\"center\" class=\"tahoma1\">".number_format($sum_sayer)."</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع ساير هزينه ها</td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"20%\"  bgcolor=$color  align=\"center\" class=\"tahoma1\">".number_format($eatebare_sazmanha_pardakht_add)."</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">اعتبار از سازمانهاي ديگر</td>";
+     echo "</tr>";
+
+	 echo "<tr>";
+	 $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\"><b>".number_format($sum_of_all)."</b></td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\" class=\"tahoma1\"><b>جمع کل</b></td>";
+
+     echo "</tr>";
+
+
+     echo "</table>";
+
+ 
+?>
+
+
+
+

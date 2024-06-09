@@ -1,0 +1,276 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 3 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=index.phtml");
+   exit();
+  }
+ }
+ 
+include("include/styles.phtml");
+echo "<META http-equiv=content-type content=text/html;charset=utf-8>";
+//header_forms($admin,$seed);
+ 
+
+
+if( isset($action) )
+ //if ( strlen(trim($notes)) > 0 )
+ {
+   $query="select * from karshenasan where username='$admin'";
+   $result=mysql_query($query) or die ("Error in selecting data");
+   $row_fetched=mysql_fetch_array($result);
+   $karshenas_id=$row_fetched["cod_karshenas"];
+   $mydate=date("Y-m-d");
+	
+   $notes=str_replace("'","",$notes);
+   $notes=str_replace("\"","",$notes);
+   $notes=str_replace(";","",$notes);
+	 
+   $query="select max(version) as maxver from karshenasan_tarh where cod_tarh='$cod_tarh'";
+
+   $result=mysql_query($query) or die("Error in selecting data from 1");
+
+   $rf1=mysql_fetch_array($result);
+   $maxver=$rf1["maxver"];
+   if($maxver=='-1')
+      $maxver='1';
+   else
+      $maxver=$maxver+1;
+//   if(isset($refered))    
+  //   $query="update karshenasan_tarh set  gant='$gant',variables='$variables',chekide='$chekide',sabt='$sabt',mojrian='$mojrian',daneshjoyan='$daneshjoyan',raveshejra='$raveshejra',hazineha='$hazineha',akhlaghi='$akhlaghi',zamaem='$zamaem',date_send='$mydate',comment_karshenas='$notes'  where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'  ";
+   //else
+  //  $query="update karshenasan_tarh set   tarh_new='0' ,nazer_amval_masrafi='$nazer_amval_masrafi',nazer_submit_mali_comment='$nazer_submit_mali_comment',nazer_submit_mali='$nazer_submit_mali',nazer_hajm_nemone_comment='$nazer_hajm_nemone_comment',nazer_hajm_nemone='$nazer_hajm_nemone',marhale_report ='$marhale_report' , version='$maxver' where cod_tarh='$cod_tarh' and version='-1' ";
+    
+//	$result=mysql_query($query) or die ("Error in updating data into user login");
+     
+    $query="insert into karshenasan_tarh set  tarh_new='0' ,nazer_amval_masrafi='$nazer_amval_masrafi',nazer_submit_mali_comment='$nazer_submit_mali_comment',nazer_submit_mali='$nazer_submit_mali',nazer_hajm_nemone_comment='$nazer_hajm_nemone_comment', marhale_report ='$marhale', note_date='".date("Y-m-d")."',date_send='$mydate',comment_karshenas='$notes' , cod_tarh='$cod_tarh' , cod_karshenas='$karshenas_id',version='-1'  ";  
+//echo $query;
+   
+    $result=mysql_query($query) or die ("Error in updating data into user login");
+   //exit();
+   message_show(".نظريه شما ارسال شد","green");
+    exit();
+  // $action="تغيير کلمه عبور";
+  // set_log($action,$admin,date("Y-d-m"));
+
+   
+ }
+ 
+
+
+    $notes="";
+    $chekide='0';
+  	$sabt='0';
+  	$mojrian='0';
+  	$daneshjoyan='0';
+  	$raveshejra='0';
+  	$hazineha='0';
+  	$akhlaghi='0';
+  	$zamaem='0';
+  	$gant='0';
+  	$variables='0';
+  
+
+
+
+?>
+<script>
+targetWidth = screen.availWidth;
+targetHeight = screen.availHeight;
+window.resizeTo(targetWidth, targetHeight);
+window.toolbar="no";
+
+
+</script>
+
+<script>
+function refresh_main()
+{
+	 document.user_login.submit();
+     opener.location.reload(true);
+
+}
+</script>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched1=mysql_fetch_array($result1);
+
+?>
+
+<center>
+<TABLE cellSpacing=0  width="600" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched1["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+ <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo "<br>"."كد طرح  : ".$row_fetched1["cod_tarh"];
+      ?>
+      </TD>
+  </TR>
+<TR>
+
+      <TD   align=center  class="tahoma1"  height=19  >
+      <?
+       $startdate = $row_fetched1["tarh_time"];
+       $startyear = substr($startdate,0,4);
+       $startmon = substr($startdate,5,2);
+       $startday = substr($startdate,8,2);
+       $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+      // $farsistartdate = enum2fnum($farsistartdate);
+	   echo "<br>"."تاريخ شروع  : ".$farsistartdate;
+      ?>
+      </TD>
+  </TR>
+</table>
+</center>
+<center>
+<body onclose="refresh_main()">
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&marhale=$marhale"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="700" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="560" height="19"></td>
+                        <td align="middle" width="140" background="image/notes_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="700" height="80" bgColor="#eee7f8" border="1">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      if($marhale_report==0)
+        $marhale_report='1';
+      if($marhale_report==100)
+        $marhale_report='نهايي';  
+      ?>
+      
+       <tr>
+         <td colspan='2'  class="tahoma1" width="200" valign='top' dir='rtl'><? echo " نظر شما مربوط به گزارش $marhale_report از $marhale_cnt گزارش است ";?></td>
+      </tr>
+       <tr>
+         <td colspan='2'  class="tahoma1" width="200" valign='top'><? echo "<a target='_blank' href=\"rtf.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >"; ?> براي مشاهده فرم قرارداد اينجا را كليك كنيد</a></td>
+      </tr>
+      
+  
+        <tr>
+         <td colspan='2' rowspan='8' class="tahoma1" width="200" valign='top'>از اين فيلد مي توانيد به عنوان فيلد موقتي براي نگهداري قسمتهايي از طرح براي مطالعه استفاده كنيد. اين فيلد ذخيره نمي شود<textarea   rows="65" cols="23" name="comment_ravesh_motalee"  dir=RTL   > </textarea></td>
+      </tr>
+      
+        <tr>
+        <td align="right" width="400" valign='top'>
+		<select size="1"  name="nazer_hajm_nemone" dir="rtl" class="edit-user">
+		<option value="1" >بلي</option>
+		<option value="0" >خير</option>
+	 
+		</select>
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top'> آيا مجري به حجم نمونه مورد نظر رسيده است ؟</td>
+      </tr>
+      
+      <tr>
+        <td align="right" width="400" valign='top'><textarea   rows="8" cols="40" name="nazer_hajm_nemone_comment"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="300" valign='top'>توضيح</td>
+      </tr>
+        
+            <tr>
+        <td align="right" width="400" valign='top'>
+		<select size="1"  name="nazer_submit_mali" dir="rtl" class="edit-user">
+		<option value="1" >بلي</option>
+		<option value="0" >خير</option>
+		
+		</select>
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='center'>آيا گزارش نهايي از نظر مالي مورد تاييد مي باشد ؟</td>
+      </tr>
+        
+      <tr>
+        <td align="right" width="400" valign='top'><textarea   rows="8" cols="40" name="nazer_submit_mali_comment"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="300" valign='top'>توضيح</td>
+      </tr>
+      
+       <tr>
+        <td align="right" width="400" valign='top'>
+		<select size="1"  name="nazer_amval_masrafi" dir="rtl" class="edit-user">
+		<option value="1" >بلي</option>
+		
+		<option value="0" >خير</option>	
+		<option value="2" >شرط خاص نداشته است</option>
+		</select>
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top'>آيا شرط خاص در قرارداد (مشابه اموال مصرفي يا شرط ديگر ) اجرا شده ؟</td>
+      </tr>
+      
+      
+     
+      <tr>
+        <td width="100%" colSpan="4">
+          <p align="center"><input class="but-small" type="button" onclick="refresh_main()" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+</body>
+<br>
+<?
+  //footer_forms($admin,$seed);
+?>

@@ -1,0 +1,162 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+    
+    if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+//echo "sdfsdfsdfsd";
+$query_current_karshenas="select * from group_karshenasan where username='$admin'";
+$result_current_karshenasan=mysql_query($query_current_karshenas) or die("Error"); 
+$rf_current_karshenas=mysql_fetch_array($result_current_karshenasan);
+
+$cod_current_karshenas=$rf_current_karshenas["cod_karshenas"];
+ 
+if(isset($name_e))
+{
+	$query="select * from karshenasan,karshenasan_tarh,tarh where tarh.is_tarh='0' and payanname_akhlagh='-1' and confirm_payan_name='1' and tarh.cod_tarh=karshenasan_tarh.cod_tarh and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and CHAR_LENGTH(karshenasan_tarh.comment_karshenas) > 0 and (tarh.cod_tarh like $myname_search) group by karshenasan_tarh.id order by note_date desc";
+}
+else
+ 	$query="select * from karshenasan,karshenasan_tarh,tarh where tarh.is_tarh='0' and payanname_akhlagh='-1' and confirm_payan_name='1' and tarh.cod_tarh=karshenasan_tarh.cod_tarh and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and CHAR_LENGTH(karshenasan_tarh.comment_karshenas) > 0  group by karshenasan_tarh.id order by note_date desc";
+		//echo $query;				  
+                            
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh1");
+
+ //$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+if(isset($name_e))
+{
+	$query="select * from karshenasan,karshenasan_tarh,tarh where tarh.is_tarh='0' and payanname_akhlagh='-1' and confirm_payan_name='1' and tarh.cod_tarh=karshenasan_tarh.cod_tarh and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and CHAR_LENGTH(karshenasan_tarh.comment_karshenas) > 0 and (tarh.cod_tarh like $myname_search) group by karshenasan_tarh.id order by note_date desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else 						  
+	$query="select * from karshenasan,karshenasan_tarh,tarh where tarh.is_tarh='0' and payanname_akhlagh='-1' and confirm_payan_name='1' and tarh.cod_tarh=karshenasan_tarh.cod_tarh and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and CHAR_LENGTH(karshenasan_tarh.comment_karshenas) > 0 group by karshenasan_tarh.id order by note_date desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+	                           
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh2");
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+?>
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ <tr>
+    <td width="100%" colspan="6" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس در مورد قسمتهاي طرح</font></td>
+  
+  </tr>
+
+  </table>
+<?
+ }
+if(mysql_num_rows($result) > 0 )
+{
+  $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year";
+  pubshowpages("karshenasan_note_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);	
+ //pubshowpages("karshenas.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+
+  <tr>
+    <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح</font></td>
+  
+     <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+    <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+    <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد کارشناس</font></td>
+     <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کارشناس</font></td>
+     
+	    <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ</font></td>
+   
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+ 
+    $comment_note=$row_fetched["comment_karshenas"];
+ // else
+  //	$comment_note="نظر ايشان ثبت نشده"; 
+  $startdate = $row_fetched["note_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  
+ // echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\"  dir=\"rtl\"><a href='view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh'>طرح</td>";
+  echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\"  dir=\"rtl\">".$comment_note."</td>";
+  //echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["username"]."</td>";
+  //echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  //echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$cod_tarh."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["cod_karshenas"]."</td>";
+   echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["karshenas_family"]."</td>";
+
+   echo "<td bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$farsistartdate."</td>";
+//echo "</tr>";
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".نظر ي وجود ندارد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>
+

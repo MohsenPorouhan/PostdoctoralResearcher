@@ -1,0 +1,306 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+$query="select * from letter_to_mojri where  id=\"$letterno\" ";
+
+$result = mysql_query($query) or die("Error in selecting data from tarh , mojri_tarh");
+
+if(mysql_num_rows($result) <= 0 )
+{
+    echo "<table border=\"0\"  height=\"100%\" width=\"400\"    cellspacing=\"0\" cellpadding=\"2\"  >";
+
+    echo "<tr>";
+    echo "<td align=\"center\"   width=\"25%\" class=\"error-message\" colspan=\"2\">.چنين طرحي وجود ندارد</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+     footer_forms($admin,$seed);
+     exit();
+    
+}
+
+
+$row_fetched=mysql_fetch_array($result);
+//$letter_subject=$row_fetched["letter_subject"];
+$source_letter=$row_fetched["letter_subject"];
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if( strlen(trim($letter_subject))>0)
+{
+	$mydate=date("Y-m-d");
+	$from_letter=$admin;
+	$query="select * from letter_to_mojri where id=\"$letterno\"";
+	$result=mysql_query($query) or die("Error in selecting data from letter_to_mojri");
+	$row_fetched_letter=mysql_fetch_array($result);
+	$to_letter=$row_fetched_letter["from_letter"];
+	$cod_tarh=$row_fetched_letter["cod_tarh"];
+	$cod_daneshkade=$row_fetched_letter["cod_daneshkade"];
+	
+		$q="select max(id) as max_id from letter_to_mojri where cod_tarh='$cod_tarh'";
+	$r=mysql_query($q);
+	$rf=mysql_fetch_array($r);
+	$max_l_no = $rf["max_id"]+1;
+	$letter_no=$cod_tarh."-".$max_l_no; 
+
+	$letter_body=str_replace("'","\'",$letter_body);
+	    $letter_body=str_replace("\"","\'",$letter_body);
+	    $letter_body=str_replace(";","\;",$letter_body);
+	
+	    
+    $query="insert into letter_to_mojri set atf_to_letter='$letterno',from_letter='$from_letter',to_letter='$to_letter',cod_daneshkade='$cod_daneshkade',cod_tarh='$cod_tarh' , letter_no='$letter_no' , letter_subject='$letter_subject' , letter_body='$letter_body' , letter_date='$mydate'";
+//echo $query;
+    $result=mysql_query($query) or die("error in inserting data");
+    message_show(".پاسخ به نامه مذکور ارسال شد","green");
+    footer_forms($admin,$seed);
+    exit();
+  	
+}
+else
+  $status="entry_error";
+
+if(isset($action))
+ if(strcmp($action,"del")==0)
+ {
+ 	$query="delete from letter_to_mojri where id='$delete_id' ";
+ 	
+ 	$result=mysql_query($query) or die("Error in deleting from letter_to_mojri");
+ }
+
+
+?>
+
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&letterno=$letterno\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="149"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/letter_to_mojri.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0"  width="400" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  
+
+?>
+           <tr>
+              <td colspan="2" align="left">
+                <p align="center" class="tahoma1" dir="rtl"><? echo " پاسخ به نامه با عنوان: ".$source_letter;?></td>
+            </tr>
+          
+ <!-- <tr>
+    <td width="70%" align="right">
+    
+    	   <select size="1" dir="rtl"  name="mojavezyear" class="combo-date">
+          <option selected value="-1">سال</option>
+          <option value="1381">1381</option>
+          <option value="1382">1382</option>
+          <option value="1383">1383</option>
+          <option value="1384">1384</option>
+          <option value="1385">1385</option>
+	  	  <option value="1386">1386</option>
+	      <option value="1387">1387</option>
+	      <option value="1388">1388</option>
+	      <option value="1389">1389</option>
+	      <option value="1390">1390</option>
+
+        </select>
+             <select size="1" dir="rtl"  name="mojavezmon"  class="combo-date">
+         <option selected value="-1">ماه</option>
+          <option value="01">فروردين</option>
+          <option value="02">ارديبهشت</option>
+          <option value="03">خرداد</option>
+          <option value="04">تير</option>
+          <option value="05">مرداد</option>
+          <option value="06">شهريور</option>
+          <option value="07">مهر</option>
+          <option value="08">آبان</option>
+          <option value="09">آذر</option>
+          <option value="10">دي</option>
+          <option value="11">بهمن</option>
+          <option value="12">اسفند</option>
+        </select>
+
+        <select size="1" dir="rtl"  name="mojavezday"  class="combo-date">
+          <option selected value="-1">روز</option>
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+		  <option value="22">22</option>
+		  <option value="23">23</option>
+		  <option value="24">24</option>
+		  <option value="25">25</option>
+		  <option value="26">26</option>
+		  <option value="27">27</option>
+		  <option value="28">28</option>
+		  <option value="29">29</option>
+		  <option value="30">30</option>
+		  <option value="31">31</option>
+        </select>
+ 
+    </td>
+    <td width="30%" class="tahoma1">تاريخ </td>
+  </tr>
+-->
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="letter_subject" size="48" class="edit-user"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>موضوع</td>
+            </tr>
+ <tr>
+    <td width="250" align="right"><textarea   rows="7"  name="letter_body"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="150" class="tahoma1" valign="top">متن نامه</td>
+  </tr>
+             
+            
+            <tr>
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+          </table>
+          
+</form>
+<?
+    $query="select * from letter_to_mojri where    from_letter='$admin' and atf_to_letter='$letterno'  order by cod_tarh desc";
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh1");
+
+$reccount = mysql_num_rows($result);
+
+   $query="select * from letter_to_mojri where   from_letter='$admin' and atf_to_letter='$letterno' order by cod_tarh desc";
+
+//echo $query; 
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>پاسخ هاي قبلي شما<b></td>
+ </tr>
+ </table>
+  
+ 
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+ <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">به</font></td>
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">از</font></td>
+    <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">عنوان نامه</font></td>
+    <td width="15%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+    <td width="15%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تاريخ</font></td>
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">شماره نامه</font></td>
+  </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $id=$row_fetched["id"];
+  $from_letter=$row_fetched["from_letter"];
+  $visited=$row_fetched["visited"];
+  
+  if(strcmp($visited,"0")==0)
+  {
+  	
+  	$start_bold="<b>";
+  	$end_bold="</b>";
+  }
+  else
+  {
+  	$start_bold="";
+  	$end_bold="";
+  }  
+   echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">$start_bold".$row_fetched["to_letter"]."$end_bold</a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">$start_bold".$row_fetched["from_letter"]."$end_bold</a></td>";
+ 
+  echo "<td width=\"25%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">$start_bold".$row_fetched["letter_subject"]."$end_bold</a></td>";
+  echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">$start_bold".$cod_tarh."$end_bold</td>";
+
+  echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">$start_bold".$row_fetched["letter_date"]."$end_bold</a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">$start_bold".$row_fetched["letter_no"]."$end_bold</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+ 
+   footer_forms($admin,$seed);
+?>
+
+
+

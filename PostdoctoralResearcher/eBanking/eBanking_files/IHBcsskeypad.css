@@ -1,0 +1,119 @@
+/* CSS Document */
+.vk_header{
+	font-family:Arial, Helvetica, sans-serif;
+	color:#0051b5;
+	font-weight:bold;
+	font-size:11px;
+	border:solid 2px #9cb6ce;
+	}
+.vk_border{
+	background-color:#d5e5fe;
+	
+	background-color:#d5e5fe;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#0051b5;
+	font-weight:bold;
+	font-size:11px;
+	}
+.vk_box{
+	border-right:solid 2px #9cb6ce;
+	border-left:solid 2px #9cb6ce;
+	border-bottom:solid 2px #9cb6ce;
+	padding:10px 7px 7px 10px;
+	}
+.alp_box{
+	padding:0px 10px 0px 10px;
+	}
+.alp_btn{
+	width:22px;
+	padding-top:2px;
+	padding-bottom:4px;
+	background-color:#cecfce;
+	border-top:solid 1px #a1a1a1;
+	border-right:solid 2px #6b6b6b;
+	border-bottom:solid 2px #6b6b6b;
+	border-left:solid 1px #a1a1a1;
+	text-align:center;
+	vertical-align:middle;
+	margin-right:4px;
+	margin-bottom:4px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	color:#841031;
+	}
+.alp_btn1{
+	width:22px;
+	padding-top:2px;
+	padding-bottom:4px;
+	background-color:#cecfce;
+	border-top:solid 1px #a1a1a1;
+	border-right:solid 2px #6b6b6b;
+	border-bottom:solid 2px #6b6b6b;
+	border-left:solid 1px #a1a1a1;
+	text-align:center;
+	vertical-align:middle;
+	margin-right:4px;
+	margin-bottom:4px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	color:#cecfce;
+	}
+.blink{
+	width:22px;
+	padding-top:2px;
+	padding-bottom:4px;
+	background-color:#00FFFF;
+	border-top:solid 1px #a1a1a1;
+	border-right:solid 2px #6b6b6b;
+	border-bottom:solid 2px #6b6b6b;
+	border-left:solid 1px #a1a1a1;
+	text-align:center;
+	vertical-align:middle;
+	margin-right:4px;
+	margin-bottom:4px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	color:#FF0000;
+	}
+.alp_box:hover{
+	background-color:#6bd7ff;
+	color:#296908;
+	}
+.vk_info{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	font-weight:bold;
+	padding:10px 10px 10px 10px;
+	border-left:solid 2px #9cb6ce;
+	border-right:solid 2px #9cb6ce;
+	border-bottom:solid 2px #9cb6ce;
+	text-align:left;
+	background-color:#fff;
+	}
+.vk_foot{
+	background-color:#ffffff;
+	border-bottom:solid 2px #9cb6ce;
+	font-size:4px;
+	}
+
+.alp_btn3{
+	width:22px;
+	padding-top:2px;
+	padding-bottom:4px;
+	background-color:#00FFFF;
+	border-top:solid 1px #a1a1a1;
+	border-right:solid 2px #6b6b6b;
+	border-bottom:solid 2px #6b6b6b;
+	border-left:solid 1px #a1a1a1;
+	text-align:center;
+	vertical-align:middle;
+	margin-right:4px;
+	margin-bottom:4px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	color:#006400;
+	}

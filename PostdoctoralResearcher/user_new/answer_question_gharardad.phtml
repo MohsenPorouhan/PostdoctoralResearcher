@@ -1,0 +1,988 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms();
+?>
+<!-- BEGIN PAGE LEVEL STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css"/>
+    <link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css"/>
+    
+    <link id="DT_bootstrap" rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css"/>
+
+    <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+    <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+    <link href="../assets/plugins/persian-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+    <link id="toastr" rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+<!-- END PAGE LEVEL STYLES -->
+    
+    <!--First of test with previous css  -->
+    <!-- <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" /> -->
+      
+    <!-- End of test with previous css -->
+    <!-- END PAGE LEVEL STYLES -->
+<?php
+$menu_id="2";
+$sub_menu_id="2";
+include("include/new_menu.php");
+
+ $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$tarh_name=$row_fetched["tarh_title_farsi"];
+ }
+
+ $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ 
+ $result=mysql_query($query) or die("Error");
+ $exists=0;
+ if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$mojri=$row_fetched["mojri_code"];
+ 	$heiat_elmi=$row_fetched["heiat_elmi"];
+ 	$start_time=$row_fetched["start_time"];
+ 	$pish_pardakht=$row_fetched["pish_pardakht"];
+ 	$payanname=$row_fetched["payanname"];
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+	$hesab=$row_fetched["hesab"];
+    $mobile=$row_fetched["mobile"];
+	$bank_name=$row_fetched["bank_name"];
+	$melli_cod=$row_fetched["melli_cod"];
+	$shaba_cod=$row_fetched["shaba_cod"];
+	$time_month=$row_fetched["time_month"];
+    $exists=1; 	
+ } 	
+ else
+ {
+ 	$bank_name="";
+ 	$unnazerin="";
+ 	$payanname="";
+ 	$mojri="";
+ 	$heiat_elmi="";
+ 	$start_time="";
+ 	$pish_pardakht="";
+ 	$nazerin="";
+	$hesab='';
+    $mobile='';
+
+ 
+ }
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content"> 
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h4 class="page-title"> 
+                            <small id="page-title">پاسخ به سوالات قرارداد طرح : <?php echo $tarh_name;?></small>
+                        </h4>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="breadcrumb1" href="#">
+                                    خانه
+                                </a>
+                                <i id="fa-angle-left1" class="fa fa-angle-left"></i>
+                            </li>
+                            
+                            <li>
+                                <a id="breadcrumb2" href="tarh_list.phtml">
+                                    طرح هاي ارسالي شما
+                                </a>
+                                <i id="fa-angle-left2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb3" href="tarh_list.phtml?position=1">
+                                    طرح هاي آماده به قرارداد
+                                </a>
+                                <i id="fa-angle-left3" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb4" href="answer_question_gharardad.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    پاسخ به سوالات قرارداد
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+                <!-- BEGIN PAGE CONTENT-->
+							<div class="row">
+				<div class="col-md-12">
+					<div class="portlet box blue" id="form_wizard_1">
+						<div class="portlet-title">
+							<div id="caption_wizard" class="caption">
+								<i class="fa fa-reorder"></i> پاسخ به سوالات قرارداد -
+								<span class="step-title">
+									 مرحله 1 از 4
+								</span>
+							</div>
+							<div class="tools">
+								<a href="javascript:;" class="collapse">
+								</a>
+							    <a href="#portlet-config" data-toggle="modal"
+								class="fa fa-info-circle" title="راهنما"
+								style="color: white"> </a>
+						        </div>
+						</div>
+						<div class="portlet-body form">
+							<form action="answer_question_gharardad_sabt.php?step=delete_gozaresh" class="form-horizontal" id="delete_gozaresh">
+							<input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control"  value="<?php echo $cod_tarh;?>">
+							<input name="gozaresh_id" id="gozaresh_id" type="hidden" >
+							 					<div class="modal fade " id="delete"  tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                    <div class="modal-header">
+							                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                        <h4 class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                       
+							                                        </h4>
+							                                    </div>
+							                                    <div class="modal-body">
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div class="form-body">
+																			<h4 id="delete_message" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+																		</div>
+																		<div class="form-actions fluid">
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="col-md-offset-3 col-md-9">
+																						<button id="btn1" type="submit"  class="btn green">بلي</button>
+																						<button id="btn2" type="button" class="btn red" data-dismiss="modal" ><i class="fa fa-times"></i>خير</button>
+																					</div>
+																				</div>
+																				<div class="col-md-6">
+																				</div>
+																			</div>
+																		</div>
+																	
+																	<!-- END FORM-->
+							                                    </div>
+							                                    
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							     </form>
+							
+							<form action="#" class="form-horizontal" id="submit_form">
+							<input name="cod_tarh" id="cod_tarh" type="hidden" value="<?php echo $cod_tarh;?>">
+								<div class="form-wizard">
+									<div class="form-body">
+										<ul class="nav nav-pills nav-justified steps">
+											<li>
+												<a href="#tab1" data-toggle="tab" id="step1" class="step">
+													<span class="number">
+														 1
+													</span>
+													<span id="desc1" class="desc">
+														<i class="fa fa-check"></i> اطلاعات طرف قراداد
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab2" data-toggle="tab" id="step2" class="step">
+													<span class="number">
+														 2
+													</span>
+													<span id="desc2" class="desc">
+														<i class="fa fa-check"></i> زمان قراداد
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab3" data-toggle="tab" id="step3" class="step active">
+													<span class="number">
+														 3
+													</span>
+													<span id="desc3" class="desc">
+														<i class="fa fa-check"></i> زمان ارسال گزارشات
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab4" data-toggle="tab" id="step4" class="step">
+													<span class="number">
+														 4
+													</span>
+													<span id="desc4" class="desc">
+														<i class="fa fa-check"></i> تکميل و ارسال
+													</span>
+												</a>
+											</li>
+										</ul>
+										<div id="bar" class="progress progress-striped" role="progressbar">
+											<div class="progress-bar progress-bar-success">
+											</div>
+										</div>
+										<div class="tab-content">
+											<div id="alert-danger" class="alert alert-danger display-none">
+												<button class="close" data-dismiss="alert"></button>
+												پر کردن تمام فيلد ها اجباري است
+											</div>
+											<div class="alert alert-success display-none">
+												<button class="close" data-dismiss="alert"></button>
+												Your form validation is successful!
+											</div>
+											<div class="tab-pane active" id="tab1">
+												<h3 id="block1" class="block">اطلاعات طرف قراداد</h3>
+												<div class="form-body">
+																<?php 
+																	   $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";	
+																	   $result1=mysql_query($query1) or die("Error");
+																	   $query2="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+																	   $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+   																?>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb1" class="control-label col-md-3">طرف قرارداد</label>
+																						<div class="col-md-6">
+																							 <div class="radio-list">
+																							 	<?php 
+																								 while($row_fetched1=mysql_fetch_array($result1))
+																								 {																								  
+																								   $cod_mojri=$row_fetched1["email"];																								 
+																								   $checked="checked='checked'";																								   
+																								   $name_family_main_mojri=$row_fetched1["name"]."&nbsp;".$row_fetched1["family"];		
+																								   echo "<label>
+												                                                        <input type=\"radio\" $checked  name=\"mojri_name\"  value=\"$cod_mojri\" data-title=\"$name_family_main_mojri\" > $name_family_main_mojri
+												                                                    </label>";																						
+																								 }
+																								?>		
+																								<?php 
+																								 while($row_fetched2=mysql_fetch_array($result2))
+																								 {																								  
+																								 $cod_mojri=$row_fetched2["mojri_code"];
+																								   if(strcmp($cod_mojri,$mojri)==0)
+																								   {
+																								   	 $checked="checked='checked'";
+																								   }
+																								   else
+																								   {
+																								   	 $checked="";
+																								   }																								   
+																								   $name_family_main_mojri=$row_fetched2["name"]."&nbsp;".$row_fetched2["family"];		
+																								   echo "<label>
+												                                                        <input type=\"radio\" $checked  name=\"mojri_name\"  value=\"$cod_mojri\" data-title=\"$name_family_main_mojri\"> $name_family_main_mojri
+												                                                    </label>";																						
+																								 }
+																								?>									                                                  
+												                                               </div>
+																							
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb2" class="control-label col-md-3">کد ملي</label>
+																						<div class="col-md-6">
+																							<input name="melli_cod" id="melli_cod" type="text" class="form-control" placeholder="" value="<?php echo $melli_cod;?>">
+																							<span id="help-block-national-code" class="help-block">
+																								 کد ملي بدون خط تيره
+																							</span>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb3" class="control-label col-md-3">شماره موبايل</label>
+																						<div class="col-md-6">
+																							<input name="mobile" id="mobile" type="text" class="form-control" placeholder="" value="<?php echo $mobile;?>">
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb4" class="control-label col-md-3">شماره حساب</label>
+																						<div class="col-md-6">
+																							<input name="hesab" id="hesab" type="text" class="form-control" placeholder="" value="<?php echo $hesab;?>">
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb5" class="control-label col-md-3">شماره شبا</label>
+																						<div class="col-md-6">
+																							<input name="shaba_cod" id="shaba_cod" type="text" class="form-control" placeholder="" value="<?php echo $shaba_cod;?>">
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb6"  class="control-label col-md-3">آيا فرد در استخدام دانشگاه است ؟</label>
+																						<div class="col-md-6">
+																							 <div class="radio-list">
+																							 <?php
+																							 $checked="";
+																							  if(strcmp($heiat_elmi,"1")==0){
+																							 			$checked="checked='checked'";
+																							 			}
+																							 ?>
+											                                                    <label>
+											                                                        <input id="heiat_elmi_title_yes" type="radio" name="heiat_elmi" <?php echo $checked;?>  value="1" data-title="بلي" ></input><span id="heiat_elmi_yes_lb">بلي</span>
+											                                                    </label>
+											                                                     <?php
+																							 $checked="";
+																							  if(strcmp($heiat_elmi,"0")==0){
+																							 			$checked="checked='checked'";
+																							 			}
+																							 ?>
+											                                                    <label>
+											                                                        <input id="heiat_elmi_title_no" type="radio" name="heiat_elmi" <?php echo $checked;?> value="0"  data-title="خير" > </input><span id="heiat_elmi_no_lb">خير</span>
+											                                                    </label>											                                                    
+											                                                </div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb7" class="control-label col-md-3">آيا طرح ماحصل پايان نامه است ؟</label>
+																						<div class="col-md-6">
+																							 <div class="radio-list">
+																							 <?php
+																							 $checked="";
+																							  if(strcmp($payanname,"1")==0){
+																							 			$checked="checked='checked'";
+																							 			}
+																							 ?>
+											                                                    <label>
+											                                                        <input id="payanname_data_title_yes" type="radio" name="payanname" <?php echo $checked;?> value="1"  data-title="بلي" ></input><span id="payanname_yes_lb">بلي</span>
+											                                                    </label>
+											                                                     <?php
+																							 $checked="";
+																							  if(strcmp($payanname,"0")==0){
+																							 			$checked="checked='checked'";
+																							 			}
+																							 ?>
+											                                                    <label>
+											                                                        <input id="payanname_data_title_no" type="radio" name="payanname" <?php echo $checked;?> value="0"  data-title="خير"> </input><span id="payanname_no_lb">خير</span>
+											                                                    </label>											                                                   
+											                                                </div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb8" class="control-label col-md-3">ناظرين پيشنهادي</label>
+																						<div class="col-md-6">
+																							<input name="nazerin" id="nazerin" type="text" class="form-control" placeholder="" value="<?php echo $nazerin;?>">
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb9" class="control-label col-md-3">ناظرين غير پيشنهادي</label>
+																						<div class="col-md-6">
+																							<input name="unnazerin" id="unnazerin" type="text" class="form-control" placeholder="" value="<?php echo $unnazerin;?>">
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+	
+																		
+																			
+																		</div>					
+											</div>
+											<div class="tab-pane" id="tab2">
+												<h3 id="block2" class="block">زمان قراداد</h3>
+												<div class="form-body">
+																<?php 
+																	   $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";	
+																	   $result1=mysql_query($query1) or die("Error");
+																	   $query2="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+																	   $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+   																?>
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+																						<label id="lb10" class="control-label col-md-3">زمان دقيق شروع قرارداد</label>
+																						<div class="col-md-6">
+																							<input type="text" id="datepicker0" name="start_time" value="<?php echo $start_time;?>" >
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+																						<label id="lb11" class="control-label col-md-3">طول مدت قرارداد</label>
+																						<div class="col-md-6">
+																							<input name="time_month" id="time_month" type="text" class="form-control" placeholder="" value="<?php echo $time_month;?>">
+																							<span id="help_block_time_month" class="help-block">
+																								 تعداد ماه انجام طرح تحقيقاتي
+																							</span>
+																						</div>
+																					</div>
+																				</div>									
+																			</div>																																					
+																		</div>				
+												
+											</div>
+											<div class="tab-pane" id="tab3">
+												<h3 id="block3" class="block">زمان ارسال گزارشات</h3>
+												<div class="form-body">
+																
+																			<div class="row">
+																				<div class="col-md-4">
+																					<div class="form-group">
+																						<label id="lb12" class="control-label col-md-4">گزارش پيشرفت</label>
+																						<div id="marhale_lb" class="col-md-5">
+																							<select name="marhale" id="marhale" class="form-control" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="1">
+																								<option value="">انتخاب کنيد</option>
+																							    <option  value="2">دوم</option>
+																			    				<option  value="3">سوم</option>
+																			    				<option  value="4">چهارم</option>
+																			    				<option  value="5">پنجم</option>
+																			    				<option  value="6">ششم</option>																							        
+																							</select>
+																						</div>
+																					</div>
+																				</div>																				
+																			
+																				<div class="col-md-4">
+																					<div class="form-group">
+																						<label id="lb13" class="control-label col-md-4">تاريخ گزارش</label>
+																						<div class="col-md-5">
+																							<input type="text" id="datepicker1" name="date_gozaresh" >
+																						</div>
+																					</div>
+																				</div>																				
+																			
+																				<div class="col-md-4">
+																					<div class="form-group">
+																						<label id="lb14"  class="control-label col-md-4">تا انتهاي ماه</label>
+																						<div class="col-md-6">
+																							<select size="1" dir="rtl"  name="percent_gozaresh" >
+																							<?
+																							 $q="select max(end_mon) as end_mon from activities where cod_tarh='$cod_tarh'  and version='-1'";
+																			
+																							 $r=mysql_query($q) or die("server error1");  
+																							 $rf=mysql_fetch_array($r);
+																			  				 $sum_mon1=(int)($sum_week/4);
+																							 $week_end=(int)($sum_week-$sum_mon1*4);  
+																			  				 $mon_end=$sum_mon1+$sum_mon;
+																			  				 $mon_end=$rf["end_mon"];
+																							for($i=1;$i<=$mon_end;$i++)
+																							{
+																							  echo " <option  value=\"$i\">$i</option>";	
+																							}
+																							?>
+																			         		
+																							</select> <span id="percent_gozaresh_lb">ام از جدول گانت</span>
+
+																						</div>
+																					</div>
+																				</div>																				
+																			</div>
+																			<div class="form-actions fluid">
+																				<div class="col-md-offset-3 col-md-9">
+																					<button type="button" id="gozaresh_btn" class="btn blue">ذخيره</button>																					
+																				</div>
+																			</div>
+													</div>
+													<div id="gozaresh_table" class="table-responsive">
+														<table class="table table-striped table-bordered table-hover">
+															<thead>
+																<th class="hidden">id</th>	
+																<th id="th1">رديف</th>
+																<th id="th2">مرحله گزارش</th>
+																<th id="th3">تاريخ گزارش</th>
+																<th id="th4">توضيحات گزارش</th>
+																<th id="th5">حذف</th>
+															</thead>
+															<tbody>
+															<?php 
+															  $cnt=1;
+															  $Query=mysql_query("select * from gozaresh_gharardad  where cod_tarh='$cod_tarh'  order by marhale asc") or die("Error in selecting tarh-type");
+															  while($row_fetched=mysql_fetch_array($Query))
+															  {
+															  	 $id=$row_fetched["id"];
+															  	  if(strlen($row_fetched["marhale"])<=0)
+																   $marhale="&nbsp;";
+																  else
+																   $marhale=$row_fetched["marhale"];
+																  if($la=="en"){
+																		   if(strcmp($row_fetched["marhale"],'0')==0)
+																		     $marhale="First";
+																		  
+																		   if(strcmp($row_fetched["marhale"],'100')==0)
+																		     $marhale="Final";
+																		     
+																		     if($marhale==1)
+																		       $marhale="First";
+																		    
+																			if($marhale==2)
+																		       $marhale="Second";
+																		    
+																		    if($marhale==3)
+																		       $marhale="Third";
+																		
+																		    if($marhale==4)
+																		       $marhale="Fourth";
+																			
+																			if($marhale==5)
+																		       $marhale="Fifth";
+																			
+																			 if($marhale==6)
+																		       $marhale="Sixth"; 
+																	}else{
+																			if(strcmp($row_fetched["marhale"],'0')==0)
+																				$marhale="اول";
+																			
+																			if(strcmp($row_fetched["marhale"],'100')==0)
+																				$marhale="نهايي";
+																				
+																			if($marhale==1)
+																				$marhale=" اول ";
+																			
+																			if($marhale==2)
+																				$marhale=" دوم ";
+																			
+																			if($marhale==3)
+																				$marhale=" سوم ";
+																			
+																			if($marhale==4)
+																				$marhale=" چهارم ";
+																				
+																			if($marhale==5)
+																				$marhale=" پنجم ";
+																				
+																			if($marhale==6)
+																				$marhale=" ششم ";
+																	}
+															  	?>
+															  
+																<tr>
+																	<td class="hidden"><?php echo $id;?></td>
+																	<td><?php echo $cnt;?></td>
+																	<td><?php echo $marhale;?></td>
+																	<td><?php echo $row_fetched["date_gozaresh"];?></td>
+																	<td><?php echo $row_fetched["percent_gozaresh"];?></td>
+																	<td><?php echo "<a class=\"btn delete_buttun\" id=\"$id\" onclick=delete_element('$id') data-toggle=\"modal\" href=\"#delete\" ><i class=\"fa fa-trash-o\" ></i></a>";?></td>
+																</tr>
+																<?php
+																$cnt++; 
+															  }
+																?>
+																
+															</tbody>
+														</table>
+													</div>
+											</div>
+											<div class="tab-pane" id="tab4">
+												<h3 id="block4" class="block">تکميل و ارسال</h3>
+												<h4 id="form-section1" class="form-section">اطلاعات طرف قرارداد</h4>
+												<div class="form-group">
+													<label id="lb15" class="control-label col-md-3">نام و نام خانوادگي طرف قرارداد</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="mojri_name">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb16" class="control-label col-md-3">کد ملي</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="melli_cod">
+														</p>
+													</div>
+												</div>
+												
+												<div class="form-group">
+													<label id="lb17" class="control-label col-md-3">شماره حساب</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="hesab">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb18" class="control-label col-md-3">شماره شبا</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="shaba_cod">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb19" class="control-label col-md-3">شماره موبايل</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="mobile">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb20" class="control-label col-md-3">آيا فرد در استخدام دانشگاه است ؟</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="heiat_elmi">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb21" class="control-label col-md-3">آيا طرح ماحصل پايان نامه است ؟</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="payanname">
+														</p>
+													</div>
+												</div>
+												<h4 id="form-section2" class="form-section">ناظرين پيشنهادي</h4>
+												<div class="form-group">
+													<label id="lb22" class="control-label col-md-3">ناظرين پيشنهادي</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="nazerin">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb23" class="control-label col-md-3">ناظرين غير پيشنهادي</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="unnazerin">
+														</p>
+													</div>
+												</div>
+												<h4 id="form-section3" class="form-section">زمان قراداد</h4>
+												<div class="form-group">
+													<label id="lb24" class="control-label col-md-3">تاريخ شروع قراداد</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="start_time">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="lb25" class="control-label col-md-3">مدت قرارداد</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="time_month">
+														</p>
+													</div>
+												</div>
+												<h4 id="form-section4" class="form-section">گزارشات</h4>
+												<div id="gozaresh_tablel" class="table-responsive">
+														
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-actions fluid">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="col-md-offset-3 col-md-9">
+													<a id="button-previous" href="javascript:;" class="btn default button-previous">
+														<i class="m-icon-swapleft"></i> صفحه قبل
+													</a>
+													<a id="button-next" href="javascript:;" class="btn blue button-next">
+														 ادامه <i class="m-icon-swapright m-icon-white"></i>
+													</a>
+													<a id="button-submit" href="javascript:;" class="btn green button-submit">
+														 اتمام <i class="m-icon-swapright m-icon-white"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+<!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en"){																										    
+debugger;
+document.getElementById("page-title").textContent="Title of Research";
+document.getElementById("breadcrumb1").textContent="Home";
+document.getElementById("breadcrumb2").textContent="Your researches sent";
+document.getElementById("breadcrumb3").textContent="Researches ready for contract";
+document.getElementById("breadcrumb4").textContent="Answer to questions` contract";
+document.getElementById("caption_wizard").innerHTML="<i class='fa fa-reorder'></i> Form Wizard - <span class='step-title'>Step 1 of 4</span>";
+document.getElementById("delete_message").textContent="Are you sure to remove this item?";
+document.getElementById("btn1").textContent="Yes";
+document.getElementById("gozaresh_btn").textContent="Save";
+document.getElementById("btn2").textContent="Cancel";
+document.getElementById("fa-angle-left1").setAttribute("class","fa fa-angle-right");
+document.getElementById("fa-angle-left2").setAttribute("class","fa fa-angle-right");
+document.getElementById("fa-angle-left3").setAttribute("class","fa fa-angle-right");
+document.getElementById("desc1").innerHTML="<i class='fa fa-check'></i>Project manager contractor`s information";
+document.getElementById("desc2").innerHTML="<i class='fa fa-check'></i> Contract Dtae";
+document.getElementById("desc3").innerHTML="<i class='fa fa-check'></i> Date of report submission";
+document.getElementById("desc4").innerHTML="<i class='fa fa-check'></i> Completion and Submission";
+document.getElementById("alert-danger").innerHTML="<button class='close' data-dismiss='alert'></button>You have some form errors. Please check below.";
+document.getElementById("block1").textContent="Project manager contractor`s information";
+document.getElementById("lb1").textContent="Contract`s second person";
+document.getElementById("lb2").textContent="National number";
+document.getElementById("help-block-national-code").textContent="National number whithout dash";
+document.getElementById("lb3").textContent="Cell phone number";
+document.getElementById("lb4").textContent="Bank acount Number";
+document.getElementById("lb5").textContent="SHEBA Number";
+document.getElementById("lb6").textContent="Whether the person is employed by university?";
+document.getElementById("heiat_elmi_no_lb").textContent="No";
+document.getElementById("heiat_elmi_yes_lb").textContent="Yes";
+document.getElementById("heiat_elmi_title_yes").setAttribute("data-title","Yes");
+document.getElementById("heiat_elmi_title_no").setAttribute("data-title","No");
+document.getElementById("lb7").textContent="Does the research is result of thesis?";
+document.getElementById("payanname_yes_lb").textContent="Yes";
+document.getElementById("payanname_data_title_yes").setAttribute("data-title","Yes");
+document.getElementById("payanname_data_title_no").setAttribute("data-title","No");
+document.getElementById("payanname_no_lb").textContent="No";
+document.getElementById("lb8").textContent="Proposed supervisors";
+document.getElementById("lb9").textContent="not Proposed supervisors";
+document.getElementById("block2").textContent="Contract time frame";
+document.getElementById("lb10").textContent="contract start date";
+document.getElementById("lb11").textContent="contract Duration";
+document.getElementById("help_block_time_month").textContent="The number of months of research projects";
+document.getElementById("block3").textContent="Date of report submission";
+document.getElementById("lb12").textContent="Progress Report";
+document.getElementById("marhale_lb").innerHTML="<select name='marhale' id='marhale' class='form-control' data-placeholder='يک دسته بندي انتخاب کنيد' tabindex='1'><option value=''>Choose</option><option  value='2'>Second</option><option value='3'>Third</option><option value='4'>Fourth</option><option value='5'>Fifth</option><option value='6'>Sixth</option></select>";
+document.getElementById("lb13").textContent="ِReport date";
+document.getElementById("lb14").textContent="Until end of month";
+document.getElementById("percent_gozaresh_lb").textContent="th in Gantt chart";
+document.getElementById("th1").textContent="Number of row";
+document.getElementById("th2").textContent="Report number";
+document.getElementById("th3").textContent="Report date";
+document.getElementById("th4").textContent="Comments";
+document.getElementById("th5").textContent="Delete";
+document.getElementById("block4").textContent="Completion and Submission";
+document.getElementById("form-section1").textContent="Project manager contractor`s information";
+document.getElementById("lb15").textContent="Full Name";
+document.getElementById("lb16").textContent="National number";
+document.getElementById("lb17").textContent="Bank acount Number";
+document.getElementById("lb18").textContent="SHEBA Number";
+document.getElementById("lb19").textContent="Cell phone number";
+document.getElementById("lb20").textContent="Is the project manager an employee of Tums?";
+document.getElementById("lb21").textContent="Does the research is result of thesis?";
+document.getElementById("form-section2").textContent="Proposed supervisors";
+document.getElementById("lb22").textContent="proposed supervisors";
+document.getElementById("lb23").textContent="not proposed supervisors";
+document.getElementById("form-section3").textContent="Contract Date";
+document.getElementById("lb24").textContent="Contract start date";
+document.getElementById("lb25").textContent="Duration of contract";
+document.getElementById("form-section4").textContent="comments";
+document.getElementById("button-previous").textContent="Previous page";
+document.getElementById("button-next").textContent="continuation";
+document.getElementById("button-submit").textContent="Final";
+document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+document.getElementById("toastr").href="../assets/plugins/bootstrap-toastr/toastr.min.css";
+}
+</script>
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/data-tables/DT_bootstrap.js"></script> 
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script src="../assets/persian-datepicker/jquery.ui.datepicker-cc.all.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../assets/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+	<script type="text/javascript" src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js"></script>
+<!-- 	<script type="text/javascript" src="assets/plugins/jquery-validation/dist/additional-methods.min.js"></script> -->
+    <script src="../assets/scripts/custom/form-wizard.js"></script>
+    <script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <!--<script src="../assets/scripts/core/app.js"></script>-->
+    <!--<script src="../assets/scripts/custom/table-advanced.js"></script>-->
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+        jQuery(document).ready(function () {
+      	  $('#datepicker0').datepicker({
+              dateFormat: 'yy-mm-dd'
+
+          });
+        	$('#datepicker1').datepicker({
+                dateFormat: 'yy-mm-dd'
+
+            });
+       	 FormWizard.init();
+        });
+    </script>
+     <script>
+     function delete_element(id) {
+        
+         $('#gozaresh_id')[0].value = id;
+     
+     };
+     $("#delete_gozaresh").submit(function(e)
+  	 {
+			debugger;
+    	 	var postData = $(this).serializeArray();
+    	 	var formURL = $(this).attr("action");
+			$.ajax(
+			{
+				data:postData,
+				url : formURL,
+				type: "POST",		
+				success:function(data, textStatus, jqXHR) 
+				{
+					$("#gozaresh_table").html(data);
+					$("#gozaresh_tablel").html(data);	
+					$("#delete").modal('hide');	
+				},
+				error: function(jqXHR, textStatus, errorThrown) 
+				{
+				}
+			});
+			 e.preventDefault();	//STOP default action
+  	 });
+    </script>
+    <script>
+    	$("#gozaresh_btn").on('click', function() {
+        	
+        	var form = $('#submit_form');
+	       	 form.validate({
+	             doNotHideMessage: true, //this option enables to show the error/success messages on tab switch.
+	             errorElement: 'span', //default input error message container
+	             errorClass: 'help-block', // default input error message class
+	             focusInvalid: false, // do not focus the last invalid input
+	             rules: {
+	                 //account	         		
+	                 marhale: {
+	                     required: true
+	                 },
+	                 date_gozaresh: {
+	                     required: true
+	                 }
+	                
+	             },
+	
+	             
+	
+	             errorPlacement: function (error, element) { // render error placement for each input type
+	                 if (element.attr("name") == "gender") { // for uniform radio buttons, insert the after the given container
+	                     error.insertAfter("#form_gender_error");
+	                 } else if (element.attr("name") == "payment[]") { // for uniform radio buttons, insert the after the given container
+	                     error.insertAfter("#form_payment_error");
+	                 } else {
+	                     error.insertAfter(element); // for other inputs, just perform default behavior
+	                 }
+	             },
+	
+	             invalidHandler: function (event, validator) { //display error alert on form submit   
+	                 success.hide();
+	                 error.show();
+	                 App.scrollTo(error, -200);
+	             },
+	
+	             highlight: function (element) { // hightlight error inputs
+	                 $(element)
+	                     .closest('.form-group').removeClass('has-success').addClass('has-error'); // set error class to the control group
+	             },
+	
+	             unhighlight: function (element) { // revert the change done by hightlight
+	                 $(element)
+	                     .closest('.form-group').removeClass('has-error'); // set error class to the control group
+	             },
+	
+	             success: function (label) {
+	                 if (label.attr("for") == "gender" || label.attr("for") == "payment[]") { // for checkboxes and radio buttons, no need to show OK icon
+	                     label
+	                         .closest('.form-group').removeClass('has-error').addClass('has-success');
+	                     label.remove(); // remove error label here
+	                 } else { // display success icon for other inputs
+	                     label
+	                         .addClass('valid') // mark the current input as valid and display OK icon
+	                     .closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                 }
+	             },
+	
+	             submitHandler: function (form) {
+						debugger;
+	                 success.show();
+	                 error.hide();
+	                 //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
+						
+	             }
+	
+	         });
+	       	 if (form.valid() == false)
+		     {
+                 return false;
+             }
+			else
+			{
+				var postData = form.serializeArray();
+				$.ajax(
+				{
+					data:postData,
+					url : "answer_question_gharardad_sabt.php?step=step3",
+					type: "POST",
+					
+					success:function(data, textStatus, jqXHR) 
+					{
+						$("#gozaresh_table").html(data);
+						$("#gozaresh_tablel").html(data);		
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+					}
+				});
+			}
+    	});
+    	
+    </script>
+    
+    
+<?php
+footer_forms($admin,$seed);
+?>
+

@@ -1,0 +1,529 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+
+
+$query="select * from print_statistics_set where modir_username = \"$admin\"";
+$result = mysql_query($query) or die("Error in selecting data from printset");
+
+
+if( mysql_num_rows($result) > 0 )
+{
+  $row_fetched = mysql_fetch_array($result);
+  $besme_font_size = $row_fetched["besme_font_size"];
+  $besme_font_name = $row_fetched["besme_font_name"];
+  $besme = "style=\"font-family: $besme_font_name; font-size: $besme_font_size\"";
+
+    //-----------------------------------------------------
+
+  $titr_asli_font_size = $row_fetched["titr_asli_font_size"];
+  $titr_asli_font_name = $row_fetched["titr_asli_font_name"];
+  $titr_asli = "style=\"font-family: $titr_asli_font_name; font-size: $titr_asli_font_size\"";
+
+  //-----------------------------------------------------
+
+  $porseshname_font_size = $row_fetched["porseshname_font_size"];
+  $porseshname_font_name = $row_fetched["porseshname_font_name"];
+  $porseshname = "style=\"font-family: $porseshname_font_name; font-size: $porseshname_font_size\"";
+
+  //-----------------------------------------------------
+
+
+  $anavin_asli_font_size = $row_fetched["anavin_asli_font_size"];
+  $anavin_asli_font_name = $row_fetched["anavin_asli_font_name"];
+  $anavin_asli = "style=\"font-family: $anavin_asli_font_name; font-size: $anavin_asli_font_size\"";
+
+  //-----------------------------------------------------
+
+  $anavin_farii_text_font_size = $row_fetched["anavin_farii_text_font_size"];
+  $anavin_farii_text_font_name = $row_fetched["anavin_farii_text_font_name"];
+  $anavin_farii_text = "style=\"font-family: $anavin_farii_text_font_name; font-size: $anavin_farii_text_font_size\"";
+
+  //-----------------------------------------------------
+
+  $anavin_farii_font_size = $row_fetched["anavin_farii_font_size"];
+  $anavin_farii_font_name = $row_fetched["anavin_farii_font_name"];
+  $anavin_farii = "style=\"font-family: $anavin_farii_font_name; font-size: $anavin_farii_font_size\"";
+
+ //-----------------------------------------------------
+
+  $titr_anavin_farii_font_size = $row_fetched["titr_anavin_farii_font_size"];
+  $titr_anavin_farii_font_name = $row_fetched["titr_anavin_farii_font_name"];
+  $titr_anavin_farii = "style=\"font-family: $titr_anavin_farii_font_name; font-size: $titr_anavin_farii_font_size\"";
+
+ //-----------------------------------------------------
+
+  $jadval_title_font_size = $row_fetched["jadval_title_font_size"];
+  $jadval_title_font_name = $row_fetched["jadval_title_font_name"];
+  $jadval_title = "style=\"font-family: $jadval_title_font_name; font-size: $jadval_title_font_size\"";
+
+  //-----------------------------------------------------
+}
+
+   $query = "select * from tarh where cod_tarh='$cod_tarh'";
+   $result = mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+   $row_fetched = mysql_fetch_array($result);
+   
+
+   $query="select * from tarhtype where tarh_type='".$row_fetched["tarh_type"]."'";
+   $myresult = mysql_query($query);
+   $my_fetch_array = mysql_fetch_array($myresult);
+    
+   
+   $tarh_name = $row_fetched["tarh_title_farsi"];
+   $tarh_name_english = $row_fetched["tarh_title_english"];
+   $mytarh_type = $row_fetched["status"];
+   if($row_fetched["status"]=="0")
+      $mystatus="نامعلوم";
+  else
+   {
+      $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+      $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+      $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+      $mystatus=$row_fetched_tarh["vaziat_desc"];
+   }
+
+   $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+   $result_mojri=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+
+   $query="select * from hamkaran , hamkar_tarh where hamkaran.hamkar_code = hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+   $result_hamkar=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+
+
+   $query="select * from daneshjo , daneshjo_tarh where daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=\"$cod_tarh\"   order by  daneshjo.family";
+   $result_daneshjo=mysql_query($query) or die("Error in selecting data from daneshjo");
+
+
+   echo "<br>";
+   $query="select * from tarh where cod_tarh=$cod_tarh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from tarh");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+<body  align="center">
+<TABLE cellSpacing=0  width="100%" cellPadding=2 border=0 >
+  <TR>
+   <TD align=center  class="verdana2" >
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0  >
+
+  <TR>
+
+      <TD  class="verdana2"  height=19 bgcolor="white" align="left">
+        <a href="#" onclick="window.print()" ><img src="image/print.gif" border="0"></a>
+      </TD>
+  </TR>
+
+</table>
+
+<br>
+
+<?
+    echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\"  style=\"border-style: solid; border-width: 1; \">";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"verdana2\">"."</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"left\" class=\" $titr_anavin_farii\" valign=\"top\">تاريخ ورود</td>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"verdana2\">".$cod_tarh."</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"left\" class=\"$titr_anavin_farii\" valign=\"top\">کد پيشنهادي</td>";
+	echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"60%\" colspan=\"2\" bgcolor=$color align=\"right\" class=\"$anavin_farii\">".$tarh_name."</td>";
+    echo "<td width=\"40%\" colspan=\"2\" bgcolor=$color align=\"left\" class=\"$titr_anavin_farii\" valign=\"top\">عنوان پيشنهادي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" colspan=\"2\" bgcolor=$color align=\"right\" class=\"$anavin_farii\">".$tarh_name_english."</td>";
+    echo "<td width=\"40%\" colspan=\"2\" bgcolor=$color align=\"left\" class=\"$titr_anavin_farii\" valign=\"top\">عنوان به لاتين</td>";
+    echo "</tr>";
+
+
+    
+   if(mysql_num_rows($result_mojri) > 0)
+   {
+    echo "<tr>";
+    echo "<td width=\"100%\" bgcolor=\"white\"  colspan=\"5\" >";
+    echo "<p align=\"right\" class=\"verdana2\"><font color=\"black\">مجريان طرح</font></td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\"  colspan=\"4\"  align=\"right\" >";
+
+    $color="PALETURQUOISE";
+    ?>
+    <table border="0" width="100%" cellpadding="1" cellspacing="1"  style="border-style: solid; border-width: 1; " >
+   
+	<tr>
+    <td width="3%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?> >
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">پست الکترونيکي</font></td>
+    <td width="10%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">فکس</font></td>
+    <td width="10%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">تلفن</font></td>
+    <td width="35%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ //$color="#DADADA";
+ //$color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result_mojri))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $mojri_email=$row_fetched["email"];
+  $mojri_fax=$row_fetched["fax"];
+  $mojri_telno=$row_fetched["telno"];
+  $mojri_family=$row_fetched["family"];
+  $mojri_name=$row_fetched["name"];
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_email."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_fax."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_telno."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_family."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"verdana2\">".$mojri_name."</td>";
+  echo "</tr>";
+ }
+    echo "</table>";
+	echo "</td>";
+
+    echo "</tr>";
+
+   }
+
+
+   if(mysql_num_rows($result_hamkar) > 0)
+   {
+    echo "<tr>";
+    echo "<td width=\"100%\" bgcolor=\"white\"  colspan=\"5\" >";
+    echo "<p align=\"right\" class=\" $anavin_asli \"><font color=\"black\">همکاران طرح</font></td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"60%\"  colspan=\"4\"  align=\"right\" >";
+
+    $color="PALETURQUOISE";
+    ?>
+    <table border="0" width="100%" cellpadding="1" cellspacing="1"  style="border-style: solid; border-width: 1; " >
+
+	<tr>
+    <td width="3%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?> >
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">پست الکترونيکي</font></td>
+    <td width="10%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">فکس</font></td>
+    <td width="10%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">تلفن</font></td>
+    <td width="35%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ //$color="#DADADA";
+ //$color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result_hamkar))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $mojri_email=$row_fetched["email"];
+  $mojri_fax=$row_fetched["fax"];
+  $mojri_telno=$row_fetched["telno"];
+  $mojri_family=$row_fetched["family"];
+  $mojri_name=$row_fetched["name"];
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_email."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_fax."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_telno."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_family."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"verdana2\">".$mojri_name."</td>";
+  echo "</tr>";
+ }
+    echo "</table>";
+
+
+	echo "</td>";
+
+    echo "</tr>";
+
+   }
+  
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"verdana2\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">تاييديه از</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">نوع طرح</td>";
+    echo "</tr>";
+
+    // finding title of tarhtype1 & tarhtype 2
+    $my_tarh_type_1 = "نوع طرح 1";
+    $my_tarh_type_2 = "نوع طرح 2";
+    $query = "select * from savabetsystem";
+    $result=mysql_query($query) or die("Error in selecting data from savabetsystem");
+    if(mysql_num_rows($result) > 0 )
+    {
+      $tarh_fetch_array = mysql_fetch_array($result);
+      if(strlen(trim($tarh_fetch_array["tarh_type_1"])) > 0 )
+		 $my_tarh_type_1 = $tarh_fetch_array["tarh_type_1"];
+	  else
+	  	 $my_tarh_type_1 = "نوع طرح 1";
+		
+      if(strlen(trim($tarh_fetch_array["tarh_type_2"])) > 0 )
+		 $my_tarh_type_2 = $tarh_fetch_array["tarh_type_2"];
+	  else
+	  	 $my_tarh_type_2 = "نوع طرح 2";
+
+	}
+    
+
+	// tarh type 1
+
+	$query="select * from tarh,tarhtype_1 where tarh.cod_tarh='$cod_tarh' and tarh.tarh_type_1 = tarhtype_1.tarh_type ";
+	$result = mysql_query($query) or die("Error in selecting data from tarh , tarh_type_1");
+	
+	if(mysql_num_rows($result) > 0 )
+	{
+	 $tarh_row_fetched = mysql_fetch_array($result);
+     echo "<tr>";
+     echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">".$tarh_row_fetched["tarh_type_desc"]."</td>";
+     echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">$my_tarh_type_1</td>";
+     echo "</tr>";
+	}
+	// tarh type 2
+
+	$query="select * from tarh,tarhtype_2 where tarh.cod_tarh='$cod_tarh' and tarh.tarh_type_2 = tarhtype_2.tarh_type ";
+	$result = mysql_query($query) or die("Error in selecting data from tarh , tarh_type_2");
+	if(mysql_num_rows($result) > 0 )
+	{
+	 $tarh_row_fetched = mysql_fetch_array($result);
+     echo "<tr>";
+     echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">".$tarh_row_fetched["tarh_type_desc"]."</td>";
+     echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">$my_tarh_type_2</td>";
+     echo "</tr>";
+	}
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">".$mystatus."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">وضعيت طرح</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">نوع مطالعه</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">طرح ارسالي از گروه</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">مدت طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">کارشناس متودولوژي</td>";
+    echo "</tr>";
+
+    
+	$query="select * from karshenas_tahgig_tarh,karshenas_tahgig where cod_tarh=$cod_tarh and  karshenas_tahgig.cod_karshenas=karshenas_tahgig_tarh.cod_karshenas";
+	$result=mysql_query("$query") or die("Error in selecting data from karshenas_tahgig_tarh");
+	if (mysql_num_rows($result) > 0 )
+	{
+	 echo "<tr>";
+	 echo "<td width=\"80%\" colspan=\"5\" bgcolor=$color align=\"right\" class=\"verdana2\">";
+	 echo " <table border=\"0\" width=\"100%\"  align=\"right\">";
+	 while($my_row_fetches= mysql_fetch_array($result))
+ 	 {
+       echo "<tr>";
+	   echo "<td width=\"80%\"   align=\"right\">";
+	   echo $my_row_fetches["kar_tahghigh_name"]."&nbsp;".$my_row_fetches["kar_tahghigh_family"].""."<br>";
+	   echo "</td>";
+       echo "<td width=\"20%\"  bgcolor=$color align=\"left\" class=\"verdana2\" valign=\"top\"></td>";
+       echo "</tr>";
+	 }
+	 echo "</table>";
+	 
+	}
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">کارشناس علمي</td>";
+    echo "</tr>";
+
+
+	$query="select * from karshenas_elmi_tarh,karshenas_elmi where cod_tarh=$cod_tarh and  karshenas_elmi.cod_karshenas=karshenas_elmi_tarh.cod_karshenas";
+	$result=mysql_query("$query") or die("Error in selecting data from karshenas_elmi_tarh");
+	if (mysql_num_rows($result) > 0 )
+	{
+	 echo "<tr>";
+	 echo "<td width=\"80%\" colspan=\"5\" bgcolor=$color align=\"right\" class=\"verdana2\">";
+	 echo " <table border=\"0\" width=\"100%\" align=\"right\">";
+	 while($my_row_fetches= mysql_fetch_array($result))
+	 {
+ 	  
+	   echo "<tr>";
+	   echo "<td  width=\"80%\"  align=\"right\">";
+	   echo $my_row_fetches["kar_elmi_name"]."&nbsp;".$my_row_fetches["kar_elmi_family"].""."<br>";
+	   echo "</td>";
+       echo "<td width=\"20%\"  bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\"></td>";
+	   echo "</tr>";
+	 
+	 }
+     echo "</table>";
+	 echo "</td>";
+     echo "</tr>";
+	}
+
+
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">بودجه پيشنهادي طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">لاين تحقيقاتي مجري</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">طرح در راستاي لاين تحقيقاتي مجري</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">طرح ارجاعي به شوراي پژوهشي طرحها</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">تاريخ تصويب و شروع طرح</td>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">کد مصوب</td>";
+	echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">تمديد مدت طرح</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">تاريخ جلسه شوراي پژوهشي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">آخرِين نتيجه شوراي پژوهشي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">بودجه مصوب طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">بودجه بر آورد شده</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">مبلغ افزايش بودجه طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan=\"3\" bgcolor=$color align=\"right\" class=\"$anavin_farii_text\">"."</td>";
+    echo "<td width=\"20%\" colspan=\"1\" bgcolor=$color align=\"left\" class=\"$anavin_farii\" valign=\"top\">عنوان تصويبي</td>";
+    echo "</tr>";
+
+
+
+
+   if(mysql_num_rows($result_daneshjo) > 0)
+   {
+    echo "<tr>";
+    echo "<td width=\"100%\" bgcolor=\"white\"  colspan=\"5\" >";
+    echo "<p align=\"right\" class=\"$anavin_asli\"><font color=\"black\">دانشجويان طرح</font></td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"60%\"  colspan=\"4\"  align=\"right\" >";
+
+    $color="PALETURQUOISE";
+    ?>
+    <table border="0" width="100%" cellpadding="1" cellspacing="1"  style="border-style: solid; border-width: 1; " >
+
+	<tr>
+    <td width="3%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?> >
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">پست الکترونيکي</font></td>
+    <td width="10%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?><font color="black">فکس</font></td>
+    <td width="10%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">تلفن</font></td>
+    <td width="35%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor=<? echo $color; ?> class=<? echo $jadval_title; ?>>
+      <p align="center" class=<? echo $jadval_title; ?>><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ //$color="#DADADA";
+ //$color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result_daneshjo))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $mojri_email=$row_fetched["email"];
+  $mojri_fax=$row_fetched["fax"];
+  $mojri_telno=$row_fetched["telno"];
+  $mojri_family=$row_fetched["family"];
+  $mojri_name=$row_fetched["name"];
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_email."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_fax."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_telno."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"verdana2\">".$mojri_family."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"verdana2\">".$mojri_name."</td>";
+  echo "</tr>";
+ }
+    echo "</table>";
+    echo "</td>";
+
+    echo "</tr>";
+
+   }
+
+
+    echo "</table>";
+   }
+
+
+
+
+?>
+
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="verdana2"><a style="text-decoration:none" href="javascript:window.close()">بستن</a></td>
+</tr>
+
+</table>
+</td>
+</tr>
+</table>
+</body>

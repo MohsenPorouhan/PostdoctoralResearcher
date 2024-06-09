@@ -1,0 +1,528 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+//header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+echo "<br>";
+
+$query="select * from modir_daneshkade where modir_username='$admin'";
+
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+$dastresi=$row_fetched["dastresi"];
+if(strcmp($row_fetched["modir_type"],'4') ==0 )
+  $modir_caution=" (tarh.send_moavenat='1' or tarh_type_2='3' or tarh_type_2='4'  or tarh_type_2='9' or tarh_type_2='8' or tarh_type_2='10' or tarh_type_2='11' or tarh_type_2='14' or tarh_type_2='12'  or tarh_type_2='13'  or tarh_type_2='16'  or tarh_type_2='17') ";
+else
+  $modir_caution='1';  
+   
+  
+//confirm_tarh=1
+if ( ! isset($tarh_type))
+    $tarh_type = '-1';
+ 
+if(strcmp($tarh_type,'-1')!=0 )
+{
+	$tarh_type_caution="tarh.tarh_type = '$tarh_type'";
+}
+else
+   $tarh_type_caution=1;
+    
+if ( ! isset($current))
+    $current = 1;
+
+if(!isset($ascdescfield))
+  $ascdescfield="cod_tarh";
+
+if(!isset($ascdesc))
+  $ascdesc="desc";
+  
+
+if ( ! isset($cod_daneshkade))
+    $cod_daneshkade = '-1';
+
+if(strcmp($cod_daneshkade,'-1')!=0 )
+{
+	$daneshkade_caution="cod_daneshkade = '$cod_daneshkade'";
+}
+else
+   $daneshkade_caution=1;
+   
+$cod_daneshkade_new=$cod_daneshkade;
+if ( ! isset($tarh_year))
+    $tarh_year = '-1';
+
+
+
+
+if(strcmp($tarh_year,'-1')!=0 )
+{
+	$year_caution="cod_tarh like \"$tarh_year".'%'."\"";
+}
+else
+   $year_caution=1;
+   
+
+//echo $tarh_year;
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($action))
+ {
+ if(strcmp($action,"del")==0)
+  {
+    
+     $query="select * from  tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error");
+     $row_Fetched=mysql_fetch_array($result);
+     $send_moavenat=$row_Fetched["send_moavenat"];
+     if($send_moavenat==1)
+     {
+       message_show("طرح قابل حذف نيست","red");
+       footer_forms($admin,$seed);
+       exit();
+     }
+     
+     $query="delete from tarh where cod_tarh=\"$delete_id\"";
+     
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from shora_tarh_vaziat where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from sayer_hazine where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from ravesh_ejra where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from mojri_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from letter_to_mojri where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from karshenasan_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from jadval_zarayeb where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hazine_safar where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hazine_personnel where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hazine_azmayesh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hamkar_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from fhrest_vasayel_kharid where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from daneshjo_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $action=". طرح با کد مقابل حذف شد"."<br>".$delete_id;   
+     set_log($action,$admin,date("Y-m-d, g:i a"));
+	
+     
+  }
+ 
+ 
+  if(strcmp($action,"confirm_tarh")==0)
+  {
+    $query="select * from tarh where cod_tarh=\"$cod_tarh\" and version='-1' ";
+    
+    $result=mysql_query($query) or die("Error in updating data into tarh");
+    if(mysql_num_rows($result) > 0)
+    {
+     $my_row_fetched=mysql_fetch_array($result);
+   //  $cod_tarh_user =$my_row_fetched["cod_tarh_user"];
+      $vaziat_moaven=     $my_row_fetched["vaziat_moaven"];
+      if($vaziat_moaven==0)           
+        $query="update tarh set finished='1' ,confirm_moaven_tarh='1',vaziat_moaven='8' where cod_tarh=\"$cod_tarh\" and version='-1' ";
+      else
+        $query="update tarh set finished='1' ,confirm_moaven_tarh='1' where cod_tarh=\"$cod_tarh\" and version='-1' ";	    
+// echo $query;
+ 
+      mysql_query($query) or die("Error in updating data into tarh");
+       insert_position($cod_tarh,"7",$admin);
+      $query="select * from tarh where cod_tarh=\"$cod_tarh\"";
+      $tarh_result=mysql_query($query) or die("Error in selecting data into tarh");
+	  $row_fetched=mysql_fetch_array($tarh_result);
+ 
+    }
+  }
+ }
+
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=$max_record;
+      $current=1;
+    }
+    
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+if(isset($name_e))
+{
+  $query="SELECT  tarh.cod_tarh,tarh.tarh_title_farsi,user_login.name,user_login.family,tarh.cod_daneshkade,tarh.ready_gharardad
+FROM  tarh ,mojri,mojri_tarh,user_login    where user_login.email=tarh.creator and tarh.cod_tarh
+LIKE  \"90-%\" AND tarh.version =  '-1' and tarh_type!='6' and tarh.payan_name='0'  and confirm_moaven_tarh='1' and mojri_tarh.cod_tarh=tarh.cod_tarh and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.version='-1' and (mojri.darajeelmi='13' or mojri.darajeelmi='12' or mojri.darajeelmi='11' or mojri.darajeelmi='7' or mojri.darajeelmi='6' or mojri.darajeelmi='10') and mojri_tarh.version='-1' group by tarh.cod_tarh";
+}
+else
+  $query="SELECT  tarh.cod_tarh,tarh.tarh_title_farsi,user_login.name,user_login.family,tarh.cod_daneshkade,tarh.ready_gharardad
+FROM  tarh ,mojri,mojri_tarh,user_login    where user_login.email=tarh.creator and tarh.cod_tarh
+LIKE  \"90-%\" AND tarh.version =  '-1' and tarh_type!='6' and tarh.payan_name='0'  and confirm_moaven_tarh='1' and mojri_tarh.cod_tarh=tarh.cod_tarh and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.version='-1' and (mojri.darajeelmi='13' or mojri.darajeelmi='12' or mojri.darajeelmi='11' or mojri.darajeelmi='7' or mojri.darajeelmi='6' or mojri.darajeelmi='10') and mojri_tarh.version='-1' group by tarh.cod_tarh";
+
+
+//echo $query;
+$result=mysql_query($query) or die("Error in selecting data from tarh1");
+$reccount = mysql_num_rows($result);
+ 
+ if(isset($name_e))
+{
+  $query="select tarh.* from tarh , user_login    where user_login.email=tarh.creator and indoing='0' and ready_gharardad='0' and archieved='0' and tarh_type!='6'  and confirm_moaven_tarh='0' and $modir_caution and (user_login.family  like $myname_search or user_login.name  like $myname_search or cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and $daneshkade_caution  and $year_caution  and tarh.version='-1' order by  $ascdescfield $ascdesc  "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+    $query="SELECT  tarh.cod_tarh,tarh.tarh_title_farsi,user_login.name,user_login.family,tarh.cod_daneshkade,tarh.ready_gharardad
+FROM  tarh ,mojri,mojri_tarh,user_login    where user_login.email=tarh.creator and tarh.cod_tarh
+LIKE  \"90-%\" AND tarh.version =  '-1' and tarh_type!='6' and tarh.payan_name='0'  and confirm_moaven_tarh='1' and mojri_tarh.cod_tarh=tarh.cod_tarh and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.version='-1' and (mojri.darajeelmi='13' or mojri.darajeelmi='12' or mojri.darajeelmi='11' or mojri.darajeelmi='7' or mojri.darajeelmi='6' or mojri.darajeelmi='10') and mojri_tarh.version='-1' group by tarh.cod_tarh"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+ 
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh2");
+ 
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>طرحهاي دانشجويي سال 90<b></td>
+ </tr>
+ <tr>
+ <td  align="center" class="tahoma1">
+ 
+ </td> 
+ </tr>
+ </table> 
+<?
+echo "<form name=\"change_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type\">";
+?>
+
+ <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+
+ <tr>
+<?    
+
+
+
+$query="select * from daneshkade order by  daneshkade_name  desc";
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td  align=\"left\" class=\"tahoma1\"><select size=\"1\" class='tahoma1' name=\"cod_daneshkade\" onchange=\"JavaScript:document.change_daneshkade.submit();\" dir=\"rtl\">";
+echo "<option value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if(strcmp($row_fetched["cod_daneshkade"],$cod_daneshkade)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+ }
+ 
+?>
+
+</select> دانشکده / مرکز 
+</td>
+  
+  
+  
+   
+
+<?
+echo "</form>";
+echo "<form name=\"change_year\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_daneshkade=$cod_daneshkade&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type\">";
+
+$query="select left(cod_tarh,5) as tarh_year from tarh group by left(cod_tarh,5) order by  cod_tarh desc";
+
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td  align=\"left\" class=\"tahoma1\"><select size=\"1\" name=\"tarh_year\" onchange=\"JavaScript:document.change_year.submit();\" dir=\"rtl\" class=\"but-small\">";
+	if(strcmp($row_fetched["tarh_year"],'-1')==0)
+   	  $selected=" selected ";
+    else
+	  $selected=""; 
+echo "<option $selected value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if(strcmp($row_fetched["tarh_year"],$tarh_year)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["tarh_year"]."\" class=\"tahoma1\">".$row_fetched["tarh_year"]."</option>";
+ }
+ 
+?>
+  </select> سال/رنک 
+  </td>
+  </form>
+  
+  
+  
+<?
+
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&tarh_type=$tarh_type\">";
+
+?>  
+ <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ 
+ </tr>
+
+
+ </table>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type";
+ if(isset($name_e))
+  $myascdescpub=$myascdescpub."&name_e=$name_e";	
+	
+ pubshowpages("gozaresh90.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%",$title_color);
+?>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">قرارداد</font></td>
+      <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کارشناس مربوط</font></td>
+  
+  
+   <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">دانشجويان طرح</font></td>
+  
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">چاپ</font></td>
+    
+
+  <!-- <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">وضعيت طرح</font></td> -->
+     <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">دانشکده /مرکز</font></td>  
+   
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">وضعيت طرح</font></td>
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري اول</font></td>
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+  </tr>
+  <?
+
+ $color=$list_color_1;
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ 	
+  	
+  $cod_tarh=$row_fetched["cod_tarh"];
+  
+  $position_tarh_code=current_position($cod_tarh);
+  $ttype_2=$row_fetched["tarh_type_2"];
+  $color_line="black";
+  $tarh_type_q="select * from tarhtype_2 where tarh_type='$ttype_2' and (tarh_type_desc like \"%گرانت%\" or  tarh_type_desc like \"%گرنت%\")";
+  //echo $tarh_type_q;
+  $tarh_type_r=mysql_query($tarh_type_q) or die("error");
+  if(mysql_num_rows($tarh_type_r)>0)
+  {
+  	 $color_line="green";
+  }
+  
+ $myq1="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan_tarh.cod_tarh='$cod_tarh' and group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas  and (group_karshenasan.username='rahmani' or group_karshenasan.creator='rahmani') order by id desc";
+
+  $myres=mysql_query($myq1) or die("Error");
+  $name_family_sender="";
+  if(mysql_num_rows($myres) > 0)
+  {
+     $myrf=mysql_fetch_array($myres);
+      
+     $name_family_sender=$name_family_sender."<br>&nbsp;".$myrf["karshenas_name"]."&nbsp;".$myrf["karshenas_family"]."&nbsp;<br>";
+     
+  }
+  else
+  {
+  	 $name_family_sender="نامعلوم";
+  }
+  $qq="select mojri.name,mojri.family,darajeelmi.darajeelmi_desc from tarh,mojri,mojri_tarh,darajeelmi where tarh.cod_tarh=mojri_tarh.cod_tarh and mojri.mojri_code=mojri_tarh.mojri_code and tarh.cod_tarh='$cod_tarh' and tarh.version='-1' and (mojri.darajeelmi='13' or mojri.darajeelmi='12' or mojri.darajeelmi='11' or mojri.darajeelmi='7' or mojri.darajeelmi='6' or mojri.darajeelmi='10') and mojri.darajeelmi=darajeelmi.darajeelmi group by mojri.mojri_code";
+
+  $my1=mysql_query($qq)or die("Error in selecting data from tarh882");;
+$str="";
+  while($myr=mysql_fetch_array($my1)){
+  	
+ $str=$str.$myr["name"]." ";
+  $str=$str.$myr["family"]." ";
+  $str=$str.$myr["darajeelmi_desc"];
+  $str=$str."<br>";  
+  }
+  echo "<tr>";
+ 
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  $myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq);
+  $myrf=mysql_fetch_array($myres);
+  $daneshkade=$myrf["daneshkade_name"];
+  $mostaghel =$myrf["mostaghel"];
+  if(strcmp(trim($mostaghel),'1')==0)
+     $daneshkade=$daneshkade."(مرکز مستقل)";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  
+  $i=check_field_value($dastresi,"a26");
+  $ready_gharardad=$row_fetched["ready_gharardad"];
+  
+if(strcmp(trim($ready_gharardad),"1")==0){
+	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a target='_blank' style=\"text-decoration:none\" href=\"rtf.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >چاپ قرارداد</a></td>";
+}
+else {
+echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+}
+		
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$name_family_sender</td>";
+   echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$str</td>";
+   echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" href=\"print_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/print.gif\" width=\"19\" height=\"19\" alt=\"Print\" ></a></td>";
+   
+ 
+  
+  $year_tarh=substr($cod_tarh,0,2);
+  $rank_tarh=substr($cod_tarh,3,2);
+
+
+//  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"  >".$year_tarh.":سال"."<br>".$rank_tarh.":رنک"."<br>".$row_fetched["rotbe_tarh"].":رتبه"."</td>";	  
+  
+  $editable=1;
+  $mytarh_type = $row_fetched["vaziat"];
+  if($row_fetched["vaziat"]=="0")
+  {
+  	if($row_fetched["confirm_tarh"]=="1")
+  	   $mystatus="در دست بررسي";
+  	else   
+       $mystatus="نامعلوم"; 
+  }
+  else
+  {
+    $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+    $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+    $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+    $mystatus=$row_fetched_tarh["vaziat_desc"];
+    if($row_fetched_tarh["view_or_no"]=="1")
+       $editable=0;
+    else
+       $editable=1;
+  }
+  
+ 
+
+
+  $startdate = $row_fetched["send_moavenat_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+
+  
+  $farsisendmoavenat= enum2fnum($farsistartdate);
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  //$myquery_mojri = "SELECT  * FROM tarh, mojri_tarh, mojri WHERE mojri_tarh.cod_tarh = tarh.cod_tarh AND mojri.mojri_code=mojri_tarh.mojri_code and tarh.cod_tarh = '$cod_tarh'  ORDER  BY mojri.mojri_code";
+  $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh' ";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+
+$First_mojri_name = $row_fetched["name"]."&nbsp;".$row_fetched["family"];
+
+
+
+  //echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$mystatus."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\" dir='rtl'><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>". $daneshkade."</font></a></td>";
+
+ // echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>". $farsisendmoavenat."</font></a></td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>". $position_tarh["$position_tarh_code"]. $position_tarh_code_creator ."</font></a></td>";
+ 
+  if(mysql_num_rows($myresult_mojri) > 0 )
+    echo "<td bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"first_mojri_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>".$First_mojri_name."</font></a></td>";
+  else
+    echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri_name."</td>";
+  echo "<td   bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>".$row_fetched["tarh_title_farsi"]."</font></a></td>";
+
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $version=$row_fetched["version"];
+  if( strcmp(trim($cod_tarh_user),"0")!=0 )
+     echo "<td  bgcolor=$color align=\"right\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>".$cod_tarh."</font></a></td>";
+     
+  echo "</tr>";
+  
+  
+  
+  $q="select * from tarh_send_moavenat where cod_tarh='$cod_tarh' order by id desc";
+  //echo $q;
+ $rs_q=mysql_query($q) or die("error");
+ if(mysql_num_rows($rs_q) > 0)
+ {
+	$row_f_n=mysql_fetch_array($rs_q);
+	$desc_sender=$row_f_n["comment"];
+ }
+ else
+    $desc_sender="";
+  
+  
+  
+  
+  
+  
+  
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".طرح ارسال شده  جديدي يافت نشد","red");
+}
+echo "</form>";
+if($reccount>0)
+{
+?>
+ 
+ 
+<? 
+} 
+//footer_forms($admin,$seed);
+
+
+?>

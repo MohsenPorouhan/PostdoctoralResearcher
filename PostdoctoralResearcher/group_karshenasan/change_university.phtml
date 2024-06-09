@@ -1,0 +1,106 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+ if (strcmp($action,"change_tax")==0)
+  {
+  	if(isset($daneshgah)){
+  		
+  	$query="update tarh set daneshgah='$daneshgah' where cod_tarh='$cod_tarh' ";
+  	//echo $query;
+  	$result=mysql_query($query) or die("Error in selecting data from answer_mojri_gharardad");
+	$row_fetched=mysql_fetch_array($result);
+	$status="change_tax";
+	$query="select * from tarh where cod_tarh='$cod_tarh'"; 
+	$result=mysql_query($query) or die("Error in selecting data from answer_mojri_gharardad");
+	$row_fetched=mysql_fetch_array($result);
+	$email=$row_fetched['creator'];
+	$query="update user_login set daneshgah='$daneshgah' where email='$email' ";
+  	//echo $query;
+  	$result=mysql_query($query) or die("Error in selecting data from answer_mojri_gharardad");
+	$row_fetched=mysql_fetch_array($result);
+	$status="change_tax";
+	
+  }
+}
+
+  	
+}
+$query2="select * from tarh where cod_tarh='$cod_tarh'";
+$result2=mysql_query($query2) or die("Error in selecting data from answer_mojri_gharardad");
+$row_fetched2=mysql_fetch_array($result2);
+$maliat1=$row_fetched2["daneshgah"];
+//echo $maliat1;
+if(strcmp($maliat1,"1")==0){
+	$checked1="checked='checked'";
+	$checked2=" ";
+  	}
+  	else {
+  		$checked2="checked='checked'";
+  		$checked1=" ";	
+  	}
+ 
+?>
+<? echo "<form name=\"change_tax\" method=\"post\"  action=\"$PHP_SELF?action=change_tax&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=right>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+   
+      <td align="center" width="149" height="19"></td>
+      <TD align=right class='tahoma1' width="251"  background="image/top_bg.gif" height=19><b>تغيير دانشگاه</b></TD>
+
+   </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+ <table border="0"  width="400" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?  if (strcmp($status,"change_tax")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">دانشگاه مربوطه تغيير يافت</td>";
+    echo "</tr>";
+  }
+  ?>
+ <tr>
+ <td width="100%">
+        <div align="center">
+          <table border="0" width="100%" bgcolor="F0F0FF" height="100%" cellpadding="0" cellspacing="0">
+  <tr>
+   <td width="4%" align="right"  class='tahoma1' dir="rtl" >
+      <input type="radio" name="daneshgah" value="0" <? echo $checked2;?> /> دانشگاه تهران</td>
+  </tr>
+  <tr>
+   <td width="4%" align="right"  class='tahoma1' dir="rtl">
+      <input type="radio" name="daneshgah" value="1" <? echo $checked1;?> />دانشگاه ايران</td>
+  </tr>
+   <tr>
+    <td width="100%" colspan="2" height="32">
+		<p align="center"><input class="but-tarh-type" type="submit" value="اعمال" name="submit_tarh"></td>
+   </tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</form>
+
+
+
+
+<?
+footer_forms($admin,$seed);
+ ?>

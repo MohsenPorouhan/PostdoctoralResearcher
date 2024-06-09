@@ -1,0 +1,1014 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 2 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+ 
+ // $cod_tarh="84-02-06-008";
+ 
+ 
+  $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ 
+  $result=mysql_query($query) or die("Error10");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$mojri=$row_fetched["mojri_code"];
+ 	$heiat_elmi=$row_fetched["heiat_elmi"];
+ 	$start_time=$row_fetched["start_time"];
+    $start_time_tmp=$start_time;
+ 	$pish_pardakht=$row_fetched["pish_pardakht"];
+ 	$payanname=$row_fetched["payanname"];
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+ 	$time_month=$row_fetched["time_month"];
+    $exists=1; 	
+    
+ } 	
+ else
+ {
+ 	$payanname="0";
+ 	$mojri="0";
+ 	$heiat_elmi="0";
+ 	$start_time="0";
+ 	$pish_pardakht="0";
+ 	$nazerin="0";
+ 	$time_month="0";
+ 	$unnazerin="0";
+    $exists=0;
+ }
+ 
+ //$start_time="1385-02-12";
+// $time_month="15";
+ if( $start_time > 0 && $time_month > 0 )
+ {
+   $year=substr($start_time,0,4);
+   $month=substr($start_time,5,2);
+   $day=substr($start_time,8,2);
+   $start_time=$day."/".$month."/".$year;
+  // $month_add=$time_month+$month;
+   $month_add=$time_month;
+  // echo $month_add;
+  // exit();
+   for($i=1; $i<=$month_add;$i++)
+   {
+   	$month=$month+1;
+    if($month >12 )
+    {
+      //$year_add=(int)($month_add/12); 
+      $year_add++;
+ 	  $year=$year+1;	 	 	
+      //$month=$month_add-($year_add*12); 
+	  $month=1;    
+     // if($month==0)
+ 	 //   $month=12;  
+    }
+    //else
+     // $month=$month_add;
+   }
+  
+   $end_time=$day."/".$month."/".$year;
+ }
+ else
+ {
+   $end_time="تعريف نشده";   
+ }
+   
+    
+    $query1="select * from jalase_shora , jalase_shora_tarh where jalase_shora.creator=jalase_shora_tarh.creator and jalase_shora.shomare_jalase=jalase_shora_tarh.shomare_jalase  and jalase_shora_tarh.cod_tarh='$cod_tarh'";
+    $result10=mysql_query($query1) or die("Error11");
+    if(mysql_num_rows($result10) >0)
+    {
+      $rf100=mysql_fetch_array($result10);
+	  $tarikh_jalase=$rf100["tarikh_jalase"];	
+	  $year=substr($tarikh_jalase,0,4);
+      $month=substr($tarikh_jalase,5,2);
+      $day=substr($tarikh_jalase,8,2);
+      $tarikh_jalase=$day."/".$month."/".$year;
+      
+    }
+    else
+      $tarikh_jalase=" نا معلوم ";
+ 
+   
+   
+   $query1="select * from gozaresh_gharardad where cod_tarh='$cod_tarh'";
+   $result500=mysql_query($query1)or die("error12");
+   if(mysql_num_rows($result500) > 0)
+   {
+   	$gozaresh_cnt=mysql_num_rows($result500);
+   }
+   else
+   	$gozaresh_cnt=0;
+
+   
+   
+   $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	
+   $result1=mysql_query($query1) or die("Error14");
+   $query="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+    
+   if(mysql_num_rows($result) > 0 || mysql_num_rows($result1) > 0)
+   {
+   	$i=0;
+  
+	while($row_fetched1=mysql_fetch_array($result1))
+    {
+      
+      $cod_mojri=$row_fetched1["email"];
+      if($exists==1)
+      if(strcmp($cod_mojri,$mojri)==0)
+      {
+   	    $checked="1";
+      }
+      else
+      {
+   	    $checked="";
+      }
+  
+     if(strcmp($checked,"1")==0)
+     { 
+      $name_family=$row_fetched1["name"]." ".$row_fetched1["family"];
+     }
+ 
+   }
+ 
+ 
+ 
+   while($row_fetched=mysql_fetch_array($result))
+   {
+  
+    $cod_mojri=$row_fetched["mojri_code"];
+    
+    if($exists==1)
+      if(strcmp($cod_mojri,$mojri)==0)
+      {
+      	
+   	    $checked1="1";
+      }
+     else
+      {
+   	    $checked1="";
+      }
+   
+ 
+    if(strcmp($checked1,"1")==0)
+    {  
+      
+      $name_family=$row_fetched["name"]." ".$row_fetched["family"];
+  
+    }
+    
+   }
+ }
+else // if reccount of tarh  < =0
+{
+ $name_family="توسط مجري تعيين نشده";
+}
+
+//--------------------------------------------------------------------------
+if(strlen(trim($name_family)) <= 0)
+   $name_family="توسط مجري تعيين نشده";
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version=\"-1\" ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $eatebare_sazmanha=$row_fetched["eatebare_sazmanha"];
+  $tarh_type= $row_fetched["tarh_type"];
+  $nezarat_static= $row_fetched["nezarat"];
+  $entezar_static= $row_fetched["entezar"];
+  
+  
+  $q="select * from tarhtype where tarh_type='$tarh_type'";
+  $q_res=mysql_query($q) or die("Error");
+  $rf=mysql_fetch_array($q_res) or die("Error");
+  $tarh_type_desc=trim($rf["tarh_type_english_desc"]);
+   $tarh_type_desc="";
+  if(strcmp($tarh_type_desc,"HSR")==0)
+    $tarh_type_desc="(اچ اس آر)";
+  else
+  {
+  	$q="select * from tarh,tarhtype_2 where tarh.tarh_type_2=tarhtype_2.tarh_type and cod_tarh='$cod_tarh' and grant_tarh='1'";
+  	$q_res=mysql_query($q) or die("Error");
+  	if(mysql_num_rows($q_res) > 0)
+  	{
+  	  $rf_grant=mysql_fetch_array($q_res);
+	  $tarh_type_desc=$rf_grant["tarh_type_desc"];		
+	}  
+  }
+    
+  $q_payan_name="select * from tarh,darajeelmi  where  payan_name='1' and  cod_tarh='$cod_tarh' and darajeelmi.darajeelmi = tarh.payan_name_daraje_elmi";
+  $q_res=mysql_query($q_payan_name) or die("Error");
+  if(mysql_num_rows($q_res) > 0 )
+  {
+  	$rf_payanname=mysql_fetch_array($q_res);
+  	$maghtaa_payan_name=$rf_payanname["darajeelmi_english_desc"];
+  	$tarh_type_desc=$tarh_type_desc."($maghtaa_payan_name مقطع پايان نامه :)";
+  }
+    
+  if(strcmp($eatebare_sazmanha,'1')==0)
+   $eatebar_sazmanha="با تامين اعتبار از سازمانهاي ديگر";
+  else
+   $eatebar_sazmanha=""; 
+  
+  //-------------------- قسمت مربوط به عقد قرارداد
+  
+  $mablagh_aghd_gharardad = $row_fetched["mablagh_aghd_gharardad"];
+  
+  if($mablagh_aghd_gharardad  > 0)
+  {
+  	$a=($gozaresh_cnt-1)*$entezar_static;
+  	$b=($mablagh_aghd_gharardad*$nezarat_static)/100;
+  	// محاسبه گزارش دوم تا ماه نهايي ضربدر 5000 ريال
+  	$qr="select * from gozaresh_gharardad where cod_tarh='$cod_tarh' and marhale='2'";
+	$resultr=mysql_query($qr) or die("error15");
+	$rft=mysql_fetch_array($resultr);	
+	$second_gozaresh=$rft["date_gozaresh"]; 
+	 
+	$year=substr($second_gozaresh,0,4);
+    $month=substr($second_gozaresh,5,2);
+    $day=substr($second_gozaresh,8,2);
+  //  echo $year.":".$month.":".$day;
+    $month_remain=0;
+  //  echo $end_time."<br>";
+    for($k=1;$k<=$time_month;$k++)
+    {      	
+      $month=$month+1;
+      if($month>12)
+      {
+        $month=1;
+        $year=$year+1;
+      }
+      //$month1=str_replace($month,"0","");
+     // $month1=trim($month1);
+     
+      $my_end_time=substr($end_time,3,7);
+	  //$date_tmp=$day."/".$month."/".$year;
+       $date_tmp=$month."/".$year; 
+      if(strcmp($my_end_time,$date_tmp)==0)
+      {
+        $month_remain=$k;  // mohasebe teadad mahe dovvom ta gozaresh akhar
+        
+      }
+     // echo $date_tmp.":".$my_end_time."<br>";  
+     }
+    // echo $month_remain.":".$date_tmp.":".$my_end_time.":".$second_gozaresh.":".$month_remain.":".$time_month.":".$month.":".$year.":".$end_time.":".$date_tmp.":".$my_end_time.":". $date_tmp.":".$end_time;
+   //  exit();
+  // exit();
+     $c=$month_remain*$entezar_static;
+     $c1=$c;
+	 //echo $a."<br>".$b."<br>".$c."<br>".$month_remain;
+	 //exit();
+	 $nezarat_koll=$a+$b+$c; // نظارت بخش اول کار
+
+	 
+	  // محاسبه هزينه پرسنلي و محاسبه ماليات آن
+ 	  $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+      $result00=mysql_query($query) or die("Error in selecting data from hazine personnel");
+      if(mysql_num_rows($result00) > 0)
+      {
+     
+        $mycount=0;
+       while($row_fetched00=mysql_fetch_array($result00))
+       {
+  
+       $my_summary = $row_fetched00["per_hour"]*$row_fetched00["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       }       
+      }
+      $hazine_personnel=$mycount;
+      
+      $darsad_50=$mablagh_aghd_gharardad*50/100;
+      
+      
+      if($hazine_personnel > $darsad_50)
+	  {	    	
+	   //$x=($mablagh_aghd_gharardad*5)/100; 	
+	   $y=($nezarat_koll*100)/95;
+	   //$maliat_koll=$x+$y;
+	   $aa=($mablagh_aghd_gharardad-$hazine_personnel)*100/95;
+	   $mablagh_koll=$hazine_personnel+$y+$aa;
+	   $nezarat_maliat=$nezarat_koll*100/95;
+	  }
+	  else
+	   {
+	   //	$mablagh_aghd_gharardad=($mablagh_aghd_gharardad*100)/95;
+	   	//$maliat_koll=($mablagh_aghd_gharardad+$nezarat_koll)*100/95;
+	   	$mablagh_koll=$mablagh_aghd_gharardad+$nezarat_koll;
+	   	$mablagh_koll=$mablagh_koll*100/95;
+	   	$nezarat_maliat=$nezarat_koll*100/95;
+	   }
+	  
+	  /*
+      $x=($hazine_personnel*5)/100;
+     	  
+      $y=($nezarat_koll*5)/100;
+      $maliat_koll=$x+$y;
+	  */
+
+  	 //-------------------marhale 1 ------------------------------------------
+ 
+	  
+	  $query="select * from gozaresh_gharardad where marhale='0' and cod_tarh='$cod_tarh'";
+      $result88=mysql_query($query) or die("Error");
+      if(mysql_num_rows($result88) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result88);
+	    if($hazine_personnel > $darsad_50)
+	    {
+	      $mablagh_marhale_0=$rf66["mablagh"]*$mablagh_koll/100;
+	      $maliat_marhale_0=$mablagh_marhale_0*5/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0;
+		   $mablagh_khales_mojri_0= $mablagh_khales_mojri_0-$hagh_ol_zahme_karshenasi_0;
+	      
+	  		
+	    }
+	    else
+	    {
+	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	      $mablagh_marhale_0=($darsad_marhale+($darsad_marhale/100))*100/95;
+	      $maliat_marhale_0=$mablagh_marhale_0*5/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0-$hagh_ol_zahme_karshenasi_0;	      	      
+	  		      
+	    }
+	    
+	    
+	  	
+	  }
+	//  echo "mohsen <br>".$end_time."<br>".$month_remain."<br>".$mablagh_marhale_0."<br>".$mablagh_aghd_gharardad."<br>".$maliat_1."<br>".$hazine_personnel;
+	  //exit();
+	   //$mablagh_koll_tarh=$maliat_koll+$nezarat_koll+$mablagh_aghd_gharardad;
+	  
+	  //-------------------marhale Nahayee ------------------------------------------
+	  
+	  $a=100000;
+	  $query="select * from gozaresh_gharardad where marhale='100' and cod_tarh='$cod_tarh'";
+      $result=mysql_query($query) or die("Error");
+      $b=0;
+	  if(mysql_num_rows($result) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result);
+	   if($hazine_personnel > $darsad_50)
+       {
+  	      $mablagh_marhale_end=$rf66["mablagh"]*$mablagh_koll/100;
+  	      
+  	      $nezarat=125000+$mablagh_marhale_end/100;
+      	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	      $maliat_marhale_end=$mablagh_marhale_end*5/100;
+	      $hagh_ol_zahme_karshenasi_end=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100+$month_remain*$entezar_static;
+	  	
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end;
+	      $mablagh_khales_mojri_end=$mablagh_khales_mojri_end-$hagh_ol_zahme_karshenasi_end;
+	      $hagh_ol_zahme_karshenasi_end=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100+$month_remain*$entezar_static;
+	  		
+        }
+        else
+        {
+  	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+  	      $hagh_ol_zahme_karshenasi_end=100000+($darsad_marhale/100)+$month_remain*$entezar_static;    	      
+	      $mablagh_marhale_end=($darsad_marhale+$hagh_ol_zahme_karshenasi_end)*100/95;
+	      $maliat_marhale_end=$mablagh_marhale_end*5/100;
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end-$hagh_ol_zahme_karshenasi_end;
+	      //echo $darsad_marhale.":".$hagh_ol_zahme_karshenasi_end.":".$mablagh_marhale_end.":".$month_remain;
+	      ///();
+	     
+	     
+        }
+        
+        
+	 $date=$rf66["date_gozaresh"];
+ $year=substr($date,0,4);
+ $month=substr($date,5,2);
+ $day=substr($date,8,2);
+ $date_end=$day."/".$month."/".$year; 
+	   
+	  } 
+	   
+	 
+  }
+  
+ 
+ 
+//$mablagh=$nezarat_koll+$maliat_koll+$mablagh_aghd_gharardad;
+
+  
+  $emtiaz1=($mablagh_koll/10000000)*2.5;
+  $int_emtiaz=(int)$emtiaz1;
+  $real_emtiaz=$emtiaz1-$int_emtiaz;
+  if($real_emtiaz > .75)
+    $int_emtiaz++;  
+
+    
+  $cod_daneshkade = $row_fetched["cod_daneshkade"];
+  $query="select * from daneshkade where cod_daneshkade='$cod_daneshkade' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $daneshkade_name=$row_fetched["daneshkade_name"];
+  
+  if(strlen(trim($daneshkade_name)) <=0)
+    $daneshkade_name="تعريف نشده";
+  
+if($start_time==0)
+  $start_time="تعريف نشده";
+    
+//if($end_time==0)
+ // $end_time="تعريف نشده";
+  
+if($time_month==0)
+  $time_month="تعريف نشده"; 
+
+$mablagh_koll_tarh=number_format($mablagh_koll_tarh);
+ $year_tarh=substr($cod_tarh,0,2);
+ $rank=substr($cod_tarh,4,1);
+ $query="select * from rank where rank='$rank' and year='$year_tarh'";
+  
+ $res=mysql_query($query) or die("Rank Error");
+ if(mysql_num_rows($res) > 0)
+ {
+ 	$rf_rank=mysql_fetch_array($res);
+ 	$jalase_date=$rf_rank["jalase_date"];
+ }
+ else
+   $jalase_date="تعريف نشده";
+    
+ $tarikh_jalase="6/4/1385";
+ $tarikh_jalase=$jalase_date;
+$y=substr($tarikh_jalase,0,4);
+$m=substr($tarikh_jalase,5,2);
+$d=substr($tarikh_jalase,8,2); 
+$tarikh_jalase="$d / $m / $y";
+ /*
+if(strcmp($tarh_type_desc,'HSR')==0) 
+$tarh_type_desc="(HSR)"; 
+else 
+$tarh_type_desc="";
+
+*/
+ 
+header('Content-type: application/msword');
+?>
+{\rtf1\adeflang1025\ansi\ansicpg1252\uc1\adeff37\deff0\stshfdbch0\stshfloch0\stshfhich0\stshfbi0\deflang1033\deflangfe1033{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f35\fswiss\fcharset0\fprq2{\*\panose 020b0604030504040204}Tahoma;}
+{\f36\fbidi \fnil\fcharset178\fprq2{\*\panose 00000400000000000000}Traffic{\*\falt Times New Roman};}{\f37\fbidi \fnil\fcharset178\fprq2{\*\panose 02010000000000000000}Traditional Arabic;}
+{\f38\fbidi \fnil\fcharset178\fprq2{\*\panose 00000400000000000000}Yagut;}{\f39\fbidi \fnil\fcharset178\fprq2{\*\panose 00000400000000000000}Zar{\*\falt Courier New};}{\f591\froman\fcharset238\fprq2 Times New Roman CE;}
+{\f592\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f594\froman\fcharset161\fprq2 Times New Roman Greek;}{\f595\froman\fcharset162\fprq2 Times New Roman Tur;}{\f597\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}
+{\f598\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f941\fswiss\fcharset238\fprq2 Tahoma CE;}{\f942\fswiss\fcharset204\fprq2 Tahoma Cyr;}{\f944\fswiss\fcharset161\fprq2 Tahoma Greek;}{\f945\fswiss\fcharset162\fprq2 Tahoma Tur;}
+{\f946\fbidi \fswiss\fcharset177\fprq2 Tahoma (Hebrew);}{\f947\fbidi \fswiss\fcharset178\fprq2 Tahoma (Arabic);}{\f948\fswiss\fcharset186\fprq2 Tahoma Baltic;}{\f949\fswiss\fcharset163\fprq2 Tahoma (Vietnamese);}
+{\f950\fswiss\fcharset222\fprq2 Tahoma (Thai);}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;\red255\green255\blue0;\red255\green255\blue255;
+\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{\rtlpar 
+\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \snext0 Normal;}{\s1 \rtlpar 
+\qr \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 1;}{\s2 \rtlpar 
+\qr \qk0\li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel1\adjustright\rin0\lin0\itap0 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 2;}{\s3 \rtlpar 
+\qc \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel2\adjustright\rin0\lin0\itap0 \rtlch \ab\af39\afs24\alang1065 \ltrch \b\fs24\cf6\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 3;}{\s4 \rtlpar 
+\qr \qk0\li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel3\adjustright\rin0\lin0\itap0 \rtlch \af38\afs32\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 4;}{\*\cs10 \additive \ssemihidden 
+Default Paragraph Font;}{\*\ts11\tsrowd\trftsWidthB3\trpaddl108\trpaddr108\trpaddfl3\trpaddft3\trpaddfb3\trpaddfr3\trcbpat1\trcfpat1\tscellwidthfts0\tsvertalt\tsbrdrt\tsbrdrl\tsbrdrb\tsbrdrr\tsbrdrdgl\tsbrdrdgr\tsbrdrh\tsbrdrv 
+\ql \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af0\afs20 \ltrch \fs20\lang1024\langfe1024\cgrid\langnp1024\langfenp1024 \snext11 \ssemihidden Normal Table;}{\s15 \rtlpar 
+\qr \qk0\li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext15 Body Text;}{\s16 \rtlpar 
+\qr \qk0\fi720\li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext16 Body Text Indent;}{\s17 \rtlpar 
+\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af35\afs16\alang1025 \ltrch \f35\fs16\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext17 \ssemihidden Balloon Text;}{\s18 \rtlpar \qr \li0\ri0\widctlpar
+\tqc\tx4320\tqr\tx8640\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext18 \styrsid2914481 header;}{\s19 \rtlpar \qr \li0\ri0\widctlpar
+\tqc\tx4320\tqr\tx8640\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext19 \styrsid2914481 footer;}{\*\cs20 \additive \rtlch \af0 \ltrch 
+\ul\cf2 \sbasedon10 \styrsid2914481 Hyperlink;}}{\*\latentstyles\lsdstimax156\lsdlockeddef0}{\*\rsidtbl \rsid16267\rsid343431\rsid608186\rsid673844\rsid798937\rsid853461\rsid919319\rsid919858\rsid927716\rsid1049511\rsid1066059\rsid1250279\rsid1266861
+\rsid1472089\rsid1587388\rsid1777417\rsid1795208\rsid1854815\rsid2045652\rsid2107697\rsid2318492\rsid2825459\rsid2914481\rsid2958171\rsid3218730\rsid3355649\rsid3554799\rsid3828176\rsid4069544\rsid4161533\rsid4396541\rsid4399856\rsid4407687\rsid4417574
+\rsid4470025\rsid4659032\rsid4731379\rsid4749634\rsid4991052\rsid5129094\rsid5178594\rsid5250191\rsid5325060\rsid5387996\rsid5390848\rsid5464774\rsid5909492\rsid6050599\rsid6244751\rsid6506495\rsid6705909\rsid6885610\rsid6890229\rsid6903222\rsid6905490
+\rsid7079046\rsid7289320\rsid7407566\rsid7484636\rsid7543827\rsid7680668\rsid7864761\rsid7882282\rsid7891092\rsid8002676\rsid8065312\rsid8078368\rsid8280521\rsid8592691\rsid8982371\rsid8999455\rsid9117681\rsid9241301\rsid9376798\rsid9400036\rsid9515313
+\rsid9634394\rsid9700382\rsid9772757\rsid10182945\rsid10490937\rsid10500659\rsid10642672\rsid10757660\rsid10767921\rsid10903096\rsid11148059\rsid11287442\rsid11419279\rsid11608666\rsid11615256\rsid11823105\rsid11953766\rsid12024141\rsid12132612
+\rsid12199305\rsid12484260\rsid12517466\rsid12681127\rsid13189995\rsid13378619\rsid13384352\rsid13978958\rsid14028665\rsid14032289\rsid14099708\rsid14106594\rsid14242203\rsid14365183\rsid14382240\rsid14638574\rsid14770377\rsid14901185\rsid14970624
+\rsid15293878\rsid15533339\rsid15732841\rsid15887377\rsid16153969\rsid16274844\rsid16451038\rsid16525789\rsid16531818\rsid16593965\rsid16723515}{\*\generator Microsoft Word 11.0.5604;}{\info{\upr{\title ????? ?????}
+{\*\ud\uc0{\title {\uc1\u1576 ?\u1575 ?\u1587 ?\u1605 ?\u1607 ? \u1578 ?\u1593 ?\u1575 ?\u1604 ?\u1610 ?}}}}{\author sce}{\operator Owner}{\creatim\yr2006\mo10\dy6\hr15\min22}{\revtim\yr2006\mo10\dy6\hr16\min46}{\printim\yr2006\mo10\dy16\hr11\min14}
+{\version3}{\edmins10}{\nofpages2}{\nofwords1227}{\nofchars6994}{\*\company MRT www.Win2Farsi.com}{\nofcharsws8205}{\vern24689}}\paperw11906\paperh16838\margl1008\margr1008\margt1008\margb1008\rtlsect\rtlgutter 
+\widowctrl\ftnbj\aenddoc\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\formshade\horzdoc\dgmargin\dghspace180\dgvspace180\dghorigin1008\dgvorigin1008\dghshow1\dgvshow1
+\jexpand\viewkind1\viewscale150\pgbrdrhead\pgbrdrfoot\splytwnine\ftnlytwnine\htmautsp\nolnhtadjtbl\useltbaln\alntblind\lytcalctblwd\lyttblrtgr\lnbrkrule\ApplyBrkRules\nojkernpunct\rsidroot10903096 \fet0{\*\ftnsep \rtlpar \pard\plain \rtlpar
+\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch \af37 \ltrch \insrsid6885610 \chftnsep 
+\par }}{\*\ftnsepc \rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch \af37 \ltrch \insrsid6885610 \chftnsepc 
+
+\par }}{\*\aftnsep \rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch \af37 \ltrch \insrsid6885610 \chftnsep 
+
+\par }}{\*\aftnsepc \rtlpar \pard\plain \rtlpar\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch \af37 \ltrch \insrsid6885610 
+\chftnsepc 
+\par }}\rtlpar \sectd \rtlsect\rtlgutter\linex0\headery706\footery706\colsx708\endnhere\sectlinegrid360\sectdefaultcl\sectrsid10757660\sftnbj {\footer \rtlpar \pard\plain \rtlpar\s19\qc \li0\ri0\widctlpar
+\tqc\tx4320\tqr\tx8640\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid16267 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 
+\'c8\'e1\'e6\'c7\'d1 \'df\'d4\'c7\'e6\'d1\'d2-}{\rtlch \af36\afs16\alang1065 \ltrch \fs16\insrsid2045652  }{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 \'e4\'c8\'d4 \'ce\'ed\'c7\'c8\'c7\'e4 \'de\'cf\'d3-}{\rtlch 
+\af36\afs16\alang1065 \ltrch \fs16\insrsid2045652  }{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 \'d3\'c7\'d2\'e3\'c7\'e4 \'e3\'d1\'df\'d2\'ed \'cf\'c7\'e4\'d4}{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid16267 \'90}{\ltrch 
+\afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 \'c7\'e5-}{\rtlch \af36\afs16\alang1065 \ltrch \fs16\insrsid2045652  }{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 \'d8\'c8\'de\'e5 \'d4\'d4\'e3
+\par }\pard \rtlpar\s19\qc \li0\ri0\widctlpar\tqc\tx4320\tqr\tx8640\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid4399856 {\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 \'ca\'e1\'dd\'e4}{\rtlch \af36\afs16\alang1065 
+\ltrch \fs16\insrsid4399856  }{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 :}{\rtlch \af36\afs16\alang1065 \ltrch \fs16\insrsid4399856  }{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 88987381}{\rtlch 
+\af36\afs16\alang1065 \ltrch \fs16\insrsid4399856            }{\ltrch \afs16 \rtlch \f36\fs16\lang1065\insrsid2914481\charrsid1250279 \'ca\'e1\'dd\'df\'d3}{\rtlch \af36\afs16\alang1065 \ltrch \fs16\insrsid4399856  }{\ltrch \afs16 \rtlch 
+\f36\fs16\lang1065\insrsid2914481\charrsid1250279 : 88987382
+\par }\pard \rtlpar\s19\qc \li0\ri0\widctlpar\tqc\tx4320\tqr\tx8640\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid2914481 {\field{\*\fldinst {\rtlch \af37\alang1065 \ltrch \insrsid2914481  HYPERLINK "http://www.tums.ac.ir/research/" }{\rtlch 
+\af37\alang1065 \ltrch \insrsid11608666 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000017000000190000007700770077002e00740075006d0073002e00610063002e00690072002f00720065007300650061007200630068002f000000e0c9ea79f9bace118c8200aa004ba90b4000000068007400740070003a002f002f007700770077002e00740075006d00
+73002e00610063002e00690072002f00720065007300650061007200630068002f00000000}}}{\fldrslt {\rtlch \af37\alang1065 \ltrch \cs20\ul\cf2\insrsid2914481\charrsid4731379 www.tums.ac.ir/research/}}}{\rtlch \af37\alang1065 \ltrch \insrsid2914481 
+\par email:resdeputy@tums.ac.ir
+\par }}{\*\pnseclvl1\pnucrm\pnqc\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl2\pnucltr\pnqc\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl3\pndec\pnqc\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl4\pnlcltr\pnqc\pnstart1\pnindent720\pnhang 
+{\pntxta )}}{\*\pnseclvl5\pndec\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}
+{\*\pnseclvl8\pnlcltr\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnqc\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}\pard\plain \rtlpar\qr \li0\ri0\widctlpar
+\tx725\tx2660\tx4715\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid798937 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch \af37 \ltrch \lang1024\langfe1024\noproof\insrsid11953766 
+{\shp{\*\shpinst\shpleft4851\shptop1080\shpright6660\shpbottom1980\shpfhdr0\shpbxcolumn\shpbxignore\shpbypara\shpbyignore\shpwr3\shpwrk0\shpfblwtxt0\shpz0\shplid1026{\sp{\sn shapeType}{\sv 202}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}
+{\sp{\sn lTxid}{\sv 65536}}{\sp{\sn hspNext}{\sv 1026}}{\sp{\sn fRecolorFillAsPicture}{\sv 0}}{\sp{\sn fUseShapeAnchor}{\sv 0}}{\sp{\sn fFilled}{\sv 0}}{\sp{\sn fLine}{\sv 0}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}{\shptxt \rtlpar 
+\pard\plain \rtlpar\qc \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid14365183 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ab\ai\afs12 \rtlch 
+\b\i\f36\fs12\lang1065\insrsid14365183\charrsid9376798 \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'da\'e1\'e6\'e3 \'81\'d2\'d4\'df\'ed \'e6 \'ce\'cf\'e3\'c7\'ca \'c8\'e5\'cf\'c7\'d4\'ca\'ed \'cf\'d1\'e3\'c7\'e4\'ed \'ca\'e5\'d1\'c7\'e4
+\par }{\ltrch \ab\ai\afs16 \rtlch \b\i\f36\fs16\lang1065\insrsid14365183\charrsid14901185 \'e3\'da\'c7\'e6\'e4\'ca \'81\zwj\'8e\'e6\'e5\'d4\'ed}{\rtlch \ab\ai\af36\afs16\alang1065 \ltrch \b\i\fs16\insrsid14365183\charrsid14901185 
+\par }}}{\shprslt{\*\do\dobxcolumn\dobypara\dodhgt8192\dptxbx\dptxlrtb{\dptxbxtext\rtlpar \pard\plain \rtlpar\qc \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid14365183 \rtlch \af37\afs20\alang1025 \ltrch 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ab\ai\afs12 \rtlch \b\i\f36\fs12\lang1065\insrsid14365183\charrsid9376798 \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'da\'e1\'e6\'e3 \'81\'d2\'d4\'df\'ed \'e6 \'ce\'cf\'e3\'c7\'ca \'c8\'e5\'cf\'c7\'d4
+\'ca\'ed \'cf\'d1\'e3\'c7\'e4\'ed \'ca\'e5\'d1\'c7\'e4
+\par }{\ltrch \ab\ai\afs16 \rtlch \b\i\f36\fs16\lang1065\insrsid14365183\charrsid14901185 \'e3\'da\'c7\'e6\'e4\'ca \'81\zwj\'8e\'e6\'e5\'d4\'ed}{\rtlch \ab\ai\af36\afs16\alang1065 \ltrch \b\i\fs16\insrsid14365183\charrsid14901185 
+\par }}\dpx4851\dpy1080\dpxsize1809\dpysize900\dpfillfgcr255\dpfillfgcg255\dpfillfgcb255\dpfillbgcr255\dpfillbgcg255\dpfillbgcb255\dpfillpat0\dplinehollow}}}
+{\shp{\*\shpinst\shpleft360\shptop180\shpright2520\shpbottom1440\shpfhdr0\shpbxcolumn\shpbxignore\shpbypara\shpbyignore\shpwr2\shpwrk0\shpfblwtxt0\shpz1\shplid1027{\sp{\sn shapeType}{\sv 202}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}
+{\sp{\sn lTxid}{\sv 131072}}{\sp{\sn hspNext}{\sv 1027}}{\sp{\sn fRecolorFillAsPicture}{\sv 0}}{\sp{\sn fUseShapeAnchor}{\sv 0}}{\sp{\sn fFilled}{\sv 0}}{\sp{\sn fLine}{\sv 0}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}{\shptxt \rtlpar 
+\pard\plain \rtlpar\qc \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5387996 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \rtlch 
+\f36\fs20\lang1065\insrsid14242203\charrsid343431 \'ca\'c7\'d1\'ed\'ce}{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431  :}{\ltrch \rtlch \f36\fs20\lang1065\insrsid14242203\charrsid343431  }{\ltrch \rtlch 
+\f36\fs20\lang1065\insrsid7882282\charrsid343431 ...........................}{\ltrch \rtlch \f36\fs20\lang1065\insrsid13378619\charrsid343431 
+\par }{\ltrch \rtlch \f36\fs20\lang1065\insrsid14242203\charrsid343431 \'d4\'e3\'c7\'d1\'e5}{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431  : .........................}{\ltrch \rtlch \f36\fs20\lang1065\insrsid14242203\charrsid343431 
+\par \'81\'ed\'e6\'d3\'ca}{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431  : ......................}{\rtlch \af36\alang1065 \ltrch \insrsid14242203\charrsid343431 
+\par }}}{\shprslt{\*\do\dobxcolumn\dobypara\dodhgt8193\dptxbx\dptxlrtb{\dptxbxtext\rtlpar \pard\plain \rtlpar\qc \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5387996 \rtlch \af37\afs20\alang1025 \ltrch 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \rtlch \f36\fs20\lang1065\insrsid14242203\charrsid343431 \'ca\'c7\'d1\'ed\'ce}{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431  :}{\ltrch \rtlch 
+\f36\fs20\lang1065\insrsid14242203\charrsid343431  }{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431 ...........................}{\ltrch \rtlch \f36\fs20\lang1065\insrsid13378619\charrsid343431 
+\par }{\ltrch \rtlch \f36\fs20\lang1065\insrsid14242203\charrsid343431 \'d4\'e3\'c7\'d1\'e5}{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431  : .........................}{\ltrch \rtlch \f36\fs20\lang1065\insrsid14242203\charrsid343431 
+\par \'81\'ed\'e6\'d3\'ca}{\ltrch \rtlch \f36\fs20\lang1065\insrsid7882282\charrsid343431  : ......................}{\rtlch \af36\alang1065 \ltrch \insrsid14242203\charrsid343431 
+\par }}\dpx360\dpy180\dpxsize2160\dpysize1260\dpfillfgcr255\dpfillfgcg255\dpfillfgcb255\dpfillbgcr255\dpfillbgcg255\dpfillbgcb255\dpfillpat0\dplinehollow}}}}{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid3554799\charrsid15732841 \tab }{\rtlch 
+\af36\afs16\alang1065 \ltrch \fs16\cf1\insrsid11608666\charrsid15732841 {\*\shppict{\pict{\*\picprop\shplid1025{\sp{\sn shapeType}{\sv 75}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}{\sp{\sn pibFlags}{\sv 2}}{\sp{\sn fRecolorFillAsPicture}{\sv 0}}
+{\sp{\sn fUseShapeAnchor}{\sv 0}}{\sp{\sn fLine}{\sv 0}}{\sp{\sn fLayoutInCell}{\sv 1}}{\sp{\sn fLayoutInCell}{\sv 1}}}\picscalex710\picscaley673\piccropl0\piccropr0\piccropt0\piccropb0
+\picw356\pich314\picwgoal202\pichgoal178\jpegblip\bliptag-1890754380{\*\blipuid 8f4d60b4fe90953d2b38f07b9b10621e}ffd8ffe000104a46494600010101025802580000ffdb0043000402030303020403030304040404050906050505050b080806090d0b0d0d0d0b0c0c0e1014110e
+0f130f0c0c1218121315161717170e11191b19161a14161716ffdb0043010404040505050a06060a160f0c0f1616161616161616161616161616161616161616
+161616161616161616161616161616161616161616161616161616161616ffc0001108004a005403012200021101031101ffc4001f0000010501010101010100
+000000000000000102030405060708090a0bffc400b5100002010303020403050504040000017d01020300041105122131410613516107227114328191a10823
+42b1c11552d1f02433627282090a161718191a25262728292a3435363738393a434445464748494a535455565758595a636465666768696a737475767778797a
+838485868788898a92939495969798999aa2a3a4a5a6a7a8a9aab2b3b4b5b6b7b8b9bac2c3c4c5c6c7c8c9cad2d3d4d5d6d7d8d9dae1e2e3e4e5e6e7e8e9eaf1
+f2f3f4f5f6f7f8f9faffc4001f0100030101010101010101010000000000000102030405060708090a0bffc400b5110002010204040304070504040001027700
+0102031104052131061241510761711322328108144291a1b1c109233352f0156272d10a162434e125f11718191a262728292a35363738393a43444546474849
+4a535455565758595a636465666768696a737475767778797a82838485868788898a92939495969798999aa2a3a4a5a6a7a8a9aab2b3b4b5b6b7b8b9bac2c3c4
+c5c6c7c8c9cad2d3d4d5d6d7d8d9dae2e3e4e5e6e7e8e9eaf2f3f4f5f6f7f8f9faffda000c03010002110311003f00fbfa9ace8a70cea0fb9a757e6aff00c15b
+ae6ea1fda86cd21bbb8897fe11bb63b63999467ce9fb034d2b89bb1fa4fe6c5ff3d13fefa1479b17fcf44ffbe857e2c68fe11f893ab68e9ab695e1bf16df69f2
+2b325e5b5a5cc9032a92188900db8041c9cf18359fe1fd37c5baf6a4da76876bae6a7788096b6b2f3a69401d4ed5c9e29f28b98fdb95218654823d452d7e3efc
+32f1e7c5ef809e39b1d7bcaf12e91199435c69bab433c56fa8c40fcd1b24800248ce1872a7906bddbfe0a45f1cfc67e21f885a7fc32f04ddea965a53e976b797
+36fa717171a94b71109550ecf98a2c6c9f28ea49ce7030ac3b9fa13e6c5ff3d13fefa1479b17fcf44ffbe857e2b6bfe14f88da169a751d77c3de2bd2ecc30537
+17d6b7304793d06e70067da93c39e16f887e20b037da0681e2ad5ad436c33d85b5c4e81bd0b20201f6a7615cfdaaf362ff009e89ff007d0a7d7e20d8cdab5af8
+920b4bbb9d4209e0bd48e68659a4578d838055949c820820835fb7907fa94ff74526ac34ee3a8a28a430afcd0ff82ba7fc9d2597fd8b56dffa3a7afd2fafcd0f
+f82ba7fc9d2597fd8b56dffa3a7a71dc52d8c7f8c7f10fc43a3fec37f097e1fe937f7167a7eb76ba85e6a9e4c850dca477b22a44c473b32598af4242e7a56378
+0fe1c7c54f889e0af0a789fe107c2e1a54be1b125acde21d2b5548ae351bb470de7387752acb9038c8393ce300657c7bff00937af8263fea05a9ff00e9c24afa
+c3fe0947f123c1765f00b56f0a6a3af5ad8ea9a25edcea97915d38882da3053e7063c155da437f778cf5154f412dcdcf177c77f82be22f838ff0d3f682d560d3
+fc5034f5b4f11e9cfa7cb2b595e84c3491bc68ca181c3a943c669fe1af88bfb3b7c21f897a86ade2bf14411f8bf50d274b8bed1269d3c8f0d9a5840b1aa32a10
+a1f05ce0e4ee00fddaf833f6a3f13e91e33fda03c63e2ad02779f4bd5354966b495d0a1923c001b07900e3233db15d2fedc441f8f7c1ff00996f45ff00d37414
+ac173d9bf681f097c74f8dff001b6d7e24695e039fc57f0f60b8867f0ed84da8c705a5f580dadb8c66457533004b12036180ec05796fecb1f14754f0afed83a6
+6a9e18b15f0fe8fe23d7e3b1bdf0fdacccf6a96f34a23f2c03d4c658156c7047180715f697eca9f1abe1ae9bfb12e91addff00896dede0f086910e9fac452713
+c170a9b44623eac5c8f931f7bf038fcf0f8112acdfb45f83a75c8597c5762e33d706ed08fe742017e3267fe1a43c539393ff000975e73ff6f8f5fb3507fa84ff
+00747f2afc65f8cbff002725e2affb1baf3ff4b1ebf66a0ff509fee8fe543088ea28a2a4a0afcd0ff82ba7fc9d2597fd8b56dffa3a7afd2fafcd0ff82ba7fc9d
+2597fd8b56dffa3a7a71dc52d8f5af865f05bc1bf173fe09c3e1493c457d6da2ea3a1d9df5c69faf4a42ad8e2e662c2527ac270370ed8c8e457c0d729e45d4d0
+c77092aa3347e6c2c764ab9c646704a9c6791d3b57bb7c6df18f88ecbf637f845e08b2d4a4b7d0f54d3efef6feda2f97ed5225f48a81cf52a3aede99e4e70317
+ff0063cfd94f58f8dde0ed5fc5575aea689a5c024b5d2e408257babc500fcebfc312e464f539e3a1aad891bff04eaf831e10f8b9f14ae5fc63ac5ab59e828973
+fd81bcacfaa73d4ffd31538dd8e4e40e01cd7d31ff00052ff817e06d6be19dcfc4c8eff4ff000cebba05aa442693f770ea7128c476c540ff00598f9632067f84
+fcbcafc13a847e33f83df172e208af1f48f147856fda3f3ad650c23953d08e1918763c1070476af5dff828d7c41f1678b3e2fd8e89acea6cfa5e9ba269d776b6
+510d90a4d71691cb2c857bb1672013d170077c96d46b63e7904ed2b9215882573c123a647b64fe66bed3ff0082577c11f06789a493e29ebdaa596ada8e8b79e5
+d8e8a8d93a74a395b89d4f563d63fe118ce4b0f978af84bfb17f8bbc6ffb3949f10a2d620b6d6750856f341d21b063bab7c13fbd93f81dc60a761c6efbdf2f98
+7ec81e2ff13781ff00690f0bcde1fd465b27d4758b6d335087ac77304b3aa3c722f43d4907a8201143d44b7317e30ffc9c778a7fec6dbbff00d2b7afd9b83fd4
+27fba3f957e32fc6418fda43c54076f175e7fe963d7ecd41fea13fdd1fca931c4751451525057e687fc15d3fe4e92cbfec5ab6ff00d1d3d7e97d7e687fc15d3f
+e4e92cbfec5ab6ff00d1d3d38ee296c79e7c7c8a51fb397c119cc6c227d1754457c70586a0e48fae08fcebdb3f613fda97e18fc1ff008143c21e2d8f5e6d47fb
+52e2eb36360258f63eddbf36f1cfca7b5792c9f1abc01acfecb1a0fc20f16fc3ed5aeaefc3ad34b61af58ea71472412c923be55190e54870aca4f38cf04023c3
+a4d9bdb66edb9f97775c7bd56e4dced3f697f16695e3bf8e9e2cf186842e069dacea0f736a2e23d926c2a00dcb9383c7ad75ff00b77db5c5a7ed01e55cc2f13f
+fc237a37caeb83c5842a7f26561f506a2fd8c62f82edf1774d9be2fea3a8dbc315d2358c5e4aff0067c92820afdaa4cee55dd8e36ed3fc440cd7d39ff055c5f8
+2575169926bbaa5f43e3e86d3fe25e9a444933496c492a2e8310ab1eedc54e7772d804134750e83fe017ed9bf077c19f027c2de0fd622f129d4347d1a0b2ba30
+6981e3f31102b6d6de3233debe39f800af7bfb49f833ecd1b399fc5964e8a07241ba43d3e95c3d7ae7eca1f13fc01f08fc651f8cb5df036abe27d76d370d3c8d
+42282d6cc90419021425a4c1201270327033c82d60b9ccfc65ff009391f157fd8dd79ffa58f5fb3507fa84ff00747f2afc4ff146b49e25f8afa8788e3b66b64d
+635c92f96067dc6212ce5f6923a91bb19f6afdb083fd427fba3f95290e23a8a28a9282be7ffda7bf64ff000afc6cf88d178c35af156b7a65cc3a7c76420b2484
+c65519d837cea4e7e73f957d0145007c73ff000ef0f87dff004503c55ff7eedbff008dd1ff000ef0f87dff004503c55ff7eedbff008dd7d8d453bb1591f057c6
+2ff827d4fa7f85ae350f873e32bad56fede32ffd99ab411a7dab03eea4a980ac7b06183ea3ad79d7eccffb2ef8ff00e3dcf3f8b7c67af5d687a45b38d3fed775
+0996f6e9add443e5c68c40558c2042cddd4800906bf4eab3bc2f0436fa53456f0c7127daee5b6a2851933b92703b92493ee68bb0b23e4a1ff04f0f87f8e7e20f
+8a73ff005cedbff8dd1ff0ef0f87dff4503c55ff007eedbff8dd7d8d451761647c7b69ff0004f5f87f05dc53af8ffc524c522b8063b6c120e7fe79fb57d82836a05f418a5a295c760a28a2803fffd9}}{\nonshppict{\pict\picscalex714\picscaley676\piccropl0\piccropr0\piccropt0\piccropb0
+\picw356\pich314\picwgoal202\pichgoal178\wmetafile8\bliptag-1890754380\blipupi600{\*\blipuid 8f4d60b4fe90953d2b38f07b9b10621e}010009000003060400000000e103000000000400000003010800050000000b0200000000050000000c020d000e00030000001e000400000007010400e1030000
+410b2000cc0018001a00000000000c000d0000000000280000001a0000001800000001001800000000008007000000000000000000000000000000000000ffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbdbdbdf7f7f7ffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffff0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcecece4a4a4a848484f7efefffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000ffffffffffffffffff8484844242424a42424242394242424242394a424239393921
+21183129291818182929214242424242394a42424242394242424242424a4a4acececeffffffffffffffffff0000ffffffffffffffffff6b6b63211818181810
+212118181810211818181810211818292929adadad636363212121181810211818181810211818181810211818211818c6c6c6ffffffffffffffffff0000ffff
+ffffffffffffff6b6b6b18101052524a7b7b7b393131181010181810211818948c8cffffffe7e7e752524a21181818101021181852524a84847b292921212118
+c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b6b21181884847b7b7b7b211818181818181010211818313131c6c6c67b7b732921211818101818
+18181810313129adadad424239211818c6c6c6ffffffffffffffffff0000ffffffffffffffffff6b6b6b18181073737339313118181852524a63636331312918
+18108c84843129291818104a4a4a636363393131181010736b6b423939212118c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b63211818736b6b
+423939181010c6c6c6f7f7f773736b181010848484292121292921b5b5b5ffffff6b6b6b1818186b63634a4242212118c6c6c6ffffffffffffffffff0000ffff
+ffffffffffffff6b6b6b181010736b6b393131181818c6c6c6ffffff736b6b1818187b7b7b292121212121bdbdbdffffff736b6b1810106b6b6b423939212118
+c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b6b211818736b6b423939181818636363adadad3129291818108c84842921212118185a5a52adad
+a53131292118186b6b6b424242211818c6c6c6ffffffffffffffffff0000ffffffffffffffffff6b6b6b181810847b7b7b7b7b18181818181821212118101031
+3129c6bdbd7b7b7b181818181810212118181810292929adadad423939212118c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b63211818848484
+fff7f76b6363211818181818212118b5b5b5fffffffff7f76b6b6b181810211818211818bdbdb5e7e7e7424242212118c6c6c6ffffffffffffffffff0000ffff
+ffffffffffffff6b6b6b181010848484d6d6d6424242181010181818181810847b7bf7f7f7d6d6d64242422118181810101818187b7b7bdedede423939212118
+c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b6b2118187373734a4a4a181810313131524a4a2118181818189c94943939392118182929215a52
+521818181818187b7b7b424239211818c6c6c6ffffffffffffffffff0000ffffffffffffffffff6b6b6b181810736b6b3931311818109c9c9ce7e7e7524a4a18
+1810847b7b292921211818949494e7e7e75252521810106b6363423939212118c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b63211818736b6b
+393939181010cececeffffff737373181010848484212121292921bdbdbdffffff736b6b1818186b6363424242212118c6c6c6ffffffffffffffffff0000ffff
+ffffffffffffff6b6b6b181010736b6b393131181810a5a5a5d6d6d6737373423939948c8c4a4242424242a5ada5d6cece635a5a1810106b6b63423939212118
+c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b6b2118187b7b73524a4a292921524a4a211821bdbdbdfff7f7dededed6d6d6ffffff6b6b6b2929
+29524a4a181818848484424239211818c6c6c6ffffffffffffffffff0000ffffffffffffffffff6b6b6b1818107b7b73a59c9c3131294239395a5a5aded6d6ad
+adad9494946b6363cececebdbdb53931314242394a4242bdb5b5393931212118c6bdbdffffffffffffffffff0000ffffffffffffffffff6b6b63211818292929
+42424229292121212139393942393918181894948c313129312929424239393131181818423939423939292118212118c6c6c6ffffffffffffffffff0000ffff
+ffffffffffffff736b6b1818102118181818182118181818102118181818184a4a4ad6d6d69c9494292929211818181818211818181818211818181810212121
+c6c6c6ffffffffffffffffff0000ffffffffffffffffffcec6c6adada5ada5a5adadadada5a5adadada5a5a5adadaddededefffffffff7f7c6c6c6ada5a5adad
+adada5a5adadadada5a5adadadadada5efefefffffffffffffffffff0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000ffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000040000002701ffff030000000000}}}{\rtlch \af36\afs16\alang1065 \ltrch \fs16\cf1\insrsid798937\charrsid15732841 \tab \tab }{\ltrch 
+\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid12199305\charrsid15732841  }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid798937\charrsid15732841 \'c8\'c7\'d3\'e3\'e5 \'ca\'da\'c7\'e1\'ed}{\ltrch \afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid13378619\charrsid15732841 
+\par }\pard \rtlpar\qr \li0\ri0\widctlpar\tx725\tqc\tx4945\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid1777417 {\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid13378619\charrsid15732841 \tab }{\ltrch \afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid3554799\charrsid15732841 \tab }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid7484636\charrsid15732841      }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'de\'d1\'c7\'d1\'cf\'c7\'cf
+
+\par }\pard \rtlpar\qc \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid11953766 {\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'d8\'d1\'cd\'e5\'c7\'ed \'81\'8e\'e6\'e5\'d4\'ed \'cf\'c7\'e4\'d4\'90
+\'c7\'e5
+\par }{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 (<? echo $daneshkade_name;?>)}{\rtlch \ab\af36\afs18\alang1065 \ltrch \b\fs18\cf1\insrsid14770377\charrsid15732841 
+\par }
+
+ {\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 <? echo $eatebar_sazmanha;?>}{\rtlch \ab\af36\afs18\alang1065 \ltrch \b\fs18\cf1\insrsid14770377\charrsid15732841 
+\par }
+{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 <? echo $tarh_type_desc ;?>}{\rtlch \ab\af36\afs18\alang1065 \ltrch \b\fs18\cf1\insrsid14770377\charrsid15732841 
+\par }
+\pard\plain \rtlpar\s3\qc \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel2\adjustright\rin0\lin0\itap0\pararsid5129094 \rtlch \ab\af39\afs24\alang1065 \ltrch \b\fs24\cf6\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \afs18 
+\rtlch \f36\fs18\cf1\lang1065\insrsid3218730\charrsid15732841     }{\ltrch \afs18 \rtlch \f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'98\'cf \'d8\'d1\'cd : <?  echo $cod_tarh ;?>}{\rtlch \af36\afs18 \ltrch \fs18\cf1\insrsid14770377\charrsid15732841 
+\par } \pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 1 - \'d8\'d1\'dd\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par }\pard \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid6506495 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf}{
+\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'ed\'e4}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'c2\'de\'c7\'ed}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid5909492\charrsid15732841  \'cf\'df
+\'ca\'d1}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  /\'ce\'c7\'e4\'e3}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid5909492\charrsid15732841  \'cf\'df\'ca\'d1 }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 <? echo $name_family;?>}{\rtlch \af36\afs18\alang1065 \ltrch \i\fs18\cf1\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   }{\ltrch \ai\afs16 
+\rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'e5 \'e4\'e3\'c7\'ed\'e4\'cf\'90\'ed \'c7\'d2 \'d8\'d1\'dd \'e3\'cc\'d1\'ed\'c7\'e4 \'d8\'d1\'cd \'ca\'cd\'de\'ed\'de\'c7\'ca\'ed \'df\'e5 \'cf\'d1 \'81\'ed\'d4 \'e4\'e6\'ed\'d3 \'d8\'d1
+\'cd }{\rtlch \af36\afs16 \ltrch \i\fs16\cf1\insrsid14770377\charrsid15732841  ( proposal )}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 (\'81\'ed\'e6\'d3\'ca \'d4\'e3\'c7\'d1\'e5 \'ed\'df \'de\'d1\'c7\'d1\'cf\'c7\'cf)
+\'a1 \'c7\'d3\'c7\'e3\'ed \'c2\'e4\'c7\'e4 \'de\'ed\'cf \'90\'d1\'cf\'ed\'cf\'e5 \'e6 \'c7\'d2 \'c7\'ed\'e4 \'81\'d3\'a1 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e4\'c7\'e3\'ed\'cf\'e5 \'e3\'ed \'d4\'e6\'cf \'c8\'e5 \'e4\'d4\'c7\'e4\'ed }{\ltrch \ab\ai\afs18 
+\rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 :}{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $daneshkade_name;?>}{\ltrch 
+\ai\afs18 \rtlch \f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   }{\rtlch \af36\afs18\alang1065 \ltrch \i\fs18\cf1\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e6\'c7\'d2 \'d8\'d1\'dd \'cf\'ed\'90\'d1\'a1 \'e3\'da\'c7\'e6\'e4\'ca \'81\'8e\'e6\'e5\'d4\'ed \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'da\'e1\'e6\'e3 \'81\'d2\'d4\'df\'ed \'ca\'e5\'d1\'c7\'e4 \'c8\'e5 \'e4
+\'d4\'c7\'e4\'ed:}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14028665\charrsid15732841  \'ca\'e5\'d1\'c7\'e4-}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'ca\'de\'c7\'d8\'da \'c8\'e1\'e6\'c7\'d1 \'df\'d4\'c7\'e6\'d1\'d2 \'e6 \'ce\'ed\'c7\'c8\'c7\'e4 \'de\'cf\'d3\'a1 \'d3\'c7\'d2\'e3\'c7\'e4 \'e3\'d1\'df\'d2\'ed \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'da\'e1
+\'e6\'e3 \'81\'d2\'d4\'df\'ed \'ca\'e5\'d1\'c7\'e4}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid5909492\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid6244751\charrsid15732841 - }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid5909492\charrsid15732841 \'d8\'c8\'de\'e5 \'d4\'d4\'e3}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'df\'e5 \'c7\'d2 \'c7\'ed\'e4 \'81\'d3\'a1 \'e3\'da\'c7\'e6\'e4\'ca}{\ltrch \ai\afs16 
+\rtlch \f36\fs16\cf1\lang1065\insrsid5909492\charrsid15732841  \'81\'8e\'e6\'e5\'d4\'ed}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e4\'c7\'e3\'ed\'cf\'e5 \'e3\'ed \'d4\'e6\'cf  \'e3\'e4\'da\'de\'cf \'e3\'ed\'fe\'90
+\'d1\'cf\'cf \'e6 \'d8\'d1\'dd\'ed\'e4 \'c8\'c7 \'c7\'e3\'d6\'c7\'c1 \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'ce\'e6\'cf \'d1\'c7 \'e3\'e1\'d2\'e3 \'e6 \'e3\'ca\'da\'e5\'cf \'c8\'e5 \'d1\'da\'c7\'ed\'ca \'c7\'cc\'d1\'c7\'ed \'df\'c7\'e3\'e1 \'e6 \'ca
+\'e3\'c7\'e3 \'e3\'dd\'c7\'cf \'c2\'e4 \'e3\'ed\'fe\'cf\'c7\'e4\'e4\'cf \'e6 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'cf\'d1 \'c7\'cc\'d1\'c7\'ed \'e3\'dd\'c7\'cf \'81\'ed\'e3\'c7\'e4 \'c8\'e5 \'da\'d0\'d1 \'da\'cf\'e3 \'c7\'d8\'e1\'c7\'da \'e4\'e3\'ed \'ca\'e6\'c7
+\'e4\'cf \'e3\'ca\'da\'d0\'d1\'90\'d1\'cf\'cf.
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 2 - \'e3\'e6\'d6\'e6\'da \'de\'d1\'c7\'d1\'cf\'c7\'cf 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c7\'cc\'dc\'dc\'dc\'dc\'dc\'d1\'c7\'ed \'d8\'d1\'cd \'81\'dc\'8e\'e6\'e5\'d4\'ed }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'c8\'c7}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'da\'e4\'dc\'e6\'c7\'e4}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 
+ <?  $tarh_name=str_replace("&#61537;",".",$tarh_name); $tarh_name=str_replace("&#61543;",".",$tarh_name); $tarh_name=str_replace("&#61541;",".",$tarh_name);  $tarh_name=str_replace("&#1740;","ي",$tarh_name); $tarh_name=str_replace("&#1740","ي",$tarh_name);  echo $tarh_name;?> }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e3\'d8\'c7\'c8\'de \'81\'ed\'d4 \'e4\'e6\'ed\'d3 \'d8\'d1\'cd  \'81\'ed\'e6\'d3\'ca \'df\'e5 \'de\'d3\'e3\'ca\'e5\'c7\'ed \'e3\'ce\'ca\'e1\'dd \'c2\'e4 \'ca\'e6\'d3
+\'d8  \'e3\'cc\'d1\'ed\'c7\'e4\'a1\'ca\'df\'e3\'ed\'e1 \'e6 \'cf\'d1 \'d3\'c7\'ed\'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'cf\'d1\'cc  \'e6 \'e4\'d3\'ce\'e5 \'e3\'df\'ca\'e6\'c8 \'c2\'e4 \'c7\'e3\'d6\'c7\'c1 \'90\'d1\'cf\'ed\'cf\'e5 \'e6 \'c8\'d1\'c7\'d3\'c7\'d3}{
+\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e3\'de\'d1\'d1\'c7\'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'ca\'e6\'d3\'d8 \'d4\'e6\'d1\'c7\'ed \'81\'8e\'e6\'e5\'d4\'ed \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'cf\'d1 \'ca\'c7\'d1\'ed\'ce}{
+\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $tarikh_jalase; ?> }{\ltrch \afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid11953766  \'c8\'e5
+}{\ltrch \afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'ca\'d5\'e6\'ed\'c8 \'d1\'d3\'ed\'cf\'e5 \'c7\'d3\'ca.}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 3 - \'cd\'cf\'e6\'cf \'ce\'cf\'e3\'c7\'ca \'81\'8e\'e6\'e5\'d4\'90\'d1 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'cd\'cf\'e6\'cf \'ce\'cf\'e3\'c7\'ca \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e6 \'e3\'d1\'c7\'cd\'e1 \'c7\'e4\'cc\'c7\'e3 \'df\'c7\'d1 \'c8\'d1 \'c7\'d3\'c7\'d3 \'cc\'cf\'e6\'e1 \'d2\'e3\'c7\'e4\'fe\'c8\'e4
+\'cf\'ed }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'e3\'e4\'cf\'d1\'cc \'cf\'d1}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'81\'ed\'d4 \'e4\'e6\'ed\'d3 \'d8\'d1\'cd \'e6 \'cf
+\'d1 }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $gozaresh_cnt;?>}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs18 \rtlch 
+\f36\fs18\cf1\lang1025\insrsid14770377\charrsid11953766 \'e3\'d1\'cd\'e1\'e5}{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'90\'d2\'c7
+\'d1\'d4 \'e3\'ed\'fe\'c8\'c7\'d4\'cf. }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e3\'ca\'da\'e5\'cf \'e3\'ed}{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\zwbo}{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'90\'d1\'cf\'cf \'8d\'e4\'c7\'e4\'8d\'e5 \'e3\'e6\'cc\'c8 \'d6\'d1\'d1}{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \afs16 
+\rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e6 \'d2\'ed\'c7\'e4\'ed \'90\'d1\'cf\'cf }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'e4\'d3\'c8\'ca \'c8\'e5 \'cc\'c8\'d1\'c7\'e4 \'c2\'e4 \'c7\'de\'cf
+\'c7\'e3 \'e4\'e3\'c7\'ed\'cf \'e6 \'cf\'d1\'d5\'e6\'d1\'ca\'ed\zwbo\'df\'e5 }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'ca\'c7\'ce\'ed\'d1\'ed \'cf\'d1 \'ca\'cd\'e6\'ed\'e1 \'e3\'e6\'d6\'e6\'da \'de\'d1\'c7\'d1\'cf
+\'c7\'cf \'81\'ed\'d4 \'c2\'ed\'cf \'d1\'e6\'d2\'c7\'e4\'e5 \'e3\'da\'c7\'cf\'e1 }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf\'e6 \'cf\'e5\'e3}{\ltrch \afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf\'d1\'d5\'cf (2/0%) \'c7\'d2 \'e3\'c8\'e1\'db \'df\'e1 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'d1\'c7 }{\ltrch \afs16 
+\rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'e5 \'e3\'da\'c7\'e6\'e4\'ca \'c8\'81\'d1\'cf\'c7\'d2}{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf. \'e5\'e3\'8d\'e4\'ed\'e4 \'c8\'d1\'c7\'d3\'c7\'d3
+ \'e3\'d5\'e6\'c8\'e5 \'e3\'e6\'d1\'ce 12/7/1383 \'e5\'ed\'c3\'ca \'e3\'cd\'ca\'d1\'e3 \'c7\'e3\'e4\'c7\'c1 \'cf\'c7\'e4\'d4\'90\'c7\'e5\'a1 \'e3\'da\'c7\'e6\'e4\'ca \'e3\'ce\'ca\'c7\'d1 \'c7\'d3\'ca \'df\'e1\'ed\'e5 \'e3\'d8\'c7\'e1\'c8\'c7\'ca \'e3\'d1
+\'c8\'e6\'d8 \'c8\'e5 \'d6\'d1\'d1 \'e6 \'d2\'ed\'c7\'e4 \'e6\'c7\'d1\'cf \'c8\'e5 \'ce\'e6\'cf \'d1\'c7 \'c7\'d2 \'e3\'cd\'e1 \'cd\'de\'e6\'de \'e6 \'e3\'d2\'c7\'ed\'c7\'ed \'81\'8e\'e6\'e5\'d4\'90\'d1 \'d6\'e3\'e4 \'e3\'d8\'e1\'da \'e4\'e3\'e6\'cf\'e4 
+\'e6\'ed \'e6 \'e5\'e3\'c7\'e5\'e4\'90\'ed \'c8\'c7 \'e6\'c7\'cd\'cf\'e5\'c7\'ed \'d0\'ed\'d1\'c8\'d8 \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'c7\'ce\'d0 \'e4\'e3\'c7\'ed\'cf.}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 4 - \'e3\'cf\'ca \'c7\'e4\'cc\'c7\'e3 \'de\'d1\'c7\'d1\'cf\'c7\'cf 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841        \'e3\'cf\'ca \'c7\'e4\'cc\'c7\'e3 \'e3\'e6\'d6\'e6\'da \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid927716\charrsid15732841  }{\ltrch 
+\ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $time_month; ?>  }{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid11953766 \'e3\'c7\'e5}{\ltrch \ai\afs18 \rtlch 
+\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'e6\'cf\'e5 \'e6 \'c7\'d2 \'ca\'c7\'d1\'ed\'ce }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $start_time;?>}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841   \'d4\'d1\'e6\'da \'e6 \'cf\'d1 \'ca\'c7\'d1\'ed\'ce }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $end_time;?>}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'ce\'c7\'ca\'e3\'e5 \'e3\'ed\'fe\'81\'d0\'ed\'d1\'cf. 
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\rtlgutter\itap0\pararsid5325060 
+\rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 5 - \'e3\'c8\'e1\'db \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\adjustright\rin0\lin0\rtlgutter\itap0\pararsid5325060 \rtlch 
+\af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c8\'e1\'db \'df\'e1 \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf }{\ltrch 
+\ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 <? echo number_format($mablagh_koll);?>}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'d1\'ed\'c7\'e1 \'c7\'d3\'ca}{\ltrch \ai\afs18 \rtlch 
+\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'df\'e5 \'81\'d3 \'c7\'d2 \'df\'d3\'d1 \'e5\'d2\'ed\'e4\'e5 \'e4\'d9\'c7\'d1\'ca \'e6 \'e3\'c7\'c8\'de\'ed \'df\'d3
+\'e6\'d1\'c7\'ca \'de\'c7\'e4\'e6\'e4\'ed (\'df\'e5 \'c8\'e5 \'e3\'e6\'cc\'c8 \'de\'e6\'c7\'e4\'ed\'e4 \'e6 \'e3\'de\'d1\'d1\'c7\'ca \'e3\'e6\'cc\'e6\'cf \'e6\'ed\'c7 \'c2\'e4\'8d\'e5 \'df\'e5 \'c8\'da\'cf\'c7 \'e6\'d6\'da \'ce\'e6\'c7\'e5\'cf \'d4\'cf 
+\'e6\'c8\'e5 \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'ca\'da\'e1\'de \'e3\'ed \'90\'ed\'d1\'cf )  \'c8\'e5 \'d4\'d1\'cd \'e3\'c7\'cf\'e5 \'d4\'d4 \'c8\'e5 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'81\'d1\'cf\'c7\'ce\'ca \'e3\'ed\'fe\'d4\'e6\'cf . \'e3\'c8\'e1\'db
+ \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c8\'c7 \'ca\'e6\'c7\'dd\'de \'d8\'d1\'dd\'ed\'e4 \'ca\'c7 25 % \'de\'c7\'c8\'e1 \'c7\'dd\'d2\'c7\'ed\'d4 \'e6\'df\'c7\'e5\'d4 \'c7\'d3\'ca .
+\par }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'e5\'d2\'ed\'e4\'e5 \'e4\'d9\'c7\'d1\'ca:}{\rtlch \ab\af36\afs18 \ltrch \b\i\fs18\cf1\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'e3\'c8\'e1\'db <? echo number_format($nezarat_koll);?> \'d1\'ed\'c7\'e1}{\ltrch \ai\afs18 \rtlch 
+\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'c8\'e5 \'da\'e4\'e6\'c7\'e4 \'e5\'d2\'ed\'e4\'e5 \'e4\'d9\'c7\'d1\'ca \'d8\'d1\'cd \'cf\'d1 \'e4\'d9\'d1 \'90\'d1
+\'dd\'ca\'e5 \'d4\'cf\'e5 \'c7\'d3\'ca.}{\rtlch \af36\afs16 \ltrch \i\fs16\cf1\insrsid14770377\charrsid15732841            
+\par }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'df\'d3\'e6\'d1\'c7\'ca \'de\'c7\'e4\'e6\'e4\'ed \'d4\'c7\'e3\'e1 \'e3\'c7\'e1\'ed\'c7\'ca \'c8\'d1 \'e5\'d2\'ed\'e4\'e5 \'d8\'d1\'cd \'e6 \'e5\'d2\'ed\'e4\'e5 \'e4
+\'d9\'c7\'d1\'ca \'e3\'ed\'c8\'c7\'d4\'cf.}{\rtlch \ab\af36\afs18 \ltrch \b\i\fs18\cf1\insrsid14770377\charrsid15732841   
+\par }\pard \rtlpar\qj \li0\ri0\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\adjustright\rin0\lin0\rtlgutter\itap0\pararsid14382240 {\rtlch \af36\afs16 \ltrch 
+\i\fs16\cf1\insrsid14770377\charrsid15732841   }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841                    }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\rtlgutter\itap0\pararsid5325060 
+\rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 6 - \'e3\'d1\'c7\'cd\'e1 \'81\'d1\'cf\'c7\'ce\'ca }{\ltrch 
+\ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }
+
+\pard\plain \rtlpar\qj \li0\ri0\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\adjustright\rin0\lin0\rtlgutter\itap0\pararsid608186 \rtlch 
+\af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 1- }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c8\'e1\'db }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo number_format($mablagh_marhale_0); ?>}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  
+\'d1\'ed\'c7\'e1 \'c8\'da\'e4\'e6\'c7\'e4 }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'e3\'d1\'cd\'e1\'e5 }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  \'c7\'e6\'e1}{
+\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'cf\'d1 \'de\'c8\'c7\'e1 \'ca\'e5\'ed\'e5 \'e6 \'ca\'cf\'e6\'ed\'e4 \'d8\'d1\'cd \'ca\'cd
+\'de\'ed\'de\'c7\'ca\'ed }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'e6 \'c7\'d1\'c7\'c6\'e5 \'90\'d2\'c7\'d1\'d4 \'c2\'e4 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'81\'d3 
+\'c7\'d2 \'df\'d3\'d1 \'e3\'c7\'e1\'ed\'c7\'ca \'c7\'ed\'e4 \'e3\'d1\'cd\'e1\'e5 \'c8\'e5\zwbo\'e3\'ed\'d2\'c7\'e4}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841   <? echo number_format($maliat_marhale_0); ?> }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'d1\'ed\'c7\'e1\'a1 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'e3\'c8\'c7\'e1\'db \'ce\'c7\'e1\'d5 \'d4\'c7\'e3\'e1 \'d3\'e5\'e3 \'e3\'cc\'d1\'ed \'c8\'e5
+\zwbo\'e3\'ed\'d2\'c7\'e4}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid8002676\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo number_format($mablagh_khales_mojri_0); ?>  \'d1\'ed\'c7\'e1 \'e6 \'cd\'de\zwbo\'c7\'e1\'d2\'cd\'e3\'e5 
+\'df\'c7\'d1\'d4\'e4\'c7\'d3\'ed \'c8\'e5\zwbo\'e3\'ed\'d2\'c7\'e4 <? echo number_format($hagh_ol_zahme_karshenasi_0);?>  \'d1\'ed\'c7\'e1 \'81\'d1\'cf\'c7\'ce\'ca \'e3\'ed\zwbo\'90\'d1\'cf\'cf.
+\par }
+<?
+$query="select * from gozaresh_gharardad  where cod_tarh='$cod_tarh' and marhale!='0' and marhale!='100' order by marhale asc ";
+$result1=mysql_query($query) or die("Error");
+$cntr=1;
+$mablagh12=0;
+while($rf66=mysql_fetch_array($result1))
+{
+// echo $cntr;
+  if($hazine_personnel > $darsad_50)
+  {
+  	$mablagh_marhale_n=$rf66["mablagh"]*$mablagh_koll/100;
+  	$nezarat=100000+$mablagh_marhale_n/100;
+  	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	$maliat_marhale_n=$mablagh_marhale_n*5/100;
+	$hagh_ol_zahme_karshenasi_n=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+	$mablagh_khales_mojri=$mablagh_marhale_n-$maliat_marhale_n;
+	$mablagh_khales_mojri=$mablagh_khales_mojri-$hagh_ol_zahme_karshenasi_n;
+	  		
+  }
+  else
+  {
+  	 $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	 $mablagh_marhale_n=($darsad_marhale+(100000+($darsad_marhale/100)))*100/95;
+	 $maliat_marhale_n=$mablagh_marhale_n*5/100;
+	 $hagh_ol_zahme_karshenasi_n=100000+($darsad_marhale/100);
+	 
+	 $mablagh_khales_mojri=$mablagh_marhale_n-$maliat_marhale_n-$hagh_ol_zahme_karshenasi_n;
+	 
+  }
+ $cntr++;
+ $date=$rf66["date_gozaresh"];
+ $year=substr($date,0,4);
+ $month=substr($date,5,2);
+ $day=substr($date,8,2);
+ $date=$day."/".$month."/".$year;
+
+ $percent_gozaresh=$rf66["percent_gozaresh"];
+ 
+ $this_time=$rf66["date_gozaresh"];
+ //	$start_time_tmp=$start_time; 
+	$this_time=substr($this_time,0,7);
+	
+//	echo $this_time;
+   // echo $start_time_tmp;
+	$year=substr($start_time_tmp,0,4);
+//	echo $year;
+    $month=substr($start_time_tmp,5,2);
+    $day=substr($start_time_tmp,8,2);
+    
+    for($k=1;$k<=$time_month;$k++)
+    {      	
+      $month=$month+1;
+      if($month>12)
+      {
+        $month=1;
+        $year=$year+1;
+      }
+	  $date_tmp=$year."-".str_pad($month,2,0,STR_PAD_LEFT);
+	 // $date_tmp=substr($date_tmp,0,5);
+       //echo  $year."&".$month."      ";
+      //echo $date_tmp."   ".$this_time;  
+      if(strcmp($this_time,$date_tmp)==0)
+      {
+        $marhale_jadval_zamani=$k;  // mohasebe teadad mahe dovvom ta gozaresh akhar
+        
+      }
+        
+     }
+    
+    
+    if($cntr==1)
+       $marhale_jadval_zamani=" اول ";
+    
+	if($cntr==2)
+       $marhale_jadval_zamani=" دوم ";
+    
+    if($cntr==3)
+       $marhale_jadval_zamani=" سوم ";
+
+    if($cntr==4)
+       $marhale_jadval_zamani=" چهارم ";
+	
+	if($cntr==5)
+       $marhale_jadval_zamani=" پنجم ";
+	
+	 if($cntr==6)
+       $marhale_jadval_zamani=" ششم ";   
+	   
+	   
+   	      
+?>
+\pard\plain \rtlpar\s16\qj \fi26\li0\ri0\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\adjustright\rin0\lin0\rtlgutter\itap0\pararsid1587388 \rtlch 
+\af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 <? echo  $cntr; ?>- }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c8\'e1\'db }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 <? echo number_format($mablagh_marhale_n);?>}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  
+\'d1\'ed\'c7\'e1 \'cf\'d1 \'ca\'c7\'d1\'ed\'ce }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   <? echo $date;?>  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'da\'e4\'e6\'c7\'e4 }{
+\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'e3\'d1\'cd\'e1\'e5 }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 <? echo "$marhale_jadval_zamani";?>}{\ltrch \ai\afs18 \rtlch 
+\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'cf\'d1 \'de\'c8\'c7\'e1 \'c7\'d1\'c7\'c6\'e5  \'90\'d2\'c7\'d1\'d4 \'81\'ed\'d4\'d1\'dd\'ca}{\ltrch \ai\afs16 
+\rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'ca\'c7 }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid11148059\charrsid15732841 \'e3\'c7
+\'e5}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   <? echo $percent_gozaresh;?>\'cc\'cf\'e6\'e1 \'90\'c7\'e4\'ca}{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'df\'e5 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'cf\'d1 \'d3\'c7}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'ed}{
+\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'cf\'d1\'cc \'d4\'cf\'e5 \'c7\'d3\'ca  \'e6}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  \'c8\'e5}{\ltrch 
+\ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'ca\'c7\'ed\'ed\'cf \'e4\'c7\'d9\'d1 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'d8\'d1\'cd \'d1\'d3\'ed\'cf\'e5 \'c8\'c7\'d4\'cf \'e6 \'81
+\'d3 \'c7\'d2 \'df\'d3\'d1 \'e3\'c7\'e1\'ed\'c7\'ca \'c7\'ed\'e4 \'e3\'d1\'cd\'e1\'e5 \'c8\'e5 \'e3\'ed\'d2\'c7\'e4  <? echo number_format($maliat_marhale_n);?> \'d1\'ed\'c7\'e1\'a1 \'e3\'c8\'c7\'e1\'db \'ce\'c7\'e1\'d5 \'d4\'c7\'e3\'e1 \'d3\'e5\'e3 \'e3\'cc\'d1\'ed \'c8\'e5\zwbo\'e3\'ed\'d2
+\'c7\'e4 <? echo number_format($mablagh_khales_mojri);?> \'d1\'ed\'c7\'e1 \'e6 \'cd\'de\zwbo\'c7\'e1\'d2\'cd\'e3\'e5 \'e4\'c7\'d9\'d1 \'c8\'e5\zwbo\'e3\'ed\'d2\'c7\'e4}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid1587388       }{\rtlch \ab\af36\afs18\alang1065 \ltrch 
+\b\i\fs18\cf1\insrsid1587388  <? echo number_format($hagh_ol_zahme_karshenasi_n);?> }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841        \'d1\'ed\'c7\'e1 \'81\'d1\'cf\'c7\'ce\'ca \'e3\'ed\zwbo\'90\'d1\'cf\'cf. 
+\par }
+<?
+ }
+?>
+
+\pard \rtlpar\s16\qj \fi26\li0\ri0\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\adjustright\rin0\lin0\rtlgutter\itap0\pararsid5325060 {\ltrch \ai\afs16 
+\rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  <? $cntr++; echo $cntr; ?>}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 - }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c8\'e1\'db}{
+\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   <? echo number_format($mablagh_marhale_end); ?>  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  \'d1\'ed\'c7\'e1 \'c8\'e5 \'da\'e4\'e6\'c7\'e4 \'90\'d2\'c7\'d1\'d4 \'e4\'e5
+\'c7\'ed\'ed \'cf\'d1 \'ca\'c7\'d1\'ed\'ce}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   <? echo $date_end; ?>}{\rtlch \af36\afs18 \ltrch \i\fs18\cf1\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'cf\'d1 \'de\'c8\'c7\'e1 \'c7\'d1\'c7\'c6\'e5  \'90\'d2\'c7\'d1\'d4 \'e4\'e5\'c7\'ed\'ed \'df\'e1 \'d8\'d1\'cd \'ca\'cd\'de\'ed\'de\'c7\'ca\'ed \'c8\'e5 \'d4\'d1\'cd \'ca\'c8\'d5\'d1\'e5 \'ed\'df 
+\'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'81\'d3 \'c7\'d2 \'df\'d3\'d1 \'e3\'c7\'e1\'ed\'c7\'ca \'c7\'ed\'e4 \'e3\'d1\'cd\'e1\'e5 \'c8\'e5 \'e3\'ed\'d2\'c7\'e4  <? echo number_format($maliat_marhale_end); ?> \'d1
+\'ed\'c7\'e1\'a1 \'e3\'c8\'c7\'e1\'db \'ce\'c7\'e1\'d5 \'d4\'c7\'e3\'e1 \'d3\'e5\'e3 \'e3\'cc\'d1\'ed \'c8\'e5\zwbo\'e3\'ed\'d2\'c7\'e4 <? echo number_format($mablagh_khales_mojri_end); ?>\'d1\'ed\'c7\'e1 \'e6 \'cd\'de\zwbo\'c7\'e1\'d2\'cd\'e3\'e5 \'e4\'c7\'d9\'d1 \'c8\'e5\zwbo\'e3\'ed\'d2\'c7\'e4
+  <? echo number_format($hagh_ol_zahme_karshenasi_end); ?>    \'d1\'ed\'c7\'e1 \'81\'d1\'cf\'c7\'ce\'ca \'e3\'ed\zwbo\'90\'d1\'cf\'cf.  
+\par }
+
+\pard\plain \rtlpar\qj \li0\ri0\widctlpar\brdrt\brdrs\brdrw10\brsp20 \brdrl\brdrs\brdrw10\brsp80 \brdrb\brdrs\brdrw10\brsp20 \brdrr\brdrs\brdrw10\brsp80 \aspalpha\aspnum\faauto\adjustright\rin0\lin0\rtlgutter\itap0\pararsid5325060 \rtlch 
+\af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'ca\'c8\'d5\'d1\'e5 \'ed\'df -}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid6050599\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e3\'e6\'d9\'dd \'c7\'d3\'ca \'90\'d2\'c7\'d1\'d4 \'e4\'e5\'c7\'ed\'ed \'d8\'d1\'cd 
+\'d1\'c7 \'cf\'d1 \'d3\'c7\'ed\'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'cf\'d1\'cc}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  \'e4\'e3\'c7\'ed\'cf \'e6 \'81\'d3 \'c7\'d2 \'ca\'c7\'ed\'ed\'cf \'e4\'e5\'c7\'ed\'ed \'e4\'c7\'d9
+\'d1 \'d8\'d1\'cd\'a1  \u1740\'ed\'98 \'e4\'d3\'ce\'e5 \'df\'c7\'e3\'e1 \'c7\'d2 \'c7\'ed\'e4 \'90\'d2\'c7\'d1\'d4 \'d1\'c7 \'c8\'e5 \'d5\'e6\'d1\'ca \'ca\'c7\'ed\'81 \'d4\'cf\'e5 }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'c8\'e5  <? echo $daneshkade_name; ?> }{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841   }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 (\'e6 \'ed\'c7 
+\'e5\'d1 \'e3\'d1\'cc\'da \'cf\'ed\'90\'d1\'ed \'df\'e5 \'e3\'da\'c7\'e6\'e4\'ca \'81\'8e\'e6\'e5\'d4\'ed \'c7\'da\'e1\'c7\'e3 \'e3\'ed \'df\'e4\'cf ) \'ca\'cd\'e6\'ed\'e1 \'e4\'e3\'c7\'ed\'cf \'e6 \'ca\'e3\'c7\'e3 \'e5\'d2\'ed\'e4\'e5\'fe\'e5\'c7\'ed 
+\'c7\'ed\'e4 \'e3\'c7\'cf\'e5 \'ca\'e6\'d3\'d8 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e6 \'c7\'d2 \'e3\'cd\'e1 \'e3\'c8\'e1\'db \'e3\'d0\'df\'e6\'d1 \'cf\'d1 \'e3\'c7\'cf\'e5 \'81\'e4\'cc \'81\'d1\'cf\'c7\'ce\'ca \'e3\'ed\'fe\'90\'d1\'cf\'cf \'e6 \'e5\'e3\'8d\'e4
+\u1740\'ed\'e4 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e3\'e6\'d9\'dd \'c7\'d3\'ca }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf\'d1 \'d5\'e6\'d1\'ca \'ce\'d1\'ed\'cf \'e6\'d3\'c7\'ed\'e1}{\ltrch \ab\ai\afs18 \rtlch 
+\b\i\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  \'db\'ed\'d1\'e3\'d5\'d1\'dd\'ed \'e3\'e4\'cf\'d1\'cc \'cf\'d1 \'81\'ed\'d4 \'e4\'e6\'ed\'d3 \'d8\'d1\'cd \'a1 \'d4\'e3\'c7\'d1\'e5 \'81\'e1\'c7\'df \'c7\'e3\'e6\'c7\'e1 \'e3\'d0\'df\'e6\'d1\'d1
+\'c7 \'c8\'e5 \'e3\'da\'c7\'e6\'e4\'ca \'c7\'d1\'c7\'c6\'e5 \'e4\'e3\'c7\u1740\'ed\'cf.}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 
+\par \'ca\'c8\'d5\'d1\'e5 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf\'e6}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 : \'81\'d3 \'c7\'d2 \'81\'c7\'ed\'c7\'e4 \'e5\'d1 \'ed\'df 
+\'c7\'d2 \'e3\'d1\'c7\'cd\'e1 \'dd\'e6\'de \'cf\'d1 \'d5\'e6\'d1\'ca \'da\'cf\'e3 \'c7\'e4\'cc\'c7\'e3 \'ca\'da\'e5\'cf\'c7\'ca \'ca\'e6\'d3\'d8 \'81\'8e\'e6\'e5\'d4\'90\'d1}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\'a1}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e3\'da\'c7\'e6\'e4\'ca \'e3\'cc\'c7\'d2 \'c7\'d3\'ca \'e4\'d3\'c8\'ca \'c8\'e5 \'e1\'db\'e6 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e6 \'e3\'d8\'c7\'e1\'c8\'e5 \'ce\'d3\'c7
+\'d1\'ca\'a1\zwbo\'c7\'cf\'c7\'e3\'e5 \'e6 \'ed\'c7 \'ca\'e3\'cf\'ed\'cf}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  \'e6 \'ed\'c7}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'e6
+\'c7\'90\'d0\'c7\'d1\'ed \'c7\'de\'cf\'c7\'e3 \'e4\'e3\'c7\'ed\'cf.
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 7 - \'c7\'d3\'ca\'dd\'c7\'cf\'e5 \'c7\'d2 \'e4\'ca\'c7\'ed\'cc \'d8\'d1\'cd 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e4\'cd\'e6\'e5 \'c7\'e4\'ca\'d4\'c7\'d1 \'e4\'ca\'c7\'ed\'cc \'da\'e1\'e3\'ed \'e4\'c7\'d4\'ed \'c7\'d2 \'d8\'d1\'cd \'e6 \'c8\'e5\'d1\'e5\'fe\'c8\'d1\'cf\'c7\'d1\'ed \'c7\'d2 \'c2\'e4\'e5\'c7 \'c8
+\'d1 \'c7\'d3\'c7\'d3\'ab \'c2\'c6\'ed\'e4 \'e4\'c7\'e3\'e5 \'df\'d3\'c8 \'c7\'e3\'ca\'ed\'c7\'d2 \'e4\'ca\'c7\'ed\'cc \'d8\'d1\'cd \'e5\'c7\'ed \'81\'8e\'e6\'e5\'d4\'ed \'bb \'e3\'d5\'e6\'c8 \'d4\'e6\'d1\'c7\'ed \'81\'8e\'e6\'e5\'d4\'ed \'cf\'c7\'e4\'d4
+\'90\'c7\'e5 \'e3\'e6\'d1\'ce 25/11/84 \'ca\'da\'ed\'ed\'e4 \'ce\'e6\'c7\'e5\'cf \'d4\'cf . \'c8\'d1\'c7\'ed\'e4 \'c7\'d3\'c7\'d3 \'e1\'c7\'d2\'e3 \'c7\'d3\'ca \'c7\'ed\'e4 \'d8\'d1\'cd \'c8\'d1 \'e3\'c8\'e4\'c7\'ed \'e3\'c7\'cf\'e5 5 \'c7\'ed\'e4 \'de
+\'d1\'c7\'d1\'cf\'c7\'cf \'c8\'e5 }{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid11953766 \'e3\'ed\'d2\'c7\'e4}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841  <? echo $int_emtiaz; ?> }{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid11953766 \'c7\'e3\'ca\'ed\'c7\'d2}{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{
+\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'d9\'d1\'dd \'ed\'df\'d3\'c7\'e1 \'c8\'da\'cf \'c7\'d2  \'81\'c7\'ed\'c7\'e4 \'d8\'d1\'cd \'df\'d3\'c8 \'e4\'e3\'c7\'ed\'cf . \'cf\'d1 \'db\'ed\'d1 \'c7\'ed\'e4\'d5\'e6\'d1
+\'ca \'cf\'d1 \'ce\'d5\'e6\'d5 \'c7\'cc\'d1\'c7\'ed \'d8\'d1\'cd \'e5\'c7\'ed \'e3\'d5\'e6\'c8 \'c8\'da\'cf\'ed \'e4\'c7\'e3\'c8\'d1\'cf\'e5 \'c8\'e5 \'da\'e4\'e6\'c7\'e4 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\'d8\'d1\'cd \'cf\'e5\'e4\'cf\'e5 \'e6 \'ed\'c7 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'cc\'d1\'ed \'a1 \'e3\'cf\'ed\'d1\'ed\'ca \'c7\'e3\'e6\'d1 \'81\'8e\'e6\'e5\'d4 \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'e3\'ce
+\'ca\'c7\'d1 \'c8\'e5 \'c7\'ce\'d0 \'ca\'d5\'e3\'ed\'e3 \'c7\'d3\'ca.
+\par }\pard\plain \rtlpar\s1\qj \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af38\afs28\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 8 - \'d3\'c7\'ed\'d1 \'e5\'d2\'ed\'e4\'e5\'fe\'e5\'c7 
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'81\'8e\'e6\'e5\'d4\'90\'d1\'df\'e1\'ed\'e5 \'e5\'d2\'ed\'e4\'e5\'fe\'e5\'c7\'ed \'81\'d1\'d3\'e4\'e1\'ed, \'ce\'cf\'e3\'c7\'ca\'ed, \'c7\'cf\'c7\'d1\'ed, \'da\'e1\'e3\'ed\'a1 \'da\'e3\'e1\'ed \'e6 
+\'db\'ed\'d1\'e5 \'d1\'c7 \'81\'d1\'cf\'c7\'ce\'ca \'e3\'ed\'fe\'e4\'e3\'c7\'ed\'cf \'e6 \'e3\'da\'c7\'e6\'e4\'ca \'e5\'ed\'8d\'90\'e6\'e4\'e5 \'ca\'da\'e5\'cf\'ed \'c8\'cc\'d2 \'c2\'e4\'8d\'e5 \'cf\'d1 \'e3\'c7\'cf\'e5 \'81\'e4\'cc \'c2\'e3\'cf\'e5 \'e4
+\'ce\'e6\'c7\'e5\'cf \'cf\'c7\'d4\'ca. 
+\par \'e3\'c7\'cf\'e5 9 - \'e4\'ca\'ed\'cc\'e5 \'ca\'cd\'de\'ed\'de\'c7\'ca }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e3\'e6\'d9\'dd \'c7\'d3\'ca}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'cf\'d1 \'81\'c7\'ed\'c7\'e4 \'df\'c7\'d1 \'c8\'c7 \'d1\'da\'c7\'ed\'ca \'df\'e1\'ed\'e5 \'e3\'e6\'c7\'d1\'cf 
+\'e3\'e4\'cf\'d1\'cc \'cf\'d1 \'ca\'c8\'d5\'d1\'e5 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid11419279\charrsid15732841 \'ed\'98}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid10767921\charrsid15732841  }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 6\'a1 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'90\'d2
+\'c7\'d1\'d4 \'e4\'e5\'c7\'ed\'ed}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  \'d8\'d1\'cd \'c7\'d2 \'de\'c8\'ed\'e1 \'e3\'de\'c7\'e1\'c7\'ca\'ed \'df\'e5 \'c7\'e4\'ca\'d4\'c7\'d1 \'e3\'ed \'ed\'c7\'c8\'cf \'d1\'c7 
+\'cf\'d1 \'d3\'c7\'ed\'ca \'e3\'d1\'c8\'e6\'d8\'e5 \'cf\'d1\'cc \'e4\'e3\'c7\'ed\'cf.
+\par }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'c7\'cf\'e5 10 - \'ca\'da\'e5\'cf\'c7\'ca \'81\'8e\'e6\'e5\'d4\'90\'d1 
+\par 1-10- \'c7\'e4\'cc\'c7\'e3 \'dd\'da\'c7\'e1\'ed\'ca\'e5\'c7\'ed \'da\'e1\'e3\'ed \'e3\'d1\'ca\'c8\'d8 \'c8\'c7 \'e3\'e6\'d6\'e6\'da \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'ca\'e6\'d3\'d8 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e6 \'81\'d0\'ed\'d1\'d4 \'e3\'d3
+\'c6\'e6\'e1\'ed\'ca \'df\'e3\'ed \'e6 \'df\'ed\'dd\'ed \'e6\'c7\'e4\'cc\'c7\'e3 \'c8\'e3\'e6\'de\'da \'81\'8e\'e6\'e5\'d4.
+\par 2-10- \'d1\'da\'c7\'ed\'ca \'c7\'e3\'c7\'e4\'ca \'e6\'cd\'dd\'d9 \'c7\'e3\'e6\'c7\'e1 \'e6 \'e3\'cf\'c7\'d1\'df\'ed \'df\'e5 \'e3\'da\'c7\'e6\'e4\'ca \'cf\'d1 \'c7\'ce\'ca\'ed\'c7\'d1 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'de\'d1\'c7\'d1 \'e3\'ed \'cf\'e5\'cf 
+\'e6\'c7\'d3\'ca\'dd\'c7\'cf\'e5 \'c8\'e5\'ed\'e4\'e5 \'c7\'d2 \'c2\'e4 \'c8\'d1\'c7\'ed \'c7\'e4\'cc\'c7\'e3 \'e3\'e6\'d6\'e6\'da \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par 3-10- \'da\'cf\'e3 \'c7\'d1\'c7\'c6\'e5 \'c7\'d3\'e4\'c7\'cf \'e6 \'e3\'cf\'c7\'d1\'df \'e6\'c7\'d8\'e1\'c7\'da\'c7\'ca\'ed \'df\'e5 \'c8\'e5 \'e3\'e4\'c7\'d3\'c8\'ca \'c7\'e4\'cc\'c7\'e3 \'81\'8e\'e6\'e5\'d4 \'df\'d3\'c8 \'e3\'ed\'fe\'e4\'e3\'c7\'ed\'cf 
+\'c8\'e5 \'c7\'d4\'ce\'c7\'d5 \'cd\'de\'ed\'de\'ed \'ed\'c7 \'cd\'de\'e6\'de\'ed \'db\'ed\'d1\'a1 \'e3\'90\'d1 \'c8\'c7 \'df\'d3\'c8 \'c7\'cc\'c7\'d2\'e5 \'df\'ca\'c8\'ed \'c7\'d2 \'e3\'da\'c7\'e6\'e4\'ca \'cf\'d1 \'db\'ed\'d1 \'c7\'ed\'e4\'d5\'e6\'d1\'ca
+ \'e3\'da\'c7\'e6\'e4\'ca \'cc\'e5\'ca \'c7\'d3\'ca\'ed\'dd\'c7\'ed \'cd\'de\'e6\'de \'ce\'e6\'cf \'c7\'de\'cf\'c7\'e3 \'de\'c7\'e4\'e6\'e4\'ed \'da\'e1\'ed\'e5 \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e3\'da\'e3\'e6\'e1 \'ce\'e6\'c7\'e5\'cf \'cf\'c7\'d4\'ca.
+
+\par 4-10- \'c8\'d1\'d1\'d3\'ed \'e6 \'ca\'cd\'de\'ed\'de\'c7\'ca \'df\'c7\'dd\'ed \'cf\'d1 \'8d\'e5\'c7\'d1\'8d\'e6\'c8 \'c7\'d5\'e6\'e1 \'e6 \'e3\'e6\'c7\'d2\'ed\'e4 \'da\'e1\'e3\'ed \'e6 \'d1\'da\'c7\'ed\'ca \'c7\'d5\'e6\'e1 \'ca\'cd\'de\'ed\'de\'c7\'ca\'ed
+ \'cf\'d1 \'c7\'e4\'cc\'c7\'e3 \'81\'8e\'e6\'e5\'d4 \'e3\'e6\'d6\'e6\'da \'de\'d1\'c7\'d1\'cf\'c7\'cf.
+\par 5-10- \'c7\'ed\'cc\'c7\'cf \'c7\'e3\'df\'c7\'e4\'c7\'ca \'e1\'c7\'d2\'e3 \'e6\'ca\'d3\'e5\'ed\'e1\'c7\'ca \'de\'c7\'c8\'e1 \'de\'c8\'e6\'e1 \'cc\'e5\'ca \'e4\'d9\'c7\'d1\'ca \'da\'e1\'e3\'ed \'ca\'e6\'d3\'d8 \'e4\'e3\'c7\'ed\'e4\'cf\'90\'c7\'e4 \'e3\'da
+\'c7\'e6\'e4\'ca \'e6 \'e4\'c7\'d9\'d1\'ed\'e4 \'d8\'d1\'cd .
+\par 6-10- \'81\'8e\'e6\'e5\'d4\'90\'d1 \'e4\'e3\'ed \'ca\'e6\'c7\'e4\'cf \'81\'ed\'e3\'c7\'e4 \'d1\'c7 \'df\'e1\'c7 \'ed\'c7 \'cc\'d2\'c7" \'c8\'e5 \'db\'ed\'d1 \'e6\'c7\'90\'d0\'c7\'d1 \'e4\'e3\'c7\'ed\'cf.
+\par \'e3\'c7\'cf\'e5 11- \'ca\'da\'e5\'cf\'c7\'ca \'e3\'da\'c7\'e6\'e4\'ca 
+\par 1-11- \'df\'e3\'df \'c8\'e5 \'ca\'e5\'ed\'e5 \'e3\'de\'c7\'e1\'c7\'ca \'e6 \'d3\'c7\'ed\'d1 \'e3\'ca\'e6\'e4 \'da\'e1\'e3\'ed \'e3\'e6\'d1\'cf \'e4\'ed\'c7\'d2 \'81\'8e\'e6\'e5\'d4\'90\'d1\'c7\'e4 \'df\'e5 \'cf\'d1 \'df\'d4\'e6\'d1 \'db\'ed\'d1 \'de\'c7
+\'c8\'e1 \'cf\'d3\'ca\'d1\'d3\'ed \'c8\'c7\'d4\'cf \'cf\'d1 \'cd\'cf \'c7\'e3\'df\'c7\'e4 \'e6 \'cf\'d1 \'c7\'d1\'ca\'c8\'c7\'d8 \'c8\'c7 \'e3\'e6\'d6\'e6\'da \'de\'d1\'c7\'d1\'cf\'c7\'cf. 
+\par 2-11- \'81\'d1\'cf\'c7\'ce\'ca \'df\'c7\'e3\'e1 \'e3\'c8\'e1\'db \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c8\'d1 \'c7\'d3\'c7\'d3 \'e3\'d1\'c7\'cd\'e1 \'e3\'e4\'cf\'d1\'cc \'cf\'d1 \'e3\'c7\'cf\'e5 }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid16274844\charrsid15732841 \'81\'e4\'cc}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid16274844\charrsid15732841  \'81\'d3 \'c7\'d2 \'df\'d3\'d1 \'df\'d3\'e6\'d1\'c7\'ca \'e3\'ca\'da\'e1\'de\'e5.}{\ltrch \ai\afs16 
+\rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 
+\par \'e3\'c7\'cf\'e5 12-\'cd\'e1 \'c7\'ce\'ca\'e1\'c7\'dd  
+\par \'cf\'d1 \'e3\'e6\'c7\'d1\'cf\'ed \'df\'e5 \'c8\'d1\'c7\'ed \'d8\'d1\'dd\'ed\'e4 \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'cf\'d1 \'ca\'da\'c8\'ed\'d1 \'e6 \'ca\'dd\'d3\'ed\'d1 \'e6 \'ed\'c7 \'c7\'cc\'d1\'c7\'ed \'df\'c7\'e3\'e1 \'ed\'c7 \'de\'d3\'e3
+\'ca\'ed \'c7\'d2 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c7\'ce\'ca\'e1\'c7\'dd \'e4\'d9\'d1\'ed \'cd\'c7\'cf\'cb \'90\'d1\'cf\'cf \'e3\'e6\'d6\'e6\'da \'ca\'e6\'d3\'d8 3 \'e4\'dd\'d1 \'c7\'d2 \'c7\'d3\'c7\'ca\'ed\'cf \'e3\'d1\'d6\'ed \'c7\'e1\'d8\'d1\'dd\'ed\'e4
+ \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'c8\'d1\'d1\'d3\'ed \'e6 \'cd\'df\'e3 \'c2\'e4\'e5\'c7 \'c8\'d1\'c7\'ed \'d8\'d1\'dd\'ed\'e4 \'e1\'c7\'d2\'e3 \'c7\'e1\'d1\'da\'c7\'ed\'e5 \'e3\'ed\'fe\'c8\'c7\'d4\'cf. \'e6\'cf\'d1 \'d5\'e6\'d1\'ca\'ed\'df\'e5 \'e3\'d3\'c7
+\'da\'ed \'d8\'d1\'dd\'ed\'e4 \'e6 \'e4\'e3\'c7\'ed\'e4\'cf\'90\'c7\'e4 \'c2\'e4\'c7\'e4 \'c8\'e5 \'e4\'ca\'ed\'cc\'e5 \'e4\'d1\'d3\'cf \'a1 \'e5\'d1\'ed\'df \'c7\'d2 \'d8\'d1\'dd\'ed\'e4 \'cd\'de \'ce\'e6\'c7\'e5\'cf \'cf\'c7\'d4\'ca \'cc\'e5\'ca \'c7
+\'cd\'de\'c7\'de \'cd\'de\'e6\'de \'ce\'e6\'cf \'c8\'e5 \'e3\'d1\'c7\'cc\'da \'d0\'ed\'d5\'e1\'c7\'cd \'de\'d6\'c7\'c6\'ed \'e3\'d1\'c7\'cc\'da\'e5 \'e4\'e3\'c7\'ed\'cf. 
+\par \'e3\'c7\'cf\'e5 13- \'c7\'d5\'e1\'c7\'cd\'ed\'e5 ,\'e3\'ca\'e3\'e3 , \'e3\'df\'e3\'e1 \'ed\'c7 \'ca\'db\'ed\'ed\'d1 
+\par \'e5\'d1 \'90\'e6\'e4\'e5 \'c7\'d5\'e1\'c7\'cd \'ed\'c7 \'ca\'db\'ed\'ed\'d1 \'cf\'d1 \'e3\'e6\'c7\'cf\'ed \'c7\'d2 \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e6 \'81\'ed\'e6\'d3\'ca\'e5\'c7\'ed \'e3\'d1\'c8\'e6\'d8\'e5 \'e6\'ed\'c7 \'e4\'ed\'c7\'d2 \'c8
+\'e5 \'c7\'e1\'cd\'c7\'de \'e5\'d1\'90\'e6\'e4\'e5 \'e3\'ca\'e3\'e3 \'ed\'c7 \'e3\'df\'e3\'e1 \'c8\'e5 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e6 \'81\'ed\'e6\'d3\'ca\'e5\'c7\'a1 \'d5\'d1\'dd\'c7\'f0 \'c8\'c7 \'cc\'e1\'c8 \'ca\'e6\'c7\'dd\'de \'e3\'ca\'da\'c7\'de
+\'cf\'ed\'e4 \'e3\'ed\'d3\'d1 \'ce\'e6\'c7\'e5\'cf \'c8\'e6\'cf. 
+\par \'e3\'c7\'cf\'e5 14- \'dd\'d3\'ce \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par  \'dd\'d3\'ce \'ed\'df \'cc\'c7\'e4\'c8\'e5 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c7\'d2 \'d3\'e6\'ed \'e5\'d1\'ed\'df \'c7\'d2 \'d8\'d1\'dd\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'de\'c7\'c8\'e1 \'81\'d0\'ed\'d1\'d4 \'e4\'c8\'e6\'cf\'e5 \'e6 \'dd\'d3\'ce \'de
+\'d1\'c7\'d1\'cf\'c7\'cf \'c8\'e5 \'db\'ed\'d1\'c7\'d2 \'e3\'e6\'c7\'d1\'cf \'de\'c7\'e4\'e6\'e4\'ed \'e6 \'e3\'e6\'d1\'cf \'e3\'d0\'df\'e6\'d1 \'cf\'d1 \'ca\'c8\'d5\'d1\'e5 \'ed\'df \'e3\'c7\'cf\'e5 \'d4\'d4\'a1 \'dd\'de\'d8 \'c8\'c7 \'ca\'e6\'c7\'dd\'de
+ \'d8\'d1\'dd\'ed\'e4 \'c7\'e3\'df\'c7\'e4 \'81\'d0\'ed\'d1 \'c7\'d3\'ca.
+\par \'e3\'c7\'cf\'e5 15- \'d6\'e3\'c7\'c6\'e3 \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\par \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'d4\'c7\'e3\'e1 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'ed\'df}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 
+\rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'81\'ed\'e6\'d3\'ca}{\ltrch \ai\afs18 \rtlch \f36\fs18\cf1\lang1025\insrsid16274844\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid16274844\charrsid15732841 
+(\'81\'d1\'e6\'81\'e6\'d2\'c7\'e1}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid13978958\charrsid15732841  \'cf\'d1}{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid16274844\charrsid15732841  ... \'d5\'dd\'cd\'e5)}{\ltrch 
+\ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'e5 \'da\'e4\'e6\'c7\'e4 \'d4\'d1\'cd \'ce\'cf\'e3\'c7\'ca \'c7\'ed\'e4 \'de\'d1\'c7\'d1
+\'cf\'c7\'cf \'c7\'d3\'ca \'df\'e5 \'cc\'d2\'e6 \'e1\'c7\'ed\'e4\'dd\'df \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e3\'cd\'d3\'e6\'c8 \'d4\'cf\'e5 \'e6 \'cf\'d1 \'d2\'e3\'c7\'e4 \'c7\'e3\'d6\'c7\'ed \'de\'d1\'c7\'d1\'cf\'c7\'cf}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'a1}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'81\'ed\'e6\'d3\'ca\'fe \'e4\'ed\'d2 }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'c8\'c7\'ed\'cf }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'c8\'e5 \'c7\'e3\'d6\'c7\'ed \'81\'8e\'e6\'e5\'d4\'90\'d1 }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'d1\'d3\'ed\'cf\'e5 \'c8\'c7\'d4\'cf}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 . 
+\par \'e3\'c7\'cf\'e5 16- \'c7\'de\'c7\'e3\'ca\'90\'c7\'e5 \'de\'c7\'e4\'e6\'e4\'ed \'d8\'d1\'dd\'ed\'e4\'a1 \'e5\'e3\'c7\'e4 \'e4\'d4\'c7\'e4\'ed \'e3\'e4\'cf\'d1\'cc \'cf\'d1\'e3\'c7\'cf\'e5 \'ed\'df \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c8\'e6\'cf\'e5 \'e6 \'cf
+\'d1 \'e3\'e6\'c7\'d1\'cf \'e1\'d2\'e6\'e3 \'e6 \'c8\'e5 \'e3\'e4\'d9\'e6\'d1 \'c7\'c8\'e1\'c7\'db \'e3\'df\'c7\'ca\'c8\'c7\'ca \'e3\'e6\'d1\'cf \'c7\'d3\'ca\'e4\'c7\'cf \'ce\'e6\'c7\'e5\'cf \'c8\'e6\'cf \'e6 \'cf\'d1 \'d5\'e6\'d1\'ca\'ed\'df\'e5 \'cf\'d1
+ \'d8\'e6\'e1 \'e3\'cf\'ca \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e4\'d4\'c7\'e4\'ed \'e3\'ca\'da\'c7\'de\'cf\'ed\'e4 \'ca\'db\'ed\'ed\'d1 \'ed\'c7\'c8\'cf , \'d8\'d1\'dd\'ed\'e4 \'c8\'c7\'ed\'cf \'d1\'d3\'e3\'c7\'f0 \'e6 \'df\'ca\'c8\'c7\'f0 \'e3\'d1\'c7\'ca\'c8
+ \'d1\'c7 \'c8\'e5 \'ed\'df\'cf\'ed\'90\'d1 \'c7\'c8\'e1\'c7\'db \'e4\'e3\'c7\'ed\'e4\'cf \'e6 \'ca\'c7 \'de\'c8\'e1 \'c7\'d2 \'c7\'c8\'e1\'c7\'db \'d1\'d3\'e3\'ed\'a1  \'e4\'d4\'c7\'e4\'ed \'de\'c8\'e1\'ed \'e3\'da\'ca\'c8\'d1 \'ce\'e6\'c7\'e5\'cf \'c8
+\'e6\'cf. 
+\par \'e3\'c7\'cf\'e5 17- \'de\'c7\'e4\'e6\'e4 \'cd\'c7\'df\'e3 \'c8\'d1 \'de\'d1\'c7\'d1\'cf\'c7\'cf 
+\par \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c7\'d2 \'e5\'d1 \'e4\'d9\'d1 \'ca\'c7\'c8\'da \'de\'e6\'c7\'e4\'ed\'e4 \'cc\'e3\'e5\'e6\'d1\'ed \'c7\'d3\'e1\'c7\'e3\'ed \'c7\'ed\'d1\'c7\'e4 \'e3\'ed\'fe\'c8\'c7\'d4\'cf. 
+\par \'e3\'c7\'cf\'e5 18- \'d4\'d1\'c7\'ed\'d8 \'ce\'c7\'d5
+\par \'cf\'d1 \'e3\'e6\'c7\'d1\'cf\'ed \'df\'e5 \'c8\'e5 \'da\'e1\'e1 \'e4\'c7\'d4\'ed \'c7\'d2 \'d4\'d1\'c7\'ed\'d8 \'de\'e5\'d1\'ed (\'d4\'d1\'c7\'ed\'d8 \'ce\'c7\'d5) \'df\'e5 \'d1\'dd\'da \'c2\'e4 \'ce\'c7\'d1\'cc \'c7\'d2 \'cd\'ed\'d8\'e5 \'ca\'e6\'c7\'e4
+\'c7\'c6\'ed \'e6 \'c7\'de\'ca\'cf\'c7\'d1 \'d8\'d1\'dd\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c8\'c7\'d4\'cf \'e6\'c7\'e4\'cc\'c7\'e3 \'c8\'ce\'d4\'ed \'c7\'d2 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e6 \'ed\'c7\'ca\'e3\'c7\'e3 \'c2\'e4 \'db\'ed\'d1\'e3\'e3\'df
+\'e4 \'90\'d1\'cf\'cf \'cf\'d1 \'d5\'e6\'d1\'ca \'e3\'e6\'c7\'dd\'de\'ca \'d8\'d1\'dd\'ed\'e4 \'c8\'e5 \'e3\'cf\'ca \'d2\'e3\'c7\'e4 \'c7\'cc\'d1\'c7\'ed \'de\'d1\'c7\'d1\'cf\'c7\'cf \'c7\'d6\'c7\'dd\'e5 \'ce\'e6\'c7\'e5\'cf \'d4\'cf \'e6 \'cf\'d1 \'d5
+\'e6\'d1\'ca \'dd\'d3\'ce \'de\'d1\'c7\'d1\'cf\'c7\'cf \'e5\'ed\'8d\'ed\'df \'c7\'d2 \'d8\'d1\'dd\'ed\'e4 \'cd\'de \'e3\'d8\'c7\'e1\'c8\'e5 \'ce\'d3\'c7\'d1\'ca \'e6\'c7\'d1\'cf\'e5 \'d1\'c7 \'e4\'ce\'e6\'c7\'e5\'cf \'cf\'c7\'d4\'ca \'e6\'c7\'de\'cf\'c7
+\'e3\'c7\'ca \'81\'d3 \'c7\'d2 \'dd\'d3\'ce \'c7\'d2 \'de\'c8\'ed\'e1 \'ca\'d3\'e6\'ed\'e5 \'cd\'d3\'c7\'c8 \'c8\'c7 \'ca\'e6\'c7\'dd\'de \'d8\'d1\'dd\'ed\'e4 \'d5\'e6\'d1\'ca \'e3\'ed\'fe\'90\'ed\'d1\'cf.
+\par \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf \'cf\'d1 18 \'e3\'c7\'cf\'e5 \'e6 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf\'e6}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'ca
+\'c8\'d5\'d1\'e5 \'e6 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'ed\'df}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'81\'ed\'e6\'d3\'ca \'e6 \'c8\'e5 \'d2\'c8\'c7\'e4 \'dd\'c7
+\'d1\'d3\'ed \'e6\'cf\'d1 \'d3\'e5 \'e4\'d3\'ce\'e5 \'ca\'e4\'d9\'ed\'e3 \'90\'d1\'cf\'ed\'cf\'e5 \'e6 \'df\'e1\'ed\'e5 \'e4\'d3\'ce\'e5\'fe\'e5\'c7\'ed \'c2\'e4 \'cf\'c7\'d1\'c7\'ed \'c7\'da\'ca\'c8\'c7\'d1\'ed\'df\'d3\'c7\'e4 \'e6 \'c8\'d1\'c7\'c8\'d1 
+\'e3\'ed\'c8\'c7\'d4\'cf.
+\par }\pard \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid10500659 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'df\'e1\'ed\'e5 \'e4\'d3\'ce \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7
+\'cf \'c8\'c7 \'c7\'d3\'ca\'e4\'c7\'cf \'c8\'e5 \'e3\'c7\'cf\'e5 40 \'c2\'c6\'ed\'e4\'fe\'e4\'c7\'e3\'e5 \'c7\'d3\'ca\'ce\'cf\'c7\'e3\'ed \'e5\'ed\'c6\'ca \'da\'e1\'e3\'ed \'cf\'c7\'e4\'d4\'90\'c7\'e5\'e5\'c7 \'e6 \'e3\'e6\'d3\'d3\'c7\'ca \'c2\'e3\'e6\'d2
+\'d4 \'da\'c7\'e1\'ed \'e6 \'81\'8e\'e6\'e5\'d4\'ed \'df\'d4\'e6\'d1 \'e6 \'ca\'c8\'d5\'d1\'e5\'fe\'e5\'c7\'ed \'d0\'ed\'e1 \'c2\'e4 \'e6 \'e5\'e3\'8d\'e4\'ed\'e4  \'c8\'e4\'cf3 \'e3\'d5\'e6\'c8\'e5 \'e3\'e6\'d1\'ce 31/4/77 \'e5\'ed\'c6\'ca \'c7\'e3\'e4
+\'c7 \'cf\'c7\'e4\'d4\'90\'c7\'e5 \'cf\'d1 \'ca\'c7\'d1\'ed\'ce}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 <? $date_gharardad=hijricalender(date("Y"),date("m"),date("d")); $y=substr($date_gharardad,0,4);$m=substr($date_gharardad,5,2);$d=substr($date_gharardad,8,2); $date_gharardad="$d / $m / $y"; echo $date_gharardad;?>  }{\ltrch 
+\ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  \'c8\'e5 \'c7\'e3\'d6\'c7\'c1 \'e3\'ca\'da\'c7\'de\'cf\'ed\'e4 \'d1\'d3\'ed\'cf\'e5 \'e6 \'d8\'d1\'dd\'ed\'e4 \'c8\'c7 \'c7\'e3\'d6\'c7\'ed \'c7\'ed\'e4 \'de\'d1\'c7\'d1\'cf\'c7\'cf
+\'a1 \'ce\'e6\'cf \'d1\'c7 \'e3\'ca\'da\'e5\'cf \'e6 \'e3\'e1\'d2\'e3 \'c8\'e5 \'c7\'cc\'d1\'c7\'ed \'df\'e1\'ed\'e5 \'e3\'dd\'c7\'cf \'c2\'e4 \'e6 \'81\'ed\'e6\'d3\'ca \'e5\'c7\'ed \'e3\'d1\'c8\'e6\'d8\'e5 \'e3\'ed\'fe\'cf\'c7\'e4\'e4\'cf.
+\par }\pard\plain \rtlpar\s4\qc \li0\ri0\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel3\adjustright\rin0\lin0\itap0\pararsid1066059 \rtlch \af38\afs32\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \ab\afs18 \rtlch 
+\b\i\f36\fs18\cf1\lang1025\insrsid4991052 
+\par }{\rtlch \ab\ai\af36\afs18 \ltrch \b\fs18\cf1\insrsid7289320       }{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'e5\'d1 \'e6 \'c7\'e3\'d6\'c7\'c1 \'81\'8e\'e6\'e5\'d4\'90\'d1}{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ab\ai\afs14 \rtlch \b\f36\fs14\cf1\lang1025\insrsid14770377\charrsid15732841 \tab \tab \tab \tab \tab }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid7891092\charrsid15732841             }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid12484260\charrsid15732841  }{\rtlch \ab\af36\afs18 \ltrch \b\i\fs18\cf1\insrsid7289320       }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid12484260\charrsid15732841  }{\ltrch \ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1025\insrsid7891092\charrsid15732841    }{\rtlch \ab\af36\afs18 \ltrch \b\i\fs18\cf1\insrsid7289320              }{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1025\insrsid7891092\charrsid15732841  }{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'e5\'d1 \'e6\'c7\'e3}{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid16451038\charrsid15732841 
+\'d6}{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'c7\'c1 \'e3\'da\'c7\'e6\'e4 \'81\'8e\'e6\'e5\'d4\'ed
+\par }{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid1066059\charrsid15732841                                                                                                                            }{\ltrch \ab\afs18 \rtlch 
+\b\i\f36\fs18\cf1\lang1025\insrsid10500659                        }{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid1066059\charrsid15732841      }{\ltrch \ab\afs18 \rtlch \b\i\f36\fs18\cf1\lang1025\insrsid14770377\charrsid15732841 \'cf\'c7\'e4
+\'d4\'90\'dc\'dc\'dc\'c7\'e5 \'da\'e1\'dc\'e6\'e3 \'81\'d2\'d4\'df\'ed \'ca\'e5\'d1\'c7\'e4
+\par }\pard\plain \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 \rtlch \af37\afs20\alang1025 \ltrch \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\ltrch \afs16 \rtlch 
+\f36\fs16\lang1025\insrsid853461\charrsid15732841 
+\par 
+\par }{\ltrch \afs16 \rtlch \f36\fs16\lang1025\insrsid4417574\charrsid15732841 
+\par 
+\par }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 
+\par 1  }{\ltrch \ai\afs16 \rtlch \f0\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \endash }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841   \'e4\'d3\'ce\'e5 \'c7\'e6\'e1 -  \'e3\'cf\'ed\'d1 \'c7\'cc\'d1\'c7\'c6\'ed \'d8
+\'d1\'cd
+\par }\pard \rtlpar\qr \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid9515313 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 2}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841   }{\ltrch \ai\afs16 \rtlch \f0\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \endash }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841   \'e4\'d3\'ce\'e5 }{
+\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'cf\'e6\'e3}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 - \'e3\'cf\'ed\'d1\'ed\'ca \'c7\'e3\'e6\'d1 \'81\'8e\'e6\'e5\'d4\'ed \'cc\'e5\'ca \'cf\'d1\'cc \'cf\'d1 \'81\'d1\'e6\'e4\'cf\'e5}{\ltrch \ab\ai\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1065\insrsid8280521\charrsid15732841 -}{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid8280521\charrsid15732841 /}{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid2107697\charrsid15732841  }{\ltrch \ab\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1065\insrsid8280521\charrsid15732841 \'e4\'c7\'e3 }{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid2107697\charrsid15732841 \'e6 \'ca\'e1\'dd\'e4 \'ca\'e3\'c7\'d3 }{\ltrch \ab\afs18 \rtlch 
+\b\f36\fs18\cf1\lang1065\insrsid8280521\charrsid15732841 \'df\'c7\'d1\'d4\'e4\'c7\'d3 \'90\'d1\'e6\'e5 \'df\'c7\'d1\'d4\'e4\'c7\'d3\'ed}{\ltrch \ab\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid2107697\charrsid15732841 /........../.........../}{\ltrch 
+\ab\ai\afs18 \rtlch \b\f36\fs18\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }\pard \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid5325060 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 3  }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 - }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e4\'d3\'ce\'e5 }{\ltrch 
+\ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'d3\'e6\'e3 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 - \'cd\'d3\'c7\'c8\'cf\'c7\'d1\'ed \'e3\'da\'c7\'e6\'e4\'ca \'81\'8e\'e6\'e5\'d4\'ed 
+\'cc\'e5\'ca \'c7\'de\'cf\'c7\'e3
+\par }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 4}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841   -  \'ca\'d5\'e6\'ed\'d1 \'de\'d1\'c7\'d1\'cf\'c7\'cf}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 -  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'c8\'c7\'ed\'90\'c7\'e4\'ed 
+\'cd\'e6\'d2\'e5 \'e3\'da\'c7\'e6\'e4\'ca \'81\'8e\'e6\'e5\'d4\'ed}{\ltrch \afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 
+\par }\pard \rtlpar\qj \li0\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid4069544 {\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 5}{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 -  \'ca\'d5\'e6\'ed\'d1 \'de\'d1
+\'c7\'d1\'cf\'c7\'cf}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  }{\ltrch \ai\afs16 \rtlch \f0\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \endash }{\ltrch \ai\afs16 \rtlch 
+\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841   }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1025\insrsid14770377\charrsid15732841 \'e3\'da\'c7\'e6\'e4 }{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 \'81\'8e\'e6
+\'e5\'d4\'ed }{\ltrch \ab\ai\afs16 \rtlch \b\f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841 <? echo $daneshkade_name; ?>}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid14770377\charrsid15732841  \'cc\'e5\'ca \'c7\'d8\'e1\'c7\'da \'e6 \'81\'ed\'90\'ed\'d1\'ed\'e5
+\'c7\'ed \'e1\'c7\'d2\'e3}{\ltrch \ai\afs16 \rtlch \f36\fs16\cf1\lang1065\insrsid13384352\charrsid15732841 
+\par }}

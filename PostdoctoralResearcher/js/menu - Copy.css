@@ -1,0 +1,15 @@
+div,a{color:#16387c}
+div,input{font:11px/150% tahoma;}
+a{text-decoration:none}
+a:hover{text-decoration:underline}
+#rightMenu li{float:right;margin:0px 4px}
+#rightMenu li a{padding:3px;display:block}
+#right-menu{direction:rtl;margin:0px 0px;min-height:340px;*height:360px}
+ul{list-style-type:none;margin:0px;padding:0px}
+#right-menu li{margin:2px 0px;padding:2px 5px}
+#right-menu li a{font-size:11px;display:block}
+#right-menu li a:hover{text-decoration:underline}
+#right-menu li.header{font:bold 10px tahoma;padding:5px;margin:3px 3px 2px 0px}
+*html #right-menu li.header{padding:3px 2px}
+.tt{margin-top:-5px;padding:9px 0px;float:right;margin-left:2px;position:absolute}
+#right-menu li.header a{text-indent:5px}

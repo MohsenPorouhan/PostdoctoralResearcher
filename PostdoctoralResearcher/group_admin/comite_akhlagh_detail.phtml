@@ -1,0 +1,86 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and creator=\"$admin\"";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh' ";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="98%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+    echo "<br>";
+    echo "<table border=\"0\" width=\"98%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    $moshkelat_akhlaghi = $row_fetched["moshkelat_akhlaghi"];
+    $halle_moshkelat_akhlaghi = $row_fetched["halle_moshkelat_akhlaghi"];
+    $rezayatname = $row_fetched["rezayatname"];
+    
+    if( strcmp(trim($rezayatname),"0")==0 )
+      $rezayatname="دارد";
+    else
+      $rezayatname="ندارد";
+
+    
+    $rezayatnamefile = $row_fetched["rezayatnamefile"];
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$moshkelat_akhlaghi."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">ملاحظات و مشکلات اخلاقي طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$halle_moshkelat_akhlaghi."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">راه حل مشکلات اخلاقي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$rezayatname."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">آيا طرح رضايتنامه اخلاقي دارد</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    if(strlen(trim($rezayatnamefile)) > 0 )
+    {
+     $rezayat_file="../rezayatname/".$cod_tarh."/rezayatname.doc";
+     echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a href=\"\" style=\"text-decoration:none\">".$rezayat_file."</a></td>";
+    }
+    else
+     echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">فايل ضميمه ندارد</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">فايل رضايتنامه</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+   }
+?>
+ <table border="0" width="98%">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

@@ -1,0 +1,136 @@
+ <meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html dir="ltr">
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched=mysql_fetch_array($result);
+?>
+ 
+<body topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
+
+ 
+	<table border="0" width="551" height="419" cellspacing="0" cellpadding="0">
+	  <!--DWLayoutTable-->
+		<tr>
+			<td width="551" height="26">&nbsp;</td>
+        </tr>
+		<tr>
+		  <td height="393" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" background="images/t2.jpg">
+		    <!--DWLayoutTable-->
+		    <tr>
+		      <td height="52" colspan="5" valign="top"><table width="551" height="52" border="0" cellpadding="0" cellspacing="0" background="images/t1.jpg">
+		      <!--DWLayoutTable-->
+		      <tr>
+		        <td></td>
+	            <td></td>
+	            <td height="13"></td>
+		      </tr>
+				<tr>
+		        <td></td>
+		        <td style="font-size: 8pt; font-family: Tahoma; color: #000066" align="right" dir='rtl'>
+				<?
+	   echo ""."عنوان   : ".$row_fetched["tarh_title_farsi"];
+      ?></td>
+		        <td height="21"></td>
+		        </tr>
+				<tr>
+					<td width="28"></td>
+					<td width="304"></td>
+					<td height="18" width="219"></td>
+				</tr>
+	                                          </table></td>
+      </tr>
+		    <tr>
+		      <td width="15" height="14"></td>
+              <td width="327"></td>
+              <td width="5"></td>
+              <td width="186"></td>
+              <td width="21"></td>
+		    </tr>
+		    <tr>
+		      <td height="299">&nbsp;</td>
+		      <td valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" background="images/tre_2.jpg">
+		        <!--DWLayoutTable-->
+		        <tr>
+		          <td height="40" colspan="3" valign="top"><img src="images/tre_1.jpg" width="327" height="40"></td>
+                </tr>
+		        <tr>
+		          <td width="9" height="232">&nbsp;</td>
+	              <td width="303" valign="top" style="font-size: 8pt; font-family: Tahoma; color: #000066" align="left">
+<?					
+					if(strcmp(trim($row_fetched["finalized"]),'1')==0 || strcmp($row_fetched["finished"],"1")==0)
+{
+  message_show(".طرح قابل ويرايش نيست","red");
+}
+else
+{
+?>
+					<iframe width='100%' height="100%" frameborder="0" src="<? echo "tree_edit.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select" ?>">
+					</iframe>
+	<?
+	}
+	?>				
+					</td>
+	              <td width="15">&nbsp;</td>
+		        </tr>
+		        <tr>
+		          <td height="27" colspan="3" valign="top"><img src="images/tre_3.jpg" width="327" height="27"></td>
+	            </tr>
+	          </table></td>
+ 		      <td>&nbsp;</td>
+		      <td valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" background="images/hlp_2.jpg">
+	            <!--DWLayoutTable-->
+	            <tr>
+	              <td height="40" colspan="3" valign="top"><img src="images/hlp_1.jpg" width="186" height="40"></td>
+                </tr>
+	            <tr>
+	              <td width="14" height="231">&nbsp;</td>
+                  <td width="162" valign="top" style="font-family: Tahoma; color: #000066; font-size: 8pt" align="right" dir='rtl'>
+					مواردي که در مقابل وجود دارد ليست آيتمهاي مربوط به طرح مي باشد که ميتوانيد بطور متناوب آنها را وارد کرده و در انتهاي کار با زدن کليد خاتمه و ارسال فرايند ارسال طرح را پايان دهيد
+					<br>
+					مواردي که بصورت BOLD  هستند مواردي هستند که ورود اطلاعات شده اند
+					
+						<?
+					
+					$admin_edit=0;
+					$query="select * from modir_daneshkade where modir_username='$admin' and ( modir_type='1' or modir_type='4')";
+					$result=mysql_query($query) or die("Error");
+					if(mysql_num_rows($result) >0)
+					{
+						$admin_edit=1;
+					}
+				    $query="select * from tarh where cod_tarh='$cod_tarh'";
+  					$result=mysql_query($query) or die("error");
+ 				    if(mysql_num_rows($result) > 1 && $admin_edit==0)
+  					{
+  						echo "<br><span class='tahoma1'><b>مواردي که مقابل آنها علامت دست وجود دارد قابل ويرايش هستند</b><br><b> لطفا پس از اتمام ويرايش حتما کليد خاتمه و ارسال را بزنيد ضمنا نامه ارسالي به اين طرح را حتما پاسخ دهيد</b><b><br></b></span>";
+  					}
+					?>
+					</td>
+				
+                  <td width="10">&nbsp;</td>
+	            </tr>
+	            <tr>
+	              <td height="28" colspan="3" valign="top"><img src="images/hlp_3.jpg" width="186" height="28"></td>
+                </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </table></td>
+	          <td></td>
+	        </tr>
+		    <tr>
+		      <td height="14"></td>
+		      <td></td>
+		      <td></td>
+		      <td></td>
+		      <td></td>
+	        </tr>
+		    <tr>
+		      <td height="14" colspan="5" valign="top"><img src="images/t3.jpg" width="551" height="14"></td>
+	        </tr>
+	                </table></td>
+	  </tr>
+	</table>
+ </body>
+
+</html>

@@ -1,0 +1,172 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+      $query="select * from tarh where cod_tarh='$cod_tarh' ";
+ 
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi 1");
+      
+      if ( mysql_num_rows($result) >0  )
+      {
+      	if(strcmp($unarch,"1")==0)
+    	  $query="update tarh set  archieved =0 where cod_tarh='$cod_tarh' and version='-1' ";
+    	else 
+    	  $query="update tarh set  archieved =1, archieve_reason ='$archieve_reason' where cod_tarh='$cod_tarh' and version='-1' ";  
+         
+		$result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        if(strcmp($unarch,"0")==0)
+        {        
+		  insert_position($cod_tarh,"12",$admin);
+        }
+		 else
+		 { 
+		 $myq="select * from tarh_position where cod_tarh='$cod_tarh' order by id desc";
+		 $res=mysql_query($myq) or die("Error");
+		 if(mysql_num_rows($res) > 1)
+		 {
+		 	$crnt=mysql_fetch_array($res);
+		 	$crnt=mysql_fetch_array($res);
+		 	$prev_pos=$crnt["position"];
+		 	
+		  }	
+		    insert_position($cod_tarh,"$prev_pos",$admin);
+		 } 
+		 if(strcmp($unarch,"0")==0)	
+            $action="آرشيو طرح"."<br>".$tarh_name;
+         else
+		    $action="خروج از آرشيو طرح"."<br>".$tarh_name;   
+        $query="insert into archieve_reasons set   archieve_date ='".date("Y-m-d")."',cod_tarh='$cod_tarh' ,archieve_reason ='$archieve_reason', archieve_source ='12'";
+       // echo $query;
+        
+	    $result=mysql_query($query) or die("Error 34");
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+        
+        if(strcmp($unarch,"0")==0)
+		   message_show(".طرح آرشيو شد","green");
+		else 
+		   message_show("طرح از حالت آرشيو خارج شد","green");
+		footer_forms($admin,$seed);
+		exit();		
+      }
+    
+  }
+}
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+  
+  if(isset($unarchieve))
+   $unarch="1";
+  else 
+   $unarch="0"; 
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&unarch=$unarch\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+  <TD align=right width="100%" class="tahoma1"   >
+     آرشيو طرح
+      </TD>
+</tr>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+  <tr>
+   <?
+   if(strcmp($unarch,"0")==0)
+     echo "<td width=\"100%\" class=\"tahoma1\" valign=\"top\" align=\"right\"><span class=\"star-message\">با اين عمل طرح به طرحهاي آرشيو شده منتقل ميشود</span></td>";
+   else 
+       echo "<td width=\"100%\" class=\"tahoma1\" valign=\"top\" align=\"right\"><span class=\"star-message\">با اين عمل طرح از حالت آرشيو خارج ميشود</span></td>";     
+   ?>
+  
+  </tr>
+<?
+   if(strcmp($unarchieve,"1")==0)
+     $archieve_string="دليل خروج از آرشيو";
+   else
+     $archieve_string="دليل آرشيو طرح";  
+
+?>
+   <tr>
+    <td width="80%" align="right"><textarea   rows="7"  name="archieve_reason"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="20%" class="tahoma1" valign="top"><span class="star-message">*</span><? echo $archieve_string; ?></td>
+  </tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>

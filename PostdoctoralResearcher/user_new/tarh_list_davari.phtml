@@ -1,0 +1,885 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms();
+?>
+
+<style>
+.table th,.table tr {
+    background-color: rgb(255, 255, 255	);
+    color: black;
+	padding: 5px;
+    text-align: center;
+	font-weight:bold;
+	cursor:pointer;
+}
+.table tbody > tr:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.table table {
+    border-collapse: collapse;
+    padding: 5px;
+	margin:0 auto;
+	border:1px solid #ddd;
+    /*border-spacing:20px 10px;*/
+    /*border:none;*/
+}
+
+.table tbody > tr:nth-of-type(2n+1) {
+    background-color: #f9f9f9;
+    color: rgb(0,0,0);
+	font-weight:normal;
+}
+
+.table tbody > tr:nth-of-type(2n) {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0,0,0);
+	font-weight:normal;
+}
+
+</style>
+
+<!-- BEGIN PAGE LEVEL STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css"/>
+    <link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css"/>
+    
+    <link id="DT_bootstrap" rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css"/>
+
+    <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+    <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+    	<link rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+<!-- END PAGE LEVEL STYLES -->
+    
+    <!--First of test with previous css  -->
+    <!-- <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" /> -->
+      
+    <!-- End of test with previous css -->
+    <!-- END PAGE LEVEL STYLES -->
+<?php
+$menu_id="3";
+$sub_menu_id="4";
+include("include/new_menu.php");
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content"> 
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h4 id="page-title" class="page-title">
+                            
+                            ليست طرح هاي محيط داوري شما
+                        </h4>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="navigator-home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle" class="fa fa-angle-left"></i>
+                            </li>
+                            
+                            <li>
+                                <a id="navigator-tarhlist" href="tarh_list_davari.phtml">
+                                    طرح هاي داوري شما
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+                <!-- BEGIN PAGE CONTENT-->
+                <div class="row">
+                    <div class="col-md-12">
+                    
+              <!-- BEGIN DATA TABLE PORTLET-->
+                        <div class="portlet box blue">
+                        	   <div class="modal fade" id="view_letters" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			                    <div class="modal-dialog modal-wide">
+			                        <div class="modal-content">
+			                            <div class="modal-header bg-blue">
+			                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+			                                <h4 id="view_letters_modal-title" class="modal-title">Modal title</h4>
+			                            </div>
+			                            <div id="view_letters_modal-body" class="modal-body">
+			                               
+			                            </div>
+			                            <div class="modal-footer">
+									    <!--<button type="button" class="btn blue">Save changes</button> -->
+			                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+			                            </div>
+			                        </div>
+			                        <!-- /.modal-content -->
+			                    </div>
+			                    <!-- /.modal-dialog -->
+              			   </div>
+              			   <div class="modal fade" id="view_versions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			                    <div class="modal-dialog modal-wide">
+			                        <div class="modal-content">
+			                            <div class="modal-header bg-blue">
+			                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+			                                <h4 id="view_versions_modal-title" class="modal-title">Modal title</h4>
+			                            </div>
+			                            <div id="view_versions_modal-body" class="modal-body table">
+			                               
+			                            </div>
+			                            <div class="modal-footer">
+									    <!--<button type="button" class="btn blue">Save changes</button> -->
+			                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+			                            </div>
+			                        </div>
+			                        <!-- /.modal-content -->
+			                    </div>
+			                    <!-- /.modal-dialog -->
+              			   </div>
+                            
+                            <form id="modal_form" method="post" action="#" class="form-horizontal table">
+							<input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control" >
+                            <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog ">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+											                     <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+											                            <h4 id="h4_title" class="modal-title">
+											                                <i class="fa fa-file-o"></i>
+											                                
+											                             </h4>
+											                    </div>
+											                   <div class="modal-body">
+											                   <!-- BEGIN FORM-->
+														       							                                    
+														            
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div class="form-body">
+																			<h4 id="modal_title_subject" class="form-section">با انتخاب گزينه بلي طرح توسط شما دريافت ميگردد و در قسمت طرح هاي در دست اقدام آماده نظر دهي است</h4>
+																		</div>
+																
+																	
+																	<!-- END FORM-->
+							                                    
+																		   
+																	<!-- letter_to_mojri_body(); -->
+							                                  
+							                                   </div>
+							                                <!-- /.modal-content -->
+							                                  <div class="modal-footer">
+							                                  
+								                                       <button type="submit"  class="btn green">بلي</button>
+																	   <button type="button" class="btn red" data-dismiss="modal"> <i class="fa fa-times"></i>انصراف</button>							                              
+							                                      </div>
+							                                
+							                                <!-- End FORM-->
+							                                
+							                                </div>
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							</div>
+							<div class="modal fade" id="send_comment" role="send_comment" aria-hidden="true">
+							                            <div class="modal-dialog ">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+											                     <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+											                            <h4 id="h4_title" class="modal-title">
+											                                <i class="fa fa-file-o"></i>
+											                                
+											                             </h4>
+											                    </div>
+											                   <div class="modal-body">
+											                   <!-- BEGIN FORM-->
+														       							                                    
+														            
+							                                        <!-- BEGIN FORM-->
+																	
+																<div class="form-body">
+															    	<div class="alert alert-danger display-hide">
+																			<button class="close" data-close="alert"></button>
+																		    پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																	</div>
+																		<div class="row">
+																		<div class="col-md-9 col-md-push-1">
+																				<div class="form-group">
+																					<label id="abc" class="control-label col-md-3">نظر شما</label>
+																					<div class="col-md-9">
+																							<textarea id="notes" name="notes" rows="5" cols="50"></textarea>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		
+																</div>
+																
+																	
+																	<!-- END FORM-->
+							                                    
+																		   
+																	<!-- letter_to_mojri_body(); -->
+							                                  
+							                                   </div>
+							                                <!-- /.modal-content -->
+							                                  <div class="modal-footer">
+							                                  
+								                                       <button type="submit"  class="btn green">ذخيره</button>
+																	   <button type="button" class="btn red" data-dismiss="modal"> <i class="fa fa-times"></i>انصراف</button>							                              
+							                                      </div>
+							                                
+							                                <!-- End FORM-->
+							                                
+							                                </div>
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							</div>
+							<div class="modal fade" id="your_notes" tabindex="-1" role="your_notes" aria-hidden="true">
+							                            <div class="modal-dialog ">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+											                     <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+											                            <h4 id="h4_title" class="modal-title">
+											                                <i class="fa fa-file-o"></i>
+											                                
+											                             </h4>
+											                    </div>
+											                   <div class="modal-body">
+											                   <!-- BEGIN FORM-->
+														       							                                    
+														            
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div id="your_notes_div" class="form-body">
+																			
+																		</div>
+																
+																	
+																	<!-- END FORM-->
+							                                    
+																		   
+																	<!-- letter_to_mojri_body(); -->
+							                                  
+							                                   </div>
+							                                <!-- /.modal-content -->
+							                                  <div class="modal-footer">
+							                                  
+								                                       
+																	   <button type="button" class="btn red" data-dismiss="modal"> <i class="fa fa-times"></i>بستن</button>							                              
+							                                      </div>
+							                                
+							                                <!-- End FORM-->
+							                                
+							                                </div>
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							</div>
+							</form>
+							<div class="portlet-title">
+                                <div id="caption-grid" class="caption">
+                                    <i  class="fa fa-globe"></i>همه طرح ها
+                                </div>
+                                <div class="tools">
+                                    <a href="javascript:;" class="collapse">
+									</a>
+									<a href="#portlet-config" data-toggle="modal"
+									class="fa fa-info-circle" title="راهنما"
+									style="color: white">
+									</a>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			                    <div class="modal-dialog">
+			                        <div class="modal-content">
+			                            <div class="modal-header">
+			                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+			                                <h4 class="modal-title">راهنما</h4>
+			                            </div>
+			                            <div class="modal-body">
+			                                در حال تکمیل می باشد.
+			                            </div>
+			                            <div class="modal-footer">
+			                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+			                            </div>
+			                        </div>
+			                        <!-- /.modal-content -->
+			                    </div>
+		                    <!-- /.modal-dialog -->
+		                    </div>
+                            <div class="portlet-body">
+	                            <div class="col-md-3" style="padding-left: 0;width: 21%;">
+									<div class="form-inline">
+										<label id="position-label" class="control-label">موقعيت طرح
+											<? 
+												if(!isset($position))
+													$position="-1";
+											?>
+											<select id="position" class="select2_category form-control input-small" data-placeholder="Choose a Category" tabindex="1">
+												<? if(strcmp($position,"-1")==0)
+														$selected=" selected ";
+												   else
+													    $selected="";    	
+												?>
+												<option <? echo $selected;?> value="-1">همه</option>
+												<? if(strcmp($position,"0")==0)
+														$selected=" selected ";
+												   else
+													    $selected="";    	
+												?>
+												<option <? echo $selected;?> value="0">طرح هاي جديد</option>
+												<? if(strcmp($position,"1")==0)
+														$selected=" selected ";
+												   else
+													    $selected="";    	
+												?>
+												<option <? echo $selected;?> value="1">طرح هاي در دست اقدام</option>
+												<? if(strcmp($position,"2")==0)
+														$selected=" selected ";
+												   else
+													    $selected="";    	
+												?>
+												<option <? echo $selected;?> value="2">طرح هاي اقدام شده</option>
+											</select>												
+										
+										</label>
+									</div>
+				                </div>  
+				                
+				                <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="sample_1">
+                                    <thead>
+                                        <tr>
+                                            <th id="th1">
+                                                کد طرح
+                                            </th>
+                                            <th id="th2">
+                                                عنوان فارسي
+                                            </th>
+                                            <th id="th4">
+                                                تاريخ ارسال
+                                            </th>
+                                            <th id="th4">
+                                               موضوع مورد بررسي
+                                            </th>                                             
+                                            <th id="th7">
+                                                جزييات
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                   <tbody>
+                                   
+                                   </tbody>
+                                </table>
+                                </div>
+                             </div>
+                        </div>
+                        <!-- END DATA TABLE PORTLET-->      
+                       
+</div>
+</div>
+<!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+
+
+////var	language="en";
+
+if(language=="en"){
+	
+	debugger
+	document.getElementById("page-title").innerText="List of Researches";;
+	document.getElementById("navigator-home").innerText="Home";
+	document.getElementById("navigator-tarhlist").innerText="Your Researches";
+	document.getElementById("position-label").innerHTML="Research Postition<select id=\"position\" class=\"select2_category form-control input-small\" data-placeholder=\"Choose a Category\" tabindex=\"1\"><option value=\"-1\">All</option><option value=\"0\"></option><option value=\"1\">Ready to contract</option><option value=\"2\">In Doing</option><option value=\"3\">Finished</option><option value=\"4\">Finished by </option><option value=\"5\">Archived</option></select>";
+	document.getElementById("th1").innerText="Research Code";
+	document.getElementById("th2").innerText="Title";
+	document.getElementById("th3").innerText="University / Faculty";
+	document.getElementById("th4").innerText="Send Date";
+	document.getElementById("th5").innerText="Research Position";
+	document.getElementById("th6").innerText="Edit / Edit Request";
+	document.getElementById("th7").innerText="Details";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+	document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-globe'></i> All Researches";
+}
+
+	</script>
+
+
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/data-tables/DT_bootstrap.js"></script> 
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+    
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <!--<script src="../assets/scripts/core/app.js"></script>-->
+    <!--<script src="../assets/scripts/custom/table-advanced.js"></script>-->
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+        jQuery(document).ready(function () {
+            // initiate layout and plugins
+            
+         //   TableAdvanced.init();
+        });
+        var modal_action;
+
+        function view_letters(cod_tarh){
+			debugger;
+
+			$.ajax({
+     	        url: "letter_to_mojri_body.php?action=view_letters",
+     	        type: "POST",
+     	        data: { cod_tarh: cod_tarh},
+     	        async: false,
+     	        dataType: "html",
+     	        success: function(result) {
+         	       // alert(result);
+     	          $("#view_letters_modal-body").html(result);
+      	          $("#view_letters_modal-title").text(" نامه هاي مربوط به طرح با کد"+cod_tarh);
+      	          $("#view_letters").modal("show");
+
+     	        }
+     	    });
+          }
+        function view_versions(cod_tarh){
+			debugger;
+
+			$.ajax({
+     	        url: "letter_to_mojri_body.php?action=versions",
+     	        type: "POST",
+     	        data: { cod_tarh: cod_tarh},
+     	        async: false,
+     	        dataType: "html",
+     	        success: function(result) {
+         	       // alert(result);
+     	          $("#view_versions_modal-body").html(result);
+      	          $("#view_versions_modal-title").text(" ويرايش هاي مربوط به طرح با کد"+cod_tarh);
+      	          $("#view_versions").modal("show");
+
+     	        }
+     	    });
+          }
+        
+        function confirm_tarh(data){
+
+			debugger;
+			$("#cod_tarh")[0].value = data;
+			modal_action="confirm_tarh";
+			 $("#basic").modal("show");
+
+          }
+        function finished_karshenasi(data){
+
+			debugger;
+			$("#cod_tarh")[0].value = data;
+			$("#modal_title_subject").text("در صورت اعلام اتمام کار کارشناسي، طرح به منوي طرح هاي اقدام شده ارسال مي شود.");
+			modal_action="finished_karshenasi";
+			 $("#basic").modal("show");
+
+          }
+        function return_karshenasi(data){
+
+			debugger;
+			$("#cod_tarh")[0].value = data;
+			$("#modal_title_subject").text("براي بازگرداندن طرح به طرحهاي در دست اقدام گزينه بلي راانتخاب نماييد");
+			modal_action="return_karshenasi";
+			 $("#basic").modal("show");
+
+          }
+        function send_comment(data){
+
+			debugger;
+			$("#cod_tarh")[0].value = data;
+			//$("#modal_title_subject").text("براي بازگرداندن طرح به طرحهاي در دست اقدام گزينه بلي راانتخاب نماييد");
+			modal_action="send_comment";
+			 $("#send_comment").modal("show");
+
+          }
+        function your_note(data)
+        {
+        	$.ajax({
+     	        url: "your_notes.php?karshenasi_type=1",
+     	        type: "POST",
+     	        data: { cod_tarh: data},
+     	        async: false,
+     	        dataType: "html",
+     	        success: function(result) {
+         	       // alert(result);
+     	          $("#your_notes_div").html(result);
+      	          $("#your_notes").modal("show");
+
+     	        }
+     	    });
+			
+
+        }
+    </script>
+    <script>
+    function fixControlPosition(){
+		//ja be jayi btn haye table tools (print,copy,....)
+							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+		}
+function format(d) {
+    var r;
+    $.ajax({
+        url: "details.php?semat=davar",
+        type: "POST",
+        data: { cod_tarh: d.cod_tarh },
+        async: false,
+        dataType: "html",
+        success: function(result) {
+            r = result;
+
+        }
+    });
+    return r;
+}
+var buttonText;
+var sButtonText;
+var info;
+//var	language="en";
+if(language=="en"){
+	buttonText="Visibel Columns";
+	sButtonText="Print";
+	sButtonText2="Save";
+	info="view _START_ to _END_ from _TOTAL_ items";
+	sLengthMenu="View Content _MENU_";
+	sZeroRecords="Not Found";
+	sInfoEmpty="Empty";
+	sInfoFiltered="(Filtered From _MAX_ Items)";
+	sSearch="Search";
+	sFirst="First";
+	sPrevious="Previous";
+	sNext="Next";
+	sLast="Last";
+	
+	
+}
+else
+{
+	buttonText="ستون هاي قابل نمايش";
+	sButtonText="چاپ";
+	sButtonText2="ذخيره";
+	info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+	sLengthMenu="نمايش محتويات _MENU_";
+	sZeroRecords="موردي يافت نشد";
+	sInfoEmpty="تهي";
+	sInfoFiltered="(فيلتر شده از مجموع _MAX_ مورد)";
+	sSearch="جستجو";
+	sFirst="ابتدا";
+	sPrevious="قبلي";
+	sNext="بعدي";
+	sLast="انتها";
+	
+}
+	
+
+$(document).ready(function() {
+    var detailRows = [];
+    var dt;
+	
+    dt = $('#sample_1').DataTable({
+  	   "colVis": {
+           "buttonText": buttonText
+       },
+				    				"dom": 'CT<"clearfix">lfrtip',
+				    				"tableTools": {
+				    					"sRowSelect": "os",
+				    					 "aButtons": [
+				    						
+				    						{
+				    							"sExtends": "print",
+				    							"sButtonText": sButtonText
+				    						},
+				    						
+				    						{
+				    							"sExtends":    "collection",
+				    							"sButtonText": sButtonText2,
+				    							"aButtons":    [ 
+				    												"csv", 
+				    												"xls"
+				    											]
+				    						}
+				    					],
+				    					
+				    					"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+				    				},
+				                "fnInitComplete": function(oSettings, json) {
+								
+								fixControlPosition();
+								
+				                },
+        "fnDrawCallback": function(oSettings) {
+            var trs = $("#sample_1 tr");
+            for (var i = 1; i < trs.length; i++) {
+
+                var rowId = ($(trs[i]).attr('id'));
+                $("#" + rowId + " td:last-child").trigger('click');
+
+            }
+            $('.uncolck_buttun').on('click', function() {
+            	var tr = $(this).closest('tr');
+                var row = dt.row(tr);
+            	debugger;
+    			$("#cod_tarh")[0].value = row.data().cod_tarh;;
+    			$("#abc").text("دليل درخواست ويرايش");
+    			$("#h4_title").text("درخواست ويرايش");
+    			modal_action="unlock";
+    			 $("#basic").modal("show");
+            	
+            });
+            $('.row-details').on('click', function() {
+                debugger;
+                var tr = $(this).closest('tr');
+                var row = dt.row(tr);
+                var idx = $.inArray(tr.attr('id'), detailRows);
+
+                if (row.child.isShown()) {
+                	$("#"+tr.attr('id')+" td:last").removeClass('row-details-open');
+                	$("#"+tr.attr('id')+" td:last").addClass('row-details-close');
+                
+                    row.child.hide();
+
+                    // Remove from the 'open' array
+                    detailRows.splice(idx, 1);
+                } else {
+                	$("#"+tr.attr('id')+" td:last").removeClass('row-details-close');
+                	$("#"+tr.attr('id')+" td:last").addClass('row-details-open');
+                    
+                
+                    row.child(format(row.data())).show();
+
+                    // Add to the 'open' array
+                    if (idx === -1) {
+                        detailRows.push(tr.attr('id'));
+                    }
+                }
+            });
+        },
+        
+        "paging": true,
+        'bPaginate': true,
+        "pagingType": "full_numbers",
+        "processing": true,
+        "serverSide": true,
+        "destroy": true,
+        "bAutoWidth": false,
+        "order": [[ 3, "desc" ]],
+        "language": {
+		
+            "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+            "sLengthMenu": sLengthMenu,
+            "sZeroRecords": sZeroRecords,
+            "info": info,
+            "sInfoEmpty": sInfoEmpty,
+            "sInfoFiltered": sInfoFiltered,
+            "sInfoPostFix": "",
+            "sSearch": sSearch,
+            "sUrl": "",
+            "oPaginate" : {
+                "sFirst": sFirst,
+                "sPrevious": sPrevious,
+                "sNext": sNext,
+                "sLast": sLast
+            }
+        },
+        "sAjaxSource": "tarh_list_davari_server_side.php?action=list&karshenasi_type=1&position=" + $('#position :selected').val(),
+        "aoColumns": [
+            { "data": "cod_tarh" },
+            { "data": "tarh_title_farsi" },
+            { "data": "tarh_time" },
+            { "data": "send_comment" },
+            { "data": "ss", "sClass": "row-details row-details-close", "bSortable": false }
+        ]
+
+    });
+	///////////////////////////////////////////
+    $("#modal_form").submit(function(e){
+
+    	debugger;
+    	//alert("hi");
+        // for more info visit the official plugin documentation: 
+            // http://docs.jquery.com/Plugins/Validation
+             debugger;
+            var form2 = $('#modal_form');
+            var error2 = $('.alert-danger', form2);
+            var success2 = $('.alert-success', form2);
+           /* jQuery.validator.addMethod("test", function(value, element) {
+                return this.optional(element) || /^09[123]\d{8}/.test(value);
+            }, "Your entered data is not phone number");*/
+            form2.validate({
+                
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "",
+                rules:{
+
+      	              },
+    	  	    messages:{
+        	           archieve_reason:{
+      	                  required:"پر کردن اين فيلد الزامي مي باشد"
+      	            	  }
+    		  	      },
+      	              
+      		  	    
+                invalidHandler: function (event, validator) { //display error alert on form submit              
+                        success2.hide();
+                        error2.show();
+                        App.scrollTo(error2, -200);
+                },
+
+                errorPlacement: function (error, element) { // render error placement for each input type
+                    var icon = $(element).parent('.input-icon').children('i');
+                    icon.removeClass('fa-check').addClass("fa-warning");  
+                    icon.attr("data-original-title", error.text()).tooltip();
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                    $(element)
+                        .closest('.form-group').addClass('has-error'); // set error class to the control group   
+                },
+
+                unhighlight: function (element) { // revert the change done by hightlight
+                    
+                },
+
+                success: function (label, element) {
+                    var icon = $(element).parent('.input-icon').children('i');
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                    icon.removeClass("fa-warning").addClass("fa-check");
+                },
+
+                submitHandler: function (form) {
+                    success2.show();
+                    error2.hide();
+                }
+            });
+
+    var formURL;
+    var postData = $(this).serializeArray();	
+    	 //formURL = $(this).attr("action");
+	 if(modal_action=="confirm_tarh")
+		 	formURL="send_new_karshenasi.phtml?action=finish";
+	 else if(modal_action=="finished_karshenasi")
+		 formURL="send_karshenasi_shode.phtml?action=finish";
+	 else if(modal_action=="return_karshenasi")
+	 	  formURL="return_karshenasi.phtml?action=finish";
+	 else if(modal_action=="send_comment")
+	  formURL="send_comment.php?action=finish&karshenasi_type=1";
+    	 debugger;
+    if($("#modal_form").valid())
+    {
+        $(".green").attr("disabled","disabled");
+    	$.ajax(
+    	{
+    		url : formURL,
+    		type: "POST",
+    		data : postData,
+    		success:function(data, textStatus, jqXHR) 
+    		{
+    			    //alert(data);
+    			    debugger;
+    			    if(modal_action=="confirm_tarh"){
+    			    	toastr.options.timeOut="5000";
+						toastr.options.positionClass="toast-top-right";
+						toastr.success('طرح آماده نظر دهي است. از گزينه جزييات اقدام به ارسال نظر فرماييد');
+		      			dt.ajax.url("tarh_list_davari_server_side.php?action=list&karshenasi_type=1&position=" + $('#position :selected').val());
+			      	    dt.ajax.reload();
+    			    }
+    			    else if(modal_action=="finished_karshenasi")
+    			    {
+    			    	toastr.options.timeOut="5000";
+						toastr.options.positionClass="toast-top-right";
+						toastr.success('طرح به بخش طرح هاي اقدام شده انتقال يافت و ديگر قابل نظردهي نيست');
+		      			dt.ajax.url("tarh_list_davari_server_side.php?action=list&karshenasi_type=1&position=" + $('#position :selected').val());
+			      	    dt.ajax.reload();
+    			    }
+    			    else if(modal_action=="return_karshenasi")
+    			    {
+    			    	toastr.options.timeOut="5000";
+						toastr.options.positionClass="toast-top-right";
+						toastr.success('طرح به بخش طرح هاي در دست اقدام انتقال يافت و قابل نظردهي است');
+		      			dt.ajax.url("tarh_list_davari_server_side.php?action=list&karshenasi_type=1&position=" + $('#position :selected').val());
+			      	    dt.ajax.reload();
+    			    }
+    			    else if(modal_action=="send_comment")
+    			    {
+    			    	toastr.options.timeOut="5000";
+						toastr.options.positionClass="toast-top-right";
+						toastr.success('نظر شما با موفقيت ثبت شد');
+    			    }
+    			    $("#basic").modal('hide');
+    			    $("#send_comment").modal('hide');
+    			    $("#modal_form")[0].reset();
+    	        //   $("#sample_1").DataTable().destroy();
+    	    		
+    	          // show_dataTable(); 
+    	           
+    		},
+    		error: function(jqXHR, textStatus, errorThrown) 
+    		{
+    			alert("error");
+    		}
+    	}).always($(".green").removeAttr("disabled","disabled"));
+
+    	}
+        e.preventDefault();	//STOP default action 
+    });
+/////////////
+   $('#position').change(function() {
+	debugger;
+		if($('#position :selected').val()=="-1")
+		{
+			
+			if(language=="en"){
+				$(".caption").html("<i id='caption-grid' class='fa fa-globe'></i> All Researches");
+			}
+			else{
+				$(".caption").html("<i id='caption-grid' class='fa fa-globe'></i>همه طرح ها");
+			}
+		}
+		else
+		{
+			if(language=="en"){
+				$(".caption").html($('#position :selected').text()+"<i id='caption-grid' class='fa fa-globe'></i> Researches");
+			}
+			else{
+				$(".caption").html("<i id='caption-grid' class='fa fa-globe'></i> طرح هاي "+$('#position :selected').text());
+			}
+		}
+        dt.ajax.url("tarh_list_davari_server_side.php?action=list&karshenasi_type=1&position=" + $('#position :selected').val());
+        dt.ajax.reload();
+    });
+
+
+});
+
+</script>
+    
+<?php
+footer_forms($admin,$seed);
+?>
+

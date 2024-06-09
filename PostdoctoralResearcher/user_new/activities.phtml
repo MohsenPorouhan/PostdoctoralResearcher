@@ -1,0 +1,1026 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+?>
+ <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+ <link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+ <link id="DT_bootstrap" rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css"/>
+   <!--  <link href="../assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet" />-->
+  <!--  <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" />-->
+  <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+  <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+
+<?php
+include("include/new_menu.php");
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h3 class="page-title">
+                            <small id="page-title">عنوان طرح : <? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="breadcrumb_home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle-left1" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb_send" href="tarh_list.phtml">
+                                    ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle-left2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb_title" href="activities.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    جدول زمانبندي مراحل اجرا
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="wizard" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                              
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?php  $active_id="6"; include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                       <div class="portlet box blue">
+											<div class="portlet-title">
+												<div id="portlet_caption" class="caption">
+													<i class="fa fa-reorder"></i>جدول زمانبندي مراحل اجرا
+												</div>
+												<div class="tools">
+													<a href="javascript:;" class="collapse">
+													</a>
+													<a id="portlet_config" href="#portlet-config" data-toggle="modal"
+													class="fa fa-info-circle" title="راهنما"
+													style="color: white">
+													</a>
+												</div>
+											</div>
+											<div class="portlet-body form-horizontal">
+											
+												<!-- BEGIN FORM-->
+												<form name="jadval_zarayeb_form" id="jadval_zarayeb_form" action="activities_sabt.php?action=sabt" method="POST" class="form-horizontal">
+												<input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control"  value="<?php echo $cod_tarh;?>">
+												<input id="act_code" name="act_code" type="hidden" class="form-control" >
+												
+													<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+							                                        <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                         <h4 id="modal_title" class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                            جدول زمانبندي مراحل اجرا
+							                                        </h4>
+							                                     </div>
+							                                    <div class="modal-body">
+							                                    
+																		<div class="form-body">
+																       <div id="alert_danger" class="alert alert-danger display-hide">
+																			<button class="close" data-close="alert"></button>
+																			پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																	      </div>
+																			<div class="row">
+																						<div class="col-md-6">
+																									<div class="form-group">
+																										<label id="lb1" class="control-label col-md-5">عنوان فعاليت
+																										<span class="required">
+																											 *
+																											</span></label>
+																											<div class="col-md-7">
+																												<div class="input-icon right">
+																																<i class="fa"></i>
+																													<input id="act_title" name="act_title" type="text" class="form-control input-sm  input-small" placeholder="" tabindex="1" >
+																												</div>
+																											</div>
+																									</div>
+																						</div>
+																				<!--/span-->
+																				
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb2" class="control-label col-md-5">زمان شروع - ماه
+																						<span class="required">
+																							 *
+																							</span></label>
+																						<div class="col-md-7">
+																						<div class="input-icon right">
+																										<i class="fa"></i>
+																							<select name="start_mon" id="start_mon" class="form-control input-sm  input-small"  data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="2">
+																								<option class="select_label" value="">انتخاب کنيد</option>
+																							    <option value="1">1</option>
+																							    <option value="2">2</option>
+																							    <option value="3">3</option>
+																							    <option value="4">4</option> 																							    
+																							    <option value="5">5</option>
+																							    <option value="6">6</option>
+																							    <option value="7">7</option>
+																							    <option value="8">8</option>
+																							    <option value="9">9</option>
+																							    <option value="10">10</option>
+																							    <option value="11">11</option>
+																							    <option value="12">12</option>
+																							    <option value="13">13</option>
+																							    <option value="14">14</option>
+																							    <option value="15">15</option>
+																							    <option value="16">16</option>
+																							    <option value="17">17</option>
+																							    <option value="18">18</option>
+																							    <option value="19">19</option>
+																							    <option value="20">20</option>
+																							    <option value="21">21</option>
+																							    <option value="22">22</option>
+																							    <option value="23">23</option>
+																							    <option value="24">24</option>
+																							    <option value="25">25</option>
+																							    <option value="26">26</option>
+																							    <option value="27">27</option>
+																							    <option value="28">28</option>
+																							    <option value="29">29</option>
+																							    <option value="30">30</option>
+																							    <option value="31">31</option>
+																							    <option value="32">32</option>
+																							    <option value="33">33</option>
+																							    <option value="34">34</option>
+																							    <option value="35">35</option>
+																							    <option value="36">36</option>    
+																							</select>
+																						</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb3" class="control-label col-md-5">زمان شروع -هفته
+																						<span class="required">
+																							 *
+																							</span></label>
+																						<div class="col-md-7">
+																						<div class="input-icon right">
+																										<i class="fa"></i>
+																							<select name="start_week" id="start_week" class="form-control input-sm  input-small"  data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="3">
+																								<option class="select_label" value="">انتخاب کنيد</option>
+																							    <option value="1">1</option>
+																							    <option value="2">2</option>
+																							    <option value="3">3</option>
+																							    <option value="4">4</option>     
+																							</select>
+																						</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb4" class="control-label col-md-5">زمان پايان - ماه
+																						<span class="required">
+																							 *
+																							</span></label>
+																						<div class="col-md-7">
+																						<div class="input-icon right">
+																										<i class="fa"></i>
+																							<select name="end_mon" id="end_mon" class="form-control input-sm  input-small"  data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="4">
+																								<option class="select_label" value="">انتخاب کنيد</option>
+																							    <option value="1">1</option>
+																							    <option value="2">2</option>
+																							    <option value="3">3</option>
+																							    <option value="4">4</option>
+																							    <option value="5">5</option>
+																							    <option value="6">6</option>
+																							    <option value="7">7</option>
+																							    <option value="8">8</option>
+																							    <option value="9">9</option>
+																							    <option value="10">10</option>
+																							    <option value="11">11</option>
+																							    <option value="12">12</option>
+																							    <option value="13">13</option>
+																							    <option value="14">14</option>
+																							    <option value="15">15</option>
+																							    <option value="16">16</option>
+																							    <option value="17">17</option>
+																							    <option value="18">18</option>
+																							    <option value="19">19</option>
+																							    <option value="20">20</option>
+																							    <option value="21">21</option>
+																							    <option value="22">22</option>
+																							    <option value="23">23</option>
+																							    <option value="24">24</option>
+																							    <option value="25">25</option>
+																							    <option value="26">26</option>
+																							    <option value="27">27</option>
+																							    <option value="28">28</option>
+																							    <option value="29">29</option>
+																							    <option value="30">30</option>
+																							    <option value="31">31</option>
+																							    <option value="32">32</option>
+																							    <option value="33">33</option>
+																							    <option value="34">34</option>
+																							    <option value="35">35</option>
+																							    <option value="36">36</option>    
+																							</select>
+																						</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb5" class="control-label col-md-5">زمان پايان - هفته
+																						<span class="required">
+																							 *
+																							</span></label>
+																						<div class="col-md-7">
+																						<div class="input-icon right">
+																										<i class="fa"></i>
+																							<select name="end_week" id="end_week" class="form-control input-sm  input-small"  data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="5">
+																								<option class="select_label" value="">انتخاب کنيد</option>
+																							    <option value="1">1</option>
+																							    <option value="2">2</option>
+																							    <option value="3">3</option>
+																							    <option value="4">4</option>     
+																							</select>
+																						</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																																			
+																	<!-- END FORM-->
+																	</div>
+																</div>
+							                                     
+							                                    </div>
+							                                      <div class="modal-footer">
+							                                        <button id="btn1" type="submit" class="btn green" tabindex="6" >ذخيره</button>
+																 <button id="btn2" type="button" class="btn red" data-dismiss="modal"><i class="fa fa-times" tabindex="7" ></i>انصراف</button>
+							                                    </div>
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							                      
+							                      <div class="modal fade " id="delete"  tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                    <div class="modal-header">
+							                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                        <h4 class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                       
+							                                        </h4>
+							                                    </div>
+							                                    <div class="modal-body">
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div class="form-body">
+																			<h4 id="delete_message" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+																		</div>
+																		<div class="form-actions fluid">
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="col-md-offset-3 col-md-9">
+																						<button id="btn3" type="submit"  class="btn green">بلي</button>
+																						<button id="btn4" type="button" class="btn red" data-dismiss="modal" ><i class="fa fa-times"></i>خير</button>
+																					</div>
+																				</div>
+																				<div class="col-md-6">
+																				</div>
+																			</div>
+																		</div>
+																	
+																	<!-- END FORM-->
+							                                    </div>
+							                                    
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+						                     </form>
+						                        <a id="new_activity" class="btn blue btn-sm pull-left" data-toggle="modal" href="#basic">
+						                           ثبت فعاليت جديد
+						                        </a>
+												<!-- END FORM-->
+												
+												<div id="container" style="width: 100%;min-height:300px;  margin: 0 auto" dir="rtl"></div>
+												
+												<div class="clearfix"></div>
+												<table class="table table-striped table-bordered table-hover" id="sample_1">
+				                                    <thead>
+				                                        <tr>
+				                                            <th id="th1">
+				                                                عنوان فعاليت
+				                                            </th>
+				                                            <th id="th2">
+				                                                زمان کل
+				                                            </th>
+				                                            <th id="th3" class="hidden">
+				                                                ماه شروع
+				                                            </th>
+				                                            <th id="th4" class="hidden">
+				                                                هفته شروع
+				                                            </th>
+				                                            <th id="th5" class="hidden">
+				                                                ماه پايان
+				                                            </th>
+				                                            <th id="th6" class="hidden">
+				                                                مفته پايان
+				                                            </th>
+				                                            <th id="th7">
+				                                                ويرايش
+				                                            </th>
+				                                            <th id="th8">
+				                                                حذف
+				                                            </th>
+				                                            <th id="th9" class="hidden">
+				                                                کد فعاليت
+				                                            </th>
+				                                        </tr>
+				                                    </thead>
+				                                   
+			                                	</table>
+											</div>
+										</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en"){																										    
+debugger;
+document.getElementById("page-title").textContent="Title of Research";
+document.getElementById("breadcrumb_home").textContent="Home";
+document.getElementById("breadcrumb_send").textContent="Send/Edit of Research";
+document.getElementById("breadcrumb_title").textContent="Table of schedule implementation step";
+document.getElementById("wizard").innerHTML="<i class='fa fa-magic'></i>Wizard";
+document.getElementById("portlet_caption").innerHTML="<i class='fa fa-reorder'></i>Table of schedule implementation step";
+document.getElementById("portlet_config").setAttribute("title","Information");
+document.getElementById("fa-angle-left1").setAttribute("class","fa fa-angle-right");
+document.getElementById("fa-angle-left2").setAttribute("class","fa fa-angle-right");
+document.getElementById("modal_title").innerHTML="<i class='fa fa-file-o'></i>Table of schedule implementation step";
+document.getElementById("lb1").innerHTML="Activity Title <span class='required'>*</span>";
+document.getElementById("lb2").innerHTML="Start of Time-Month <span class='required'>*</span>";
+document.getElementById("lb3").innerHTML="Start of Time-Week <span class='required'>*</span>";
+document.getElementsByClassName("select_label")[0].textContent="Choose";
+document.getElementsByClassName("select_label")[1].textContent="Choose";
+document.getElementsByClassName("select_label")[2].textContent="Choose";
+document.getElementsByClassName("select_label")[3].textContent="Choose";
+document.getElementById("lb4").innerHTML="End of Time-Month <span class='required'>*</span>";
+document.getElementById("lb5").innerHTML="End of Time-Week <span class='required'>*</span>";
+document.getElementById("btn1").textContent="Save";
+document.getElementById("btn2").textContent="Cancel";
+document.getElementById("delete_message").textContent="Are you sure to remove this item?";
+document.getElementById("btn3").textContent="Yes";
+document.getElementById("btn4").innerHTML="<i class='fa fa-times'></i>No";
+document.getElementById("new_activity").textContent="Entery new activity";
+document.getElementById("th1").textContent="Activity Title";
+document.getElementById("th2").textContent="Total of Time";
+document.getElementById("th3").textContent="Start Month";
+document.getElementById("th4").textContent="Start Week";
+document.getElementById("th5").textContent="End Month";
+document.getElementById("th6").textContent="End Week";
+document.getElementById("th7").textContent="Edit";
+document.getElementById("th8").textContent="Delete";
+document.getElementById("th9").textContent="Activity Code";
+document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+document.getElementById("alert_danger").innerHTML="<button class='close' data-close='alert'></button>You have some form errors. Please check below.";
+}
+</script>
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+
+	
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/data-tables/DT_bootstrap.js"></script> 
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="../assets/scripts/core/app.js"></script>
+	<script src="../assets/scripts/custom/form-samples.js"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+	
+	<script src="../assets/plugins/highcharts/highcharts.js"></script>
+	<script src="../assets/plugins/highcharts/highcharts-more.js"></script>
+	<script src="../assets/plugins/highcharts/modules/exporting.js"></script>
+
+
+	<script>
+	jQuery(document).ready(function() {    
+	   // initiate layout and plugins
+	 //  App.init();
+	   //FormSamples.init();
+	   //$(".").select2();
+		 $('body').addClass(" page-sidebar-closed");
+	});
+	</script>
+	<!-- END JAVASCRIPTS -->
+	<script>
+	function fixControlPosition(){
+		//ja be jayi btn haye table tools (print,copy,....)
+							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+		}
+	$("#jadval_zarayeb_form").submit(function(e)
+			{
+		var form2 = $('#jadval_zarayeb_form');
+        var error2 = $('.alert-danger', form2);
+        var success2 = $('.alert-success', form2);
+		 if(language=="en"){
+	       	 form2.validate({
+	             errorElement: 'span', //default input error message container
+	             errorClass: 'help-block', // default input error message class
+	             focusInvalid: false, // do not focus the last invalid input
+	             ignore: "",
+	             rules:{
+		       	         	   act_title:{
+	 	  	                 		required:true
+	 	  	                  },
+	 		  	                start_mon:{
+		 	  	                	required:true
+	 	  	                  		
+	 	  			          },
+	 		  			        start_week:{
+	 	  		                  	required:true
+	 	  				      },
+	 		  				    end_mon:{
+	 		  				    	
+	 	  		                 	required:true
+	 	  				      },
+	 		  				    end_week:{
+	 		  				    	
+	 	  		                  	required:true
+	 	  				      }	  				    
+	 	  	              },
+	 		  	      
+
+	             invalidHandler: function (event, validator) { //display error alert on form submit              
+	 	                    success2.hide();
+	 	                    error2.show();
+	 	                    App.scrollTo(error2, -200);
+	             },
+
+	             errorPlacement: function (error, element) { // render error placement for each input type
+	                 var icon = $(element).parent('.input-icon').children('i');
+	                 icon.removeClass('fa-check').addClass("fa-warning");  
+	                 icon.attr("data-original-title", error.text()).tooltip();
+	             },
+
+	             highlight: function (element) { // hightlight error inputs
+	                 $(element)
+	                     .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	             },
+
+	             unhighlight: function (element) { // revert the change done by hightlight
+	                 
+	             },
+
+	             success: function (label, element) {
+	                 var icon = $(element).parent('.input-icon').children('i');
+	                 $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                 icon.removeClass("fa-warning").addClass("fa-check");
+	             },
+
+	             submitHandler: function (form) {
+	                 success2.show();
+	                 error2.hide();
+	             }
+	         });
+	            }else{
+	        form2.validate({
+	            errorElement: 'span', //default input error message container
+	            errorClass: 'help-block', // default input error message class
+	            focusInvalid: false, // do not focus the last invalid input
+	            ignore: "",
+	            rules:{
+	                    	act_title:{
+		  	                 		required:true
+		  	                  },
+			  	                start_mon:{
+			  	                	required:true
+		  			          },
+			  			        start_week:{
+		  		                  	required:true
+		  				      },
+			  				    end_mon:{
+			  				    	
+		  		                 	required:true
+		  				      },
+			  				    end_week:{
+		  		                  	required:true
+		  				      }	  				    
+		  	              },
+			  	            messages:{
+			  	                    	act_title:{
+				  	                  		required:"پر کردن اين فيلد الزامي مي باشد"
+				  	            	  },
+					  	            	start_mon:{
+					  	            		
+				  	                 		required:"پر کردن اين فيلد الزامي مي باشد"
+				  	    		          },
+					  	    		    start_week:{
+				  	                  		required:"پر کردن اين فيلد الزامي مي باشد"
+				  	    		          },
+					  	    		    end_mon:{
+					  	    		      
+						  	         		required:"پر کردن اين فيلد الزامي مي باشد"
+						  	    		  },
+							  	    	end_week:{
+							  	    		
+									 		required:"پر کردن اين فيلد الزامي مي باشد"
+									  	  }
+				      		          
+				  	              },
+		  	              
+
+	            invalidHandler: function (event, validator) { //display error alert on form submit              
+		                    success2.hide();
+		                    error2.show();
+		                    App.scrollTo(error2, -200);
+	            },
+
+	            errorPlacement: function (error, element) { // render error placement for each input type
+	                var icon = $(element).parent('.input-icon').children('i');
+	                icon.removeClass('fa-check').addClass("fa-warning");  
+	                icon.attr("data-original-title", error.text()).tooltip();
+	            },
+
+	            highlight: function (element) { // hightlight error inputs
+	                $(element)
+	                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	            },
+
+	            unhighlight: function (element) { // revert the change done by hightlight
+	                
+	            },
+
+	            success: function (label, element) {
+	                var icon = $(element).parent('.input-icon').children('i');
+	                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                icon.removeClass("fa-warning").addClass("fa-check");
+	            },
+
+	            submitHandler: function (form) {
+	                success2.show();
+	                error2.hide();
+	            }
+	        });
+	            }
+		//dicision for edit or add
+		debugger;
+				var formURL;
+				var postData = $(this).serializeArray();
+				if(jadvZar_IsNew=="insert")		
+					 formURL = $(this).attr("action");
+				else if(jadvZar_IsNew=="edit")		
+					formURL="activities_sabt.php?action=edit";
+				else if(jadvZar_IsNew=="delete")		
+					formURL="activities_sabt.php?action=delete";
+				if($("#jadval_zarayeb_form").valid() || (jadvZar_IsNew=="delete"))
+				{
+				    $(".green").attr("disabled","disabled");
+				debugger;	
+				$.ajax(
+				{
+					url : formURL,
+					type: "POST",
+					data : postData,
+					success:function(data, textStatus, jqXHR) 
+					{
+				
+					if(data.length > 3)
+					{
+						$("#activities_i").switchClass( "fa-times", "fa-check", 1000, "easeInOutQuad" );
+					}
+					else if(data.length==2)
+					{
+						$("#activities_i").switchClass( "fa-check","fa-times", 1000, "easeInOutQuad" );
+					}
+					
+					jadvZar_IsNew="insert";
+					$("#basic").modal('hide');
+					$("#delete").modal('hide');
+					$("#jadval_zarayeb_form")[0].reset();
+					 //Begin of reset form validation 
+				    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+				    $(".input-icon .fa-check").switchClass("fa-check","fa");
+				    $(".alert-danger").hide();
+				    $('.form-group').removeClass('has-error');
+				    $('.form-group').removeClass('has-success');
+				  //End of reset form validation
+					show_gant_chart(data);
+					debugger;
+					show_dataTable();
+											        
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+						alert("error");
+					}
+				}).always( $(".green").removeAttr("disabled","disabled"));
+				}
+			    e.preventDefault();	//STOP default action
+			  //  $("#jadval_zarayeb_form").submit(); //SUBMIT FORM
+			});
+				
+			
+	 </script>
+	 <script>
+	 $(document).ready(function() {
+
+		 debugger;
+		 var formURL;
+
+		 formURL="activities_sabt.php?action=gant_chart_data";
+			var postData =$("#jadval_zarayeb_form").serializeArray();
+			$.ajax(
+			{
+				url :formURL,
+				type: "POST",
+				data : postData,
+				success:function(data, textStatus, jqXHR) 
+				{
+				
+				
+				debugger;
+				show_gant_chart(data);
+				show_dataTable();
+										        
+				},
+				error: function(jqXHR, textStatus, errorThrown) 
+				{
+					alert("error");
+				}
+			});
+		    //e.preventDefault();	//STOP default action
+		  //  $("#jadval_zarayeb_form").submit(); //SUBMIT FORM
+
+			  
+		    var detailRows = [];
+		    
+
+	 });
+
+		var buttonText;
+		var sButtonText;
+		var info;
+		//var	language="en";
+		if(language=="en"){
+			buttonText="Visibel Columns";
+			sButtonText="Print";
+			sButtonText2="Save";
+			info="view _START_ to _END_ from _TOTAL_ items";
+			sLengthMenu="View Content _MENU_";
+			sZeroRecords="Not Found";
+			sInfoEmpty="Empty";
+			sInfoFiltered="(Filtered From _MAX_ Items)";
+			sSearch="Search";
+			sFirst="First";
+			sPrevious="Previous";
+			sNext="Next";
+			sLast="Last";
+			
+			
+		}
+		else
+		{
+			buttonText="ستون هاي قابل نمايش";
+			sButtonText="چاپ";
+			sButtonText2="ذخيره";
+			info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+			sLengthMenu="نمايش محتويات _MENU_";
+			sZeroRecords="موردي يافت نشد";
+			sInfoEmpty="تهي";
+			sInfoFiltered="(فيلتر شده از مجموع _MAX_ مورد)";
+			sSearch="جستجو";
+			sFirst="ابتدا";
+			sPrevious="قبلي";
+			sNext="بعدي";
+			sLast="انتها";
+			
+		}
+		function show_dataTable()
+		{
+			var dt;				
+			debugger;
+		    dt = $('#sample_1').DataTable({
+				"dom": 'CT<"clearfix">lfrtip',
+		        "tableTools": {
+		            "sRowSelect": "os",
+					 "aButtons": [
+		               
+						{
+		                    "sExtends": "print",
+		                    "sButtonText": sButtonText
+		                },
+		                
+		                {
+		                    "sExtends":    "collection",
+		                    "sButtonText": sButtonText2,
+		                    "aButtons":    [ 
+												"csv", 
+												"xls"
+											]
+		                }
+		            ],
+		            
+					"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+		        },
+		        "fnInitComplete": function(oSettings, json) {
+					
+					fixControlPosition();
+					
+	                },
+		        "fnDrawCallback": function(oSettings) {
+		            var trs = $("#sample_1 tr");
+		            for (var i = 1; i < trs.length; i++) {
+
+		                var rowId = ($(trs[i]).attr('id'));
+		                $("#" + rowId + " td:last-child").trigger('click');
+
+		            }
+		            $('.edit_buttun').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                //var idx = $.inArray(tr.attr('id'), detailRows);
+		                $('#act_title')[0].value = row.data().activity;
+		                $('#start_mon')[0].value = row.data().start_mon;
+		                $('#start_week')[0].value = row.data().start_week;
+		                $('#end_mon')[0].value = row.data().end_mon;
+		                $('#end_week')[0].value = row.data().end_week;
+		                $('#act_code')[0].value = row.data().act_code;
+		                
+		                jadvZar_IsNew="edit";
+		                $("#basic").modal('show');
+//		                if (row.child.isShown()) {
+//		                    tr.removeClass('details');
+//		                    row.child.hide();
+//
+//		                    // Remove from the 'open' array
+//		                    detailRows.splice(idx, 1);
+//		                } else {
+//		                    tr.addClass('details');
+//		                    row.child(format(row.data())).show();
+//
+//		                    // Add to the 'open' array
+//		                    if (idx === -1) {
+//		                        detailRows.push(tr.attr('id'));
+//		                    }
+//		                }
+		            });
+		            $('.delete_buttun').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                $('#act_code')[0].value = row.data().act_code;
+		                
+		                jadvZar_IsNew="delete";
+		                $("#delete").modal('show');
+	                
+		            });
+		        },
+		        "colVis": {
+			           "buttonText": buttonText,
+		      	  	    exclude:[2,3,4,5,8]
+			       },
+		        
+		        "paging": true,
+		        'bPaginate': true,
+		        "pagingType": "full_numbers",
+		        "processing": true,
+		        "serverSide": true,
+		        "bDestroy": true,
+		        "bAutoWidth": false,
+		        "language": {
+		      		
+		      	  "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+		            "sLengthMenu": sLengthMenu,
+		            "sZeroRecords": sZeroRecords,
+		            "info": info,
+		            "sInfoEmpty": sInfoEmpty,
+		            "sInfoFiltered": sInfoFiltered,
+		            "sInfoPostFix": "",
+		            "sSearch": sSearch,
+		            "sUrl": "",
+		            "oPaginate" : {
+		                "sFirst": sFirst,
+		                "sPrevious": sPrevious,
+		                "sNext": sNext,
+		                "sLast": sLast
+                    }
+                },
+		        "sAjaxSource": "activities_sabt.php?admin=<?php echo $admin;?>&seed=<?php echo $seed;?>&cod_tarh=<?php echo $cod_tarh;?>&action=select_list" ,
+		        "aoColumns": [
+		            { "data": "activity" },
+				    { "data": "mon_time" },
+				    { "data": "start_mon","sClass": "hidden"},
+				    { "data": "start_week","sClass": "hidden"},
+				    { "data": "end_mon","sClass": "hidden"},
+				    { "data": "end_week","sClass": "hidden"},
+				    { "data": "edit" , "bSortable": false},
+				    { "data": "delete", "bSortable": false},
+				    { "data": "act_code","sClass": "hidden"}
+		        ]
+
+		    });
+		}
+		if(language=="en")
+	 	{
+		 	direction='ltr';
+		 	direction2='rtl';
+		 	title='Table of schedule according to week';
+		 	title_yAxis='Time(Week)';
+		 	pointFormat= '{series.name}: <b>{point.high} Until {point.low}</b><br/>';
+		 	valuePrefix= 'Week ';
+		 	name= 'Time';
+	 	}
+	 	else
+	 	{
+	 		direction='rtl';
+	 		direction2='ltr';
+		 	title='جدول زمانبندي براساس هفته';
+		 	title_yAxis='زمان (هفته)';
+		 	pointFormat= '{series.name}: <b>{point.high} تا {point.low}</b><br/>';
+		 	valuePrefix= 'هفته ';
+		 	name= 'زمان';
+	 	}
+ 	 	function show_gant_chart(data)
+ 	 	{
+ 	 	 	debugger;
+ 	 		var content_direction = direction;
+			var is_reversed = (content_direction == direction2 ? true : false);
+
+			  $('#container').highcharts({
+				  style: {
+	                font: 'normal 14px "yekan", tahoma, arial'
+	            },
+	            credits: {
+	                enabled: false
+	            },
+			        chart: {
+			            type: 'columnrange',
+			            inverted: true
+			        },
+
+			        title: {
+			            text: title,
+			            style: {
+			                font: 'normal 14px "yekan", tahoma, arial'
+			            }
+					            
+			        },
+
+			        subtitle: {
+			            text: ''
+			        },
+
+			        xAxis: {
+			            categories: JSON.parse(data).activity,
+			            reversed:  false  
+			        },
+
+			        yAxis: {
+			            title: {
+			                text: title_yAxis
+			            },
+			            reversed:  true,
+			            opposite: false
+			        },
+
+			        tooltip: {
+			        	useHTML:true,
+			        	followPointer:true,
+			        	pointFormat: pointFormat,
+			        	valuePrefix: valuePrefix
+			            
+			        },
+
+			        plotOptions: {
+			            columnrange: {
+			                dataLabels: {
+			                    enabled: true,
+			                    inside:true,
+			                    formatter: function () {
+			                        //return  'هفته ' + this.y;
+			                    }
+			                }
+			            }
+			        },
+
+			        legend: {
+			            enabled: false
+			        },
+
+			        series: [{
+			            name: name,
+			            data: JSON.parse(data).date
+			        }]
+
+			    });
+ 	 	}
+		var jadvZar_IsNew="insert";
+
+		$('#basic').on('hidden.bs.modal', function () {
+		   // debugger;
+		    jadvZar_IsNew="insert";
+		    $("#jadval_zarayeb_form")[0].reset();
+		    //Begin of reset form validation 
+		    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+		    $(".input-icon .fa-check").switchClass("fa-check","fa");
+		    $(".alert-danger").hide();
+		    $('.form-group').removeClass('has-error');
+		    $('.form-group').removeClass('has-success');
+		  //End of reset form validation
+		});
+		$('#delete').on('hidden.bs.modal', function () {
+			   // debugger;
+			    jadvZar_IsNew="insert";
+			    $("#jadval_zarayeb_form")[0].reset();
+			});
+			 
+	 </script>
+
+<?php
+footer_forms($admin,$seed);
+?>
+

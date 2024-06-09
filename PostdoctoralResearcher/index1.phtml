@@ -1,0 +1,279 @@
+
+<?
+include("include/styles.phtml");
+include("include/include.phtml");
+header_forms();
+?>
+
+<SCRIPT LANGUAGE="JavaScript">
+  <!--
+  function ChangeAction(user_type) {
+   // var number = document.myFormName.cgiProgram.selectedIndex;
+    document.user_login.action ="login/midel.phtml?user_type="+user_type;
+    document.user_login.submit();
+  }
+  // -->
+</SCRIPT>
+
+
+
+<script type="text/javascript">
+<!--
+
+function addEvent()
+{
+var ni = document.getElementById('myDiv');
+var numi = document.getElementById('theValue');
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "my"+num+"Div";
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+
+newdiv.innerHTML ="   <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"100%\" id=\"AutoNumber2\">"+   
+"<tr>"+
+         "<td colspan='2' align=\"left\" width=\"70%\" >"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(2)\" type=\"button\" value=\"ادمين دانشکده / مرکز\" name=\"B1\"></p>"+
+        "</td>"+
+
+      "</tr>"+
+
+
+              "<tr>"+
+        "<td  colspan='2' align=\"left\" width=\"30%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(5)\" type=\"button\" value=\"کارشناس حوزه معاونت\" name=\"B1\"></p>"+
+        "</td>"+
+    
+      "</tr>"+
+
+   
+        "<tr>"+
+             "<td colspan='2' align=\"left\" width=\"70%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(3)\" type=\"button\" value=\"کارشناس پژوهشي / ناظر\" name=\"B1\"></p>"+   
+
+        "</td>"+
+   
+      "</tr>"+
+
+    
+              "<tr>"+
+            "<td colspan='2' align=\"left\" width=\"70%\" >"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(6)\" type=\"button\" value=\"عضو شوراي پژوهش دانشگاه\" name=\"B1\"></p>"+
+        "</td>"+
+    
+      "</tr>"+
+
+     
+"</table>";
+ni.appendChild(newdiv);
+}
+
+function removeEvent(divNum)
+{
+var d = document.getElementById('myDiv');
+var olddiv = document.getElementById(divNum);
+d.removeChild(olddiv);
+}
+
+//-->
+</script>
+
+
+<?
+
+?>
+  <table style="BORDER-RIGHT: 0px solid; BORDER-TOP: 0px solid; BORDER-LEFT: 0px solid; BORDER-BOTTOM: 0px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="100%" height="100" bgColor="white" border="0">
+  <tr>
+  <td>
+
+
+<form name="user_login" action="midel.phtml" method="post">
+  <table cellSpacing="0" cellPadding="0" width="400" border="0">
+    <tbody>
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="260" height="19"></td>
+                        <td align="middle" width="140" background="image/user_login.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="400" height="100" bgColor="#eee7f8" border="0">
+    <tbody>
+    
+    
+        <tr>
+        <td align="left" width="100%"colspan='2'>  
+    
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1">
+  <tr>
+    <td width="70%" valign="top">
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber2">
+      <tr>
+        <td width="100%" align="center">
+        <span align="center" class="star-message"><b>قابل توجه كاربران</b></span></td>
+      </tr>
+    </table>
+     <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber2">
+      <tr>
+        <td width="100%" align="center">
+        <span align="center" class="tahoma1">براي استفاده از اين سيستم نياز به شناسه و رمز عبور اختصاصي است</span><br>
+
+		<span align="center" class="tahoma1">چنانچه براي اولين بار از اين سيستم استفاده ميكنيد، لطفا در اين قسمت</span><br>
+
+		<a href="signup.phtml">
+		<span align="center"  class="star-message"><b>.ثبت نام عضو جديد</b></span><br>
+        </a>
+
+		<span align="center" class="tahoma1">.ثبت نام كرده و شناسه و رمز كاربري خود را دريافت نماييد</span><br>
+
+
+		<span align="center" class="tahoma1">چنانچه قبلا اين كار را انجام داده ايد از طريق قسمت زير وارد سيستم شويد</span>
+ <br>
+		<span align="center" class="tahoma1"><b>با توجه به تغيير سرور ممكن است در نرم افزار اختلالاتي ايجاد شود لطفا موارد را از طريق ارسال نظرات ارسال فرماييد</b></span>
+
+        </td>
+      </tr>
+    </table>
+	 <br>
+    </td>
+  </tr>
+</table>
+
+    
+  </td>
+      </tr>
+    
+    
+    
+    
+	<?
+	  if(strcmp($msg,"loginerror")==0 || strcmp($msg,"loginerror_user")==0)
+	  {
+       echo "<tr>";
+       echo "<td colspan=\"2\" class=\"tahoma1\" align=\"center\" width=\"100%\"><span class=\"star-message\">خطا در نام کاربري يا کلمه عبور</span></td>";
+       echo "</tr>";
+	  }
+     ?>
+      <tr>
+        <td align="left" width="30%"><input type="text" class="edit-user"  name="admuser" size="20"></td>
+        <td align="left" class="tahoma1" width="70%" dir="ltr">نام کاربري </td>
+      </tr>
+      <tr>
+        <td align="left" width="30%"><input type="password" class="edit-user" name="admpassword" size="20"></td>
+        <td align="left" class="tahoma1" width="70%" dir="ltr"><b><a border='1'  href="send_pass.phtml" style="text-decoration:none">کلمه عبورم را فراموش کرده ام</a></b>&nbsp; کلمه عبور </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-login" type="submit" value="ورود مجري طرح" name="B1"></p>
+        </td>
+      </tr>
+      
+	  <tr>
+        <td width="100%" colSpan="2">
+          <p align="right" dir='rtl'><input type="hidden" value="0" id="theValue" /><a href="javascript:;" onclick="addEvent();" class="tahoma1">ورود در ديگر سطوح کاربري ...</a></p>
+            <div id="myDiv">
+        </div>
+ 
+        </td>
+      </tr>
+     
+    </tbody>
+  </table>
+  </td>
+  <td>
+  
+ <img src="images/01.jpg" >
+ </td>
+ </tr>
+ </table>
+</form>
+ 
+ 
+<?
+  footer_forms();
+exit();
+?>
+
+
+
+
+<?
+include("include/styles.phtml");
+include("include/include.phtml");
+include("include/database-connect.phtml");
+header_forms();
+?>
+ <script language="javascript">
+           window.location="login.phtml";
+           </script>
+       <?
+ $query="select * from savabetsystem where 1 ";
+
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  if(mysql_num_rows($result) > 0 )
+  {
+    $row_fetched=mysql_fetch_array($result);
+
+    $main_content = $row_fetched["main_content"];
+  }
+  else
+  {
+    $main_content = "";
+
+  }
+?>
+<table border="0" width="100%" height="100%" >
+  <tr>
+    <td width="100%" height="100%" valign="top">
+    <br>
+    <br>
+      <table border="0" width="100%" dir="rtl" >
+        <tr>
+          <td width="100%" height="100%" align="right" valign="top" colspan="2" >
+            <p align="right"><? echo $main_content; ?></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+  <td>
+   <? $last_update="23/4/1384"; ?>
+  <table border="0" width="100%" style="word-spacing: 0; text-align: Center; text-indent: 0; line-height: 100%; margin: 0" cellspacing="0" cellpadding="0">
+
+
+<!--    <tr>
+    <td width="100%"><font face="verdana" size="1" color="#000000">Contact: <a style="text-decoration" href="mailto:info@researches.mui.ac.ir">info@researches.mui.ac.ir</a></font></td>
+    <tr> -->
+
+
+	</td>
+	</tr>
+</table>
+</td>
+</tr>
+</table>
+
+<?
+footer_forms();
+?>

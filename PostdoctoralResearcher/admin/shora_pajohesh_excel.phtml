@@ -1,0 +1,58 @@
+<?
+header("Content-type: application/x-msexcel");
+
+include("include/database-connect.phtml");
+include("include/include.phtml");
+ 
+include("include/styles.phtml");
+
+echo "<br>";
+ 
+?>
+ 
+ 
+
+ <?
+
+   $query="select * from karshenas_shora  where cod_shora=\"$cod_shora\"  order by  kar_shora_name";
+   $query="select * from karshenas_shora,modir_daneshkade  where  cod_shora=\"$cod_shora\"  and modir_daneshkade.modir_username =karshenas_shora.creator and ( modir_daneshkade.modir_type='1' or  modir_daneshkade.modir_type='4')";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+    echo "<table border=\"1\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    
+    
+    echo "<tr>";
+      echo "<td width=\"47\"  height=\"20\" class=\"tahoma1\" align=\"center\">تلفن همراه</td>";
+    echo "<td width=\"150\"  height=\"20\" class=\"tahoma1\" align=\"center\">نام خانوادگي</td>";
+    echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">نام</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">کد</td>";
+     echo "</tr>";
+   $color="#E2E0E0";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    $mobile = $myrow_fetched["mobile"];
+    echo "<tr >";
+       echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"> ".$mobile."</a></p></td>"; 
+     echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">".substr($myrow_fetched["kar_shora_family"],0,18)." </p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">".substr($myrow_fetched["kar_shora_name"],0,18)." </p></td>";
+     echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">".substr($myrow_fetched["cod_karshenas"],0,18)." </p></td>";
+     echo "</tr>";
+   }
+  
+   echo "</table>";
+
+  }
+ 
+ ?>
+
+
+
+

@@ -1,0 +1,68 @@
+<?
+include("include/styles.phtml");
+include("../include/include.phtml");
+header_forms();
+echo "<br>";
+
+?>
+
+
+<br>
+<br>
+<form name="user_login" action="midel.phtml" method="post">
+  <table cellSpacing="0" cellPadding="0" width="300" border="0">
+    <tbody>
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="160" height="19"></td>
+                        <td align="middle" width="140" background="image/user_login.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="300" height="100" bgColor="#eee7f8" border="0">
+    <tbody>
+      <tr>
+        <td align="right" width="350"><input type="text" class="edit-user"  name="admuser" size="20"></td>
+        <td class="tahoma1" width="150">نام کاربري</td>
+      </tr>
+      <tr>
+        <td align="right" width="350"><input type="password" class="edit-user" name="admpassword" size="20"></td>
+        <td class="tahoma1" width="150">کلمه عبور</td>
+      </tr>
+     
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit" value="ورود" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table  width="300"  bgColor="white" border="0">
+   <tbody>
+    <tr>
+      <td class="tahoma1" width="500" align="center" height="10"></td>
+   </tr>
+  
+   </tbody>
+  </table>
+
+
+</form>
+<br>
+<?
+  //footer_forms();
+?>

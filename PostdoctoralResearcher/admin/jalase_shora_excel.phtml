@@ -1,0 +1,187 @@
+<?
+header("Content-type: application/x-msexcel");
+
+include("include/database-connect.phtml");
+include("include/include.phtml");
+ 
+//include("include/styles.phtml");
+
+//echo "<br>";
+ $query="select tarh.*,jalase_shora_tarh.*,vaziat_tarh.* from tarh,vaziat_tarh,jalase_shora_tarh where jalase_shora_tarh.creator='$sender' and jalase_shora_tarh.shomare_jalase='$shomare_jalase' and jalase_shora_tarh.cod_tarh=tarh.cod_tarh and  vaziat_tarh.vaziat=tarh.vaziat_moaven and tarh.version='-1'  group by tarh.cod_tarh  order by jalase_shora_tarh.rotbe_tarh  " ;
+$result_asli=mysql_query($query) or die("Error in selecting data from tarh2");
+if(mysql_num_rows($result_asli) > 0)
+   {
+
+echo "<table border=\"0\" width=\"100%\" cellpadding='1' cellspacing='1'>" ;
+
+ echo"<tr>"; 
+   
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">کد طرح</td>";
+     echo "<td width=\"164\" height=\"20\" class=\"tahoma1\" align=\"center\">عنوان فارسي</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">مجري اول</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">تاريخ ارسال</td>";
+     echo "<td width=\"164\" height=\"20\" class=\"tahoma1\" align=\"center\">دانشکده /مرکز</td>";
+     echo "<td width=\"164\" height=\"20\" class=\"tahoma1\" align=\"center\">بودجه پيشنهادي مجري</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">تامين اعتبار ساير</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">بودجه مصوب مرکز</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">پايان نامه است؟</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">مقطع پايان نامه</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">رتبه</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">بند آزاد</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">شماره صورت جلسه</td>";
+     echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">تاريخ ارسال صورت جلسه</td>";
+      
+   echo "</tr>";
+   
+   $query="select tarh.*,jalase_shora_tarh.*,vaziat_tarh.* from tarh,vaziat_tarh,jalase_shora_tarh where jalase_shora_tarh.creator='$sender' and jalase_shora_tarh.shomare_jalase='$shomare_jalase' and jalase_shora_tarh.cod_tarh=tarh.cod_tarh and  vaziat_tarh.vaziat=tarh.vaziat_moaven and tarh.version='-1'  group by tarh.cod_tarh  order by jalase_shora_tarh.rotbe_tarh  " ;
+$result_asli=mysql_query($query) or die("Error in selecting data from tarh2");
+   while($row_fetched_asli=mysql_fetch_array($result_asli))
+ {
+ 	$cod_tarh=$row_fetched_asli["cod_tarh"];
+ 
+   $query="select * from jalase_shora where jalase_id ='$shomare_jalase'";
+ 
+$result_jalase=mysql_query($query);
+$row_fetched_result_jalase=mysql_fetch_array($result_jalase);
+$shomare_jalase=$row_fetched_result_jalase["shomare_jalase"];
+ 
+ $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='$version'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+    $mojri_code = $myrow_fetched["mojri_code"];
+   	$eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+   	$eatebare_sazmanha_pardakht = $myrow_fetched["eatebare_sazmanha_pardakht"];
+   	$eatebare_sazmanha_fax = $myrow_fetched["eatebare_sazmanha_fax"];
+   	$eatebare_sazmanha_telno= $myrow_fetched["eatebare_sazmanha_telno"];
+   	$eatebare_sazmanha_organ = $myrow_fetched["eatebare_sazmanha_organ"];
+    $eatebare_sazmanha_address = $myrow_fetched["eatebare_sazmanha_address"];
+    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+    $id_pardakht= $myrow_fetched["id"]; 	
+   }
+  }
+
+   $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='$version'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+ 
+	 $sum_sayer=$hazine_digar+$hazine_taksir;	
+	 $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+  
+
+if(mysql_num_rows($result_asli) > 0 )
+{
+$cod_tarh=$row_fetched_asli["cod_tarh"]; 
+$budjeh=$row_fetched_asli["budjeh"];
+$rotbe_tarh=$row_fetched_asli["rotbe_tarh"];
+$band_azad=$row_fetched_asli["band_azad"];
+$payan_name1=$row_fetched_asli["payan_name1"];
+$payan_name_daraje_elmi=$row_fetched_asli["payan_name_daraje_elmi"];
+if($payan_name1=='0')
+	$payan_name1="پايان نامه نيست";
+	else if($payan_name1=='1')
+		$payan_name1="پايان نامه با سقف اعتباري پايان نامه ها";
+		
+		else if($payan_name1=='2')
+		$payan_name1="پايان نامه با سقف اعتباري بالاتر از پايان نامه ها";
+		
+		
+	$query31="select * from maghta_payan_name where maghta_payan_name='$payan_name_daraje_elmi'";
+    $qresult31=mysql_query($query31) or die("Error in selecting data from daraje elmi");
+	$row_fetched31=mysql_fetch_array($qresult31);
+	$maghta_payan_name_desc=$row_fetched31['maghta_payan_name_desc'];
+	
+	
+$myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq);
+  $myrf=mysql_fetch_array($myres);
+  $daneshkade=$myrf["daneshkade_name"];
+  $mostaghel =$myrf["mostaghel"];
+  if(strcmp(trim($mostaghel),'1')==0)
+     $daneshkade=$daneshkade."(مرکز مستقل)";
+     
+$farsisendmoavenat= enum2fnum($farsistartdate);
+  $startdate = $row_fetched_asli["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  //$myquery_mojri = "SELECT  * FROM tarh, mojri_tarh, mojri WHERE mojri_tarh.cod_tarh = tarh.cod_tarh AND mojri.mojri_code=mojri_tarh.mojri_code and tarh.cod_tarh = '$cod_tarh'  ORDER  BY mojri.mojri_code";
+  $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+  
+   $cod_tarh=$row_fetched_asli["cod_tarh"];
+  $version=$row_fetched_asli["version"];
+
+while($row_fetched_asli=mysql_fetch_array($result_asli)){
+ echo "<tr>";
+ $cod_tarh=$row_fetched_asli["cod_tarh"];
+  $version=$row_fetched_asli["version"];
+  if( strcmp(trim($cod_tarh_user),"0")!=0 )
+     echo "<td  align=\"right\" class=\"tahoma1\">.$cod_tarh.</td>";
+     echo "<td   align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched_asli['tarh_title_farsi']."</td>";
+
+     while ( $First_mojri = mysql_fetch_array( $myresult_mojri )){
+           $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+          } 
+          if(mysql_num_rows($myresult_mojri) > 0 )
+          
+       echo "<td   align=\"center\" class=\"tahoma1\">".$First_mojri_name."</td>";
+       else
+       echo "<td  align=\"center\" class=\"tahoma1\">.$First_mojri_name.</td>";
+       echo "<td  align=\"center\" class=\"tahoma1\">. $farsistartdate.</td>";
+       echo "<td    align=\"center\" class=\"tahoma1\" dir='rtl'>. $daneshkade.</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">".number_format($sum_of_all)."</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">".number_format($eatebare_sazmanha_pardakht_add)."</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">$budjeh</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">$payan_name1</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">$maghta_payan_name_desc</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">$rotbe_tarh</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\">$band_azad</td>";
+        echo "<td   align=\"center\" class=\"tahoma1\"></td>";
+ 		echo "<td   align=\"center\" class=\"tahoma1\"></td>";
+
+
+     
+  echo "</tr>";
+// echo "<br>";
+ 
+}
+}
+echo "</table>";
+}
+   }
+
+
+
+?>
+
+   

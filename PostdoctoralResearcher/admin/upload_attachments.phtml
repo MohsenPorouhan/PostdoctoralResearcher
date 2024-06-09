@@ -1,0 +1,172 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+ 
+  echo "<br>";
+ 
+
+  
+
+
+if(isset($action))
+{
+  if (strcmp($action,"sabt")==0)
+  {
+  
+  
+  
+ 
+     $dir_name="../karshenas_attachments/".$cod_tarh;
+     
+  
+  
+ 
+       $status_upload=upload_file("../karshenas_attachments",$cod_tarh,"");
+	   echo $status_upload;
+       if(!strcmp($status_upload,"10") == 0 )
+       {
+	     $status="upload_error";
+	     $action="ضميمه ثبت شد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+
+       }
+	 
+     
+  }
+  
+   if (strcmp($action,"delete_file")==0)
+  {
+     
+    delete_file("../karshenas_attachments",$cod_tarh,$delete_id);
+     $action="ضميمه حذف شد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+  }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" enctype=\"multipart/form-data\" action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=left width="249"   height=19>    
+   
+      </TD>
+      <TD align=middle width="251"  background="image/zamaem.jpg" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+<?
+
+
+ if (strcmp($status_upload,"-5") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين فايلي قبلا بارگذاري شده</td>";
+    echo "</tr>";
+  }
+
+
+
+
+if (strcmp($status,"exceed_upload") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">حداکثر 3 عدد فايل همراه قابل بارگذاري است</td>";
+    echo "</tr>";
+  }
+
+
+
+
+if (strcmp($status_upload,"-2") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">قابل بارگذاري هستند Ms word و Adobe Acrobat  تنها فايلهاي</td>";
+    echo "</tr>";
+  }
+
+echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">تعداد فايلهاي ارسالي حداکثر 8 عدد مي باشد<br>حداکثر حجم فايل 8 مگابايت مي باشد. نام فايل را انگليسي و بدون فاصله وارد کنيدفايل ارسالي بايد به فرمت Word يا PDF باشد.صرفا از فونت زر استفاده کنيد </td>";
+    echo "</tr>";
+?>
+
+  <tr>
+     <td width="100" align="right"><input type="file" name="fupload" class="edit-user"></td>
+    <td width="400" class="tahoma1" valign="top" >فايل ضميمه<br> فايلهاي ضميمه با نام انگليسي معتبر هستند</td>
+
+  </tr>
+
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+
+
+  <?
+  
+   
+     $mycount=0;
+     $dir_name="../karshenas_attachments/".$cod_tarh;
+     if ($dir = @opendir($dir_name))
+     {
+      echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+      echo "<tr>";
+      echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+      echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام فايل</td>";
+      echo "</tr>";
+
+     //echo $dir_name;
+     $mydir = dir($dir_name);
+     //while(($file = $mydir->read()) !== false)
+     while($file = $mydir->read())
+     {
+	   if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0 || strcmp(trim($file),"Thumbs.db")==0) )
+	   {
+         echo "<tr>";
+         echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=upload_attachments.phtml&admin=$admin&seed=$seed&action=delete_file&cod_tarh=".$cod_tarh."&delete_id=".$file."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+         echo "<td align=\"center\"  class=\"tahoma1\"><a target=\"_blank\" href=\"../karshenas_attachments/$cod_tarh/$file\">".$file."</a></td>";
+         echo "</tr>";
+	   }
+     }
+      closedir($dir);
+      echo "</table>";
+	 }
+ 
+
+  
+
+ footer_forms($admin,$seed);
+?>
+
+
+

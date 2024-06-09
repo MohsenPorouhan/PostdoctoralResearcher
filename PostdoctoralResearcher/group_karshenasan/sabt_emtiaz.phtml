@@ -1,0 +1,269 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+$status="";
+if (strcmp($action,"add")==0)
+{
+  if(strcmp($maghale_indexing,"-1") !=0 && strcmp($maghale_type,"-1") !=0 && strcmp($outer_level,"-1") !=0 )
+  {
+	$query="select * from maghale_indexing where index_id='$maghale_indexing'";
+	$result=mysql_query($query) or die ("Error in inserting data in tarh-type");
+	$row_fetched=mysql_fetch_array($result);
+	$index_point=$row_fetched["index_point"];
+	$zarib_if=$row_fetched["zarib_if"];
+	$zarib_maghale_type=$row_fetched["zarib_maghale_type"];
+	
+	$query="select * from maghale_type where maghale_type_id='$maghale_type'";
+	$result=mysql_query($query) or die ("Error in inserting data in tarh-type");
+	$row_fetched=mysql_fetch_array($result);
+	$maghale_type_point=$row_fetched["maghale_type_point"];
+	$maghale_type_id=$row_fetched["maghale_type_id"];
+	
+	if($outer_level=="3")
+		$outer_level_point=0.7;
+	else
+		$outer_level_point=1;
+		
+		if(strcmp($maghale_type_id,"2")==0)
+			$b=$maghale_type_point*$zarib_maghale_type;
+		else
+			$b=$maghale_type_point;
+		$a=$index_point+($zarib_if*$if_point);
+		//echo $index_point."<br>".$zarib_if."<br>".$if_point."<br>";
+		$emtiaz=$a*$b*$outer_level_point;
+		//echo $emtiaz."<br>".$a."<br>".$b."<br>".$outer_level_point;
+		
+      $query="update maghale set emtiaz='$emtiaz',emtiaz_date='".date("Y-m-d")."' where cod_tarh='$cod_tarh' and maghale_id='$maghale_id'";
+      //echo $query;
+      mysql_query($query) or die ("Error in inserting data in tarh-type");
+
+  }
+  else
+   $status="entry_error";
+ 
+   ?>
+   <script language="javascript">
+     window.location="<? echo "maghalat_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+   </script>
+   <?
+
+}
+
+
+
+?>
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=add&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&maghale_id=$maghale_id\">"; ?>
+
+
+
+
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="149"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/daraje-elmi.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0" width="400" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+   if (strcmp($status,"delete_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">بدليل استفاده از اين نوع درجه علمي ، اين مورد قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  ?>
+  <?
+  	$query="select * from maghale where cod_tarh='$cod_tarh' and maghale_id='$maghale_id' ";
+	$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+ 	$row_fetched=mysql_fetch_array($result);
+	$emtiaz=$row_fetched["emtiaz"];
+	$indexing=$row_fetched["indexing"];
+	$maghale_type=$row_fetched["maghale_type"];
+	$outer_level=$row_fetched["outer_level"];
+	$issn=$row_fetched["issn"];
+   
+	
+	if(strlen($issn)>1)
+	{
+		$query="select * from issn where issn_id='$issn'";
+		$result1=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+ 	$row_fetched1=mysql_fetch_array($result1);
+	$impact_factor=$row_fetched1["impact_factor"];
+		
+	}
+	else
+		$impact_factor="";
+		
+	
+  ?>
+  
+    <tr>
+      <td width="100%">
+
+          <table border="0" width="100%"  bgcolor="#EEE7F8" height="100%" cellpadding="0" cellspacing="0">
+            <tr>
+			<?php $query="select * from maghale_indexing";
+				$result=mysql_query($query);
+			?>
+              <td width="250" align="right">
+                <p align="right"><select size="1" name="maghale_indexing"  class="tahoma1" dir="rtl">
+					<option value="-1" class="tahoma1">انتخاب کنيد</option>";
+				<?php
+				while($row_fetched=mysql_fetch_array($result))
+				 {
+					if(strcmp($row_fetched["index_id"],$indexing)==0)
+					  $selected=" selected ";
+					else
+					  $selected="";    	  
+					echo "<option $selected value=\"".$row_fetched["index_id"]."\" class=\"tahoma1\">".$row_fetched["indexing_desc"]."</option>";
+				 }
+				 ?></select></td>
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>ايندکس مقاله</td>
+            </tr>
+			<tr>
+			<?php $query="select * from maghale_type";
+				$result=mysql_query($query);
+			?>
+              <td width="250" align="right">
+                <p align="right"><select size="1" name="maghale_type"  class="tahoma1" dir="rtl">
+					<option value="-1" class="tahoma1">انتخاب کنيد</option>";
+				<?php
+				while($row_fetched=mysql_fetch_array($result))
+				 {
+					if(strcmp($row_fetched["maghale_type_id"],$maghale_type)==0)
+					  $selected=" selected ";
+					else
+					  $selected="";    	  
+					echo "<option $selected value=\"".$row_fetched["maghale_type_id"]."\" class=\"tahoma1\">".$row_fetched["maghale_type_desc"]."</option>";
+				 }
+				 ?></select></td>
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>نوع مقاله</td>
+            </tr>
+			<tr>
+			
+              <td width="250" align="right">
+                <p align="right"><select size="1" name="outer_level"  class="tahoma1" dir="rtl">
+					<option value="-1" class="tahoma1">انتخاب کنيد</option>";
+				<?php
+				
+					if(strcmp($outer_level,"0")==0)
+					  $selected=" selected ";
+					else
+					  $selected="";    	  
+					echo "<option $selected value=\"0\" class=\"tahoma1\">اول</option>";
+					if(strcmp($outer_level ,"1")==0)
+					  $selected=" selected ";
+					else
+					  $selected="";    	  
+					echo "<option $selected value=\"1\" class=\"tahoma1\">مسول</option>";
+					if(strcmp($outer_level ,"2")==0)
+					  $selected=" selected ";
+					else
+					  $selected="";    	  
+					echo "<option $selected value=\"2\" class=\"tahoma1\">هر دو</option>";
+					if(strcmp($outer_level ,"3")==0)
+					  $selected=" selected ";
+					else
+					  $selected="";    	  
+					echo "<option $selected value=\"3\" class=\"tahoma1\">ساير</option>";
+		
+				 ?></select></td>
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>جايگاه نويسنده</td>
+            </tr>
+            <tr>
+			
+              <td width="250" align="right">
+                <p align="right"><select size="1" onchange="change_if();" name="issn" id="issn" class="tahoma1" dir="rtl">
+					<option value="-1" class="tahoma1">انتخاب کنيد</option>";
+				<?php
+				
+					$query="select * from issn  order by journal_title  ";
+					$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+					while($row_fetched=mysql_fetch_array($qresult))
+					{
+						if(strcmp($issn,$row_fetched["issn_id"])==0)
+							$selected="selected";
+						else 
+							$selected="";
+						echo "<option $selected value=\"".$row_fetched["impact_factor"]."\">".$row_fetched["p_issn"]."</option>";
+					}
+				?>
+		
+				</select></td>
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>ISSN</td>
+            </tr>
+             
+				<tr>
+			
+              <td width="250" align="right">
+                <p align="right"><input  name="if_point" id="if_point" value="<?php echo $impact_factor;?>" class="tahoma1"  value=""></input>
+					</td>
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>امتياز IF</td>
+            </tr>
+            <tr>
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="محاسبه امتياز" name="submit_tarh"></td>
+            </tr>
+          </table>
+
+      </td>
+    </tr>
+  </table>
+
+
+</form>
+<br>
+<script>
+function change_if(){
+	debugger;
+	var issn=	document.getElementById("issn");
+	var if_point=	document.getElementById("if_point");
+	if_point.value=issn.options[issn.selectedIndex].value;
+}
+</script>
+<?
+
+  footer_forms($admin,$seed);
+?>
+
+
+

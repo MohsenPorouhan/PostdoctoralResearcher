@@ -1,0 +1,180 @@
+<?php @session_start();?>
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> <meta charset="utf-8" />
+    <title>پژوهشيار</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <script src="../assets/plugins/pace/pace.min.js" type="text/javascript"></script>
+    <link href="../assets/plugins/pace/themes/pace-theme-flash-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/plugins/bootstrap/css/bootstrap-rtl.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN THEME STYLES -->
+    <link href="../assets/css/style-metronic-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/style-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/style-responsive-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/plugins-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/themes/blue-rtl.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="../assets/css/custom-rtl.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME STYLES -->
+    <link rel="shortcut icon" href="../assets/img/favicon.ico" />
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="page-header-fixed">
+    <!-- BEGIN HEADER -->
+    <div class="header navbar navbar-fixed-top">
+        <!-- BEGIN TOP NAVIGATION BAR -->
+        <div class="header-inner">
+            <!-- BEGIN LOGO -->
+            <a class="navbar-brand" href="http://www.tums.ac.ir">
+                <img src="../assets/img/logo.png" alt="logo" class="img-responsive" />
+            </a>
+            <!-- END LOGO -->
+            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+            <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <img src="../assets/img/menu-toggler.png" alt="" />
+            </a>
+            <!-- END RESPONSIVE MENU TOGGLER -->
+            <!-- BEGIN TOP NAVIGATION MENU -->
+            <?php 
+				
+				
+				
+				$query="select * from notification,notification_type where user_email='$admin' and notification.notification_type_id=notification_type.notification_type_id";
+				//echo $query;
+				$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+				$count=mysql_num_rows($result);
+				
+				
+				?>
+            <ul class="nav navbar-nav pull-right">
+                <!-- BEGIN NOTIFICATION DROPDOWN -->
+                <li class="dropdown" id="header_notification_bar">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <i class="fa fa-warning"></i>
+                        <span class="badge">
+                            <?php echo $count;?>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li>
+                            <p>
+                                شما <?php echo $count;?> اعلان جديد داريد
+                            </p>
+                        </li>
+                        <li>
+                            <ul class="dropdown-menu-list scroller" style="height: 250px;">
+                            	<?php 
+                            	while($row_fetched_notification = mysql_fetch_array($result))
+                            	{
+                            		$massage=$row_fetched_notification["massage"];
+                            		$massage=$row_fetched_notification["notification_type_desc"];
+                            	?>
+                                <li>
+                                    <a href="#">
+                                        <span class="label label-icon label-success">
+                                            <i class="fa fa-plus"></i>
+                                        </span>
+                                        <?php echo $massage;?>
+                                    </a>
+                                </li>
+                                <?php 
+                            	}
+                                ?>
+                               
+
+                            </ul>
+                        </li>
+                        <!-- <li class="external">
+                            <a href="#">
+                                مشاهده تمامي اعلان ها <i class="m-icon-swapright"></i>
+                            </a>
+                        </li>-->
+                    </ul>
+                </li>
+				
+                <li class="dropdown user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <?php
+				header("Content-type: image/jpeg");				
+				$query="select * from user_login where email='$admin'";
+				$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+				$row_fetched = mysql_fetch_array($result);
+				$name=$row_fetched["name"];
+				$family=$row_fetched["family"];
+				$picture=$row_fetched["picture"];
+                        echo '<img with="29px" height="32px" src="data:image/jpeg;base64,'.base64_encode( $picture).'"/>';?>
+                        
+                        <span class="username">
+                       <?php   echo $name." ".$family;?>
+                        </span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="profile.phtml">
+                                <i class="fa fa-user"></i> پروفايل کاربري
+                            </a>
+                        </li>
+                        <li>
+                            <a href="page_calendar.phtml">
+                                <i class="fa fa-calendar"></i> تقويم من
+                            </a>
+                        </li>
+                        <?php 
+                        $query="select count(*) as count from letter_to_mojri where to_letter='$admin' and admin_confirm='1' and visited='0'";
+                        $result=mysql_query($query) or die("Error in selecting data from tarh");
+                        $row_fetched=mysql_fetch_array($result);
+                        $count=$row_fetched['count'];
+                        ?>
+                        <li>
+                            <a href="letter_list.phtml">
+                                <i class="fa fa-envelope"></i> مکاتبات
+                                <span class="badge badge-danger">
+                                    <?php echo $count; ?>
+                                </span>
+                            </a>
+                        </li>  
+                        <li>
+                            <a href="sms_list.phtml">
+                                <i class="fa fa-mobile"></i> صندوق پيامک من 
+                            </a>
+                        </li>                       
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="trigger_fullscreen">
+                                <i class="fa fa-arrows"></i> اجراي تمام صفحه
+                            </a>
+                        </li>                        
+                        <li>
+                            <a href="logout.phtml">
+                                <i class="fa fa-key"></i> خروج
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- END USER LOGIN DROPDOWN -->
+            </ul>
+            <!-- END TOP NAVIGATION MENU -->
+        </div>
+        <!-- END TOP NAVIGATION BAR -->
+    </div>
+    <!-- END HEADER -->
+     <div class="clearfix">
+    </div>
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">

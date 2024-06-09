@@ -1,0 +1,33 @@
+<script>
+function checkit()
+{
+	var key
+	key = window.event.keyCode
+	
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	{
+		if(key!=46)
+	      window.event.returnValue= false;
+	    else  
+	    window.event.returnValue= true
+	}
+
+	  
+}
+</script>
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+ 
+    include("../tarh_modification/daneshjo_tarh.phtml");
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

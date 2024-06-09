@@ -1,0 +1,122 @@
+<?php
+include("include/database-connect.phtml");
+include("include/include.phtml");
+ include("include/styles.phtml");
+ include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+ 
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+ 
+ 
+  
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+   $q="select * from feedback_pardakht where cod_tarh='$cod_tarh'";
+   $rs=mysql_query($q) or die("error");
+ 
+   $reccount = mysql_num_rows($rs);
+ 
+   $q="select * from feedback_pardakht where  cod_tarh='$cod_tarh' "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+   $rs=mysql_query($q) or die("error");
+   echo "<br><br>";
+   $myascdescpub=$myascdescpub."&cod_tarh=$cod_tarh";
+   pubshowpages("list_payments.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"80%",$title_color);
+
+
+ 
+ echo "<table width='80%' border=' 0' cellpadding='1' cellspacing='1' dir='rtl' class='tahoma1' >";
+  echo "<tr bgcolor='$title_color'>";
+ echo "<td colspan='45' align='center' ><b>ليست  پرداختها</b></td>";
+echo "</tr>";
+$color=$list_color_1;
+
+ echo "<tr bgcolor='$color'>";
+ echo "<td>نام</td>";
+   echo "<td>نام خانوادگي</td>";
+  echo "<td>قرارداد</td>";
+   echo "<td>کد طرح</td>";
+  echo "<td>گزارش</td>";
+  echo "<td>مرکز پرداخت</td>";
+  echo "<td>مبلغ قسط مذکور</td>";
+  echo "<td>گزارش</td>";
+    echo "<td>ماليات</td>";
+	    echo "<td>سهم مجري</td>";
+
+    echo "<td>سهم ناظر</td>";
+    echo "<td>شماره سند</td>";
+    echo "<td>شماره چک</td>";
+    echo "<td>شماره حساب</td>";
+    echo "<td>تاريخ</td>";
+ 
+ echo "</tr>";
+
+$color=$list_color_1;
+while($rf=mysql_fetch_array($rs))
+  {
+ 	 
+	    if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+		  $family=$rf["family"];
+		  $name=$rf["name"];
+		  $contract=$rf["contract"];
+	      $cod_tarh=$rf["cod_tarh"];
+	      $gozaresh=$rf["gozaresh"];
+	      $pay_center=$rf["pay_center"];
+	      $ghest=$rf["ghest"];
+	      $maliat=$rf["maliat"];
+	      $mablagh_mojri=$rf["mablagh_mojri"];
+	      $mablagh_nazer=$rf["mablagh_nazer"];
+	      $sanad_no=$rf["sanad_no"];
+	      $check_no=$rf["check_no"];
+	      $hesab_no=$rf["hesab_no"];
+		   $date=$rf["date"];
+		   $id=$rf["id"];
+		   
+		    echo "<tr bgcolor='$color'>";
+ echo "<td>$name</td>";
+   echo "<td>$family</td>";
+  echo "<td>$contract</td>";
+   echo "<td>$cod_tarh </td>";
+  echo "<td>$gozaresh</td>";
+  echo "<td>$pay_center</td>";
+  echo "<td>$ghest</td>";
+  echo "<td>$gozaresh</td>";
+    echo "<td>$maliat</td>";
+	    echo "<td>$mablagh_mojri</td>";
+
+    echo "<td>$mablagh_nazer</td>";
+    echo "<td>$sanad_no</td>";
+    echo "<td>$check_no</td>";
+    echo "<td>$hesab_no</td>";
+    echo "<td>$date</td>";
+  echo "</tr>";
+	   
+		   
+ 
+ 
+}
+
+ 
+ echo " </table>";
+
+  
+ //print_r($data);
+//print_r($data->formatRecords);
+  footer_forms($admin,$seed);
+
+?>

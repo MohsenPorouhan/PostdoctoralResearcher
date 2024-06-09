@@ -1,0 +1,87 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if( isset($action) )
+ if ( strlen(trim($action)) > 0 && (strcmp($action,"change")==0)  && strlen(trim($cod_tarh))==4 )
+ {
+  $q="select * from tarh where cod_tarh like  '%$cod_tarh%'";
+   $rs=mysql_query($q) or die("Errro  450");
+  if(mysql_num_rows($rs) > 0)
+  {
+    $rf=mysql_fetch_array($rs);
+	$cod_tarh_main=$rf["cod_tarh"];
+	$q="update activities  set cod_tarh ='$cod_tarh_main' where cod_tarh  like  '%$cod_tarh%'";
+ 	   $rs=mysql_query($q) or die("Errro");
+
+  }
+ else
+   $status="entry_not_found";
+ }
+ else
+   $status="entry_error";
+
+
+
+
+
+?>
+
+<br>
+<br>
+<form name="user_login" action="<? echo "$PHP_SELF?action=change&admin=$admin&seed=$seed"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="400" border="0">
+       <tr>
+        <td width="100%" class="tahoma1" align="right">
+       تصحيح گانت طرح ها
+          </td>
+      </tr>
+    
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="400" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">کد طرح وارد شده ايراد دارد</td>";
+        echo "</tr>";
+      }
+       if (strcmp($status,"entry_not_found")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين کد يافت نشد</td>";
+        echo "</tr>";
+      }
+      
+      ?>
+      <tr>
+        <td align="right" width="350"><input  class="edit-tarh-type" name="cod_tarh" size="20"></td>
+        <td class="tahoma1" width="150">فقط چهار رقم آخر کد طرح را وارد کنيد</td>
+      </tr>
+    
+  <tr>
+        
+        <td class="tahoma1" colspan="2" width="100%" align="center"><b>فقط چهار رقم آخر کد طرح را وارد کنيد.</b></td>
+      </tr>
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<br>
+<?
+  footer_forms($admin,$seed);
+?>

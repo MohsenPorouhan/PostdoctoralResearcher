@@ -1,0 +1,23 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+require_once('lib/nusoap.php');
+
+$query="insert into input_sms set sms_from='$from' , sms_to='$to',sms_text='$text'";
+
+$result=mysql_query($query) or die("Error");
+$query="select * from tarh where right(cod_tarh,4)='$text' and version='-1'";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result)>0)
+{
+	$row_fetched=mysql_fetch_array($result);
+	$vaziat_code=$row_fetched["vaziat"];
+	$query="select * from vaziat_tarh where vaziat='$vaziat_code'";
+	$result=mysql_query($query) or die("Error");
+	$row_fetched=mysql_fetch_array($result);
+	$vaziat_desc=$row_fetched["vaziat_desc"];
+	$vaziat_desc=arabic2utf($vaziat_desc);
+    send_sms("$from",$vaziat_desc);
+}
+?>

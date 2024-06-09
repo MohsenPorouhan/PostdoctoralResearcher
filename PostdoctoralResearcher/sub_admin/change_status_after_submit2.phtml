@@ -1,0 +1,146 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+
+echo "<br>";
+$q1="select * from modir_daneshkade,daneshkade where modir_username='$admin' and daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade";
+  	    			$rslt=mysql_query($q1);
+  	    			$rff=mysql_fetch_array($rslt);
+  	    			$have_group=$rff["have_group"];
+					$cod_daneshkade=$rff["cod_daneshkade"];
+					$mostaghel=$rff["mostaghel"];
+
+if(isset($action))
+{
+  if (strcmp($action,"change_status")==0)
+  {
+  	if(isset($remove_return) && strcmp($remove_return,'1')==0)
+  	{
+	  $query="delete from  return_daneshkade  where cod_tarh='$cod_tarh'";
+      mysql_query($query) or die("Error in updating tarh type in tarh");
+	} 
+	$query_tarh_d="select * from daneshkade_tarh where cod_tarh='$cod_tarh' and cod_daneshkade='$cod_daneshkade' and visible='1'";
+ 	$result_tarh_d=mysql_query($query_tarh_d) or die("Error in updating data into tarh");
+    if(mysql_num_rows($result_tarh_d) > 0){
+    	$query="update daneshkade_tarh set submission_center_status ='0',confirm_tarh='1',return_tarh='0' where cod_tarh=\"$cod_tarh\" and cod_daneshkade='$cod_daneshkade' and visible='1' ";
+    }
+    else
+    $query="update tarh set   submission_center_status ='0',finished='1',return_tarh='0' where cod_tarh='$cod_tarh' and version='-1'";
+	//echo $query;
+    //$query="update tarh set vaziat='$status' where cod_tarh='$cod_tarh'";
+    mysql_query($query) or die("Error in updating tarh type in tarh");
+    $query="select * from tarh where cod_tarh='$cod_tarh'";
+    $myresult_tarh=mysql_query($query) or die("Error in selecting data from tarh");
+    $my_tarh_row_fetched=mysql_fetch_array($myresult_tarh);
+    $query="select * from vaziat_tarh where vaziat='$status'";
+    $mystatus_result = mysql_query($query) or die("Error in selecting from tarh_type");
+    $mystatus_row_fetched = mysql_fetch_array($mystatus_result);
+    $mail = new PHPMailer();
+    $emailbody="";
+    $emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+    $emailbody=$emailbody."<br>You sent one proposal with below title <br>";
+    $emailbody=$emailbody.$my_tarh_row_fetched["tarh_title_farsi"]."<br>";
+    $emailbody=$emailbody.$my_tarh_row_fetched["tarh_title_english"]."<br>";
+    $emailbody=$emailbody."<br>Status of your proposal changed to <br>";
+    
+    $emailbody=$emailbody.$mystatus_row_fetched["vaziat_desc"]."<br>";
+    $emailbody=$emailbody.$mystatus_row_fetched["vaziat_english_desc"]."<br>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"$url_address\">$url_address</a>";
+    $emailbody=$emailbody."<br>Powered by Rahpouyan Fanavar Sabz Co.</font></center>";
+    $mail->IsSMTP();
+    $mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname="";
+    $mail->From = $email_from;
+    $mail->FromName = $email_from_name;
+    $mail->AddAddress($my_tarh_row_fetched["creator"], $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "Status of your proposal";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+  //  if(!$mail->Send())
+   // {
+//      $status="mail_err";
+//    }
+//    else
+//    {
+         message_show(".وضعيت طرح تغيير يافت","green");
+         footer_forms($admin,$seed);
+         exit();
+  //  }
+  }
+
+}
+
+
+
+	       echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+	  
+	  ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/change_vaziat.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+
+  
+?>
+
+
+ 
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

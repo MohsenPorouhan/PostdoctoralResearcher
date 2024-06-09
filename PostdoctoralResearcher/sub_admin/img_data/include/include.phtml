@@ -1,0 +1,1779 @@
+<?
+include("include/database-connect.phtml");
+include("include/session.phtml");
+require("include/mailserver-statistics.phtml");
+
+//-----------------------------------------------------
+function rename_directory($base_dir,$target_dir)
+{
+  $mybasedir= getcwd();
+  chdir("../attachments");
+   rename("$base_dir","$target_dir");
+
+  chdir("$mybasedir");
+   chdir("../reports");
+   rename("$base_dir","$target_dir");
+  chdir("$mybasedir");
+ 
+  return -4;
+}
+//-----------------------------------------------------
+ 
+
+
+
+function check_field_value($id,$var_val)
+{
+  	
+   
+   $tok = strtok($id,",");
+   while ($tok) {
+    //if(strcmp($tok,$permission)==0)
+	 // return 1;
+	 // echo $tok."<br>";
+	 $var_len=strlen($var_val);
+	 if(strcmp(substr($tok,$var_len,1),"=")==0)
+	 {
+	   
+	   if(strcmp($var_val,substr($tok,0,$var_len))==0)
+	   {
+	   	 $tok_len=strlen($tok);
+	   	 $tok_len=$tok_len-($var_len+1);
+	     $return_var=substr($tok,$var_len+1,$tok_len);
+		 
+		 return $return_var;
+	     
+	     //exit();
+	   } 
+	 }
+      $tok = strtok(",");
+   }
+   
+   
+  
+ return -1;
+}
+
+function record_duplicate($table_name,$cod_tarh,$sec_id_name,$id_auto_inc)
+{
+
+$query="select max(version) as maxver from $table_name where cod_tarh='$cod_tarh'";
+
+$result=mysql_query($query) or die("Error in selecting data from 1");
+
+$rf1=mysql_fetch_array($result);
+$maxver=$rf1["maxver"];
+if($maxver=='-1')
+  $maxver='1';
+else
+  $maxver=$maxver+1;
+$query="select * from $table_name where cod_tarh='$cod_tarh' and version='-1'";
+$res_org=mysql_query($query) or die("error in selecting data from 2");
+
+
+$field_count=mysql_num_fields($res_org);
+while($rf=mysql_fetch_array($res_org))
+{
+  $query="insert into $table_name  values(";
+  for($i=0;$i<$field_count;$i++)
+  {
+    $field_name=mysql_field_name($res_org,$i);	
+    if(strcmp($field_name,"version")!=0)
+    {
+      if(strcmp($field_name,$sec_id_name)==0 && strcmp($id_auto_inc,'1')==0)
+      {
+	     if($i==0) 
+          $query=$query."'"."'";
+        else  
+          $query=$query.","."'"."'";
+      }
+	  else
+	  {	
+	  	$rf[$i]=str_replace("'","",$rf[$i]);
+	  	$rf[$i]=str_replace("\"","",$rf[$i]);
+	  	
+	    
+	    
+        if($i==0) 
+          $query=$query."'".$rf[$i]."'";
+        else  
+          $query=$query.","."'".$rf[$i]."'";
+	  }
+    }
+    else
+    {
+     if($i==0) 
+       $query=$query."'"."-2"."'";
+    else  
+       $query=$query.","."'"."-2"."'";
+   }
+  	
+ // $query="insert into test values($rf[0],$rf[1],$rf[2])";
+   }
+   $query=$query.")";
+   
+   $result=mysql_query($query) or die("Error 3333333333");
+if(strlen($sec_id_name) > 0 )
+{
+  $sec_id_value=$rf[$sec_id_name];	
+  $sec_arg=" and $sec_id_name='$sec_id_value'";
+}
+else
+  $sec_arg="";
+   $query="update $table_name set version='$maxver' where cod_tarh='$cod_tarh' and version='-1' $sec_arg";
+ 
+   $result=mysql_query($query) or die("Error in selecting data from 4");
+   
+   $query="update $table_name set version='-1' where cod_tarh='$cod_tarh' and version='-2'";  
+ 
+   $result=mysql_query($query) or die("Error in selecting data from 5");
+}
+}
+
+//---------------------------------------------------------------------------------------
+function send_sms($cell_number,$message,$admin)
+{
+ $username = 'olomPezeshki';
+$password = 'medicalu_01';
+$domain = 'magfa';
+
+
+
+
+$query="select * from daneshkade,modir_daneshkade where daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade and modir_daneshkade.modir_username ='$admin'";
+$result_group_karshenas=mysql_query($query) or die("Error");
+$row_fetched=mysql_fetch_array($result_group_karshenas);
+$sms_box=$row_fetched["daneshkade_mobile"];
+$daneshkade_name =$row_fetched["daneshkade_name"];
+if(strlen($sms_box) <=0 )
+ //echo $sms_box;
+$sms_box="30007912";
+// Connect ...
+//$client = new soapclient('http://192.168.0.1/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+$client = new soapclient('http://webservice.magfa.com/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+
+
+// Read error
+$err = $client->getError();
+if ($err) {
+	echo "<h2>Constructor error</h2><pre>$err</pre>";
+}
+
+// Authentication
+$client->setCredentials($username, $password, 'basic');
+
+
+
+
+$j=0;
+ 
+$a="";
+$b="";
+$c="";
+//$message=iconv("windows-1256", "UTF-8",$message);
+for($i=0;$i<strlen($message);$i+=131)
+{
+	if($i==0)
+	  $a=substr($message,$i,131);
+	 else 
+	if($i>=131 && $i<262)
+	  $b=substr($message,$i,131);
+	 else 
+    if($i>=262 && $i<393)
+	  $c=substr($message,$i,131);
+    
+  //$msg1[$j]=substr($message,$i,160);
+  $j++;	
+}
+
+ if(strlen($message) <131 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		array("$a"),			//Message
+		array("$cell_number"),			//Destination
+	 	array("$sms_box")
+						//UDH
+		)
+	);
+ 
+	
+ 	//echo $msg1($k-1);
+ 
+ //echo "<br>".$k."<br>";
+  
+ if ($client->fault) {
+	echo '<h2>Fault 1111</h2><pre>';	   
+    }   
+	
+ 
+}
+
+
+//-----------------------------------------------------------------------------------
+
+ if(strlen($message)>=131 && strlen($message)<262)
+ {      
+ 
+  
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b" ), 			//Message
+		array("$cell_number","$cell_number"),			//Destination
+		 array("$sms_box","$sms_box"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02"),
+					//UDH
+		)
+	);
+	
+	 
+  if ($client->fault) {
+	echo '<h2>Fault 2222</h2><pre>';	   
+    }  
+
+ }
+  //-------------------------------------------------------------------------------------
+  
+  if(strlen($message)>=262 && strlen($message)<393)
+ { 	 
+ 
+   $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b","$c" ), 			//Message
+		array("$cell_number","$cell_number","$cell_number"),			//Destination
+	    array("$sms_box","$sms_box","$sms_box"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02","%05%00%03%47%02%03"),
+		 			//UDH
+		)
+	);	
+ 	
+
+ if ($client->fault) {
+	echo '<h2>Fault 3333</h2><pre>';	   
+    }  
+      
+    }
+
+
+
+
+
+
+
+ 
+
+}
+
+
+
+//---------------------------------------------------------------------------------
+
+
+function sum_of_hazine($cod_tarh,$version)
+{
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='$version' order by activity_type ";
+   $personnel_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+      
+     }
+      $personnel_sum=$mycount;
+   }
+
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='$version' order by mozoa_azmayesh ";
+   $lab_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='$version' order by name_dastgah";
+   $vasile_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='$version' order by target";
+   $trip_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='$version'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+  $sum_sayer=$hazine_taksir+ $hazine_digar;
+ return $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+}
+
+ 
+//---------------------------------------------------------------------------------------
+
+
+function DBreccount($DBname)
+{
+
+  $query="select count(*) as mycnt from $DBname";
+  
+  $result = mysql_query($query);
+  $row_fetched = mysql_fetch_array($result);
+  return strval($row_fetched["mycnt"]);
+
+}
+//---------------------------------------------------------------------------------------
+
+
+function insert_position($cod_tarh,$position,$admin)
+{
+	
+  $action_date=date("Y-m-d");
+  $query="insert into tarh_position set cod_tarh='$cod_tarh',position='$position',creator='$admin',action_date='$action_date' ";
+
+  $result=mysql_query($query) or die("Error in inserting data into position");
+}
+
+
+//---------------------------------------------------------------------------------------
+
+function current_position($cod_tarh)
+{
+  $query="select * from  tarh_position where  cod_tarh='$cod_tarh' order by id desc";
+  
+  $result_position=mysql_query($query) or die("Error in selecting data from position");
+  if(mysql_num_rows($result_position) > 0 )
+  {
+  	$row_fetched_position=mysql_fetch_array($result_position);
+  	$position=$row_fetched_position["position"];
+  	return $position;
+  	
+  }
+  else 
+   return -1;  // no record in position database for this tarh
+  
+}
+
+//---------------------------------------------------------------------------------------
+
+
+
+
+function mablagh_karshenasi($cod_tarh)
+{
+
+
+ $query="select * from tarh where cod_tarh='$cod_tarh' and version=\"-1\" ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  
+  
+  $mablagh_aghd_gharardad = $row_fetched["mablagh_aghd_gharardad"];
+  
+ $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+      $result00=mysql_query($query) or die("Error in selecting data from hazine personnel");
+      if(mysql_num_rows($result00) > 0)
+      {
+     
+        $mycount=0;
+       while($row_fetched00=mysql_fetch_array($result00))
+       {
+  
+       $my_summary = $row_fetched00["per_hour"]*$row_fetched00["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       }       
+      }
+      $hazine_personnel=$mycount;
+      
+      $darsad_50=$mablagh_aghd_gharardad*50/100;
+      
+      
+$query="select * from gozaresh_gharardad  where cod_tarh='$cod_tarh' and marhale!='0' and marhale!='100' order by marhale asc ";
+$result1=mysql_query($query) or die("Error");
+$cntr=1;
+$mablagh12=0;
+$karshenasi=0;
+while($rf66=mysql_fetch_array($result1))
+{
+// echo $cntr;
+  if($hazine_personnel > $darsad_50)
+  {
+  	$mablagh_marhale_n=$rf66["mablagh"]*$mablagh_koll/100;
+  	$nezarat=100000+$mablagh_marhale_n/100;
+  	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	$maliat_marhale_n=$mablagh_marhale_n*5/100;
+	$hagh_ol_zahme_karshenasi_n=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+	$mablagh_khales_mojri=$mablagh_marhale_n-$maliat_marhale_n;
+	$mablagh_khales_mojri=$mablagh_khales_mojri-$hagh_ol_zahme_karshenasi_n;
+	  		
+  }
+  else
+  {
+  	 $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	 $mablagh_marhale_n=($darsad_marhale+(100000+($darsad_marhale/100)))*100/95;
+	 $maliat_marhale_n=$mablagh_marhale_n*5/100;
+	 $hagh_ol_zahme_karshenasi_n=100000+($darsad_marhale/100);
+	 
+	 $mablagh_khales_mojri=$mablagh_marhale_n-$maliat_marhale_n-$hagh_ol_zahme_karshenasi_n;
+	 
+  }	
+  
+  $karshenasi=$karshenasi+$hagh_ol_zahme_karshenasi_n;
+}
+
+
+
+
+
+
+
+  $query="select * from gozaresh_gharardad where marhale='0' and cod_tarh='$cod_tarh'";
+      $result88=mysql_query($query) or die("Error");
+      if(mysql_num_rows($result88) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result88);
+	    if($hazine_personnel > $darsad_50)
+	    {
+	      $mablagh_marhale_0=$rf66["mablagh"]*$mablagh_koll/100;
+	      $maliat_marhale_0=$mablagh_marhale_0*5/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0;
+		   $mablagh_khales_mojri_0= $mablagh_khales_mojri_0-$hagh_ol_zahme_karshenasi_0;
+	      
+	  		
+	    }
+	    else
+	    {
+	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	      $mablagh_marhale_0=($darsad_marhale+($darsad_marhale/100))*100/95;
+	      $maliat_marhale_0=$mablagh_marhale_0*5/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0-$hagh_ol_zahme_karshenasi_0;
+	      
+	      
+	  		      
+	    }
+	    
+	    
+	  	
+	  }
+	  $karshenasi=$karshenasi+$hagh_ol_zahme_karshenasi_0;
+	//  echo "mohsen <br>".$end_time."<br>".$month_remain."<br>".$mablagh_marhale_0."<br>".$mablagh_aghd_gharardad."<br>".$maliat_1."<br>".$hazine_personnel;
+	  //exit();
+	   //$mablagh_koll_tarh=$maliat_koll+$nezarat_koll+$mablagh_aghd_gharardad;
+	  
+	  //-------------------marhale Nahayee ------------------------------------------
+	  
+	  $a=100000;
+	  $query="select * from gozaresh_gharardad where marhale='100' and cod_tarh='$cod_tarh'";
+      $result=mysql_query($query) or die("Error");
+      $b=0;
+	  if(mysql_num_rows($result) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result);
+	   if($hazine_personnel > $darsad_50)
+       {
+  	      $mablagh_marhale_end=$rf66["mablagh"]*$mablagh_koll/100;
+  	      $nezarat=125000+$mablagh_marhale_end/100;
+      	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	      $maliat_marhale_end=$mablagh_marhale_end*5/100;
+	      $hagh_ol_zahme_karshenasi_end=125000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+	  	
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end;
+	      $mablagh_khales_mojri_end=$mablagh_khales_mojri_end-$hagh_ol_zahme_karshenasi_end;
+	      $hagh_ol_zahme_karshenasi_end=125000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+	  		
+        }
+        else
+        {
+  	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;
+  	      $hagh_ol_zahme_karshenasi_end=100000+($darsad_marhale/100)+$month_remain*5000;
+	      $mablagh_marhale_end=($darsad_marhale+$hagh_ol_zahme_karshenasi_end)*100/95;
+	      $maliat_marhale_end=$mablagh_marhale_end*5/100;
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end-$hagh_ol_zahme_karshenasi_end;
+	     
+	     
+        }
+	  }
+$karshenasi=$karshenasi+$hagh_ol_zahme_karshenasi_end;
+return $karshenasi;
+
+
+
+	
+}
+
+//-----------------------------------------------------------------------------------------------
+function header_forms($admin,$seed)
+{
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+
+  if( $type == 2 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+  
+
+  ?><head>
+<STYLE type=text/css>
+BODY {
+	SCROLLBAR-FACE-COLOR: #003366;
+	SCROLLBAR-HIGHLIGHT-COLOR: #000000;
+	SCROLLBAR-SHADOW-COLOR: #000000;
+	SCROLLBAR-3DLIGHT-COLOR: #a1a1a1;
+	SCROLLBAR-ARROW-COLOR: #000000;
+	SCROLLBAR-TRACK-COLOR: #bfbfbf;
+	SCROLLBAR-DARKSHADOW-COLOR: #ffffff;
+	SCROLLBAR-BASE-COLOR: #a1a1a1;
+	background-color: #CCCCCC;
+}
+
+a:link {
+	color: #333333;
+	text-decoration: none;
+}
+a:visited {
+	color: #333333;
+	text-decoration: none;
+}
+a:hover {
+	color: #7592B5;
+	text-decoration: none;
+}
+a:active {
+	color: #6072DE;
+	text-decoration: none;	
+}
+</STYLE>
+<SCRIPT LANGUAGE="JavaScript">
+
+function textCounter(field,cntfield,maxlimit) {
+if (field.value.length > maxlimit) // if too long...trim it!
+field.value = field.value.substring(0, maxlimit);
+// otherwise, update 'characters left' counter
+else
+cntfield.value = maxlimit - field.value.length;
+}
+//  End -->
+</script>
+
+<?
+
+ 
+
+
+ $q1="select * from modir_daneshkade,daneshkade where modir_username='$admin' and daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade";
+  	    			$rslt=mysql_query($q1);
+  	    			$rff=mysql_fetch_array($rslt);
+  	    			$have_group=$rff["have_group"];
+					$modir_type=$rff["modir_type"];
+					$cod_daneshkade=$rff["cod_daneshkade"];
+					$mostaghel=trim($rff["mostaghel"]);
+
+
+$myq="select * from  modir_daneshkade where modir_username='$admin'";
+$res=mysql_query($myq) or die("Error");
+$rf=mysql_fetch_array($res);
+
+$name_family=$rf["modir_name"]."&nbsp;".$rf["modir_family"];
+
+
+
+?>
+<TITLE>.:: pajooheshyar ::.  <? echo $name_family; ?></TITLE>
+
+<META http-equiv=content-type content=text/html;charset=utf-8>
+<script language="javascript" src="js/farsi.js"></script>
+<script language="javascript" src="js/public_smo_scripts.js"></script>
+
+<SCRIPT language=JavaScript type=text/JavaScript>
+function MakingMoneyForm(me)
+				{
+				
+					if((event.keyCode==13) || (event.keyCode==9) || (event.keyCode==39) || (event.keyCode==37) || (event.keyCode==16))
+						return;
+
+					var TempStr = ''
+					
+					while(me.value.indexOf(',') != -1)
+						me.value = me.value.replace(',','')
+					
+					var R = me.value.length % 3;
+					TempStr =  me.value.substring(0,R);
+					for(var i = R ; i < me.value.length ; i++ )
+					{
+						if ((me.value.length-i)%3==0)
+						{
+							TempStr = TempStr + "," + me.value.substring(i,i+1) 
+						}
+						else 
+							TempStr = TempStr +  me.value.substring(i,i+1) 
+					}
+					
+					//Removing First ','
+					if(TempStr.substring(0,1) == ",")
+						TempStr = TempStr.substring(1,TempStr.length)
+					
+					me.value=TempStr
+
+						
+				}
+
+</SCRIPT>
+
+<script>
+function checkit()
+{
+	var key
+	key = window.event.keyCode
+	
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	{
+		if(key!=46)
+	      window.event.returnValue= false;
+	    else  
+	    window.event.returnValue= true
+	}
+
+	  
+}
+</script>
+<script language="JavaScript" type="text/JavaScript">
+
+function mmLoadMenus() {
+  if (! window.mm_menu_karshenasan)
+  {
+    window.mm_menu_karshenasan = new Menu("root",158,18,"Arial, Helvetica, sans-serif",12,"#FFFFFF","#000000","#000066","#FFCC00","right","middle",3,0,200,-5,7,true,true,true,0,true,true);
+    <? echo "mm_menu_karshenasan.addMenuItem(\"تعريف کارشناس\",\"location='karshenasan_add.phtml?admin=$admin&seed=$seed'\");"; ?>    
+    mm_menu_karshenasan.hideOnMouseOut=true;
+    mm_menu_karshenasan.bgColor='#555555';
+    mm_menu_karshenasan.menuBorder=0;
+    mm_menu_karshenasan.menuLiteBgColor='#FFFFFF';
+    mm_menu_karshenasan.menuBorderBgColor='#777777';
+  }
+  if (! window.mm_menu_tarhs)
+  {
+    window.mm_menu_tarhs = new Menu("root",168,18,"Arial, Helvetica, sans-serif",12,"#FFFFFF","#000000","#000066","#FFCC00","right","middle",3,0,200,-5,7,true,true,true,0,true,true);
+    <? echo "mm_menu_tarhs.addMenuItem(\"طرحهاي جديد\",\"location='tarh_list_new.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? 
+    if(strcmp($modir_type,'5')!=0)
+    	echo "mm_menu_tarhs.addMenuItem(\"طرحهاي قبل از تصويب\",\"location='tarh_list_new_before_submit.phtml?admin=$admin&seed=$seed'\");"; 
+    else
+    	echo "mm_menu_tarhs.addMenuItem(\"طرح هاي در حال کارشناسي\",\"location='tarh_list_hamkar.phtml?admin=$admin&seed=$seed'\");";
+    	?>
+    	
+        	
+    	<?
+	 if(strcmp($mostaghel,"0")==0)
+ {
+	echo "mm_menu_tarhs.addMenuItem(\"طرحهاي بعد از تصويب\",\"location='tarh_list_new_after_submit.phtml?admin=$admin&seed=$seed'\");"; 
+ }
+ else
+ {
+ 	if(strcmp($modir_type,'5')!=0)
+	echo "mm_menu_tarhs.addMenuItem(\"طرحهاي بعد از تصويب\",\"location='tarh_list_new_after_submit_mostaghel.phtml?admin=$admin&seed=$seed'\");"; 
+	else
+	echo "mm_menu_tarhs.addMenuItem(\"طرحهاي کارشناسي شده\",\"location='tarh_list_karshenasi_shode.phtml?admin=$admin&seed=$seed'\");";
+	echo "mm_menu_tarhs.addMenuItem(\"طرحهاي آماده به قرارداد\",\"location='new_gharardad.phtml?admin=$admin&seed=$seed'\");"; 
+
+}
+	?>
+    <? // echo "mm_menu_tarhs.addMenuItem(\"طرحهاي ارسالي به کارشناسان\",\"location='sent_karshenasan.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? ///echo "mm_menu_tarhs.addMenuItem(\"طرحهاي ارجاعي از کارشناسان\",\"location='referred_karshenasan.phtml?admin=$admin&seed=$seed'\");"; ?>
+    
+    <? 
+	 if(strcmp($mostaghel,"0")==0)
+ {
+	echo "mm_menu_tarhs.addMenuItem(\"طرحهاي ارسالي يه معاونت پژوهشي\",\"location='tarh_list_send_moavenat.phtml?admin=$admin&seed=$seed'\");"; 
+ }
+  echo "mm_menu_tarhs.addMenuItem(\"طرحهاي ارسالي يه مراکز ديگر\",\"location='tarh_list_send_daneshkade.phtml?admin=$admin&seed=$seed'\");";
+	?>
+	
+     <?
+	  if(strcmp($mostaghel,"1")==0)
+ {
+	 echo "mm_menu_tarhs.addMenuItem(\"طرح هاي در حال اجرا\",\"location='in_doing.phtml?admin=$admin&seed=$seed'\");"; // قرارداد مستقل
+	 if(strcmp($modir_type,'5')!=0)
+	 echo "mm_menu_tarhs.addMenuItem(\"طرح هاي در حال اجرا در سطح دانشگاه\",\"location='indoing.phtml?admin=$admin&seed=$seed'\");";  // قراردادهاي در سطح دانشگاه
+	
+ }
+ else
+ {
+ 	 if(strcmp($modir_type,'5')!=0)
+	 echo "mm_menu_tarhs.addMenuItem(\"طرح هاي در حال اجرا در سطح دانشگاه\",\"location='indoing.phtml?admin=$admin&seed=$seed'\");";  // قراردادهاي در سطح دانشگاه
+	  
+ }
+	 
+	 ?>
+  
+  <? echo "mm_menu_tarhs.addMenuItem(\"طرح هاي خاتمه يافته\",\"location='finished.phtml?admin=$admin&seed=$seed'\");"; ?>
+ <?
+  if(strcmp($modir_type,'5')!=0)
+ {
+ ?>
+    <? echo "mm_menu_tarhs.addMenuItem(\"طرح هاي بايگاني شده\",\"location='archieved.phtml?admin=$admin&seed=$seed'\");"; ?>
+ 
+    <? echo "mm_menu_tarhs.addMenuItem(\"طرحهاي ارجاعي از معاونت پژوهشي\",\"location='returned_tarh.phtml?admin=$admin&seed=$seed'\");"; ?>
+<?
+}
+ echo "mm_menu_tarhs.addMenuItem(\"طرح هاي مرکز هدف دوم\",\"location='tarh_list_second_daneshkade.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+
+    mm_menu_tarhs.hideOnMouseOut=true;
+    mm_menu_tarhs.bgColor='#555555';
+    mm_menu_tarhs.menuBorder=0;
+    mm_menu_tarhs.menuLiteBgColor='#FFFFFF';
+    mm_menu_tarhs.menuBorderBgColor='#777777';
+  }  
+  
+  if (! window.mm_menu_marakez_vabaste)
+  {
+    window.mm_menu_marakez_vabaste = new Menu("root",165,18,"Arial, Helvetica, sans-serif",12,"#FFFFFF","#000000","#000066","#FFCC00","right","middle",3,0,200,-5,7,true,true,true,0,true,true);
+    <?php 
+    $q1="select * from modir_daneshkade,daneshkade where modir_username='$admin' and daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade";
+  	    			$rslt=mysql_query($q1);
+  	    			$rff=mysql_fetch_array($rslt);
+  	    			$cod_daneshkade=$rff["cod_daneshkade"];
+					
+    
+    $query="select * from daneshkade where cod_pajoheshgah='$cod_daneshkade'";
+    $result=mysql_query($query);
+    while($row_fetched=mysql_fetch_array($result)){
+    	$daneshkade_name=$row_fetched["daneshkade_name"];
+    	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+    	echo "mm_menu_marakez_vabaste.addMenuItem(\" $daneshkade_name\",\"location='marakez_vabaste_tarhs.phtml?admin=$admin&seed=$seed&cod_daneshkade=$cod_daneshkade'\");";
+    ?>
+    mm_menu_marakez_vabaste.hideOnMouseOut=true;
+    mm_menu_marakez_vabaste.bgColor='#555555';
+    mm_menu_marakez_vabaste.menuBorder=0;
+    mm_menu_marakez_vabaste.menuLiteBgColor='#FFFFFF';
+    mm_menu_marakez_vabaste.menuBorderBgColor='#777777';
+   <? }
+    
+ 	   /* 
+    
+	$query="select * from daneshkade where cod_pajoheshgah='$cod_daneshkade'";
+	$result=mysql_query($query) or die("error");
+ 	if(mysql_num_rows($result) > 0)
+ 		while($row_fetched=mysql_fetch_array($result)){
+ 		$daneshkade_name=$row_fetched["daneshkade_name"];
+ 		$cod_daneshkade1=$row_fetched["cod_daneshkade"];
+ 		 echo "mm_menu_marakez_vabaste.addMenuItem('$daneshkade_name',\"location='marakez_vabaste_tarhs.phtml?admin=$admin&seed=$seed&cod_daneshkade=$cod_daneshkade1'\");";}
+ */
+ 		  ?>
+		
+ 	
+   
+  }
+
+  
+ if (! window.mm_menu_shora_pajoheshi)
+  {
+    window.mm_menu_shora_pajoheshi = new Menu("root",168,18,"Arial, Helvetica, sans-serif",12,"#FFFFFF","#000000","#000066","#FFCC00","right","middle",3,0,200,-5,7,true,true,true,0,true,true);
+    <? echo "mm_menu_shora_pajoheshi.addMenuItem(\" اعضاي شوراي پژوهشي\",\"location='add_shora_pajoheshi.phtml?admin=$admin&seed=$seed&cod_shora=-3'\");"; ?>
+	<? echo "mm_menu_shora_pajoheshi.addMenuItem(\"تعريف جلسه شوراي پژوهشي\",\"location='comments.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_shora_pajoheshi.addMenuItem(\"جلسات شوراي پژوهشي\",\"location='jalase_shora_list.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_shora_pajoheshi.addMenuItem(\"تعيين رتبه طرحها در رنک\",\"location='rotbe_tarh_select_year.phtml?admin=$admin&seed=$seed'\");"; ?>
+	mm_menu_shora_pajoheshi.hideOnMouseOut=true;
+    mm_menu_shora_pajoheshi.bgColor='#555555';
+    mm_menu_shora_pajoheshi.menuBorder=0;
+    mm_menu_shora_pajoheshi.menuLiteBgColor='#FFFFFF';
+    mm_menu_shora_pajoheshi.menuBorderBgColor='#777777';
+  }
+
+ if (! window.mm_menu_dabirkhane)
+  {
+    window.mm_menu_dabirkhane = new Menu("root",128,18,"Arial, Helvetica, sans-serif",12,"#FFFFFF","#000000","#000066","#FFCC00","right","middle",3,0,200,-5,7,true,true,true,0,true,true);
+
+    <? echo "mm_menu_dabirkhane.addMenuItem(\"نامه به مجري\",\"location='letter_to_mojri.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_dabirkhane.addMenuItem(\"ليست نامه ها\",\"location='letter_to_mojri_list.phtml?admin=$admin&seed=$seed'\");"; ?>
+    mm_menu_dabirkhane.hideOnMouseOut=true;
+    mm_menu_dabirkhane.bgColor='#555555';
+    mm_menu_dabirkhane.menuBorder=0;
+    mm_menu_dabirkhane.menuLiteBgColor='#FFFFFF';
+    mm_menu_dabirkhane.menuBorderBgColor='#777777';
+  }
+
+
+if (! window.mm_menu_savabet)
+  {
+    window.mm_menu_savabet = new Menu("root",128,18,"Arial, Helvetica, sans-serif",12,"#FFFFFF","#000000","#000066","#FFCC00","right","middle",3,0,200,-5,7,true,true,true,0,true,true);
+    <? echo "mm_menu_savabet.addMenuItem(\"نوع طرح\",\"location='tarh-type.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"نوع مطالعه\",\"location='tarh-type-1.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"نوع طرح 1\",\"location='tarh-type-2.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+	<? echo "mm_menu_savabet.addMenuItem(\"نوع نامه\",\"location='letter_type.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+	<? echo "mm_menu_savabet.addMenuItem(\"درجه علمي\",\"location='daraje-elmi.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+    <? echo "mm_menu_savabet.addMenuItem(\"تعريف نوع کارشناس\",\"location='karshenas_type.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+	<? echo "mm_menu_savabet.addMenuItem(\"تعريف دانشکده / مرکز\",\"location='add_daneshkade.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+	<? echo "mm_menu_savabet.addMenuItem(\"وضعيت طرح\",\"location='vaziat-tarh.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"ثوابت چاپ\",\"window.open('print_statistics.phtml?admin=$admin&seed=$seed','_blank')\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"ثوابت چاپ شناسنامه طرح\",\"window.open('print_shenasname_statistics.phtml?admin=$admin&seed=$seed','_blank')\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"ثوابت سيستم\",\"location='savabetsystem.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"محتواي صفحه اصلي\",\"location='main-content.phtml?admin=$admin&seed=$seed'\");"; ?>
+
+    <? echo "mm_menu_savabet.addMenuItem(\"مشخصات پست الکترونيک\",\"location='email_from.phtml?admin=$admin&seed=$seed'\");"; ?>
+    <? echo "mm_menu_savabet.addMenuItem(\"Ranking\",\"location='ranking.phtml?admin=$admin&seed=$seed'\");"; ?>
+    mm_menu_savabet.hideOnMouseOut=true;
+    mm_menu_savabet.bgColor='#555555';
+    mm_menu_savabet.menuBorder=0;
+    mm_menu_savabet.menuLiteBgColor='#FFFFFF';
+    mm_menu_savabet.menuBorderBgColor='#777777';
+  }
+
+mm_menu_karshenasan.writeMenus();
+mm_menu_tarhs.writeMenus();
+mm_menu_shora_pajoheshi.writeMenus();
+mm_menu_savabet.writeMenus();
+mm_menu_marakez_vabaste.writeMenus();
+
+} // mmLoadMenus()
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+</script>
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+<script language="JavaScript" src="js/mm_menu.js"></script>
+</head>
+
+
+
+
+<BODY leftMargin=0 topMargin=0
+_1/but1_eff.JPG','image_main_page/top_but_1_eff.jpg','images/but_1_eff.jpg','images/but_2_eff.jpg','images/but_3_eff.jpg','images/but_4_eff.jpg','images/but_5_eff.jpg')">
+<script language="JavaScript1.2">mmLoadMenus();</script>
+
+
+ 
+
+
+  <CENTER>
+
+<TABLE borderColor=black cellSpacing=0 cellPadding=0 width=100% bgColor=#ffffff
+border=0 height="100%"><!--DWLayoutTable-->
+  <tr>
+    <TD height=117 colspan="2" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <!--DWLayoutTable-->
+        <tr>
+          <td height="19" colspan="3" background="img_data/top_1_01.jpg" style="font-size: 7pt; font-family: Tahoma; color: #666666">
+			<span lang="fa">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>&nbsp;
+			<span lang="fa">تاريخ :&nbsp; <span dir="rtl"><? echo today();?></span>&nbsp;&nbsp;&nbsp; ساعت :
+			<? echo date("H:i"); ?></span></td>
+          <td width="93" rowspan="2" valign="top"><img src="img_data/top_1_02.jpg" width="93" height="98"></td>
+          <td width="108" rowspan="3" valign="top"><img src="img_data/top_1_03.jpg" width="108" height="117"></td>
+          <td width="274" rowspan="3" valign="top"><img src="img_data/top_1_04.jpg" width="274" height="117"></td>
+        </tr>
+        <tr>
+          <td width="46" height="79" valign="top"><img src="img_data/top_1_05.jpg" width="46" height="79"></td>
+          <td width="155" valign="top"><img src="img_data/top_1_06.jpg" width="155" height="79"></td>
+        <td width="100%" valign="top"><img src="img_data/top_1_07.jpg" width="100%" height="79"></td>
+        </tr>
+        <tr>
+          <td height="19" colspan="4" valign="bottom" background="img_data/top_1_0888.jpg" style="font-size: 8pt; font-family: Tahoma; color: #666666" align="right" dir="rtl">
+			<span lang="fa">
+			<?
+			  $query="select * from modir_daneshkade where modir_username='$admin'";
+			  //echo $query;
+			  $result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+			  $row_fetched=mysql_fetch_array($result);
+			  $name=$row_fetched["modir_name"]."&nbsp;".$row_fetched["modir_family"];
+			  //echo $name;
+			  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+			  $query="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+			  $result=mysql_query($query) or die("Error in selecting data from daneshkade");
+			  $row_fetched=mysql_fetch_array($result);
+			  $daneshkade_name=$row_fetched["daneshkade_name"];
+			  
+			  $top_string=" محيط کاري ".$name." مربوط به دانشکده ".$daneshkade_name;
+			  echo $top_string;
+			?>
+		
+
+			</span></td>
+          </tr>
+        </table></TD>
+    </tr>
+	<tr>
+    <TD width="100%" height="100%" valign="top">
+	<table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <!--DWLayoutTable-->
+      <tr>
+        <td width="100%" height="100%" align="center" valign="top">
+
+
+  <?
+
+}
+
+//-----------------------------------------------------------------------
+
+function footer_forms($admin,$seed)
+{
+
+$q1="select * from modir_daneshkade,daneshkade where modir_username='$admin' and daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade";
+  	    			$rslt=mysql_query($q1);
+  	    			$rff=mysql_fetch_array($rslt);
+  	    			$have_group=$rff["have_group"];
+					$modir_type=$rff["modir_type"];
+					
+						$mostaghel=trim($rff["mostaghel"]);
+					
+ 
+
+?>
+
+ </td>
+      </tr>
+    </table></TD>
+    <TD width="150" valign="top"  bgcolor="#e7ecf2">
+        <table width="150" border="0" cellpadding="0" cellspacing="0"   height="100%">
+            <!--DWLayoutTable-->
+            <tr>
+              <td height="19" valign="top"><img src="img_data/top_2.jpg" width="150" height="19"></td>
+            </tr>
+			<tr>
+              <td height="231" valign="top" align="center">
+				<table width="150" border="0" cellpadding="0" cellspacing="0" height="355">
+                <!--DWLayoutTable-->
+                <tr>
+                  <td width="150" height="415" valign="top"  >
+					<table border="0" width="140" height="460">
+					    <tr>
+							<td    background="img_data/buts_back.jpg"   style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  onMouseOut="MM_swapImgRestore();MM_startTimeout();" onMouseOver="MM_swapImage('Image8','','plat_6/but_1_eff.jpg',1);MM_showMenu(window.mm_menu_tarhs,-264,0,null,'spacer1')">
+							<span lang="fa"><a href="#">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;طرحهاي تحقيقاتي</a><img src="img_data/spacer.gif" name="spacer1" ></span></td>
+						</tr>
+						 <?
+	  if(strcmp($mostaghel,"1")==0)
+ {?>
+	 <tr>
+							<td    background="img_data/buts_back.jpg"   style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  onMouseOut="MM_swapImgRestore();MM_startTimeout();" onMouseOver="MM_swapImage('Image8','','plat_6/but_1_eff.jpg',1);MM_showMenu(window.mm_menu_marakez_vabaste,-264,0,null,'spacer2')">
+							<span lang="fa"><a href="#">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;طرحهاي مراکز وابسته</a><img src="img_data/spacer.gif" name="spacer2" ></span></td>
+						</tr>
+<?	
+ }
+?>
+						<?
+		  if(strcmp($modir_type,'5')!=0)
+		  {
+		  ?>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  dir="rtl">
+							<span lang="fa"><a href=<? echo "\"grant_hsr.phtml?admin=$admin&seed=$seed\""; ?>>طرح هاي گرانت و HSR</a></td>
+						</tr>
+							<tr>
+							<td   background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  dir="rtl">
+							<span lang="fa"><a href=<? echo "\"grant_hsr_finished.phtml?admin=$admin&seed=$seed\""; ?>>گرانت و HSR خاتمه يافته</a></td>
+						</tr>
+						
+							<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  dir="rtl">
+							<span lang="fa"><a href=<? echo "\"old_tarhs.phtml?admin=$admin&seed=$seed\""; ?>>طرح هاي قديمي</a></td>
+						</tr>
+                       <?
+						}
+						?>						
+							<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  >
+							<span lang="fa"><a href=<? echo "\"subadmin_send_sms.phtml?admin=$admin&seed=$seed\""; ?>>ارسال پيام کوتاه</a></td>
+						</tr>
+										<?
+		  if(strcmp($modir_type,'5')!=0)
+		  {
+		  ?>
+			
+					<tr>
+							<td   background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  >
+							<span lang="fa"><a href=<? echo "\"karshenasan_add.phtml?admin=$admin&seed=$seed\""; ?>>کارشناسان</a></td>
+						</tr>
+						
+						 <?
+						}
+						?>
+							<tr>
+							<td  background="img_data/buts_back.jpg"  style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  >
+							<span lang="fa"><a href=<? echo "\"shora_notes.phtml?admin=$admin&seed=$seed\""; ?>>نظر اعضاي شورا در مورد طرح </a></td>
+						</tr>
+						  <?php if(strcmp($modir_type,'5')!=0){?>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right"  >
+							<span lang="fa"><a href=<? echo "\"gozareshat.phtml?admin=$admin&seed=$seed\""; ?>>گزارشات جهت تاييد</a></td>
+						</tr>
+						<?php }?>
+						 
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"groups_daneshkade.phtml?admin=$admin&seed=$seed\""; ?>>گروه ها</a><img src="img_data/spacer.gif" name="spacer5" ></span></td>
+						</tr>
+						<?
+						  $query1="select * from letter_to_mojri where (to_letter='$admin'   and visited='0'   )   ";
+ // echo $query1;
+  						  $result1=mysql_query($query1) or die("error");
+ 						  if(mysql_num_rows($result1) > 0)
+   							 $new_msg="<span class='tahoma0' ><font color='red'><u><img src='images/new.gif' border='0'></u> &nbsp;&nbsp;</font></span>";    
+  						  else 
+							 $new_msg="<span class='tahoma0'></span>"; 
+ 					   ?>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><?  echo $new_msg;?><a href=<? echo "\"letter_to_mojri_list.phtml?admin=$admin&seed=$seed\""; ?>>دبيرخانه</a><img src="img_data/spacer.gif" name="spacer5" ></span></td>
+						</tr>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"report_complex.phtml?admin=$admin&seed=$seed\""; ?>>جستجو</a></span></td>
+						</tr>
+						<?php if(strcmp($mostaghel,"1")==0 && strcmp($modir_type,'5')!=0){?>
+						 <tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"confirm_letters.phtml?admin=$admin&seed=$seed\""; ?>>نامه همکاران جهت تاييد</a></span></td>
+						</tr>
+						<?php }?>
+						<?php if(strcmp($mostaghel,"1")==0 && strcmp($modir_type,'5')!=0){?>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"karshenasan_messages.phtml?admin=$admin&seed=$seed\""; ?>>پيام همکاران</a></span></td>
+						</tr>
+						<?php }?>
+						<?php if(strcmp($modir_type,'5')==0){?>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"send_message.phtml?admin=$admin&seed=$seed\""; ?>>پيام به مدير پژوهشکده</a></span></td>
+						</tr>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"send_letter.phtml?admin=$admin&seed=$seed\""; ?>>نامه هاي ارسالي</a></span></td>
+						</tr>
+						<?php }?>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right" onMouseOut="MM_swapImgRestore();MM_startTimeout();" onMouseOver="MM_swapImage('Image10','','plat_6/but_3_eff.jpg',1);MM_showMenu(window.mm_menu_shora_pajoheshi,-264,0,null,'spacer3')">
+							<span lang="fa"><a href="#" >  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;شوراي پژوهشي</a><img src="img_data/spacer.gif" name="spacer3" ></span></td>
+						</tr>
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"informatics.phtml?admin=$admin&seed=$seed\""; ?>>اطلاع رساني</a></span></td>
+						</tr>
+						
+						<?
+						$q1="select * from modir_daneshkade  where modir_username='$admin'  ";
+  	    			$rslt=mysql_query($q1);
+  	    			$rff=mysql_fetch_array($rslt);
+  	    			$modir_mostaghel_type=$rff["modir_mostaghel_type"];
+					$modir_type=$rff["modir_type"];
+					// $mostaghel=$rff["mostaghel"];
+					 
+					if(strcmp($modir_type,'5')!=0  )
+
+					{
+						
+						?>
+                         <tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"admin_daneshkade.phtml?admin=$admin&seed=$seed\""; ?>>تعريف کاربر همکار</a></span></td>
+						</tr>
+                       <?
+					   }
+					   ?>					
+<?php if(strcmp($mostaghel,"1")==0){?>
+
+				<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"doers.phtml?admin=$admin&seed=$seed\""; ?>>مجريان</a></span></td>
+						</tr>
+						<?php }?>
+					<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"chg_pass.phtml?admin=$admin&seed=$seed\""; ?>>تغيير رمز عبور</a></span></td>
+						</tr>
+
+						<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"activities.phtml?admin=$admin&seed=$seed\""; ?>>فعاليتها</a></span></td>
+						</tr>
+							<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a target="_blank" href="rahnema.doc">راهنما</a></span></td>
+						</tr>
+				    	<tr>
+							<td  background="img_data/buts_back.jpg" style="background-repeat: no-repeat; font-size: 8pt; font-family: Tahoma; color: #666666" align="right">
+							<span lang="fa"><a href=<? echo "\"logout.phtml?admin=$admin&seed=$seed\""; ?>>خروج</a></span></td>
+						</tr>
+
+					</table>
+				  </td>
+                </tr>
+              </table>
+              <span class="tahoma1"><b>F7 = تغيير زبان</b></span>
+<SCRIPT language=JavaScript>var clocksize=100;</SCRIPT>
+                  <SCRIPT src="js/clock.js"></SCRIPT>
+			  </td>
+            </tr>
+			<tr>
+              <td  width="150">&nbsp;</td>
+            </tr>
+        </table>
+
+		</TD>
+  	</tr>
+	<tr>
+	  <TD height=27 colspan="2" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" background="img_data/down_td_back.jpg">
+            <!--DWLayoutTable-->
+            <tr>
+              <td width="164" height="24" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" background="img_data/down_td_back_2.jpg">
+                  <!--DWLayoutTable-->
+                  <tr>
+                    <td width="7" height="24"></td>
+                    <td width="136" valign="top"><a href="http://www.rahpouyanco.com" target="_blank"><img src="img_data/rah_pic_down.jpg" width="136" height="24" border="0"></a></td>
+                    <td width="7"></td>
+                    <td width="14" valign="top"><img src="img_data/down_td_pic.jpg" width="14" height="24"></td>
+                  </tr>
+              </table></td>
+              <td width="631" style="font-size: 7pt; font-family: Tahoma; color: #E8EAF6" align="center">
+				<p align="right">
+				<span lang="fa">راهنما&nbsp; |&nbsp; لينكهاي مفيد&nbsp; |&nbsp; </span>English&nbsp;&nbsp;&nbsp;&nbsp; </td>
+              <td width="5" rowspan="2" valign="top"><img src="img_data/down_td_back.jpg" width="1" height="24"></td>
+            </tr>
+            <tr>
+              <td height="3"></td>
+              <td></td>
+            </tr>
+      </table></TD>
+    </tr>
+</TABLE>
+</CENTER>
+</BODY></HTML>
+
+   <?
+
+}
+
+//---------------------------------------------------------------------------------------
+
+
+function admin_type($admin)     // 0 == admin daneshkade  1== admin kol
+{
+  $query="select * from modir_daneshkade where modir_username=\"$admin\"";
+  $result=mysql_query($query) or die("Error in selectiong data from modir daneshkade");
+  if(mysql_num_rows($result) > 0)
+  {
+   $row_fetched=mysql_fetch_array($result);
+   return $row_fetched["modir_type"];
+  }
+  else
+    return -1;
+  
+  
+}
+
+
+//-----------------------------------------------------------------------
+
+function pubshowpages($link,$current,$PageCountShows,$Reccount,$startw,$endw,$RecPerPage,$username,$rand,$args,$width,$bgcolor)
+{
+
+
+  if($RecPerPage >=1000)
+    
+	{
+	  $current=1;
+      echo"<table width=\"$width\"   border=0 align=\"center\" valign=\"center\"  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"$bgcolor\">";
+	  $i=0;
+
+ 	  echo "<tr>";
+      echo "<td align='center'>";
+	  echo "<a style=\"text-decoration: none\" href=$link?admin=$username&seed=$rand&$args><font face=\"arial\" size=2 color=green></font>";
+      echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+      echo "-";
+      echo "</a>";
+      echo "</td>";
+      echo "</tr>";
+      echo "<table>";
+      return;
+      
+      
+	}
+     $PageCNT = ceil($Reccount/$RecPerPage);
+     if($PageCNT <=1 )
+       return;
+     if(($startw==0 && $endw==0) )
+     {
+      $startw=1;
+      if($PageCNT < $PageCountShows )
+        $endw = $PageCNT;
+      else
+        $endw = $PageCountShows;
+     }
+     else    //line 50
+     {
+      if($PageCNT < $PageCountShows)
+      {
+        $startw = 1;
+        $endw = $PageCNT;
+      }
+      else
+      {
+        //   fgfdgdfdf
+        if( ($current-$startw) > floor(($endw-$startw)/2) )  //line60
+        {
+         if( ($endw+ceil(($endw-$startw)/2)) < $PageCNT )
+         {
+            $tmpvar = $startw;
+            $startw += ceil(($endw-$startw)/2);
+            $endw += ceil(($endw-$tmpvar)/2);
+         }
+         else
+         {
+           if($endw < $PageCNT)
+           {
+             $startw+=($PageCNT-$endw);
+             $endw+=($PageCNT-$endw);
+           }
+         }
+        }
+        else
+        {
+          if( ($current-$startw) < ceil(($endw-$startw)/2) )
+          {
+            if(($startw-ceil(($endw-$startw)/2)) > 1  )
+            {
+               $tmpvar = $startw;
+               $startw-=ceil(($endw-$startw)/2);
+               $endw-=ceil(($endw-$tmpvar)/2);
+            }
+            else
+            {
+               $tmpvar = $startw;
+               $startw=1;
+
+               if( $PageCNT > $PageCountShows )
+                  $endw = $PageCountShows;
+               else
+                  $endw=$PageCNT;
+             }
+          }
+        }
+     }
+    }
+
+if ( $current == $PageCNT )
+{
+  $endw=$PageCNT;
+  if ($PageCountShows < $PageCNT )
+    $startw = ($PageCNT+1) - $PageCountShows;
+  else
+    $startw = 1 ;
+
+
+}
+
+ echo"<table width=\"$width\"   border=0 align=\"center\" valign=\"center\"  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"$bgcolor\">";
+ $i=0;
+
+ echo "<tr>";
+
+ echo "<td width = 20% align=left dir=\"rtl\">";
+ echo "<p align=\"center\" class=\"tahoma1\">";
+ echo "$Reccount مورد يافت شد";
+ echo "</p>";
+ echo "</td>";
+ echo "<td width = 60% align=center>";
+
+ if($PageCNT>2 &&  $current > 1 )
+ {
+    printf("<a style=\"text-decoration: none\" href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\"size=3 color=green></font>",$link,1,0,0,$username,$rand,$args);
+    echo "<img src=\"image/fullleft.gif\" border=\"0\">";
+    echo "</a>";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+ else
+ {
+    echo "<img src=\"image/fullleft.gif\" border=\"0\">";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+  
+ }
+
+
+ if($current > 1 )
+ {
+    printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\"size=3 color=green></font>",$link,$current-1,$startw,$endw,$username,$rand,$args);
+    echo "<img src=\"image/left.gif\" border=\"0\">";
+    echo "</a>";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+else
+ {
+    echo "<img src=\"image/left.gif\" border=\"0\">";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+
+
+ if($PageCNT>1)
+ {
+  for($i=$startw ;$i<=$endw;$i++)
+  {
+   if($i==$current)
+      printf("<font face=\"arial\" size=2 color=green><spawn align=\"center\" class=\"tahoma1\"><b>&nbsp;%s&nbsp;</b></spawn></font>",$i);
+   else
+      printf("<a style=\"text-decoration: none\" href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=blue><spawn align=\"center\" class=\"tahoma1\"><b>&nbsp;%s&nbsp;</b></spawn></font></a>",$link,$i,$startw,$endw,$username,$rand,$args,$i);
+  }
+ }
+
+ if(  $current < $PageCNT )
+ {
+   printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$current+1,$startw,$endw,$username,$rand,$args);
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/right.gif\" border=\"0\">";
+   //echo "Next";
+   echo "</a>";
+ }
+ else
+ {
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/right.gif\" border=\"0\">";
+ }
+
+ if($PageCNT>2 && $current < $PageCNT )
+ {
+   printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$username,$rand,$args);
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/fullright.gif\" border=\"0\">";
+   echo "</a>";
+    if($RecPerPage <1000)
+    {
+      printf("<a style=\"text-decoration: none\"href=%s?showall=1&current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$username,$rand,$args);
+      echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+      echo "+";
+      echo "</a>";
+     }
+	else
+	{
+	  $current=1;
+	  printf("<a style=\"text-decoration: none\"href=%s? current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$username,$rand,$args);
+      echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+      echo "+";
+      echo "</a>";
+	}
+	
+	  
+ }
+ else
+ {
+ 
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/fullright.gif\" border=\"0\">";
+ }
+
+
+ echo"</td>";
+ echo "<td width = 20% align=right>";
+ echo "<p align=\"center\" class=\"tahoma1\">";
+ echo "صفحه $current از $PageCNT";
+
+ echo "</p>";
+ echo "</td>";
+
+ echo"</tr>";
+ echo"</table>";
+
+
+}
+
+//-----------------------------------------------------------------------
+
+//-----------------------------------------------------------------------
+
+function message_show($message,$color)     // 0 == admin daneshkade  1== admin kol
+{
+
+ echo "<table border=\"0\" width=\"100%\" height=\"40%\">";
+ echo "<tr>";
+ echo "<td width=\"100%\"  align=\"center\" ><font face=\"tahoma\" size=\"2\" color=\"$color\">$message</font></td>";
+ echo "</tr>";
+ echo "</table>";
+
+}
+
+//-----------------------------------------------------------------------
+function set_log($action,$admin,$date)     // 0 == admin daneshkade  1== admin kol
+{
+   $query="insert into log set username=\"$admin\" , action=\"$action\", date=\"$date\"";
+   
+   $result=mysql_query($query) or die("Error in inserting data into log file");
+}
+
+
+
+//-------------------------------------------------------------------
+
+function BaseFromMiladiDate($mldyear , $mldmonth , $mldday )
+{
+  $PrevMonthDayMld = array(0,31,59,90,120,151,181,212,243,273,304,334);
+  $iDaySum = 0 ;
+  $iNewDateElapsed =0 ;
+  $iBaseYear = 1996 ;
+  $iBaseDateElapsed = 79 ;
+  $iNewDateElapsed = ($mldday -1 ) + $PrevMonthDayMld[$mldmonth-1];
+  if ( (($mldyear % 4 ) == 0 ) && ( $mldmonth > 2))
+     $iNewDateElapsed++;
+
+  $iDaySum = $iNewDateElapsed - $iBaseDateElapsed +($mldyear-$iBaseYear) *365 +(int)(($mldyear -$iBaseYear ) / 4 );
+
+  if ((($mldyear - $iBaseYear) % 4 ) != 0 )
+     $iDaySum = $iDaySum+1;
+  return $iDaySum;
+}
+//---------------------------------------------------------------------
+function hijricalender ( $year , $month , $day )
+{
+  $PrevMonthDayHjr = array(0,31,62,93,124,155,186,216,246,276,306,336);
+  if ( $year < 1995 || $month < 1 || $month > 12 || $day > 31 || $day < 1 )
+    return 0;
+  $daysum = BaseFromMiladiDate($year , $month , $day );
+  $iaddyear=0;
+  while ($daysum >0 )
+  {
+      $daysum = $daysum -365;
+      if (($iaddyear % 4 ) == 0 )
+        $daysum--;
+      $iaddyear++;
+  }
+  if ( $daysum <0 )
+  {
+      $iaddyear--;
+      $daysum = $daysum+365;
+      if (($iaddyear % 4 ) == 0 )
+        $daysum++;
+  }
+  $itodayyear = 1375+$iaddyear;
+  $itodaymonth=1;
+  while ( $daysum >= $PrevMonthDayHjr[$itodaymonth])
+  {
+      $itodaymonth++;
+      if( $itodaymonth ==12 )
+        break;
+  }
+  $daysum=$daysum - $PrevMonthDayHjr[$itodaymonth-1];
+  $itodayday = 1 + $daysum;
+  $isodate = sprintf("%04d/%02d/%02d",$itodayyear ,$itodaymonth, $itodayday);
+  return  $isodate;
+}
+//-------------------------------------------------------------------
+
+function enum2fnum($englishnum)
+{
+  $return1 = str_replace("1", "ہ", $englishnum);
+  $return2 = str_replace("2", "×", $return1);
+  $return3 = str_replace("3", "à", $return2);
+  $return4 = str_replace("4", "â", $return3);
+  $return5 = str_replace("5", "ç", $return4);
+  $return6 = str_replace("6", "è", $return5);
+  $return7 = str_replace("7", "é", $return6);
+  $return8 = str_replace("8", "ê", $return7);
+  $return9 = str_replace("9", "ë", $return8);
+  $return0 = str_replace("0", "ô", $return9);
+  $return11 = str_replace("ہ", "&#1777;", $return0);
+  $return12 = str_replace("×", "&#1778;", $return11);
+  $return13 = str_replace("à", "&#1779;", $return12);
+  $return14 = str_replace("â", "&#1780;", $return13);
+  $return15 = str_replace("ç", "&#1781;", $return14);
+  $return16 = str_replace("è", "&#1782;", $return15);
+  $return17 = str_replace("é", "&#1783;", $return16);
+  $return18 = str_replace("ê", "&#1784;", $return17);
+  $return19 = str_replace("ë", "&#1785;", $return18);
+  $return20 = str_replace("ô", "&#1776;", $return19);
+  $return21 = str_replace(":", "<font compset size 3><b>:</b></font>", $return20);
+  return $return21;
+
+}
+
+//-------------------------------------------------------------------
+
+function send_mail_tarh($cod_tarh)
+{
+
+
+ $besme = "style=\"font-family: tahoma; font-size: 10\"";
+ $titr_asli =  "style=\"font-family: tahoma; font-size: 10\"";
+ $porseshname =  "style=\"font-family: tahoma; font-size: 10\"";
+ $anavin_asli =  "style=\"font-family: tahoma; font-size: 10\"";
+ $anavin_farii_text =  "style=\"font-family: tahoma; font-size: 10\"";
+ $anavin_farii =  "style=\"font-family: tahoma; font-size: 10\"";
+ $titr_anavin_farii =  "style=\"font-family: tahoma; font-size: 10\"";
+ $jadval_title =  "style=\"font-family: tahoma; font-size: 10\"";
+ print_title($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_globals($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_mojrian($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_daneshjoyan($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_hamkaran($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_modir_tarh($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_modir_mali_tarh($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_body_tarh($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_ravesh_ejra($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_jadval_zamani($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_page_break();
+ print_hazineha($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+
+}
+
+//-------------------------------------------------------------------
+
+
+function send_letter_to_mojri($mojri_name,$mojri_family,$tarh_title_english,$tarh_title_farsi,$band_azad,$cod_tarh,$content_letter_type)
+{
+?>
+<META http-equiv=content-type content=text/html;charset=utf-8>
+<table id="Table_00" border="0" width="100%" height="100%">
+  <tr>
+    <td width="34%" align="center" height="586"></td>
+    <td width="800" align="center" height="586">
+
+<!-- Start Main Table (Table_01) here -->
+    <table id="Table_01" class=TableStyle0 dir=ltl style="BORDER-COLLAPSE: collapse" borderColor=#336699 border="0" width="800" height="586" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="50" height="20">
+	      </td>
+        <td width="350" height="20">
+	      </td>
+        <td width="350" height="20">
+	      </td>
+        <td width="50" height="20">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="58">
+	      </td>
+        <td width="350" height="58">
+	      </td>
+        <td width="350" height="58">
+          <p align="right">
+          <img border="0" src="mui.ac.ir/researches/admin/images/MUI-Logo04b.jpg" width="80" height="120">
+	      </td>
+        <td width="50" height="58">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="25">
+	      </td>
+	      
+	      <?
+           $First_mojri_name = $mojri_name."&nbsp;".$mojri_family;
+	      ?>
+        <td width="350" height="25" align="right">
+          <? echo $First_mojri_name; ?>
+	      </td>
+        <td class=NormalText1 width="350" height="25" align="right">
+          سركار خانم دكتر / جناب آقاى دكتر
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="25">
+	      </td>
+        <td width="350" height="25" align="right">
+	      </td>
+        <td class=NormalText1 width="350" height="25" align="right">
+          با سلام
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="25">
+	      </td>
+        <td width="350" height="25" align="right">
+	      </td>
+        <td class=NormalText1 width="350" height="25" align="right">
+          احتراماً به استحضار مىرساند كه طرح
+          پيشنهادى شما تحت عنوان
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="100">
+	      </td>
+        <td width="700" height="100" align="right" colspan="2">
+          <?
+			echo $tarh_title_farsi."<br>".$tarh_title_english;
+		  ?>
+	      </td>
+        <td width="50" height="100">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="35">
+	      </td>
+        <td class=NormalText1 width="700" height="35" align="right" colspan="2">
+          <?
+			echo $content_letter_type."<br>".$band_azad;
+		  ?>
+	      </td>
+        <td width="50" height="35">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="35">
+	      </td>
+        <td class=NormalText1 width="700" height="35" align="right" colspan="2">
+	      </td>
+        <td width="50" height="35">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="35">
+	      </td>
+        <td class=NormalText1 width="350" height="35" align="right">
+          <?
+			 echo $chairman_of_letter;
+		  ?>
+	      </td>
+        <td width="350" height="35" align="right">
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="60">
+        </td>
+        <td width="350" height="60">
+        </td>
+        <td width="350" height="60">
+        </td>
+        <td width="50" height="60">
+        </td>
+      </tr>
+    </table> <!-- Finish Main Table (Table_01) here -->
+   </td>
+   <td width="34%" align="center" height="586"></td>
+  </tr>
+</table><!-- Finish Table_00 here -->
+
+
+<?
+}
+
+
+//-------------------------------------------------------------------------------
+
+function today()
+{
+
+		$mydate=date("Y-m-d");
+		$endyear=substr($mydate,0,4);
+		$endmon=substr($mydate,5,2);
+		$endday=substr($mydate,8,2);
+		$todaydate= hijricalender($endyear,$endmon,$endday);
+		
+		return $todaydate;
+}
+
+?>

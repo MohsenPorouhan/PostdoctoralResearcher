@@ -1,0 +1,116 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+require("include/class.phpmailer.php");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/print.phtml");
+
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade_shora=$myrow_fetched["cod_daneshkade"];
+
+echo "<br>";
+echo "<br>";
+echo "<br>";
+if(isset($action))
+{
+	if(strcmp($action,'sabt')==0)
+	{
+	 if(strcmp($view_karshenas,'0')==0)
+	 {	
+	 	//echo "salam";
+		   $query="select * from karshenas_shora where (cod_daneshkade='$cod_daneshkade_shora' or cod_daneshkade_second='$cod_daneshkade_shora' or cod_daneshkade_third='$cod_daneshkade_shora' or cod_daneshkade_4='$cod_daneshkade_shora' or cod_daneshkade_5='$cod_daneshkade_shora' or cod_daneshkade_6='$cod_daneshkade_shora' or cod_daneshkade_7='$cod_daneshkade_shora' or cod_daneshkade_8='$cod_daneshkade_shora' or cod_daneshkade_9='$cod_daneshkade_shora' or cod_daneshkade_10='$cod_daneshkade_shora')";
+		   $result=mysql_query($query) or die("Error in selecting data from karshenas shora");
+		   if(mysql_num_rows($result) > 0)
+		   {
+		   		while($row_fetched=mysql_fetch_array($result))
+ 				{
+ 					$cod_karshenas=$row_fetched["cod_karshenas"];
+ 					$qq="update karshenas_shora_tarh set view_karshenas='0' where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'";
+ 					$rs1=mysql_query($qq) or die("error");
+ 					
+ 					
+  				}
+		   }
+	 }	
+	  if(strcmp($view_karshenas,'1')==0)
+	 {	
+	 	//echo "hello";
+	 	$query="select * from karshenas_shora where (cod_daneshkade='$cod_daneshkade_shora' or cod_daneshkade_second='$cod_daneshkade_shora' or cod_daneshkade_third='$cod_daneshkade_shora' or cod_daneshkade_4='$cod_daneshkade_shora' or cod_daneshkade_5='$cod_daneshkade_shora' or cod_daneshkade_6='$cod_daneshkade_shora' or cod_daneshkade_7='$cod_daneshkade_shora' or cod_daneshkade_8='$cod_daneshkade_shora' or cod_daneshkade_9='$cod_daneshkade_shora' or cod_daneshkade_10='$cod_daneshkade_shora')";
+		   $result=mysql_query($query) or die("Error in selecting data from karshenas shora");
+		 if(mysql_num_rows($result) > 0)
+		   {
+		   		while($row_fetched=mysql_fetch_array($result))
+ 				{
+ 					$cod_karshenas=$row_fetched["cod_karshenas"];
+ 					$myq1="select * from karshenas_shora_tarh where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'";
+ 					$rs1=mysql_query($myq1) or die("error");
+ 				    if(mysql_num_rows($rs1) > 0)
+		   			{
+						$qq="update karshenas_shora_tarh set view_karshenas='1' where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'";
+ 						$rs1=mysql_query($qq) or die("error");
+ 						//echo $cod_karshenas."<br>";
+ 						
+		   			}
+		   			else {
+		   			$qq="insert into karshenas_shora_tarh set cod_karshenas='$cod_karshenas',cod_tarh='$cod_tarh',view_karshenas='1'";
+ 					$rs1=mysql_query($qq) or die("error");
+		   			}
+ 				}
+		   }
+
+	 }	   	
+	}
+}
+					$myq1="select * from karshenas_shora,karshenas_shora_tarh where karshenas_shora.cod_karshenas=karshenas_shora_tarh.cod_karshenas and (cod_daneshkade='$cod_daneshkade_shora' or cod_daneshkade_second='$cod_daneshkade_shora' or cod_daneshkade_third='$cod_daneshkade_shora' or cod_daneshkade_4='$cod_daneshkade_shora' or cod_daneshkade_5='$cod_daneshkade_shora' or cod_daneshkade_6='$cod_daneshkade_shora' or cod_daneshkade_7='$cod_daneshkade_shora' or cod_daneshkade_8='$cod_daneshkade_shora' or cod_daneshkade_9='$cod_daneshkade_shora' or cod_daneshkade_10='$cod_daneshkade_shora') and cod_tarh='$cod_tarh' and  view_karshenas='1'";
+					//echo $myq1;
+ 					$rs1=mysql_query($myq1) or die("error");
+ 					if(mysql_num_rows($rs1) > 0)
+		   			{
+		   				//echo "1";
+		   				$str="اين طرح در محيط کارشناسان شورا قابل مشاهده است";
+		   				$checked1="checked";
+		   				$checked0="";
+		   			}
+		   			else{
+		   				//echo "2";
+		   				$str="اين طرح در محيط کارشناسان شورا قابل مشاهده نيست";
+		   				$checked="checked";
+		   				$checked1="";
+		   				
+		   			}
+ 				  
+  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<table border='1' width='50%' cellspacing="0" cellpadding="0" bordercolor="white" bgcolor='#EEE7F8' dir='rtl'>
+<tr>
+<td colspan='8' align='center' class='tahoma1'><b>
+قابليت دسترسي طرح به اعضاي شورا</b>
+</td>
+</tr>
+<tr>
+<td colspan='8' align='center' class='tahoma1'><b>
+<?php echo $str;?></b>
+</td>
+</tr>
+<?
+ 
+  echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='view_karshenas' value='0' $checked>غير قابل رويت براي اعضاي شورا</td></tr>";
+   echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='view_karshenas' value='1' $checked1>قابل رويت براي اعضاي شورا</td></tr>";
+
+?>
+ 
+<tr>
+<td colspan='8' align='center' class='tahoma1' >
+<input type="submit" value="ثبت" name="B1" class="but-small">
+</td>
+</tr>
+</table>
+
+
+<?
+
+footer_forms($admin,$seed);
+?>

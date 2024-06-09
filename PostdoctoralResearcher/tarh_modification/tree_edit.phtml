@@ -1,0 +1,447 @@
+ <meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<meta http-equiv="refresh" content="10" />
+
+
+
+<style type="text/css">
+<!--
+body{
+scrollbar-base-color: #009966; 
+scrollbar-track-color: #009966;
+scrollbar-face-color: #ffff99;
+scrollbar-highlight-color: #009966;
+scrollbar-3dlight-color: #009966;
+scrollbar-darkshadow-color: #009966;
+scrollbar-shadow-color: #009966;
+scrollbar-arrow-color: #009966;
+}
+-->
+</style>
+
+
+<?
+
+$admin_edit=0;
+$query="select * from modir_daneshkade where modir_username='$admin' and ( modir_type='1' or modir_type='4')";
+$result=mysql_query($query) or die("Error 12");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+$edit_ok=0;
+
+//mohsen
+ /* $query="select * from tarh where cod_tarh='$cod_tarh'";
+  $result1=mysql_query($query) or die("error 13");
+  if(mysql_num_rows($result1) > 1)
+  {
+  	$edit_options=array();
+  	$query="select * from edit_field where cod_tarh='$cod_tarh' order by cod_edit_part asc";
+  	$edit_ok=1;
+    $result=mysql_query($query) or die("Error 14");
+    while($rf=mysql_fetch_array($result))
+    {
+      $code=$rf["cod_edit_part"];
+      $edit_options[$code]="ok";
+	   	//echo "mohsen".$code;
+    }
+        
+  }*/
+  //mohsen
+  
+  $rf1=mysql_fetch_array($result1);
+  $tarh_select_code=trim($rf1["tarh_select"]);
+   
+   $bayan_masale=$rf1["bayan_masale"];
+  if(strlen(trim($bayan_masale)) > 0 )
+     $sabt_tarh_bold=1;
+else
+     $sabt_tarh_bold=0;	 
+ 
+
+ $color="PALETURQUOISE";
+   $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    $eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+     
+
+   }
+
+   }
+
+
+
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+     }
+      $personnel_sum=$mycount;
+   }
+
+   
+   
+   
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='-1' order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='-1' order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='-1' order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+    $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='-1'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+$maliat=0;
+$nezarat=0;
+$balasari=0;
+$sum_sayer=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_row_fetched["sayer_hazine"];
+    $maliat = $hazine_row_fetched["maliat"];
+    $nezarat = $hazine_row_fetched["nezarat"];
+    $balasari = $hazine_row_fetched["balasari"];
+    $sum_sayer=$sum_sayer+$hazine_digar+$hazine_taksir+$maliat+$nezarat+$balasari;
+  }
+  
+ }
+ $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+ 
+$mojri_bold=0;
+ $q="select * from mojri_tarh where cod_tarh='$cod_tarh' and version='-1'";
+ $res=mysql_query($q) or die("Error");
+ if(mysql_num_rows($res) > 0)
+   $mojri_bold=1;
+ 
+  $bayan_bold=0;
+  $ahdaf_bold=0;
+  $ejra_bold=0;
+  $akhlagh_bold=0;
+  $ostad_rahnama_bold=0;
+ $q="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+ $res=mysql_query($q) or die("Error");
+ if(mysql_num_rows($res) > 0 )
+ {
+   $bld_rf=mysql_fetch_array($res);
+   if(strlen(trim($bld_rf["bayan_masale"]) )>0) 	
+     $bayan_bold=1;
+     
+   if(strlen(trim($bld_rf["hadaf_kolli"]) )>0) 	
+     $ahdaf_bold=1; 
+	 
+   if(strlen(trim($bld_rf["first_ostad"]) )>0) 	
+     $ostad_rahnama_bold=1;  
+  
+   if(strlen(trim($bld_rf["moshkelat_akhlaghi"]) )>0 || strlen(trim($bld_rf["halle_moshkelat_akhlaghi"]) )>0) 	
+     $akhlagh_bold=1;  
+  
+    $payanname=$bld_rf["payannameh"];
+    $servicing=$bld_rf["servicing"];
+    if(strcmp($servicing,"1")==0){
+    	$hazine_azmayesh_lable="هزينه استفاده از خدمات آزمايشگاهي و کارگاهي";
+    }
+    else
+    	$hazine_azmayesh_lable="هزينه هاي آزمايشات وخدمات تخصصي";
+     
+  } 
+  
+  
+  	$query="select * from user_login,tarh where user_login.email=tarh.creator and cod_tarh='$cod_tarh' ";
+  	$qresult=mysql_query($query) or die("Error in selecting data from user_login2");
+  	$row_fetched=mysql_fetch_array($qresult);
+  	$payan_name=$row_fetched['payan_name'];
+  	//echo $payan_name;
+  
+  $q="select * from jadval_zarayeb where cod_tarh='$cod_tarh' and version='-1'";
+  $rss=mysql_query($q) or die("error");
+  if(mysql_num_rows($rss) > 0)
+    $zarayeb_bold=1;
+else
+  $zarayeb_bold=0; 	
+  //echo $ejra_bold;
+ //  echo $bld_rf["jamee"];
+ 
+   
+  $gant=0;
+ $q="select * from activities where cod_tarh='$cod_tarh' and version='-1'";
+ $res=mysql_query($q) or die("Error");
+ if(mysql_num_rows($res) > 0)
+   $gant=1; 
+ 
+  $ejra_bold=0;
+ $q="select * from ravesh_ejra where cod_tarh='$cod_tarh' and version='-1'";
+ $res=mysql_query($q) or die("Error");
+ if(mysql_num_rows($res) > 0)
+   $ejra_bold=1; 
+   
+ 
+   $activity_list=0;
+ $q="select * from activities where cod_tarh='$cod_tarh' and version='-1'";
+ $res=mysql_query($q) or die("Error");
+ if(mysql_num_rows($res) > 0)
+   $activity_list=1; 
+  
+   
+   $attach_bold=0;
+ 	 $file_cnt=0;
+     $dir_name="../attachments/".$cod_tarh;
+     if ($dir = @opendir($dir_name))
+     {
+     
+     $mydir = dir($dir_name);
+     //while(($file = $mydir->read()) !== false)
+     while($file = $mydir->read())
+	   if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0) )
+	   {
+	    $file_cnt++;
+	    $attach_bold=1;
+	   }
+      closedir($dir);
+      
+	 }
+  
+ $C1="";
+ 
+ $C2="";
+ $C3="";
+ $C4="";
+ $C5="";
+ $C6="";
+ $C7="";
+ $C8="";
+ $C9="";
+ $C10="";
+ $C11="";
+ $C12="";
+ $C13="";
+ $C14="";
+ $C15="";
+ $C16="";
+ $C17="";
+     
+ if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[1],"ok")==0)
+   $C1="<img src='images/hand_pointer_animated.gif' border='0'>";
+ 
+ if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[2],"ok")==0)
+   $C2="<img src='images/hand_pointer_animated.gif' border='0'>";
+  
+ if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[3],"ok")==0)
+   $C3="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[4],"ok")==0)
+   $C4="<img src='images/hand_pointer_animated.gif' border='0'>";
+    
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[5],"ok")==0)
+   $C5="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[6],"ok")==0)
+   $C6="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[7],"ok")==0)
+   $C7="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[8],"ok")==0)
+   $C8="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[9],"ok")==0)
+   $C9="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[10],"ok")==0)
+   $C10="<img src='images/hand_pointer_animated.gif' border='0'>";
+  
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[11],"ok")==0)
+   $C11="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+ if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[12],"ok")==0)
+   $C12="<img src='images/hand_pointer_animated.gif' border='0'>";
+  
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[13],"ok")==0)
+   $C13="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[14],"ok")==0)
+   $C14="<img src='images/hand_pointer_animated.gif' border='0'>";
+
+if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[15],"ok")==0)
+   $C15="<img src='images/hand_pointer_animated.gif' border='0'>";
+   
+   if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[16],"ok")==0)
+   $C16="<img src='images/hand_pointer_animated.gif' border='0'>";
+  
+   if( $admin_edit==0 && $edit_ok==1 && strcmp($edit_options[17],"ok")==0)
+   $C17="<img src='images/hand_pointer_animated.gif' border='0'>";
+  
+    
+   
+   
+   
+?>
+<html  dir='ltr'>
+	<head>
+		<title>Butons and Icons</title>
+		<link rel="stylesheet" type="text/css" href="tree_styles.css" />
+		<script type="text/javascript" src=" cooltree.js"></script>
+		<script type="text/javascript" src="tree_format.js"></script>
+		<script type="text/javascript"  >
+		var TREE_NODES = [
+	["<b><? echo $C1; ?> چکيده </b>", "<? echo "edit_chekide_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=1";?>", "_top"
+		
+	],
+	<? if(strcmp($payan_name,'0')!=0) {?>
+	["<? echo $C17; if($ostad_rahnama_bold) echo '<b>'; ?>استاد <? if($ostad_rahnama_bold) echo '</b>'; ?>", "<? echo "ostad_rahnama.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=2"; ?>", "_top"
+			
+			],
+	<? }
+	if(strcmp(trim($servicing),'1')!=0){?>
+		["<? echo $C2; if($bayan_bold) echo '<b>'; ?>ثبت <? if($bayan_bold) echo '</b>'; ?>", "<? echo "tarh_body.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=2"; ?>", "_top"
+		
+	],
+	<?}
+  //  if(strcmp(trim($payanname),'1')!=0){
+    	
+    	
+ //   }
+    	?>
+    
+	["<?  echo $C3; if($mojri_bold) echo '<b>'; ?>مجريان همکاران و دانشجويان<? if($mojri_bold) echo '</b>'; ?>", "<? echo "mojri_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=2"; ?>", "_top"
+		
+	],
+
+ 	 
+	
+	
+	//********************************************8
+	
+	
+		["<span dir='rtl'> روش اجراي مطالعه </span>", null, null,
+		 <? if(strcmp(trim($servicing),'1')!=0){?>		
+		[" <? echo $C4; ?> <span dir='rtl'><? if($ejra_bold>0) {    echo '<b>'; } ?>  روش اجراي مطالعه  <? if($ejra_bold>0) echo '</b>';?></span>", "<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=7"; ?>", "_top"]
+		,
+		[" <? echo $C5; ?> <span dir='rtl'><? if($zarayeb_bold>0) {    echo '<b>'; } ?>جدول متغيرها <? if($zarayeb_bold>0) echo '</b>';?></span>", "<? echo "jadval_zarayeb.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=8"; ?>", "_top"]
+		,
+		 <? }?>
+		["<? echo $C6; ?> <span dir='rtl'><? if($activity_list>0) {    echo '<b>'; } ?>جدول زمانبندي مراحل اجرا  <? if($activity_list>0) echo '</b>';?></span>", "<? echo "add_activity.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=9"; ?>", "_blank"]
+	 	 
+		 
+	],
+	
+	
+	//***************************************************8
+	
+	
+	
+	
+	
+	 
+     
+	["<span dir='rtl'><? if($sum_of_all>0) echo '<b>';   echo " ( ".number_format($sum_of_all)." )"; ?> هزينه ها <? if($sum_of_all>0) echo '</b>';  ?></span>", null, null,			
+		[" <? echo $C7; ?> <span dir='rtl'><? if($personnel_sum>0){ echo " ( ".number_format($personnel_sum)." )";  echo '<b>'; } ?> هزينه پرسنلي  <? if($personnel_sum>0) echo '</b>';?></span>", "<? echo "hazine_personnel.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=7"; ?>", "_top"]
+		,
+		[" <? echo $C8; ?> <span dir='rtl'><? if($lab_sum>0) { echo " ( ".number_format($lab_sum)." )";   echo '<b>'; } echo $hazine_azmayesh_lable;?><? if($lab_sum>0) echo '</b>';?></span>", "<? echo "hazine_azmayesh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=8"; ?>", "_top"]
+		,
+		["<? echo $C9; ?> <span dir='rtl'><? if($vasile_sum>0) {  echo " ( ".number_format($vasile_sum)."  )";   echo '<b>'; } ?>فهرست وسايل و مواردي که بايد خريداري شود <? if($vasile_sum>0) echo '</b>';?></span>", "<? echo "fehrest_kharid.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=9"; ?>", "_top"]
+		,
+		["<? echo $C10; ?> <span dir='rtl'><? if($trip_sum>0) {  echo " ( ".number_format($trip_sum)." )";  echo '<b>'; } ?> هزينه مسافرت <? if($trip_sum>0) echo '</b>';?></span>", "<? echo "hazine_mosaferat.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=10"; ?>", "_top"]
+		,
+		["<? echo $C11; ?> <span dir='rtl'><? if($sum_sayer>0) { /*echo " ( ".number_format($sum_sayer)." )";*/  echo '<b>'; } ?> هزينه هاي ديگر <? if($sum_sayer>0) echo '</b>';?></span>", "<? echo "hazineha_others.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=11"; ?>", "_top"]
+		,
+			[" <? echo $C12; ?>  <span dir='rtl'><? if($eatebare_sazmanha_pardakht_add>0) {  echo " (".number_format($eatebare_sazmanha_pardakht_add).")";   echo '<b>'; } ?>تامين اعتبار از سازمانهاي ديگر <? if($eatebare_sazmanha_pardakht_add>0) echo '</b>';?></span>", "<? echo "sazmanhayedigar.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=12"; ?>", "_top"]		 
+		 
+	],
+	
+	 <?if(strcmp(trim($servicing),'1')!=0){?>
+   ["<? echo $C13; if($akhlagh_bold) echo '<b>'; ?>ملاحظات اخلاقي<? if($akhlagh_bold) echo '</b>'; ?>", "<? echo "comitte_akhlagh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=13"; ?>", "_top"		
+	],
+	["<? echo $C16; if($akhlagh_bold) echo '<b>'; ?>فرم رضايت نامه<? if($akhlagh_bold) echo '</b>'; ?>", "<? echo "add_rezayatname1.php?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=13"; ?>", "_top"		
+			], 
+			<?}?>
+   ["<?  echo $C14; if($attach_bold) echo '<b>'; ?>ضمائم<? if($attach_bold) echo '</b>'; ?>", "<? echo "upload_file.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=14"; ?>", "_top"		
+	],	   
+	["<? echo $C15; ?> خاتمه ارسال", "<? echo "finish_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&tarh_select=$tarh_select&form_id=17"; ?>", "_top"		
+	]
+ 
+];
+		</script>
+	</head>
+	<body bgcolor="#d5fffe" >
+		<script>
+		var tree1 = new COOLjsTree("tree1", TREE_NODES, TREE_FORMAT);
+		</script>
+	</body>
+</html>

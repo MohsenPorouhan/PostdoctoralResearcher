@@ -1,0 +1,134 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"change_status")==0)
+  {
+  	
+  $query_modir="select * from modir_daneshkade,modir_daneshkade_tarh where modir_daneshkade.cod_modir=modir_daneshkade_tarh.cod_modir and modir_daneshkade_tarh.cod_tarh='$cod_tarh'";
+  //echo $query_modir;
+  $result_modir=mysql_query($query_modir) or die("Error in selectiong data from tarhtype");
+  if(mysql_num_rows($result_modir) == 0 ){
+  		
+  	$query="insert into modir_daneshkade_tarh set cod_tarh='$cod_tarh',cod_modir='$modir_payanname'";
+    $result=mysql_query($query) or die("Error in inserting data into tarh #1");
+  //  echo $query;
+
+  }
+  ?>
+  <script language="javascript">
+        window.location="<? echo "payan_name_list_all.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+  </script>
+<?
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/change_vaziat.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+
+  $query="select * from vaziat_tarh where 1 order by vaziat_desc";
+  $result_tarhtype=mysql_query($query) or die("Error in selectiong data from vaziat_tarh");
+
+
+
+?>
+
+
+<tr>
+     <td width="500" align="center" colspan='2'><span class="star-message"><b>لطفا محل ارجاع پايان نامه را حتما درست انتخاب کنيد</b></span></td>
+     
+  </tr>
+  	<?
+  	
+  	$query="select * from modir_daneshkade where modir_username ='$admin'";
+	$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+	$myrow_fetched = mysql_fetch_array($result);
+	$cod_daneshkade=$myrow_fetched["cod_daneshkade"];
+  	
+   		$q1="select * from modir_daneshkade where cod_daneshkade='$cod_daneshkade' and moaven_or_daneshjoyee='1'";
+   		$qresult1=mysql_query($q1) or die("Error in selecting data from daraje elmi");
+    	//$row_modir_daneshkade = mysql_num_rows($qresult);
+    	 ?>
+    	 <tr>
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="modir_payanname" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+   while($row_modir_daneshkade=mysql_fetch_array($qresult1))
+    {
+    		if(strcmp($row_modir_daneshkade["cod_modir"],$cod_modir)==0)
+    	   $checked=" selected ";
+    	else
+		   $checked="";
+         echo "<option $checked value=\"".$row_modir_daneshkade["cod_modir"]."\" class=\"tahoma1\">".$row_modir_daneshkade["modir_payanname_name"]."</option>";
+    }?>
+   	</td>
+    <td width="150" class="tahoma1">: ارجاع پايان نامه به</td>
+  </tr>	
+
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

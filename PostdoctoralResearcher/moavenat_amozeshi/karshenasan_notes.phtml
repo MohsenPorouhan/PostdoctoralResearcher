@@ -1,0 +1,138 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+
+
+echo "<br>";
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if( strlen(trim($letter_body))>0 && strlen(trim($letter_subject))>0)
+{
+	//$query="select max(right(cod_tarh,3) ) as max_cod from letter_to_mojri where left(cod_tarh,2) = '$year_date'";
+
+	$letter_no=substr($cod_tarh,0,8);
+	$mydate=date("Y-m-d");
+	$to_letter=$row_fetched["creator"];
+	$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	
+	
+    $query="insert into letter_to_mojri set from_letter='$admin',to_letter='$to_letter',cod_daneshkade='$cod_daneshkade',cod_tarh='$cod_tarh' , letter_no='$letter_no' , letter_subject='$letter_subject' , letter_body='$letter_body' , letter_date='$mydate'";
+    
+    $result=mysql_query($query) or die("error in inserting data");
+  	$status="letter_sent";
+}
+else
+  $status="entry_error";
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+   $query = "select  * from tarh where  tarh.cod_tarh = \"$cod_tarh\"";
+ 
+   $result=mysql_query($query) or die("Error in selecting data from First mojri 2");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+  $myquery_mojri = "SELECT  * FROM karshenasan_tarh,karshenasan WHERE karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and karshenasan_tarh.cod_tarh = '$cod_tarh'";
+
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+
+    echo "<br>";$color="PALETURQUOISE";
+    if(mysql_num_rows($myresult_mojri))
+    {
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$title_color align=\"center\" class=\"tahoma1\">SMS</td>";
+    echo "<td width=\"60%\" bgcolor=$title_color align=\"center\" class=\"tahoma1\">نظريه</td>";
+    echo "<td width=\"60%\" bgcolor=$title_color align=\"center\" class=\"tahoma1\">تاريخ ارسال</td>";
+    echo "<td width=\"20%\" bgcolor=$title_color align=\"center\" class=\"tahoma1\" valign=\"top\">کد کارشناس</td>";
+    echo "</tr>";
+    $color="PALETURQUOISE";
+    
+    while($row_fetched=mysql_fetch_array($myresult_mojri))
+    {
+      $karshenas_name=$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["karshenas_family"];	
+      $mydate=$row_fetched["date_send"];
+      $cod_karshenas=$row_fetched["cod_karshenas"];
+      echo "<tr>";
+       echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href='send_sms.phtml?admin=$admin&seed=$seed&action=send_karshenas_sms&cod_karshenas=$cod_karshenas'>SMS</a></td>";
+      if(strlen(trim($row_fetched["comment_karshenas"])) > 0)  
+         echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["comment_karshenas"]."</td>";
+      else
+	     echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">نظريه اي از اين کارشناس ارسال نشده</td>";
+      echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">$mydate</td>";		    
+      echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\" valign=\"top\">$cod_karshenas</td>";
+      echo "</tr>";
+    }
+
+ 
+
+    echo "</table>";
+   }
+   }
+  echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; 
+  echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+  if(strcmp($status,"letter_sent")==0)
+  {
+    echo "<tr>";  
+    echo "<td colspan=\"2\" class=\"tahoma1\" valign=\"top\" align=\"center\"><b>نامه به مجري ارسال شد</b></td>";
+    echo "</tr>";
+  }
+  
+  echo "<tr>";  
+  echo "<td colspan=\"2\" class=\"tahoma1\" valign=\"top\" align=\"center\"><b>ارسال نظرات شما به مجري</b></td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo"<td width=\"66%\" align=\"right\">";
+  echo "<p align=\"right\"><input type=\"text\" name=\"letter_subject\" size=\"48\" class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>";
+  echo "<td width=\"24%\" align=\"left\">";
+  echo "<p align=\"left\" class=\"tahoma1\"><span class=\"star-message\">*</span>موضوع</td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td    align=\"center\"><textarea   rows=\"7\"  name=\"letter_body\"  class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></textarea></td>";  
+  echo "<td width=\"24%\" align=\"left\">";
+  echo "<p align=\"left\" class=\"tahoma1\" valign=\"top\"><span class=\"star-message\">*</span>متن نامه</td>";
+  
+  echo "</tr>";
+ 
+   
+?>
+  <tr>
+   <td width="100%" colspan="2" height="32">
+   <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+ </tr>
+ </table>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table>
+</form>
+<?
+footer_forms($admin,$seed);
+?>
+

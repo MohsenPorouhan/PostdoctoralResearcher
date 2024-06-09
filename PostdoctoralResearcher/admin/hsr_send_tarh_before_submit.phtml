@@ -1,0 +1,86 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"change_status")==0 )
+  {
+    $query="update tarh set   submission_status ='0' where cod_tarh='$cod_tarh'";
+   // echo $query;
+    //exit();
+    $result=mysql_query($query) or die("Error in updating tarh type in tarh");
+    insert_position($cod_tarh,"7",$admin);
+     ?>
+           <script language="javascript">
+           window.location="<? echo "hsr_tarh_list_new_before_submit".".phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&main_window=$main_window\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=1>
+  <TBODY>
+    <TR>
+    <TD align=right width="100%"  class="tahoma1" height=19>
+     
+      ارسال به طرح هاي قبل از تصويب
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+
+ <tr>
+    <td width="100%" colspan="2" class="tahoma1">
+      <p align="center">ارسال به طرحهاي قبل از تصويب</td>
+</tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="javascript:go(-1)" >بازگشت</a></td>
+  </tr>
+</table>
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

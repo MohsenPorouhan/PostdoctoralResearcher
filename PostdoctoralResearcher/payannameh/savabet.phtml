@@ -1,0 +1,77 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+?>
+
+<center>
+
+
+<table border="0"  width="380" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="129"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/savabet_system.gif"  height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+
+<table border="0" bgcolor="#EEE7F8" width="380"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "tarh-type.phtml?admin=$admin&seed=$seed"; ?>">نوع طرح </a></td>
+  </tr>
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "tarh-type-1.phtml?admin=$admin&seed=$seed"; ?>">نوع طرح 1</a></td>
+  </tr>
+  <tr>
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "tarh-type-2.phtml?admin=$admin&seed=$seed"; ?>">نوع طرح 2</a></td>
+  </tr>
+
+   <tr>
+    <td width="500" class="tahoma1"  align="middle"><a style="text-decoration: none" href="<? echo "daraje-elmi.phtml?admin=$admin&seed=$seed"; ?>">درجه علمي</a></td>
+  </tr>
+   <tr>
+    <td width="500" class="tahoma1"  align="middle"><a style="text-decoration: none" href="<? echo "vaziat-tarh.phtml?admin=$admin&seed=$seed"; ?>">وضعيت طرح</a></td>
+  </tr>
+   <tr>
+    <td width="500" class="tahoma1"  align="middle"><a target="_blank" style="text-decoration: none" href="<? echo "print_statistics.phtml?admin=$admin&seed=$seed"; ?>">ثوابت چاپ</a></td>
+  </tr>
+   <tr>
+    <td width="500" class="tahoma1"  align="middle"><a style="text-decoration: none" href="<? echo "email_from.phtml?admin=$admin&seed=$seed"; ?>">مشخصات پست الکترونيکي که پس از ثبت نام به فرد ارسال مي شود</a></td>
+  </tr>
+  <tr>
+     <td width="500" class="tahoma1"  align="middle"><a style="text-decoration: none" href="<? echo "email_from.phtml?admin=$admin&seed=$seed"; ?>">و مشخصات سرور ميل</td>
+  </tr>
+</table>
+
+</div>
+</td>
+</tr>
+</table>
+</center>
+
+
+<?
+ footer_forms($admin,$seed);
+?>
+
+
+
+

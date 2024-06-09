@@ -1,0 +1,354 @@
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_tarh")==0)
+  {
+    if( strlen(trim($bayan_masale)) > 0 && strlen(trim($zarorat_ejra)) > 0 && strlen(trim($ahdaf)) > 0 && strlen(trim($soalat)) > 0)
+    {
+      $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+      
+      if ( mysql_num_rows($result) == 1 )
+      {
+		$row_fetched=mysql_fetch_array($result);
+		 $zarorat_ejra1 = $row_fetched["zarorat_ejra"];
+		  $bayan_masale1 = $row_fetched["bayan_masale"];
+		  $taarif_vajeh1 = $row_fetched["taarif_vajeh"];
+		  $ahdaf1 = $row_fetched["ahdaf"];
+		  $soalat1 = $row_fetched["soalat"];
+		  $fehrest_manabea1 = $row_fetched["new_update_fehrest_manabea"];
+		  
+		  if(strcasecmp($zarorat_ejra1,$zarorat_ejra)!=0)
+		  		$new_update_zarorat_ejra='1';
+		  else
+		  		$new_update_zarorat_ejra='0';
+		  		
+		  if(strcasecmp($bayan_masale1,$bayan_masale)!=0)
+		  		$new_update_bayan_masale='1';
+		  else
+		  		$new_update_bayan_masale='0';
+		  	
+		  if(strcasecmp($taarif_vajeh1,$taarif_vajeh)!=0)
+		  		$new_update_taarif_vajeh='1';
+		  else
+		  		$new_update_taarif_vajeh='0';
+				
+		  if(strcasecmp($ahdaf1,$ahdaf)!=0)
+		  		$new_update_ahdaf='1';
+		  else
+		  		$new_update_ahdaf='0';
+
+		  if(strcasecmp($soalat1,$soalat)!=0)
+		  		$new_update_soalat='1';
+		  else
+		  		$new_update_soalat='0';
+		  		
+		  if(strcasecmp($fehrest_manabea1,$fehrest_manabea)!=0)
+		  		$new_update_fehrest_manabea='1';
+		  else
+		  		$new_update_fehrest_manabea='0';
+		  		
+		  $fehrest_manabea=str_replace("'","\'",$fehrest_manabea);
+	    $fehrest_manabea=str_replace("\"","\'",$fehrest_manabea);
+	    $fehrest_manabea=str_replace(";","\;",$fehrest_manabea);
+
+	$farziatt=str_replace("'","\'",$farziatt);
+	    $farziatt=str_replace("\"","\'",$farziatt);
+	    $farziatt=str_replace(";","\;",$farziatt);
+
+	$soalat_pajoheshi=str_replace("'","\'",$soalat_pajoheshi);
+	    $soalat_pajoheshi=str_replace("\"","\'",$soalat_pajoheshi);
+	    $soalat_pajoheshi=str_replace(";","\;",$soalat_pajoheshi);
+	
+	$hadaf_karbordi=str_replace("'","\'",$hadaf_karbordi);
+	    $hadaf_karbordi=str_replace("\"","\'",$hadaf_karbordi);
+	    $hadaf_karbordi=str_replace(";","\;",$hadaf_karbordi);
+	
+	$hadaf_jozii=str_replace("'","\'",$hadaf_jozii);
+	    $hadaf_jozii=str_replace("\"","\'",$hadaf_jozii);
+	    $hadaf_jozii=str_replace(";","\;",$hadaf_jozii);
+
+	$hadaf_kolli=str_replace("'","\'",$hadaf_kolli);
+	    $hadaf_kolli=str_replace("\"","\'",$hadaf_kolli);
+	    $hadaf_kolli=str_replace(";","\;",$hadaf_kolli);
+
+	$taarif_vajeh=str_replace("'","\'",$taarif_vajeh);
+	    $taarif_vajeh=str_replace("\"","\'",$taarif_vajeh);
+	    $taarif_vajeh=str_replace(";","\;",$taarif_vajeh);
+
+	$hadaf_faree=str_replace("'","\'",$hadaf_faree);
+	    $hadaf_faree=str_replace("\"","\'",$hadaf_faree);
+	    $hadaf_faree=str_replace(";","\;",$hadaf_faree);
+	    
+			$bayan_masale=str_replace("'","\'",$bayan_masale);
+	    $bayan_masale=str_replace("\"","\'",$bayan_masale);
+	    $bayan_masale=str_replace(";","\;",$bayan_masale);
+	 
+		$zarorat_ejra=str_replace("'","\'",$zarorat_ejra);
+	    $zarorat_ejra=str_replace("\"","\'",$zarorat_ejra);
+	    $zarorat_ejra=str_replace(";","\;",$zarorat_ejra);
+	 
+	     $ahdaf=str_replace("'","\'",$ahdaf);
+	    $ahdaf=str_replace("\"","\'",$ahdaf);
+	    $ahdaf=str_replace(";","\;",$ahdaf);
+	    
+	       $soalat=str_replace("'","\'",$soalat);
+	    $soalat=str_replace("\"","\'",$soalat);
+	    $soalat=str_replace(";","\;",$soalat);
+	    
+		$query="update tarh  set ahdaf=\"$ahdaf\",soalat=\"$soalat\",zarorat_ejra=\"$zarorat_ejra\",bayan_masale=\"$bayan_masale\" ,hadaf_faree =\"$hadaf_faree\", taarif_vajeh='$taarif_vajeh', hadaf_kolli='$hadaf_kolli', hadaf_jozii='$hadaf_jozii', hadaf_karbordi='$hadaf_karbordi', soalat_pajoheshi='$soalat_pajoheshi', farziatt='$farziatt', fehrest_manabea = '$fehrest_manabea',new_update_zarorat_ejra='$new_update_zarorat_ejra',new_update_bayan_masale='$new_update_bayan_masale',new_update_taarif_vajeh='$new_update_taarif_vajeh',new_update_ahdaf='$new_update_ahdaf',new_update_soalat='$new_update_soalat',new_update_fehrest_manabea='$new_update_fehrest_manabea' where cod_tarh='$cod_tarh'  and version='-1'";
+	
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="ثبت / ويرايش طرح"."<br>".$tarh_name;
+   
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show("ويرايش با موفقيت انجام شد","green");
+		
+		
+		
+        ?>
+        <script language="javascript">
+        window.location="<? echo "sabt_tarh_second.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+        </script>
+        <?
+      }
+    }
+    else
+      $status="entry_error";
+  }
+}
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+    $ahdaf=$row_fetched["ahdaf"];
+  $soalat=$row_fetched["soalat"];
+  $finished=$row_fetched["finished"];
+$admin_edit=0;
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+  
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='2'";
+ 
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+echo "dfdf";
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_tarh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+
+
+
+
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  
+  
+    <TR>
+    <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=right class='tahoma1' width="251"   height=19>ثبت
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+  <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="bayan_masale" class="edit-user"  dir=RTL   ><? echo $bayan_masale; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"><span class="star-message">*</span>(مقدمه (بيان مساله</td>
+  </tr>
+
+
+<script language="javascript1.2">
+var config = new Object();
+config.width = "100%";
+config.height = "200px";
+config.toolbar = [
+  ['fontname'],
+  ['fontsize'],
+  ['linebreak'],
+  ['bold','italic','underline','separator'],
+  ['strikethrough','subscript','superscript','separator'],
+  ['OrderedList','UnOrderedList','Outdent','Indent','separator'],
+  ['forecolor','backcolor','separator'],
+  ['farsi','dirleft','dirright','separator']
+];
+//editor_generate('bayan_masale',config);
+</script>
+
+ <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="zarorat_ejra" class="edit-user"  dir=RTL   ><? echo $zarorat_ejra; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"><span class="star-message">*</span>بررسي متون</td>
+  </tr>
+
+
+<script language="javascript1.2">
+var config = new Object();
+config.width = "100%";
+config.height = "200px";
+config.toolbar = [
+  ['fontname'],
+  ['fontsize'],
+  ['linebreak'],
+  ['bold','italic','underline','separator'],
+  ['strikethrough','subscript','superscript','separator'],
+  ['OrderedList','UnOrderedList','Outdent','Indent','separator'],
+  ['forecolor','backcolor','separator'],
+  ['farsi','dirleft','dirright','separator']
+];
+//editor_generate('zarorat_ejra',config);
+</script>
+
+  <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="taarif_vajeh" class="edit-user"  dir=RTL   ><? echo $taarif_vajeh; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top">تعريف واژه ها</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="ahdaf" class="edit-user"  dir=RTL   ><? echo $ahdaf; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"><span class="star-message">*</span>اهداف کلي, اختصاصي و کاربردي</td>
+  </tr>
+ <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="soalat" class="edit-user"  dir=RTL   ><? echo $soalat; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"><span class="star-message">*</span>سوالات پژوهشي و فرضيات</td>
+  </tr>
+
+  
+<tr>
+    <td width="350" align="right"><textarea   rows="4"  name="fehrest_manabea" class="edit-user"  dir=RTL   ><? echo $fehrest_manabea; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top">فهرست منابع مورد استفاده در اين طرح</td>
+  </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+
+

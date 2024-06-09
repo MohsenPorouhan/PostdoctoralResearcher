@@ -1,0 +1,54 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+
+$query="update  letter_to_mojri set sender_visited='1' where id='$letterno'";
+
+//$result=mysql_query($query) or die("Error in selecting data from tarh");
+
+$query="select * from letter_to_mojri where id='$letterno'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+
+ 
+ if(mysql_num_rows($result) > 0)
+ {
+   $row_fetched=mysql_fetch_array($result);
+   $body_letter=$row_fetched["letter_body"];
+   $subject=$row_fetched["letter_subject"];
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="1">
+ <tr>
+ <td align="center" class="tahoma1" width="60%" bgcolor="cyan"><b>متن نامه با عنوان :<? echo $subject; ?><b></td>
+ </tr>
+ <tr>
+
+    <td width="10%" >
+      <p align="center" class="tahoma1" dir="rtl"><font color="black"><? echo $body_letter; ?></font></td>
+  </tr>
+ </table>
+ 
+<?
+}
+
+footer_forms($admin,$seed);
+
+
+?>

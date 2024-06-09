@@ -1,0 +1,403 @@
+<?
+include("include/include.phtml");
+//header_forms($admin,$seed);
+include("include/database-connect.phtml");
+if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 1 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=../login.phtml");
+   exit();
+  }
+ }
+
+
+
+
+
+?>
+<META http-equiv=content-type content=text/html;charset=windows-1256>
+<?
+
+if(isset($action))
+{
+  if (strcmp($action,"print_save")==0)
+  {
+	$query="select * from print_statistics_set where modir_username = \"$admin\"";
+	$result = mysql_query($query) or die("Error in selecting data from printset");
+
+	if(mysql_num_rows($result) > 0 )
+	{
+	    $query="update print_statistics_set set besme_font_size =\"$besme_font_size\" , besme_font_name = \"$besme_font_name\" , titr_asli_font_size = \"$titr_asli_font_size\" , titr_asli_font_name = \"$titr_asli_font_name\" , porseshname_font_size =\"$porseshname_font_size\" ,porseshname_font_name =\"$porseshname_font_name\" , anavin_asli_font_size = \"$anavin_asli_font_size\" , anavin_asli_font_name = \"$anavin_asli_font_name\" , anavin_farii_text_font_size =\"$anavin_farii_text_font_size\", anavin_farii_text_font_name=\"$anavin_farii_text_font_name\" , titr_anavin_farii_font_size = \"$titr_anavin_farii_font_size\" , titr_anavin_farii_font_name =\"$titr_anavin_farii_font_name\"  , anavin_farii_font_size = \"$anavin_farii_font_size\" , anavin_farii_font_name =\"$anavin_farii_font_name\" , jadval_title_font_size =\"$jadval_title_font_size\" , jadval_title_font_name =\"$jadval_title_font_name\" where modir_username=\"$admin\"";
+	    $result = mysql_query($query) or die("Error in updating data from printset");
+	}
+	else
+	{
+	    $query="insert into print_statistics_set set besme_font_size =\"$besme_font_size\" , besme_font_name = \"$besme_font_name\" , titr_asli_font_size = \"$titr_asli_font_size\" , titr_asli_font_name = \"$titr_asli_font_name\" , porseshname_font_size =\"$porseshname_font_size\" ,porseshname_font_name =\"$porseshname_font_name\" , anavin_asli_font_size = \"$anavin_asli_font_size\" , anavin_asli_font_name = \"$anavin_asli_font_name\" , anavin_farii_text_font_size =\"$anavin_farii_text_font_size\", anavin_farii_text_font_name=\"$anavin_farii_text_font_name\" , titr_anavin_farii_font_size = \"$titr_anavin_farii_font_size\" , titr_anavin_farii_font_name =\"$titr_anavin_farii_font_name\" , anavin_farii_font_size = \"$anavin_farii_font_size\" , anavin_farii_font_name =\"$anavin_farii_font_name\" , jadval_title_font_size =\"$jadval_title_font_size\" , jadval_title_font_name =\"$jadval_title_font_name\" , modir_username=\"$admin\"";
+	    $result = mysql_query($query) or die("Error in inserting data from printset");
+
+	}
+  }
+}
+
+
+echo "<form name=\"sabt_print\" method=\"post\"  action=\"$PHP_SELF?action=print_save&admin=$admin&seed=$seed\">";
+$query="select * from print_statistics_set where modir_username = \"$admin\"";
+$result = mysql_query($query) or die("Error in selecting data from printset");
+
+
+$besme_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$titr_asli_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$porseshname_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$anavin_asli_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$anavin_farii_text_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$anavin_farii_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$titr_anavin_farii_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+$jadval_title_font_size_array = array("","","","","","","","","","","","","","","","","","","","","","","","");
+
+$besme_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$titr_asli_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$porseshname_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$anavin_aslie_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$anavin_farii_text_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$anavin_farii_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$titr_anavin_farii_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+$jadval_title_font_name_array = array("tahoma"=>"","homa"=>"","mitra"=>"","nazanin"=>"","verdana"=>"","times new roman"=>"","traffic"=>"","yaghut"=>"","zar"=>"");
+
+
+if( mysql_num_rows($result) > 0 )
+{
+  $row_fetched = mysql_fetch_array($result);
+  $besme_font_size = $row_fetched["besme_font_size"];
+  $besme_font_name = $row_fetched["besme_font_name"];
+  $besme = "style=\"font-family: $besme_font_name; font-size: $besme_font_size\"";
+
+  $myindex = substr($row_fetched["besme_font_size"],0,2);
+  $besme_font_size_array[$myindex] =  "selected";
+  $besme_font_name_array[trim($row_fetched["besme_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+
+  $titr_asli_font_size = $row_fetched["titr_asli_font_size"];
+  $titr_asli_font_name = $row_fetched["titr_asli_font_name"];
+  $titr_asli = "style=\"font-family: $titr_asli_font_name; font-size: $titr_asli_font_size\"";
+
+  $myindex = substr($row_fetched["titr_asli_font_size"],0,2);
+  $titr_asli_font_size_array[$myindex] =  "selected";
+  $titr_asli_font_name_array[trim($row_fetched["titr_asli_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+
+  $porseshname_font_size = $row_fetched["porseshname_font_size"];
+  $porseshname_font_name = $row_fetched["porseshname_font_name"];
+  $porseshname = "style=\"font-family: $porseshname_font_name; font-size: $porseshname_font_size\"";
+
+  $myindex = substr($row_fetched["porseshname_font_size"],0,2);
+  $porseshname_font_size_array[$myindex] =  "selected";
+  $porseshname_font_name_array[trim($row_fetched["porseshname_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+
+
+  $anavin_asli_font_size = $row_fetched["anavin_asli_font_size"];
+  $anavin_asli_font_name = $row_fetched["anavin_asli_font_name"];
+  $anavin_asli = "style=\"font-family: $anavin_asli_font_name; font-size: $anavin_asli_font_size\"";
+
+  $myindex = substr($row_fetched["anavin_asli_font_size"],0,2);
+  $anavin_asli_font_size_array[$myindex] =  "selected";
+  $anavin_asli_font_name_array[trim($row_fetched["anavin_asli_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+
+  $anavin_farii_text_font_size = $row_fetched["anavin_farii_text_font_size"];
+  $anavin_farii_text_font_name = $row_fetched["anavin_farii_text_font_name"];
+  $anavin_farii_text = "style=\"font-family: $anavin_farii_text_font_name; font-size: $anavin_farii_text_font_size\"";
+
+  $myindex = substr($row_fetched["anavin_farii_text_font_size"],0,2);
+  $anavin_farii_text_font_size_array[$myindex] =  "selected";
+  $anavin_farii_text_font_name_array[trim($row_fetched["anavin_farii_text_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+
+  $anavin_farii_font_size = $row_fetched["anavin_farii_font_size"];
+  $anavin_farii_font_name = $row_fetched["anavin_farii_font_name"];
+  $anavin_farii = "style=\"font-family: $anavin_farii_font_name; font-size: $anavin_farii_font_size\"";
+
+  $myindex = substr($row_fetched["anavin_farii_font_size"],0,2);
+  $anavin_farii_font_size_array[$myindex] =  "selected";
+  $anavin_farii_font_name_array[trim($row_fetched["anavin_farii_font_name"])] = "selected";
+
+ //-----------------------------------------------------
+
+  $titr_anavin_farii_font_size = $row_fetched["titr_anavin_farii_font_size"];
+  $titr_anavin_farii_font_name = $row_fetched["titr_anavin_farii_font_name"];
+  $titr_anavin_farii = "style=\"font-family: $titr_anavin_farii_font_name; font-size: $titr_anavin_farii_font_size\"";
+
+  $myindex = substr($row_fetched["titr_anavin_farii_font_size"],0,2);
+  $titr_anavin_farii_font_size_array[$myindex] =  "selected";
+  $titr_anavin_farii_font_name_array[trim($row_fetched["titr_anavin_farii_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+
+  $jadval_title_font_size = $row_fetched["jadval_title_font_size"];
+  $jadval_title_font_name = $row_fetched["jadval_title_font_name"];
+  $jadval_title = "style=\"font-family: $jadval_title_font_name; font-size: $jadval_title_font_size\"";
+
+  $myindex = substr($row_fetched["jadval_title_font_size"],0,2);
+  $jadval_title_font_size_array[$myindex] =  "selected";
+  $jadval_title_font_name_array[trim($row_fetched["jadval_title_font_name"])] = "selected";
+
+  //-----------------------------------------------------
+}
+
+?>
+
+<TABLE dir=ltr cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD align=right width="7%">&nbsp;</TD>
+    <TD align=right width="93%">
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TR>
+          <TD dir=rtl style="FONT-SIZE: 10pt; FONT-FAMILY: zar" align=middle
+          width="100%"><font color="red" size="3"><b>توجه : براي چاپ
+            صحيح مطالب فونتهاي مورد نظر بايد روي
+            کامپيوتر متصل به چاپگر نصب شده باشد</b></font> </TD></TR>
+		<TR>
+
+
+                <TD vAlign=top align=right width="92%">
+  <span dir="rtl" >
+  <select size="1" name="titr_anavin_farii_font_size">
+    				  <option value="08pt" <? echo $titr_anavin_farii_font_size_array[8]; ?> >8</option>
+    				  <option value="09pt" <? echo $titr_anavin_farii_font_size_array[9]; ?> >9</option>
+    				  <option value="10pt" <? echo $titr_anavin_farii_font_size_array[10]; ?> >10</option>
+    				  <option value="11pt" <? echo $titr_anavin_farii_font_size_array[11]; ?> >11</option>
+    				  <option value="12pt" <? echo $titr_anavin_farii_font_size_array[12]; ?> >12</option>
+    				  <option value="13pt" <? echo $titr_anavin_farii_font_size_array[13]; ?> >13</option>
+    				  <option value="14pt" <? echo $titr_anavin_farii_font_size_array[14]; ?> >14</option>
+    				  <option value="15pt" <? echo $titr_anavin_farii_font_size_array[15]; ?> >15</option>
+    				  <option value="16pt" <? echo $titr_anavin_farii_font_size_array[16]; ?> >16</option>
+    				  <option value="17pt" <? echo $titr_anavin_fariit_font_size_array[17]; ?> >17</option>
+    				  <option value="18pt" <? echo $titr_anavin_farii_font_size_array[18]; ?> >18</option>
+                      <option value="19pt" <? echo $titr_anavin_farii_font_size_array[19]; ?> >19</option>
+    				  <option value="20pt" <? echo $titr_anavin_farii_font_size_array[20]; ?> >20</option>
+    				  <option value="21pt" <? echo $titr_anavin_farii_font_size_array[21]; ?> >21</option>
+    				  <option value="22pt" <? echo $titr_anavin_farii_font_size_array[22]; ?> >22</option>
+    				  <option value="23pt" <? echo $titr_anavin_farii_font_size_array[23]; ?> >23</option>
+    				  <option value="24pt" <? echo $titr_anavin_farii_font_size_array[24]; ?> >24</option>
+  						 </select> &nbsp;
+
+    <select size="1" name="titr_anavin_farii_font_name" style="width:100">
+    				  <option value="tahoma" <? echo $titr_anavin_farii_font_name_array["tahoma"]; ?>  >Tahoma</option>
+    				  <option value="arial" <? echo $titr_anavin_farii_font_name_array["arial"]; ?> >Arial</option>
+    				  <option value="homa" <? echo $titr_anavin_farii_font_name_array["homa"]; ?>>Homa</option>
+    				  <option value="mitra" <? echo $titr_anavin_farii_font_name_array["mitra"]; ?> >Mitra</option>
+    				  <option value="nazanin" <? echo $titr_anavin_farii_font_name_array["nazanin"]; ?> >Nazanin</option>
+    				  <option value="verdana" <? echo $titr_anavin_farii_font_name_array["verdana"]; ?> >Verdana</option>
+    				  <option value="times new roman" <? echo $titr_anavin_farii_font_name_array["times new roman"]; ?> >Times New Roman</option>
+    				  <option value="traffic" <? echo $titr_anavin_farii_font_name_array["traffic"]; ?> >Traffic</option>
+    				  <option value="yagut" <? echo $titr_anavin_farii_font_name_array["yaghut"]; ?> >Yaghut</option>
+    				  <option value="zar" <? echo $titr_anavin_farii_font_name_array["zar"]; ?>>Zar</option>
+  						 </select>
+						   <img border="0" src="image/arrow-right-down.gif" width="20" height="21"></TD></tr>
+      <TD vAlign=top align=right width="92%"><SPAN dir=rtl <?echo $titr_anavin_farii; ?>>تيتر عناوين</SPAN>
+	  </TD>
+	  </TR>
+  </TABLE>
+
+
+
+
+
+
+
+
+
+
+
+      <TABLE width="100%" border=0 cellspan="0" colspan="0">
+        <TBODY>
+        <TR>
+          <TD vAlign=top align=middle width="100%">
+            <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+              <TR>
+                <TD dir=rtl vAlign=top align=justify width="60%">
+  <span dir="rtl" >
+  <font face="mitra" size="4">
+                      <select size="1" name="anavin_farii_text_font_size">
+    				  <option value="08pt" <? echo $anavin_farii_text_font_size_array[8]; ?> >8</option>
+    				  <option value="09pt" <? echo $anavin_farii_text_font_size_array[9]; ?> >9</option>
+    				  <option value="10pt" <? echo $anavin_farii_text_font_size_array[10]; ?> >10</option>
+    				  <option value="11pt" <? echo $anavin_farii_text_font_size_array[11]; ?> >11</option>
+    				  <option value="12pt" <? echo $anavin_farii_text_font_size_array[12]; ?> >12</option>
+    				  <option value="13pt" <? echo $anavin_farii_text_font_size_array[13]; ?> >13</option>
+    				  <option value="14pt" <? echo $anavin_farii_text_font_size_array[14]; ?> >14</option>
+    				  <option value="15pt" <? echo $anavin_farii_text_font_size_array[15]; ?> >15</option>
+    				  <option value="16pt" <? echo $anavin_farii_text_font_size_array[16]; ?> >16</option>
+    				  <option value="17pt" <? echo $anavin_farii_text_font_size_array[17]; ?> >17</option>
+    				  <option value="18pt" <? echo $anavin_farii_text_font_size_array[18]; ?> >18</option>
+                      <option value="19pt" <? echo $anavin_farii_text_font_size_array[19]; ?> >19</option>
+    				  <option value="20pt" <? echo $anavin_farii_text_font_size_array[20]; ?> >20</option>
+    				  <option value="21pt" <? echo $anavin_farii_text_font_size_array[21]; ?> >21</option>
+    				  <option value="22pt" <? echo $anavin_farii_text_font_size_array[22]; ?> >22</option>
+    				  <option value="23pt" <? echo $anavin_farii_text_font_size_array[23]; ?> >23</option>
+    				  <option value="24pt" <? echo $anavin_farii_text_font_size_array[24]; ?> >24</option>
+
+  						 </select>&nbsp;&nbsp; <select size="1" name="anavin_farii_text_font_name" style="width:100">
+    					<option value="tahoma" <? echo $anavin_farii_text_font_name_array["tahoma"]; ?>  >Tahoma</option>
+    						<option value="arial" <? echo $anavin_farii_text_font_name_array["arial"]; ?> >Arial</option>
+    						<option value="homa" <? echo $anavin_farii_text_font_name_array["homa"]; ?>>Homa</option>
+    						<option value="mitra" <? echo $anavin_farii_text_font_name_array["mitra"]; ?> >Mitra</option>
+    						<option value="nazanin" <? echo $anavin_farii_text_font_name_array["nazanin"]; ?> >Nazanin</option>
+    						<option value="verdana" <? echo $anavin_farii_text_font_name_array["verdana"]; ?> >Verdana</option>
+    						<option value="times new roman" <? echo $anavin_farii_text_font_name_array["times new roman"]; ?> >Times New Roman</option>
+    						<option value="traffic" <? echo $anavin_farii_text_font_name_array["traffic"]; ?> >Traffic</option>
+    						<option value="yagut" <? echo $anavin_farii_text_font_name_array["yaghut"]; ?> >Yaghut</option>
+    						<option value="zar" <? echo $anavin_farii_text_font_name_array["zar"]; ?>>Zar</option>
+  						 </select>
+				<img border="0" src="image/arrow-right-down.gif" width="20" height="21"></span></TD>
+                <TD dir=rtl vAlign=top align=justify width="8%">
+ </TD>
+                <TD vAlign=top align=left width="92%">
+  <span dir="rtl" ><font face="mitra" size="4"><select size="1" name="anavin_farii_font_size">
+    					  <option value="08pt" <? echo $anavin_farii_font_size_array[8]; ?> >8</option>
+    				  <option value="09pt" <? echo $anavin_farii_font_size_array[9]; ?> >9</option>
+    				  <option value="10pt" <? echo $anavin_farii_font_size_array[10]; ?> >10</option>
+    				  <option value="11pt" <? echo $anavin_farii_font_size_array[11]; ?> >11</option>
+    				  <option value="12pt" <? echo $anavin_farii_font_size_array[12]; ?> >12</option>
+    				  <option value="13pt" <? echo $anavin_farii_font_size_array[13]; ?> >13</option>
+    				  <option value="14pt" <? echo $anavin_farii_font_size_array[14]; ?> >14</option>
+    				  <option value="15pt" <? echo $anavin_farii_font_size_array[15]; ?> >15</option>
+    				  <option value="16pt" <? echo $anavin_farii_font_size_array[16]; ?> >16</option>
+    				  <option value="17pt" <? echo $anavin_fariit_font_size_array[17]; ?> >17</option>
+    				  <option value="18pt" <? echo $anavin_farii_font_size_array[18]; ?> >18</option>
+                      <option value="19pt" <? echo $anavin_farii_font_size_array[19]; ?> >19</option>
+    				  <option value="20pt" <? echo $anavin_farii_font_size_array[20]; ?> >20</option>
+    				  <option value="21pt" <? echo $anavin_farii_font_size_array[21]; ?> >21</option>
+    				  <option value="22pt" <? echo $anavin_farii_font_size_array[22]; ?> >22</option>
+    				  <option value="23pt" <? echo $anavin_farii_font_size_array[23]; ?> >23</option>
+    				  <option value="24pt" <? echo $anavin_farii_font_size_array[24]; ?> >24</option>
+
+  						 </select> &nbsp; <select size="1" name="anavin_farii_font_name" style="width:100">
+    						<option value="tahoma" <? echo $anavin_farii_font_name_array["tahoma"]; ?>  >Tahoma</option>
+    						<option value="arial" <? echo $anavin_farii_font_name_array["arial"]; ?> >Arial</option>
+    						<option value="homa" <? echo $anavin_farii_font_name_array["homa"]; ?>>Homa</option>
+    						<option value="mitra" <? echo $anavin_farii_font_name_array["mitra"]; ?> >Mitra</option>
+    						<option value="nazanin" <? echo $anavin_farii_font_name_array["nazanin"]; ?> >Nazanin</option>
+    						<option value="verdana" <? echo $anavin_farii_font_name_array["verdana"]; ?> >Verdana</option>
+    						<option value="times new roman" <? echo $anavin_farii_font_name_array["times new roman"]; ?> >Times New Roman</option>
+    						<option value="traffic" <? echo $anavin_farii_font_name_array["traffic"]; ?> >Traffic</option>
+    						<option value="yagut" <? echo $anavin_farii_font_name_array["yaghut"]; ?> >Yaghut</option>
+    						<option value="zar" <? echo $anavin_farii_font_name_array["zar"]; ?>>Zar</option>
+
+  						 </select></font></span><span dir="rtl" style="font-family: mitra; font-size: 14pt; font-weight: bold"><font face="mitra" size="4"><img border="0" src="image/arrow-right-down.gif" width="20" height="21"></font></span></TD></TR>
+              <TR>
+                <TD dir=rtl vAlign=top align=justify width="60%"><span  dir="rtl" <?echo $anavin_farii_text; ?>>متن
+                  عناوين فرعي</span> </TD>
+                <TD dir=rtl vAlign=top align=justify width="8%"> </TD>
+                <TD vAlign=top align=left width="92%"><SPAN dir=rtl
+                  <?echo $anavin_farii; ?>>عناوين
+                  فرعي :</SPAN></TD></TR>
+              </TABLE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			  </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<TABLE width="100%" border=0 cellspan="0" colspan="0">
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width="100%"></TD></TR>
+  <TR>
+    <TD vAlign=top align=right width="100%"><font face="Tahoma" size="1"><span dir="rtl"><b>&nbsp;تعيين
+      فونت تيتر جداول</b></span></font><span dir="rtl" ><select size="1" name="jadval_title_font_size">
+    				  <option value="08pt" <? echo $jadval_title_font_size_array[8]; ?> >8</option>
+    				  <option value="09pt" <? echo $jadval_title_font_size_array[9]; ?> >9</option>
+    				  <option value="10pt" <? echo $jadval_title_font_size_array[10]; ?> >10</option>
+    				  <option value="11pt" <? echo $jadval_title_font_size_array[11]; ?> >11</option>
+    				  <option value="12pt" <? echo $jadval_title_font_size_array[12]; ?> >12</option>
+    				  <option value="13pt" <? echo $jadval_title_font_size_array[13]; ?> >13</option>
+    				  <option value="14pt" <? echo $jadval_title_font_size_array[14]; ?> >14</option>
+    				  <option value="15pt" <? echo $jadval_title_font_size_array[15]; ?> >15</option>
+    				  <option value="16pt" <? echo $jadval_title_font_size_array[16]; ?> >16</option>
+    				  <option value="17pt" <? echo $jadval_title_font_size_array[17]; ?> >17</option>
+    				  <option value="18pt" <? echo $jadval_title_font_size_array[18]; ?> >18</option>
+                      <option value="19pt" <? echo $jadval_title_font_size_array[19]; ?> >19</option>
+    				  <option value="20pt" <? echo $jadval_title_font_size_array[20]; ?> >20</option>
+    				  <option value="21pt" <? echo $jadval_title_font_size_array[21]; ?> >21</option>
+    				  <option value="22pt" <? echo $jadval_title_font_size_array[22]; ?> >22</option>
+    				  <option value="23pt" <? echo $jadval_title_font_size_array[23]; ?> >23</option>
+    				  <option value="24pt" <? echo $jadval_title_font_size_array[24]; ?> >24</option>
+
+  						 </select> &nbsp; <select size="1" name="jadval_title_font_name" style="width:100">
+    						<option value="tahoma" <? echo $jadval_title_font_name_array["tahoma"]; ?>  >Tahoma</option>
+    						<option value="arial" <? echo $jadval_title_font_name_array["arial"]; ?> >Arial</option>
+    						<option value="homa" <? echo $jadval_title_font_name_array["homa"]; ?>>Homa</option>
+    						<option value="mitra" <? echo $jadval_title_font_name_array["mitra"]; ?> >Mitra</option>
+    						<option value="nazanin" <? echo $jadval_title_font_name_array["nazanin"]; ?> >Nazanin</option>
+    						<option value="verdana" <? echo $jadval_title_font_name_array["verdana"]; ?> >Verdana</option>
+    						<option value="times new roman" <? echo $jadval_title_font_name_array["times new roman"]; ?> >Times New Roman</option>
+    						<option value="traffic" <? echo $jadval_title_font_name_array["traffic"]; ?> >Traffic</option>
+    						<option value="yagut" <? echo $jadval_title_font_name_array["yaghut"]; ?> >Yaghut</option>
+    						<option value="zar" <? echo $jadval_title_font_name_array["zar"]; ?>>Zar</option>
+
+  						 </select><img border="0" src="image/arrow-right-down.gif" width="20" height="21"></span></TD></TR>
+  <TR>
+    <TD vAlign=top align=justify width="100%">
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=1>
+        <TBODY>
+        <TR>
+          <TD class=tahoma1 align=middle width="20%" bgColor=#c0c0c0 <?echo $jadval_title; ?> >عنوان
+            4</TD>
+          <TD class=tahoma1 align=middle width="26%" bgColor=#c0c0c0 <?echo $jadval_title; ?>>عنوان
+            3</TD>
+          <TD class=tahoma1 align=middle width="14%" bgColor=#c0c0c0 <?echo $jadval_title; ?>>عنوان
+            2</TD>
+          <TD class=tahoma1 align=middle width="20%" bgColor=#c0c0c0 <?echo $jadval_title; ?>>عنوان
+            1</TD></TR>
+        <TR>
+          <TD class=tahoma1 align=middle>&nbsp;</TD>
+          <TD class=tahoma1 align=middle>&nbsp;</TD>
+          <TD class=tahoma1 align=middle>&nbsp;</TD>
+          <TD class=tahoma1 align=middle>&nbsp;</TD></TR>
+        </TBODY></TABLE></TD></TR>
+  </TBODY></TABLE>
+  <p align="center">
+  <input type="submit" value="ثبت" name="submit_print">
+  </p>
+</form>
+<?
+  //footer_forms($admin,$seed);
+?>

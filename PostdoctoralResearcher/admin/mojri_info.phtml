@@ -1,0 +1,120 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+  
+ //  $family=$row_fetched1["family"];
+
+   $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh' ";
+//echo $query;
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi2");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+ $query1="select * from tarh_hesabdari where id='$id'  ";
+  // echo $query;
+   $result1=mysql_query($query1) or die("Error in selecting data from karshenas elmi1");
+   $row_fetched1=mysql_fetch_array($result1);
+   $name=$row_fetched1["personname"];
+  // echo $name;
+
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"100%\" colspan=\"2\" bgcolor=$color  class=\"tahoma1\" align=\"center\">پاسخ سوالات قرارداد </td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">نام و نام خانوادگي</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["melli_cod"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">کد ملي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["shaba_cod"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">شماره شبا</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hesab"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">شماره حساب</td>";
+    echo "</tr>";
+/*
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["bank_name"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">نام بانک</td>";
+    echo "</tr>";
+
+
+    $karshenas_type=$row_fetched["karshenas_type"];
+    $query="select * from karshenas_type  where karshenas_type = '$karshenas_type' ";
+    
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi 1");
+	$rf=mysql_fetch_array($qresult);
+	
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$rf["karshenas_type_desc"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">نوع کارشناس</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["karshenas_email"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">پست الکترونيکي</td>";
+    echo "</tr>";
+
+    $karshenas_rade_elmi=$row_fetched["karshenas_rade_elmi"];
+    $query="select * from darajeelmi  where darajeelmi = $karshenas_rade_elmi ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $my_row_daraje = mysql_fetch_array($qresult);
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$my_row_daraje["darajeelmi_desc"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">درجه علمي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["karshenas_takhasos"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">تخصص</td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["mobile"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">موبايل</td>";
+    echo "</tr>";
+	$bank_name=$row_fetched["bank_name"];
+	$q="select *  from hesab_type where hesab_type ='$bank_name'";
+	$rs_bnk=mysql_query($q) or die("error");
+	$rf_bnk=mysql_fetch_array($rs_bnk);
+	
+	$bank_name_type=$rf_bnk["hesab_type_desc"];
+	    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$bank_name_type."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">نوع حساب </td>";
+    echo "</tr>";
+	
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hesab"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\">شماره حساب سراسري</td>";
+    echo "</tr>";
+*/
+
+    echo "</table>";
+   }
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="tarh_list_confirm_gharardad.phtml?<?echo "admin=$admin&seed=$seed" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>

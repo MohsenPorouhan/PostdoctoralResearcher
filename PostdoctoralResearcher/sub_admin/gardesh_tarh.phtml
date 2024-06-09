@@ -1,0 +1,136 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+ 	$q1="select * from modir_daneshkade,daneshkade where modir_username='$admin' and daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade";
+  	$rslt=mysql_query($q1);
+  	$rff=mysql_fetch_array($rslt);
+  	$have_group=$rff["have_group"];			
+	$mostaghel=$rff["mostaghel"];
+	$modir_type=$rff["modir_type"];
+	
+	$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+	$result=mysql_query($query) or die("Error in selecting data from tarh ");
+	$row_fetched=mysql_fetch_array($result);
+	$tarh_time=$row_fetched["tarh_time"];
+	$tarh_name=$row_fetched["tarh_title_farsi"];
+	$startdate =$tarh_time;
+  	$startyear = substr($startdate,0,4);
+  	$startmon = substr($startdate,5,2);
+  	$startday = substr($startdate,8,2);
+  	$farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  	$tarh_time = enum2fnum($farsistartdate);
+	
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	$myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  	$myres=mysql_query($myq);
+  	$myrf=mysql_fetch_array($myres);
+  	$daneshkade=$myrf["daneshkade_name"];
+	
+  	$query="select jalase_shora.* from jalase_shora_tarh,jalase_shora,modir_daneshkade where cod_tarh='$cod_tarh' and jalase_shora_tarh.shomare_jalase=jalase_shora.shomare_jalase and jalase_shora.creator=modir_daneshkade.modir_username and modir_daneshkade.cod_daneshkade='$cod_daneshkade'";
+  	//echo $query;
+  	$result=mysql_query($query) or die("Error in selecting data from jalase_shora");
+	$row_fetched=mysql_fetch_array($result);
+	$shomare_jalase=$row_fetched["shomare_jalase"];
+  	$tarikh_jalase=$row_fetched["tarikh_jalase"];
+  	
+  	$query="select * from daneshkade_tarh where cod_tarh='$cod_tarh'";
+  	$result=mysql_query($query) or die("Error in selecting data from tarh 2");
+  	
+  	?>
+  	<table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+		 <tr>
+		 <td align="center" class="tahoma1" width="60%">عنوان طرح:<b><?php echo $tarh_name;?><b></td>
+		 </tr>
+		 <tr>
+		 <td  align="center" class="tahoma1">
+		   گردش طرح در مراکز
+		 </td> 
+		 </tr>
+	</table>
+	<br>
+  	<table border="0" width="70%" cellpadding="1" cellspacing="1">
+	  <tr>
+	  <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+	      <p align="center" class="tahoma1"><font color="black">تاريخ صورت جلسه</font></td> 
+	   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+	      <p align="center" class="tahoma1"><font color="black">صورت جلسه اين مرکز</font></td> 
+	   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+	      <p align="center" class="tahoma1"><font color="black">تاريخ دريافت</font></td> 
+	   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+	      <p align="center" class="tahoma1"><font color="black">توضيحات مرکز ارسال کننده</font></td>  	      
+	   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+	      <p align="center" class="tahoma1"><font color="black">دريافت از</font></td>  
+	   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+	      <p align="center" class="tahoma1"><font color="black">موقعيت طرح</font></td>
+	      
+	      
+	      
+	  
+	  	      
+	  </tr>
+	  <?
+	  $color=$list_color_1;
+	  echo "<tr>";
+	  	  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$tarikh_jalase</font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line><a href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase\" >".$shomare_jalase."</a></font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$tarh_time</font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>----</font></td>";	
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>مجري</font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line><b>". $daneshkade."</b></font></a></td>";
+	  echo "</tr>";
+	  while($row_fetched=mysql_fetch_array($result))
+ 	  {
+ 	  	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+ 	  	$myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+	  	$myres=mysql_query($myq);
+	  	$myrf=mysql_fetch_array($myres);
+	  	$daneshkade=$myrf["daneshkade_name"];
+	  	if($cod_daneshkade=='0')
+	  		$daneshkade="معاونت پژوهشي دانشگاه";
+	  	$tarh_time=$row_fetched["recive_date"];
+	  	$startdate =$tarh_time;
+	  	$startyear = substr($startdate,0,4);
+	  	$startmon = substr($startdate,5,2);
+	  	$startday = substr($startdate,8,2);
+	  	$farsistartdate=hijricalender( $startyear , $startmon , $startday );
+	  	$tarh_time = enum2fnum($farsistartdate);
+	  	
+	  	$recive_from_daneshkade=$row_fetched["recive_from_daneshkade"];
+	  	$comment_subadmin=$row_fetched["comment_subadmin"];
+	  	$myq="select * from daneshkade where cod_daneshkade='$recive_from_daneshkade'";
+	  	$myres=mysql_query($myq);
+	  	$myrf=mysql_fetch_array($myres);
+	  	$daneshkade_recive=$myrf["daneshkade_name"];
+	  	$query="select jalase_shora.* from jalase_shora_tarh,jalase_shora,modir_daneshkade where cod_tarh='$cod_tarh' and jalase_shora_tarh.shomare_jalase=jalase_shora.shomare_jalase and jalase_shora.creator=modir_daneshkade.modir_username and modir_daneshkade.cod_daneshkade='$cod_daneshkade'";
+	  	//echo $query;
+	  	$result_shora=mysql_query($query) or die("Error in selecting data from jalase_shora");
+		$row_fetched_shora=mysql_fetch_array($result_shora);
+		$shomare_jalase=$row_fetched_shora["shomare_jalase"];
+		$tarikh_jalase=$row_fetched_shora["tarikh_jalase"];	
+	  	if(strcmp($color,$list_color_1)==0)
+		   $color=$list_color_2;
+		else
+		   $color=$list_color_1;
+		
+ 	  	echo "<tr>";
+ 	  	  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$tarikh_jalase</font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line><a href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase\" >".$shomare_jalase."</a></font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$tarh_time</font></td>";	
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$comment_subadmin</font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$daneshkade_recive</font></td>";
+		  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line><b>". $daneshkade."</b></font></a></td>";
+	  echo "</tr>";
+ 	  }
+ 	  echo "</table>";
+footer_forms($admin,$seed);
+
+
+?>
+ 	  

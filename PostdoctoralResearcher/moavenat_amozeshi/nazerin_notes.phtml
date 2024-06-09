@@ -1,0 +1,157 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+
+$query="select * from karshenasan_tarh where cod_tarh='$cod_tarh'" ;
+$query="select * from karshenasan,karshenasan_tarh where  karshenas_type='8' and cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas";
+						  
+//echo $query;
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+<tr>
+    <td width="50%" colspan="7" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر ناظر در مورد قسمتهاي طرح</font></td>
+  
+  </tr>
+  <tr>
+     <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مرحله گزارش</font></td>
+ 
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر در مورد فرم پرداخت</font></td>
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کاربري</font></td>
+	<td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام </font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال </font></td>
+   
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $id=$row_fetched["id"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+ 
+ $startdate = $row_fetched["note_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+ $string="";
+ $note_submitted=$row_fetched["refered"];
+// if(strcmp($note_submitted,"1")==0)
+// {
+   //}
+ //else
+ //  $string="نظر ايشان ثبت نشده";
+ 
+ 
+ // if(strcmp($note_submitted,"1")==0) 
+    $comment_note=$row_fetched["comment_karshenas"];
+ // else
+  //	$comment_note="نظر ايشان ثبت نشده"; 
+
+  //echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  $payment_code=$row_fetched["nazer_form_pardakht"];
+  
+   $marhale_report=$row_fetched["marhale_report"];
+   if($marhale_report==0)
+        $marhale_report_note='1';
+      if($marhale_report==100)
+        $marhale_report_note='نهايي'; 
+  	 
+  if(strcmp($payment_code,'0')==0)
+    $payment_string="گزارش در اين مرحله مورد تاييد است";
+   
+   if(strcmp($payment_code,'1')==0)
+    $payment_string="گزارش با انحام اصلاحاتي در همين گزارش مورد تاييد است";
+   
+   if(strcmp($payment_code,'2')==0)
+    $payment_string="گزارش مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود";
+  
+  
+   if(strcmp($payment_code,'3')==0)
+    $payment_string="اين گزارش به دلايل فوق مورد تاييد نمي باشد";
+    
+   
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$marhale_report_note."</td>";  
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$payment_string."</td>";
+ 
+  if($marhale_report==100)
+     echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style='text-decoration:underline' target='_blank' href='nazer_notes_final_view.phtml?admin=$admin&seed=$seed&id=$id&cod_tarh=$cod_tarh'>&nbsp;&nbsp;&nbsp;".$comment_note."</td>";
+  else
+     echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style='text-decoration:underline' target='_blank' href='nazer_notes_detail.phtml?admin=$admin&seed=$seed&id=$id&cod_tarh=$cod_tarh'>&nbsp;&nbsp;&nbsp;".$comment_note."</td>";   
+ 
+
+  //echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$comment_note."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["username"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+   echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$farsistartdate."</td>";
+
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".نظر ي وجود ندارد","red");
+}
+footer_forms($admin,$seed);
+
+
+?>
+

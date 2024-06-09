@@ -1,0 +1,83 @@
+<?
+include("include/database-connect.phtml");
+include("include/include2.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+if(isset($action))
+{
+	if(strcmp($action,'sabt')==0)
+	{
+	 if(strcmp($tarh_select,'6')!=0)
+	 {	
+	 	if(strcmp($tarh_select,'10')==0){
+	    ?>
+           <script language="javascript">
+           var answer = confirm ("?آيااطمينان داريد طرح شما خدماتي است و کل اعتبار آن از خارج از دانشگاه تامين ميشود");
+           if (answer)
+        	   window.location="<? echo "sabt_tarh.phtml?admin=$admin&seed=$seed&tarh_select=$tarh_select";  ?>";
+           else
+        	   window.location="<? echo "send_tarh_select.phtml?admin=$admin&seed=$seed";  ?>";
+           
+           </script>
+           <?
+	 	}
+	 	else{
+	 	?>
+	 	<script language="javascript">
+           
+        	   window.location="<? echo "sabt_tarh.phtml?admin=$admin&seed=$seed&tarh_select=$tarh_select";  ?>";
+           
+           </script>
+	 	<?
+	 	}
+	 }	
+	 else
+	 {	
+	    ?>
+           <script language="javascript">
+           window.location="<? echo "hsr_confirm.phtml?admin=$admin&seed=$seed&tarh_select=$tarh_select ";  ?>";
+           </script>
+           <?
+	 }	   	
+	}
+}
+?>
+ <br>
+ <?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed\">"; ?>
+ <table border='1' width='50%' cellspacing="0" cellpadding="0" bordercolor="white" bgcolor='#EEE7F8' dir='rtl'>
+<tr>
+	<td colspan='8' align='center' class='tahoma1'>
+		توجه : نوع طرح مشخص مي کند مسير پيگيري طرحي را که ثبت خواهيد کرد، چگونه خواهد بود<br></br>
+		<br></br>تعريف طرح هاي آچ اس آر  : طرح هايي هستند که معمولاً از طرف معاونت‌هاي دانشگاه و به منظور ارتقاء فعاليت‌هاي اين معاونت‌ها درخواست شده و در شوراي HSR دانشگاه مصوبه خواهند گرفت.<br></br>
+		<br></br> تعريف طرح هاي غير اچ اس آر : چنين طرح‌هايي از طرف دانشكده‌ها و مراكز تحقيقاتي ارسال مي شود و پيگيري آن از طريق شوراهاي پژوهشي دانشكده‌ها و مراكز تحقيقاتي و نهايتاَ شوراي پژوهشي دانشگاه خواهد بود.<br></br>
+
+تعريف طرح هاي خدماتي  : اين طرح ها سفارش شده از مركزي خارج از دانشگاه مي باشند كه يك خدمت خاص را (همچون خدمات آزمايشگاهي- خدمات آموزشي، خدمات مشاوره‌اي و...) در داخل دانشگاه درخواست نموده است و در دفتر ارتباط با صنعت پيگيري خواهند شد. ضمناً اگر طرحي صرفاً جنبه پژوهشي داشته و اعتبار آن از خارج از دانشگاه تأمين مي‌شود، شامل اين نوع طرح‌ها  يعني طرح هاي خدماتي نمي‌شود و مجريان محترم لازم است طرح فوق الذکر را به عنوان طرح‌ علمي ثبت نموده و سپس دانشكده يا مركز هدف را دفتر همكاري صنعت و دانشگاه انتخاب نمايند. مسير پيگيري اين نوع طرح‌ها نيز از دفتر همكاري دانشگاه و صنعت خواهد بود.
+	</td>
+</tr>
+</table>
+<br></br>
+<table border='1' width='50%' cellspacing="0" cellpadding="0" bordercolor="white" bgcolor='#EEE7F8' dir='rtl'>
+<tr>
+<td colspan='8' align='center' class='tahoma1'><b>
+نوع طرح</b>
+</td>
+</tr>
+<?
+ 
+  echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='tarh_select' value='6'>طرح اچ اس آر</td></tr>";
+   echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='tarh_select' value='8'>طرح غير اچ اس آر</td></tr>";
+   echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='tarh_select' value='10'>طرح خدماتي دفتر همکاري دانشگاه و صنعت</td></tr>";
+
+?>
+ 
+<tr>
+<td colspan='8' align='center' class='tahoma1' >
+<input type="submit" value="ثبت" name="B1" class="but-small">
+</td>
+</tr>
+</table>
+
+<?
+ footer_forms($admin,$seed);
+ ?>
+

@@ -1,0 +1,381 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+$ready_gharardad = " 1 ";
+
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    
+
+if(isset($ready_contract))
+{
+	if(strcmp($ready_contract,"-1")==0)
+       $ready_gharardad = " 1 ";
+	if(strcmp($ready_contract,"1")==0)
+       $ready_gharardad = " ready_gharardad='1' ";
+    if(strcmp($ready_contract,"2")==0)
+       $ready_gharardad = " ready_gharardad!='1' ";
+   
+}
+
+
+
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade=$myrow_fetched["cod_daneshkade"];
+	$modir_type=$myrow_fetched["modir_type"];
+$cod_modir=$myrow_fetched["cod_modir"];
+$daneshkade_cousion="(cod_daneshkade='$cod_daneshkade'";		
+	$query="select * from daneshkade where cod_pajoheshgah='$cod_daneshkade'";
+    $result=mysql_query($query);
+    while($row_fetched=mysql_fetch_array($result)){
+    	
+    	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+    	$daneshkade_cousion.=" or cod_daneshkade='$cod_daneshkade'";
+    }
+    $daneshkade_cousion.=")";
+///	echo $modir_type;
+	if(strcmp($modir_type,'5')==0  )
+     {
+	   $first_part_sql=",modir_daneshkade_tarh";
+	   $second_part_sql=" and tarh.cod_tarh=modir_daneshkade_tarh.cod_tarh and modir_daneshkade_tarh.cod_modir='$cod_modir'";
+	}
+	else
+	{
+	   $first_part_sql=" ";
+	   $second_part_sql=" ";
+	
+	} 
+
+
+$grant_hsr_isolation='tarh_type!=6';
+
+$myq="select * from tarhtype_2 where grant_tarh='1'";
+$res=mysql_query($myq) or die("Error");
+$grant_q="";
+While($myrf=mysql_fetch_array($res) )
+{
+	$grant_q=$grant_q." and "."tarh_type_2 != '".$myr["tarh_type"]."'";
+}
+$grant_hsr_isolation=$grant_hsr_isolation.$grant_q;
+
+
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    
+if(isset($name_e))
+{
+  $query="select * from tarh $first_part_sql  where  tarh.finalized ='1'   and $grant_hsr_isolation and  archieved='0'     and  (tarh.cod_tarh like $myname_search or  tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search)    and $daneshkade_cousion and tarh.version='-1' $second_part_sql  group by tarh.cod_tarh order by tarh_time desc";
+}
+else
+  $query="select * from tarh $first_part_sql  where tarh.finalized ='1'  and $grant_hsr_isolation and  archieved='0'      and $daneshkade_cousion and tarh.version='-1'  $second_part_sql group by tarh.cod_tarh order by tarh_time desc";
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh1");
+$reccount = mysql_num_rows($result);
+
+ if(isset($name_e))
+{
+  $query="select * from tarh $first_part_sql  where  tarh.finalized ='1'   and $grant_hsr_isolation and  archieved='0'    and  (tarh.cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and tarh.version='-1'   and $daneshkade_cousion $second_part_sql group by tarh.cod_tarh order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ; 
+}
+else
+  $query="select * from tarh $first_part_sql  where tarh.finalized ='1'   and  $grant_hsr_isolation and  archieved='0'     and $daneshkade_cousion and tarh.version='-1' $second_part_sql  group by tarh.cod_tarh order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh2");
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+  <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>طرح هاي خاتمه يافته<b></td>
+ </tr>
+ </table>
+ <?
+echo "<form name=\"change_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&name_e=$name_e&seed=$seed&ascdescfield=$ascdescfield&ascdesc=$ascdesc\">";
+?>
+ <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ 
+<?
+echo "<td  align=\"left\" class=\"tahoma1\"><select size=\"1\" class='combo2' name=\"ready_contract\" onchange=\"JavaScript:document.change_daneshkade.submit();\" dir=\"rtl\">";
+if(strcmp("-1",$ready_contract)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    
+echo "<option  $selected value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+if(strcmp("1",$ready_contract)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    
+echo "<option $selected value=\"1\" class=\"tahoma1\">طرحهايي که کار کارشناسي آنها در معاونت پژوهشي به اتمام رسيده</option>";
+if(strcmp("2",$ready_contract)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    
+echo "<option  $selected value=\"2\" class=\"tahoma1\">طرحهاي در حال کارشناسي در معاونت پژوهشي</option>";
+
+		  
+?>
+
+</select> فيلتر قرارداد 
+</td>
+  </form>
+  <?
+  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&ready_contract=$ready_contract\">";
+?>
+ 
+ 
+ <td align="right">
+
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ </table>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+	$myascdescpub=$myascdescpub."$name_e=$name_e&ready_contract=$ready_contract";
+ pubshowpages("finished.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%","#66CCFF");
+?>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">بازگشت به در حال اجرا</font></td> 
+  
+   <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">چاپ قرارداد</font></td> 
+     <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">گزارشات</font></td>
+  
+     <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ارسال</font></td>
+    <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">چاپ</font></td>
+        <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کارشناس مربوطه در معاونت پژوهشي</font></td>
+      
+      <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ارسال نامه</font></td> 
+      
+      <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">همکار مرتبط</font></td>   
+ 
+  <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ويرايشهاي طرح</font></td>  
+ 
+     
+      <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظريه همه کارشناسان</font></td>      
+     
+    
+	  <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">دانشکده</font></td>
+		  
+    <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    <td width="15%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري اول</font></td>
+    <td width="30%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td width="25%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+  </tr>
+  <?
+
+ $color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $new_gharardad_D=$row_fetched["new_gharardad_daneshkade"];
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  $myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq) or die("error");
+  $rf=mysql_fetch_array($myres);
+  $daneshkade=$rf["daneshkade_name"];
+ $query1="select * from modir_daneshkade_tarh where cod_tarh=\"$cod_tarh\" ";
+  $resulthh=mysql_query($query1) or die("Error in selecting data from karshenas_elmi_tarh");
+  $hamkar_family="";
+   while($row_fetched1=mysql_fetch_array($resulthh)){
+   		$cod_modir=$row_fetched1["cod_modir"];
+   		
+   		  $send_to_modir_date=$row_fetched1["send_to_modir_date"];
+		  $startyear = substr($send_to_modir_date,0,4);
+		  $startmon = substr($send_to_modir_date,5,2);
+		  $startday = substr($send_to_modir_date,8,2);
+		  $send_to_modir_date=hijricalender( $startyear , $startmon , $startday );
+		  $send_to_modir_date = enum2fnum($send_to_modir_date);
+		  
+		  
+		  
+		  $receive_modir_date=$row_fetched1["receive_modir_date"];
+		  $startyear = substr($receive_modir_date,0,4);
+		  $startmon = substr($receive_modir_date,5,2);
+		  $startday = substr($receive_modir_date,8,2);
+		  $receive_modir_date=hijricalender( $startyear , $startmon , $startday );
+		  $receive_modir_date = enum2fnum($receive_modir_date);
+		  
+   		
+   		$query2="select * from modir_daneshkade  where  cod_modir=$cod_modir";
+   		$resulthh2=mysql_query($query2) or die("Error in selecting data from karshenas_elmi_tarh");
+   		$row_fetched3=mysql_fetch_array($resulthh2);
+   		$hamkar_family=$hamkar_family." ".$row_fetched3["modir_family"]."<br>"."تاريخ ارسال :".$send_to_modir_date."<br>"."تاريخ دريافت:".$receive_modir_date."<br>";
+   		
+   }
+  
+ if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+
+ echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a  href=\"return_indoing.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"images/ed_undo.gif\"  alt=\"Send Ready Contract\" ></a></td>";
+ 
+$myq1="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan_tarh.cod_tarh='$cod_tarh' and group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and group_karshenasan.karshenas_type='1'";
+  $myres=mysql_query($myq1) or die("Error");
+  
+  if(mysql_num_rows($myres) > 0)
+  {
+    $myrf=mysql_fetch_array($myres);
+    $name_family_sender=$myrf["karshenas_name"]."&nbsp;".$myrf["karshenas_family"]."&nbsp;<br>".$myrf["mobile"];
+  }
+  else
+  {
+  	 $name_family_sender="نامعلوم";
+  }
+  if($new_gharardad_D==1)
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a target='_blank' style=\"text-decoration:none\" href=\"rtf_mostaghel.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >چاپ قرارداد</a></td>";
+  else 
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"rtf_daneshgah.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >چاپ قرارداد</a></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"reports_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >گزارشات</a></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"send_karshenas.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></a></td>";
+  echo "<td width=\"4%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" href=\"print_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/print.gif\" width=\"19\" height=\"19\" alt=\"Print\" ></a></td>";
+echo "<td width=\"4%\" bgcolor=$color align=\"center\" class=\"tahoma1\">$name_family_sender</td>";
+echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_to_mojri_body.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/letter.gif\" width=\"11\" height=\"13\" alt=\"Send Letter\" ></a></td>";
+echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">$hamkar_family</td>";
+echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"versions.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >ويرايشها</a></td>";
+
+echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"group_karshenas_notes.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/notes.gif\"  alt=\"Notes\" ></a></td>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"send_moavenat.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/letter.gif\" width=\"11\" height=\"13\" alt=\"Send Moavenat\" ></a></td>";
+  //echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["rotbe_tarh"]."</td>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></td>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target = \"_blank\" href=\"shenasname_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/shenasname_tarh.gif\" width=\"11\" height=\"13\" alt=\"Shenasname tarh\" ></a></td>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"sabt_tarh_second.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+
+  $editable=1;
+  $mytarh_type = $row_fetched["vaziat"];
+  //send_moavenat='0' 
+  
+   if($row_fetched["status"]=="0")
+      {
+       if($row_fetched["confirm_tarh"]=="1")
+  	     $mystatus="در دست بررسي";
+    	else   
+         $mystatus="نامعلوم";
+      } 
+     else
+      {
+        $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+        $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+        $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+        $mystatus=$row_fetched_tarh["vaziat_desc"];
+        if($row_fetched_tarh["view_or_no"]=="1")
+           $editable=0;
+        else
+           $editable=1;
+      }
+  
+  if($row_fetched["send_moavenat"]!="0")
+  {
+  	$mystatus=$mystatus." /"." ارسال شده به معاونت پژوهشي";
+  }
+  if($row_fetched["confirm_moaven_tarh"]!="0")
+  {
+  	$mystatus=$mystatus." /"." در دست بررسي در معاونت پژوهشي";
+  }
+
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  //echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration : none\" href=\"change_status.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">".$mystatus."</a></td>";
+  //echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"send_moavenat.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/send_daneshkade.gif\" alt=\"Send Moavenat\" ></a></td>";
+ // echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mystatus."</td>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"letter_to_mojri_body.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/letter.gif\" width=\"11\" height=\"13\" alt=\"Send Letter\" ></a></td>";
+  //echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mystatus."</td>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"change_year_rank.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Change Rank\" ></a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >". $daneshkade."</a></td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >". $farsistartdate."</a></td>";
+  
+ // $myquery_mojri = "SELECT  * FROM tarh, mojri_tarh, mojri WHERE mojri_tarh.cod_tarh = tarh.cod_tarh AND mojri.mojri_code=mojri_tarh.mojri_code and tarh.cod_tarh = '$cod_tarh' ORDER  BY mojri.mojri_code";
+  //$myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+    $First_mojri_name = "اطلاعات موجود نيست";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+    echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"first_mojri_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$First_mojri_name."</a></td>";
+  else
+    echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri_name."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$row_fetched["tarh_title_farsi"]."</a></td>";
+  echo "<td width=\"25%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$row_fetched["cod_tarh"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>
+

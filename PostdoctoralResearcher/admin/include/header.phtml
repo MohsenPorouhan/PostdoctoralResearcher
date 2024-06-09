@@ -1,0 +1,167 @@
+ <html>
+
+<head>
+<script type="text/javascript">
+function blinkIt() {
+ if (!document.all) return;
+ else {
+   for(i=0;i<document.all.tags('blink').length;i++){
+      s=document.all.tags('blink')[i];
+      s.style.visibility=(s.style.visibility=='visible')?'hidden':'visible';
+   }
+ }
+}
+
+</script>
+
+
+ 	<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+  	<link rel="stylesheet" href="../css/slide.css" type="text/css" media="screen" />
+		<script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
+ 	<script src="../js/slide.js" type="text/javascript"></script>
+
+    <script language="javascript" src="../js/farsi.js"></script>
+   <script language="javascript" src="../js/public.js"></script>
+
+ <link rel="stylesheet" href="../js/bubble-tooltip.css" media="screen">
+	<script type="text/javascript" src="../js/bubble-tooltip.js"></script>
+    
+<script language="javascript" src="../js/public_smo_scripts.js"></script>
+  
+<script language="JavaScript" src="../js/menu.js"></script> 
+   <link href="../js/menu.css" type="text/css" rel="stylesheet">
+
+ 
+   
+ 
+<title>سيستم جامع پژوهشي</title>
+
+<META http-equiv=content-type content=text/html;charset=utf-8>
+ 
+</head>
+ <div id="bubble_tooltip" dir='ltr'>
+	<div class="bubble_top"><span></span></div>
+	<div class="bubble_middle" align='right'><span id="bubble_tooltip_content" align='right' dir='rtl' class='tahoma1'>Content is comming here as you probably can see.Content is comming here as you probably can see.</span></div>
+	<div class="bubble_bottom"></div>
+</div>
+
+
+<body topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0"  dir='rtl' onLoad="setInterval('blinkIt()',500)">
+ 	<table width="90%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" id="table1" height="100%"  dir='ltr'>
+	  <!--DWLayoutTable-->
+		<tr>
+			<td height="27" colspan="2" valign="top">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" background="../img_data/top_td_back.jpg" >
+			  <!--DWLayoutTable-->
+			  <tr>
+			    
+               	 <td  align='right' width="85" style="font-size: 8pt; font-family: Tahoma; color: #CC0000" align="center">
+               
+				<? echo enum2fnum(date("G:i")); ?></span></td>
+				 <td  align='left' width="85" style="font-size: 8pt; font-family: Tahoma; color: #CC0000" align="center">
+                
+				<span lang="fa"> : ساعت </td>
+			
+			      <td  align='right' dir='ltr' width="85" style="font-size: 8pt; font-family: Tahoma; color: #CC0000" align="center">
+               
+				 <? echo  enum2fnum(today());?> </span></td>
+			    <td align='left'   width='100' style="font-size: 8pt; font-family: Tahoma; color: #CC0000" >
+				 <span lang="fa"> : تاريخ </td>
+				
+				<td   align='left' valign="top" style="color: #CC0000">
+<img src="../img_data/top_td_holder.jpg" width="9" height="27"></td>
+			     
+			  </tr>
+		     </table></td>
+	    </tr>
+		<tr>
+		  <td height="128" colspan="2" valign="top">
+		  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+		    <!--DWLayoutTable-->
+		    <tr>
+		      <td width="100%" height="128">
+			  <table id="Table_01" width="100%" height="161" border="0" cellpadding="0" cellspacing="0">
+               <tr>
+                  
+ <td width="441" align='left'> <img src="../img_data/titile_02.jpg" width="441" height="161" alt=""></td>
+                    <td   align='left'> <img src="../img_data/titile_03.jpg"   height="161" alt=""></td>
+                  <td width="100%" align='left'> <img src="../img_data/titile_04.jpg" width="100%" height="161" alt=""></td>
+                  <td width="306" align='left'> <img src="../img_data/titile_05.jpg" width="306" height="161" alt=""></td>
+                   <!--
+                  <td  > <img src="img_data/titile_02.jpg" width="443" height="128" alt=""></td>
+                  <td  align='right' width='100%'> <img src="img_data/titile_03.jpg"  width='100%'  height="128" alt=""></td>
+                  <td  align='right' width='124'> <img src="img_data/titile_04.jpg" width="124" height="128" alt=""></td>
+                  <td width="306"> <img src="img_data/titile_05.jpg" width="306" height="128" alt=""></td>
+             -->
+                </tr>
+               
+              
+              </table>
+              
+              </td>
+            </tr>
+	                </table>
+                    </td>
+      </tr>
+		<tr>
+		  <td height="21" colspan="2" valign="top">
+		  <table width="100%" border="0" cellpadding="0" cellspacing="0" background="../img_data/top_td2_back.jpg">
+		    <!--DWLayoutTable-->
+		    <tr>
+		      <td width="25" height="21" valign="top"><img src="../img_data/top_td2_holder.jpg" width="25" height="21"></td>
+		      <td width="56" align="right" style="font-size: 8pt; font-family: Tahoma; color: #000066">
+			  <p align="center" class="tahoma1"><? echo "<a href='logout.phtml?admin=$admin&seed=$seed' style='text-decoration:none'> خروج  </a>"; ?></td>
+	          <td width="25" align="right" style="font-size: 8pt; font-family: Tahoma; color: #000066"><img src="../img_data/top_td2_holder.jpg" width="25" height="21"></td>
+	          <td width="66" align="right" style="font-size: 8pt; font-family: Tahoma; color: #000066">
+				<span lang="fa">&nbsp; ارتباط با ما&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			      </span></td>
+	          <td width="25" align="right" style="font-size: 8pt; font-family: Tahoma; color: #000066"><img src="../img_data/top_td2_holder.jpg" width="25" height="21"></td>
+	          <td width="95" align="right" style="font-size: 8pt; font-family: Tahoma; color: #000066">
+				<span lang="fa">تغيير زبان=F7
+			      </span></td>
+	          <td width="25" align="right" style="font-size: 8pt; font-family: Tahoma; color: #000066"><img src="../img_data/top_td2_holder.jpg" width="25" height="21"></td>
+	          <td width="70%" align="right"  class='tahoma1'>
+			   <? echo trim($top_string); ?><?
+						 $query="select * from modir_daneshkade where modir_username='$admin'";
+						 
+						 $result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+						 $row_fetched=mysql_fetch_array($result);
+						 if(strcmp($row_fetched["modir_type"],'4')!=0)
+						 {
+							echo "محيط کاري مدير سيستم";							
+						 }
+						 else
+						   echo "محيط کاري معاون مديريت پژوهش";
+   			   ?> </td>
+	            
+	          <td width="4" valign="top"><img src="../img_data/top_td2_back.jpg" width="4" height="21"></td>
+            </tr>
+            
+               <?
+          /*$query1="select * from karshenasan where username='$admin'";
+
+		  $result1=mysql_query($query1) or die("Error in selecting data from karshenas_tarh");
+		  if(mysql_num_rows($result1) > 0)
+		  {
+		    $row_fetched=mysql_fetch_array($result1);
+		    $cod_karshenas=$row_fetched["cod_karshenas"];
+		    $query1="select * from tarh,karshenasan_tarh where karshenasan_tarh.admin_confirm='1' and   tarh_new='1'   and karshenasan_tarh.finished='0' and  karshenasan_tarh.cod_karshenas='$cod_karshenas'  and tarh.cod_tarh=karshenasan_tarh.cod_tarh and tarh.version='-1'   group by tarh.cod_tarh order by tarh_time desc";
+			$result1=mysql_query($query1) or die("Error in selecting data from karshenas_tarh");
+			if(mysql_num_rows($result1) > 0)
+			{
+			  echo "<tr><td width=\"100%\" height=\"21\" colspan='22' valign=\"top\" class='tahoma1' align='center' ><MARQUEE  width='90%' DIRECTION=RIGHT>به محيط داوري و نظارت شما طرح جديد ارسال شده لطفا به اين محيط وارد شده و طرح مربوطه را بررسي فرماييد<MARQUEE></td></tr>";	
+			}
+		  }*/
+ ?>
+		    
+	                </table>
+                    </td>
+	  </tr>
+		<tr>
+		  <td width='100%' valign="top" height="100%">
+          
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" id="ieee" height="100%">
+		    <tr>
+	<td width="100%" style="font-size: 8pt; font-family: Tahoma; color: #808080" align="center" valign='top'>
+	  <p   align="center" dir="ltr" valign='top'>
+      <br>

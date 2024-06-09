@@ -1,0 +1,114 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms();
+echo "<br>";
+echo "<br>";
+echo "<br>";
+ message_show("در حال تغيير در پيکر بندي سيستم هستيم","red");
+footer_forms();
+exit();
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+
+$query = "select * from tarh,vaziat_tarh where  ( tarh.vaziat = vaziat_tarh.vaziat and vaziat_tarh.view_or_no = 1)";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+
+
+
+$query = "select * from tarh,vaziat_tarh where  ( tarh.vaziat = vaziat_tarh.vaziat and vaziat_tarh.view_or_no = 1)"."  order by tarh_time desc "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 2");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+?>
+
+<?
+if(mysql_num_rows($result) > 0 )
+{
+$args = $search_string;
+ pubshowpages("tarh_list_submit.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$args,"90%",$title_color);
+ 
+?>
+
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">وضعيت طرح</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    <td width="33%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان لاتين</font></td>
+    <td width="33%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+  </tr>
+  <?
+
+$color=$list_color_1;
+ $rowno=0;
+ $row=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  $row++;
+  $rowno=(($current-1) * $RecPerPage ) + $row;
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  echo "<tr>";
+  $mytarh_type = $row_fetched["vaziat"];
+  if($row_fetched["vaziat"]=="0")
+    $mystatus="نامعلوم";
+  else
+  {
+    $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+    $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+    $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+    $mystatus=$row_fetched_tarh["vaziat_desc"];
+  }
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mystatus."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$farsistartdate."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["tarh_title_english"]."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["tarh_title_farsi"]."</td>";
+  echo "<td width=\"4%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($rowno)."</td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ //message_show(".هيچ موردي يافت نشد","red");
+ message_show(".اطلاعات مربوط به اين گزينه در سال 85 قابل مشاهده خواهد بود","red");
+}
+echo "</form>";
+footer_forms();
+
+
+?>
+

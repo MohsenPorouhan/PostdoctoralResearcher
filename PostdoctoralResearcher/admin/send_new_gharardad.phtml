@@ -1,0 +1,144 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+//require_once('lib/nusoap.php');
+include ("../sms/include/WebServiceSms.php");
+include ("../sms/send_long_sms.php");
+
+echo "<br>";
+
+if ( ! isset($current))
+    $current = 1;
+    
+if(isset($action))
+{
+  if (strcmp($action,"change_status")==0 && strlen(trim($mablagh)) > 0)
+  {
+  	$mablagh=str_replace(",","",$mablagh);
+    $query="update tarh set ready_gharardad ='1',mablagh_aghd_gharardad='$mablagh', send_ready_gharardad_date='".date("Y-m-d")."' where cod_tarh='$cod_tarh' ";
+    $result=mysql_query($query) or die("Error in updating tarh type in tarh");
+     insert_position($cod_tarh,"9",$admin);
+	  //send_sms($mobile,'tarh shoma ba code $cod_Tarh be tarh haye amade be gharardad ersal shod lotfan be soalate marboot be tarh pasokh dahid');
+	$query="select user_login.* from tarh, user_login where cod_tarh='$cod_tarh' and tarh.creator=user_login.email";
+     	$result=mysql_query($query) or die("error ");
+     	$row_fetched=mysql_fetch_array($result);
+     	$mobile=$row_fetched["mobile"];
+     $message_string="پژوهشيار: طرح شما با کد $cod_tarh به طرح هاي آماده به قرارداد ارسال شد.لطفا به سوالات قرارداد پاسخ دهيد. research.tums.ac.ir";
+		//$message_string=iconv("windows-1256", "UTF-8",$message_string);
+		$subject="آماده به قرارداد شدن طرح";
+		$massage_id=send_long_sms($message_string,$mobile,$subject);
+     
+     ?>
+           <script language="javascript">
+           window.location="<? echo "control_gharardad_tarh_list.phtml?admin=$admin&seed=$seed&current=$current";  ?>";
+           </script>
+           <?
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=1>
+  <TBODY>
+    <TR>
+    <TD align=right width="100%"  class="tahoma1" height=19>
+     
+      ارسال به طرحهاي آماده به قرارداد
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+$qt1="select * from jalase_shora_tarh where cod_tarh='$cod_tarh'";
+  $rt1=mysql_query($qt1) or die("error");
+  $budje_mosavab=0;
+  if(mysql_num_rows($rt1) > 0)
+  {
+  	 $rft1=mysql_fetch_array($rt1);
+  	 $budje_mosavab=$rft1["budjeh"];
+  	 
+  } 
+  $budje_mosavab=str_replace("/","",$budje_mosavab);
+  $budje_mosavab=number_format($budje_mosavab);
+  
+   $budje=sum_of_hazine($cod_tarh,"-1");
+   $budje=number_format($budje);
+  $query="select * from vaziat_tarh where 1 order by vaziat_desc";
+  $result_tarhtype=mysql_query($query) or die("Error in selectiong data from vaziat_tarh");
+
+ 	$query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+	$result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+	$row_fetched_gharardad=mysql_fetch_array($result);
+		  
+	$mablagh_nahaei=$row_fetched_gharardad["mablagh_nahaei"];
+
+?>
+<tr>
+    <td width="350" align="right"><input type="text"  value='<? echo $budje ; ?>'  disabled  name="mablagh" class="edit-user"></td>
+    <td width="150" class="tahoma1">بودجه پيشنهادي مجري</td>
+  </tr>
+<tr>
+    <td width="350" align="right"><input type="text"  value='<? echo $budje_mosavab; ?>'  disabled   name="mablagh" class="edit-user"></td>
+    <td width="150" class="tahoma1">بودجه مصوب</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" value='<? echo $mablagh_nahaei; ?>' onkeyup="MakingMoneyForm(this)" name="mablagh" class="edit-user"></td>
+    <td width="150" class="tahoma1">مبلغ براي عقد قرارداد</td>
+  </tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="javascript:go(-1)" >بازگشت</a></td>
+  </tr>
+</table>
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

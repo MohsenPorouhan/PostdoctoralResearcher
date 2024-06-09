@@ -1,0 +1,924 @@
+<?
+include("include/database-connect.phtml");
+
+
+function send_sms($cell_number,$message)
+{
+
+/*	
+ $username = 'niazi_ws';
+$password = 'pahsmn';
+$domain = 'niazi';
+*/
+ $username = 'olomPezeshki';
+$password = 'medicalu_01';
+$domain = 'magfa';
+ 
+
+// Connect ...
+//$client = new soapclient('http://192.168.0.1/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+$client = new soapclient('http://webservice.magfa.com/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+
+
+// Read error
+$err = $client->getError();
+if ($err) {
+	echo "<h2>Constructor error</h2><pre>$err</pre>";
+}
+
+// Authentication
+$client->setCredentials($username, $password, 'basic');
+
+
+
+
+$j=0;
+ 
+$a="";
+$b="";
+$c="";
+//$message=iconv("windows-1256", "UTF-8",$message);
+
+
+for($i=0;$i<strlen($message);$i+=164)
+{
+	if($i==0)
+	  $a=substr($message,$i,164);
+	 else 
+	if($i>=164 && $i<328)
+	  $b=substr($message,$i,164);
+	 else 
+    if($i>=328 && $i<492)
+	  $c=substr($message,$i,164);
+    
+  //$msg1[$j]=substr($message,$i,160);
+  $j++;	
+}
+
+
+ /*
+ if(strlen($message) <131 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+		array("$a"),			//Message
+		array("$cell_number"),			//Destination
+	 	array("")
+						//UDH
+		)
+	);
+*/	
+ 
+ 
+ if(strlen($message) <164 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		array("$a"),			//Message
+		array("$cell_number"),			//Destination
+	 	array("30007912")
+						//UDH
+		)
+	);
+	
+ 
+ 
+ 	//echo $msg1($k-1);
+ 
+ //echo "<br>".$k."<br>";
+  
+ if ($client->fault) {
+ 	echo $client->response();
+	echo '<h2>Fault 1111</h2><pre>';	   
+    }   
+	
+ 
+}
+
+
+//-----------------------------------------------------------------------------------
+
+ if(strlen($message)>=164 && strlen($message)<328)
+ {      
+ 
+ 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		
+	    array("$a","$b" ), 			//Message
+		array("$cell_number","$cell_number"),			//Destination
+		 array("+9830007912","+9830007912"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02"),
+					//UDH
+		)
+	);
+	
+	 
+  if ($client->fault) {
+	echo '<h2>Fault 2222</h2><pre>';	   
+    }  
+
+ }
+  //-------------------------------------------------------------------------------------
+  
+  if(strlen($message)>=328 && strlen($message)<492)
+ { 	 
+ 	
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b","$c" ), 			//Message
+		array("$cell_number","$cell_number","$cell_number"),			//Destination
+	    array("+9830007912","+9830007912","+9830007912"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02","%05%00%03%47%02%03"),
+		 			//UDH
+		)
+	);	
+
+ if ($client->fault) {
+	echo '<h2>Fault 3333</h2><pre>';	   
+    }  
+      
+    }
+
+}
+
+function send_sms_user_main($cell_number,$message)
+{
+
+/*	
+ $username = 'niazi_ws';
+$password = 'pahsmn';
+$domain = 'niazi';
+*/
+ $username = 'olomPezeshki';
+$password = 'medicalu_01';
+$domain = 'magfa';
+ 
+
+// Connect ...
+//$client = new soapclient('http://192.168.0.1/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+$client = new soapclient('http://webservice.magfa.com/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+
+
+// Read error
+$err = $client->getError();
+if ($err) {
+	echo "<h2>Constructor error</h2><pre>$err</pre>";
+}
+
+// Authentication
+$client->setCredentials($username, $password, 'basic');
+
+
+
+
+$j=0;
+ 
+$a="";
+$b="";
+$c="";
+//$message=iconv("windows-1256", "UTF-8",$message);
+
+
+for($i=0;$i<strlen($message);$i+=164)
+{
+	if($i==0)
+	  $a=substr($message,$i,164);
+	 else 
+	if($i>=164 && $i<328)
+	  $b=substr($message,$i,164);
+	 else 
+    if($i>=328 && $i<492)
+	  $c=substr($message,$i,164);
+    
+  //$msg1[$j]=substr($message,$i,160);
+  $j++;	
+}
+
+
+ /*
+ if(strlen($message) <131 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+		array("$a"),			//Message
+		array("$cell_number"),			//Destination
+	 	array("")
+						//UDH
+		)
+	);
+*/	
+ 
+ 
+ if(strlen($message) <164 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		array("$a"),			//Message
+		array("$cell_number"),			//Destination
+	 	array("30007912")
+						//UDH
+		)
+	);
+	
+ 
+ 
+ 	//echo $msg1($k-1);
+ 
+ //echo "<br>".$k."<br>";
+  
+ if ($client->fault) {
+ 	echo $client->response();
+	echo '<h2>Fault 1111</h2><pre>';	   
+    }   
+	
+ 
+}
+
+
+//-----------------------------------------------------------------------------------
+
+ if(strlen($message)>=164 && strlen($message)<328)
+ {      
+ 
+ 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		
+	    array("$a","$b" ), 			//Message
+		array("$cell_number","$cell_number"),			//Destination
+		 array("+9830007912","+9830007912"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02"),
+					//UDH
+		)
+	);
+	
+	 
+  if ($client->fault) {
+	echo '<h2>Fault 2222</h2><pre>';	   
+    }  
+
+ }
+  //-------------------------------------------------------------------------------------
+  
+  if(strlen($message)>=328 && strlen($message)<492)
+ { 	 
+ 	
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b","$c" ), 			//Message
+		array("$cell_number","$cell_number","$cell_number"),			//Destination
+	    array("+9830007912","+9830007912","+9830007912"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02","%05%00%03%47%02%03"),
+		 			//UDH
+		)
+	);	
+ 	
+
+ if ($client->fault) {
+	echo '<h2>Fault 3333</h2><pre>';	   
+    }  
+      
+    }
+
+
+
+
+
+
+
+
+ 
+
+}
+
+//------------------------------------------------------------------
+
+function sum_of_hazine($cod_tarh,$version)
+{
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='$version' order by activity_type ";
+   $personnel_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+      
+     }
+      $personnel_sum=$mycount;
+   }
+
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='$version' order by mozoa_azmayesh ";
+   $lab_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='$version' order by name_dastgah";
+   $vasile_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='$version' order by target";
+   $trip_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='$version'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+  $sum_sayer=$hazine_taksir+ $hazine_digar;
+ return $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+}
+
+//-------------------------------------------------------------
+
+function current_position($cod_tarh)
+{
+  $query="select * from  tarh_position where  cod_tarh='$cod_tarh' order by id desc";
+  
+  $result_position=mysql_query($query) or die("Error in selecting data from position");
+  if(mysql_num_rows($result_position) > 0 )
+  {
+  	$row_fetched_position=mysql_fetch_array($result_position);
+  	$position=$row_fetched_position["position"];
+  	return $position;
+  	
+  }
+  else 
+   return -1;  // no record in position database for this tarh
+  
+}
+//------------------------------------------------------------------
+
+function enum2fnum($englishnum)
+{
+  $return1 = str_replace("1", "ہ", $englishnum);
+  $return2 = str_replace("2", "×", $return1);
+  $return3 = str_replace("3", "à", $return2);
+  $return4 = str_replace("4", "â", $return3);
+  $return5 = str_replace("5", "ç", $return4);
+  $return6 = str_replace("6", "è", $return5);
+  $return7 = str_replace("7", "é", $return6);
+  $return8 = str_replace("8", "ê", $return7);
+  $return9 = str_replace("9", "ë", $return8);
+  $return0 = str_replace("0", "ô", $return9);
+  $return11 = str_replace("ہ", "&#1777;", $return0);
+  $return12 = str_replace("×", "&#1778;", $return11);
+  $return13 = str_replace("à", "&#1779;", $return12);
+  $return14 = str_replace("â", "&#1780;", $return13);
+  $return15 = str_replace("ç", "&#1781;", $return14);
+  $return16 = str_replace("è", "&#1782;", $return15);
+  $return17 = str_replace("é", "&#1783;", $return16);
+  $return18 = str_replace("ê", "&#1784;", $return17);
+  $return19 = str_replace("ë", "&#1785;", $return18);
+  $return20 = str_replace("ô", "&#1776;", $return19);
+  $return21 = str_replace(":", "<font compset size 3><b>:</b></font>", $return20);
+  return $return21;
+
+}
+
+//---------------------------------------------------------------------------------------
+
+function footer_forms()
+{
+ include("include/footer.phtml");
+exit();
+
+}
+
+//---------------------------------------------------------------------------------------
+function header_forms()
+{
+	
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+ include("include/header.phtml");
+ 
+
+}
+
+//-----------------------------------------------------------------------
+
+function admin_type($admin)     // 0 == admin daneshkade  1== admin kol
+{
+  $query="select * from modir_daneshkade where modir_username=\"$admin\"";
+  $result=mysql_query($query) or die("Error in selectiong data from modir daneshkade");
+  if(mysql_num_rows($result) > 0)
+  {
+   $row_fetched=mysql_fetch_array($result);
+   return $row_fetched["modir_type"];
+  }
+  else
+    return -1;
+  
+  
+}
+
+//-----------------------------------------------------------------------
+
+function message_show($message,$color)     // 0 == admin daneshkade  1== admin kol
+{
+ echo "<table border=\"0\" width=\"100%\" height=\"40%\">";
+ echo "<tr>";
+ echo "<td width=\"100%\" align=\"center\" dir='rtl'><font face=\"tahoma\" size=\"2\" color=\"$color\">$message</font></td>";
+ echo "</tr>";
+ echo "</table>";
+
+}
+
+
+//-----------------------------------------------------------------------
+
+
+function pubshowpages($link,$current,$PageCountShows,$Reccount,$startw,$endw,$RecPerPage,$args,$width,$bgcolor)
+{
+
+     $PageCNT = ceil($Reccount/$RecPerPage);
+     if($PageCNT <=1 )
+       return;
+     if(($startw==0 && $endw==0) )
+     {
+      $startw=1;
+      if($PageCNT < $PageCountShows )
+        $endw = $PageCNT;
+      else
+        $endw = $PageCountShows;
+     }
+     else    //line 50
+     {
+      if($PageCNT < $PageCountShows)
+      {
+        $startw = 1;
+        $endw = $PageCNT;
+      }
+      else
+      {
+        //   fgfdgdfdf
+        if( ($current-$startw) > floor(($endw-$startw)/2) )  //line60
+        {
+         if( ($endw+ceil(($endw-$startw)/2)) < $PageCNT )
+         {
+            $tmpvar = $startw;
+            $startw += ceil(($endw-$startw)/2);
+            $endw += ceil(($endw-$tmpvar)/2);
+         }
+         else
+         {
+           if($endw < $PageCNT)
+           {
+             $startw+=($PageCNT-$endw);
+             $endw+=($PageCNT-$endw);
+           }
+         }
+        }
+        else
+        {
+          if( ($current-$startw) < ceil(($endw-$startw)/2) )
+          {
+            if(($startw-ceil(($endw-$startw)/2)) > 1  )
+            {
+               $tmpvar = $startw;
+               $startw-=ceil(($endw-$startw)/2);
+               $endw-=ceil(($endw-$tmpvar)/2);
+            }
+            else
+            {
+               $tmpvar = $startw;
+               $startw=1;
+
+               if( $PageCNT > $PageCountShows )
+                  $endw = $PageCountShows;
+               else
+                  $endw=$PageCNT;
+             }
+          }
+        }
+     }
+    }
+
+if ( $current == $PageCNT )
+{
+  $endw=$PageCNT;
+  if ($PageCountShows < $PageCNT )
+    $startw = ($PageCNT+1) - $PageCountShows;
+  else
+    $startw = 1 ;
+
+
+}
+
+ echo"<table width=\"$width\"   border=0 align=\"center\" valign=\"center\"  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"$bgcolor\">";
+ $i=0;
+
+ echo "<tr>";
+
+ echo "<td width = 20% align=left dir=\"rtl\">";
+ echo "<p align=\"center\" class=\"tahoma1\">";
+ echo "$Reccount مورد يافت شد";
+ echo "</p>";
+ echo "</td>";
+ echo "<td width = 60% align=center>";
+
+ if($PageCNT>2 &&  $current > 1 )
+ {
+    printf("<a style=\"text-decoration: none\" href=%s?current=%d&startw=%d&endw=%d&%s><font face=\"arial\"size=3 color=green></font>",$link,1,0,0,$args);
+    echo "<img src=\"image/fullleft.gif\" border=\"0\">";
+    echo "</a>";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+ else
+ {
+    echo "<img src=\"image/fullleft.gif\" border=\"0\">";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+
+ }
+
+
+ if($current > 1 )
+ {
+    printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&%s><font face=\"arial\"size=3 color=green></font>",$link,$current-1,$startw,$endw,$args);
+    echo "<img src=\"image/left.gif\" border=\"0\">";
+    echo "</a>";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+else
+ {
+    echo "<img src=\"image/left.gif\" border=\"0\">";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+
+
+ if($PageCNT>1)
+ {
+  for($i=$startw ;$i<=$endw;$i++)
+  {
+   if($i==$current)
+      printf("<font face=\"arial\" size=2 color=green><spawn align=\"center\" class=\"CenterLinkOut\"><b>&nbsp;%s&nbsp;</b></spawn></font>",$i);
+   else
+      printf("<a  class=\"CenterLinkOut\" href=%s?current=%d&startw=%d&endw=%d&%s><font face=\"arial\" size=2 color=blue><spawn align=\"center\"><b>&nbsp;%s&nbsp;</b></spawn></font></a>",$link,$i,$startw,$endw,$args,$i);
+  }
+ }
+
+ if(  $current < $PageCNT )
+ {
+   printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&%s><font face=\"arial\" size=2 color=green></font>",$link,$current+1,$startw,$endw,$args);
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/right.gif\" border=\"0\">";
+   //echo "Next";
+   echo "</a>";
+ }
+ else
+ {
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/right.gif\" border=\"0\">";
+ }
+
+ if($PageCNT>2 && $current < $PageCNT )
+ {
+   printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$args);
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/fullright.gif\" border=\"0\">";
+   echo "</a>";
+ }
+ else
+ {
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/fullright.gif\" border=\"0\">";
+ }
+
+
+ echo"</td>";
+ echo "<td width = 20% align=right>";
+ echo "<p align=\"center\" class=\"tahoma1\">";
+ echo "صفحه $current از $PageCNT";
+
+ echo "</p>";
+ echo "</td>";
+
+ echo"</tr>";
+ echo"</table>";
+
+
+}
+
+
+//-------------------------------------------------------------------
+
+function BaseFromMiladiDate($mldyear , $mldmonth , $mldday )
+{
+  $PrevMonthDayMld = array(0,31,59,90,120,151,181,212,243,273,304,334);
+  $iDaySum = 0 ;
+  $iNewDateElapsed =0 ;
+  $iBaseYear = 1996 ;
+  $iBaseDateElapsed = 79 ;
+  $iNewDateElapsed = ($mldday -1 ) + $PrevMonthDayMld[$mldmonth-1];
+  if ( (($mldyear % 4 ) == 0 ) && ( $mldmonth > 2))
+     $iNewDateElapsed++;
+
+  $iDaySum = $iNewDateElapsed - $iBaseDateElapsed +($mldyear-$iBaseYear) *365 +(int)(($mldyear -$iBaseYear ) / 4 );
+
+  if ((($mldyear - $iBaseYear) % 4 ) != 0 )
+     $iDaySum = $iDaySum+1;
+  return $iDaySum;
+}
+//---------------------------------------------------------------------
+function hijricalender ( $year , $month , $day )
+{
+  $PrevMonthDayHjr = array(0,31,62,93,124,155,186,216,246,276,306,336);
+  if ( $year < 1995 || $month < 1 || $month > 12 || $day > 31 || $day < 1 )
+    return 0;
+  $daysum = BaseFromMiladiDate($year , $month , $day );
+  $iaddyear=0;
+  while ($daysum >0 )
+  {
+      $daysum = $daysum -365;
+      if (($iaddyear % 4 ) == 0 )
+        $daysum--;
+      $iaddyear++;
+  }
+  if ( $daysum <0 )
+  {
+      $iaddyear--;
+      $daysum = $daysum+365;
+      if (($iaddyear % 4 ) == 0 )
+        $daysum++;
+  }
+  $itodayyear = 1375+$iaddyear;
+  $itodaymonth=1;
+  while ( $daysum >= $PrevMonthDayHjr[$itodaymonth])
+  {
+      $itodaymonth++;
+      if( $itodaymonth ==12 )
+        break;
+  }
+  $daysum=$daysum - $PrevMonthDayHjr[$itodaymonth-1];
+  $itodayday = 1 + $daysum;
+  $isodate = sprintf("%04d/%02d/%02d",$itodayyear ,$itodaymonth, $itodayday);
+  return  $isodate;
+}
+
+//--------------------------------------------------------------------
+
+class png_counter {
+
+    var $counter;
+    var $size;
+    var $digit_path;
+    var $config;
+
+    function png_counter() {
+        global $CFG;
+        $this->config = $CFG;
+    }
+
+    function get_digit_size() {
+        if (file_exists("$this->digit_path/1.png")) {
+            $digit_size = getimagesize("$this->digit_path/1.png");
+            if ($digit_size[2] != "3") {
+                return false;
+            } else {
+                $this->size[0] = $digit_size[0];
+                $this->size[1] = $digit_size[1];
+                return $this->size;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    function check_referer() {
+        global $VALID;
+        $is_valid = false;
+        $referer = getenv("HTTP_REFERER");
+        if (empty($referer)) {
+            return false;
+        } else {
+            for ($i=0;$i<sizeof($VALID);$i++) {
+                if (eregi("$VALID[$i]",$referer)) {
+                    $is_valid = true;
+                    break;
+                }
+            }
+            return $is_valid;
+        }
+    }
+
+    function is_valid_visit() {
+        global $HTTP_COOKIE_VARS;
+        if (isset($HTTP_COOKIE_VARS['counter_png'])) {
+            return false;
+        } else {
+            $expire = time()+$this->config['lock_timeout']*60;
+            setcookie("counter_png", "1", $expire, "/");
+            return true;
+        }
+    }
+
+    /*
+     * function read_counter_db($page) added by
+     * Félix MARTIN RODRIGUEZ <felix_martin-rdguez@hp.com>
+     *
+     */
+
+    function read_counter_db($page) {
+        $update = false;
+	    /* if the db does not exist error and close */
+        $link=mysql_connect($this->config['dbhost'],$this->config['dbuser'],$this->config['dbpasswd']);
+        if (! $link) {
+            header("Location: error.png");
+            exit;
+        }
+
+        mysql_select_db($this->config['dbname'],$link);
+        $sql = "SELECT page,count FROM counter WHERE page = '$page'";
+        $result=mysql_query($sql,$link);
+        if (! $result) {
+            header("Location: error.png");
+            mysql_close($link);
+            exit;
+        }
+
+        if ( $row=mysql_fetch_row($result) ) {
+            $this->counter = $row[1];
+        } else {
+            /* if page entry does not exist create record    page(txt) count(int) */
+            $this->counter = 1;
+            $sql = "INSERT INTO counter (page,count) VALUES ('$page',$this->counter)";
+            $result=mysql_query($sql,$link);
+            if (! $result) {
+                header("Location: error.png");
+                mysql_close($link);
+                exit;
+            }
+        }
+
+        $update = false;
+        /* increment only if needed  */
+        if ($this->config['block_ip']) {
+            if ($this->is_valid_visit()) {
+                $this->counter++;
+                $update = true;
+            }
+        } else {
+           $this->counter++;
+           $update = true;
+        }
+        /* update only if we have incremented */
+        if ( $update ) {
+            $sql = "UPDATE counter SET count=$this->counter WHERE page = '$page'";
+            $result=mysql_query($sql,$link);
+            if (! $result){
+                header("Location: error.png");
+                mysql_close($link);
+                exit;
+            }
+            mysql_close($link);
+        }
+    }
+
+    function read_counter_file($page) {
+        $update = false;
+        if (!file_exists("./pages/$page.txt")) {
+            $count_dat = fopen("./pages/$page.txt","w+");
+            $this->counter = 1;
+            fwrite($count_dat,$this->counter);
+            fclose($count_dat);
+        } else {
+            $fp = fopen("./pages/$page.txt", "r+");
+            flock($fp, 2);
+            $this->counter = fgets($fp, 4096);
+            flock($fp, 3);
+            fclose($fp);
+            $update = false;
+            if ($this->config['block_ip']) {
+                if ($this->is_valid_visit()) {
+                    $this->counter++;
+                    $update = true;
+                }
+            } else {
+                $this->counter++;
+                $update = true;
+            }
+            if ($update) {
+                $fp = fopen("./pages/$page.txt", "r+");
+                flock($fp, 2);
+                rewind($fp);
+                fwrite($fp, $this->counter);
+                flock($fp, 3);
+                fclose($fp);
+            }
+        }
+        return $this->counter;
+    }
+
+    function create_png($page,$digit) {
+        if ($this->config['referer_check']) {
+            if (!$this->check_referer()) {
+               header("Location: error.png");
+               exit;
+           }
+        }
+        $this->digit_path = "./digits/".$digit;
+        if ($this->get_digit_size()) {
+            if ($this->config['db']) {
+                $this->read_counter_db($page);
+            } else {
+                $this->read_counter_file($page);
+            }
+            $position = 0;
+            $this->counter = sprintf("%0"."".$this->config['pad'].""."d",$this->counter);
+            $counter_length = strlen($this->counter);
+            $total_size = $this->size[0]*$counter_length;
+            $dest_img = ImageCreate($total_size, $this->size[1]);
+            for ($i=0;$i<$counter_length;$i++) {
+               $digit = substr("$this->counter",$i,1);
+               eval("\$pic".$i."=ImageCreateFromPNG(\"".$this->digit_path."/".$digit.".png\");");
+               eval("ImageCopy(\$dest_img,\$pic".$i.",".$position.",0,0,0,".$this->size[0].",".$this->size[1].");");
+               $position += $this->size[0];
+            }
+            ImagePNG($dest_img);
+         } else {
+            header("Location: error.png");
+         }
+     }
+}
+//-----------------------------------------------------------------
+
+function today()
+{
+
+		$mydate=date("Y-m-d");
+		$endyear=substr($mydate,0,4);
+		$endmon=substr($mydate,5,2);
+		$endday=substr($mydate,8,2);
+		$todaydate= hijricalender($endyear,$endmon,$endday);
+		
+		return $todaydate;
+}
+
+?>

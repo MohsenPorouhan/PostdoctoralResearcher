@@ -1,0 +1,728 @@
+	
+	
+	<script language="javascript" type="text/javascript">
+	function selectall(mm){
+		//alert("ok");
+		var checkall=document.getElementById("a0").checked;
+		var checkal2=document.getElementById("a00").checked;
+		var aa= document.getElementById("form1");
+		 var action = "<?php echo $action;?>";
+		 //alert(action);
+		 if(action==""){
+				if(mm=="menue"){
+					for(var i=7;i<31;i++){
+						
+						aa.elements[i].checked = checkall;
+					}
+				}
+				if(mm=="sub_menue"){
+					for(var i=32;i<46;i++){
+					aa.elements[i].checked = checkal2;
+					}
+				}
+		 }
+		 if(action=="edit_modir"){
+				 if(mm=="menue"){
+						for(var i=3;i<28;i++){
+							
+							aa.elements[i].checked = checkall;
+						}
+					}
+					if(mm=="sub_menue"){
+						for(var i=29;i<42;i++){
+						aa.elements[i].checked = checkal2;
+						}
+					}
+		 }
+	}
+	
+	</script>
+
+	
+	<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if(isset($action))
+{
+  if (strcmp($action,"add_modir")==0)
+  {
+	 $value_form="";
+      for($i=1;$i<40;$i++)
+  	   {
+	    $var= "a".$i;
+	    
+		  if(strlen(trim($value_form))<=0)
+		    $value_form=$var."="."\"".addslashes($$var)."\"";
+		  else
+		    $value_form=$value_form.",".$var."="."\"".addslashes($$var)."\"";
+	     
+	   
+  	   }
+  	  // echo $value_form;
+     if(strlen(trim($username)) > 0 && strlen(trim($modir_name)) > 0 && strlen(trim($modir_family)) > 0 &&  strlen(trim($modir_pass)) > 0 &&  strlen(trim($modir_re_pass)) > 0  && strcmp(trim($modir_pass),trim($modir_re_pass))==0  )
+    {
+	  if(strlen(trim($saltavalod)) > 5)
+		 $saltavalod="";
+      $query="select * from modir_daneshkade where modir_username=\"$username\"";
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi 12");
+
+      if ( mysql_num_rows($result) <= 0 )
+      {
+
+        $query="insert into modir_daneshkade set modir_username='$username',modir_name='$modir_name' , modir_family='$modir_family',  modir_email  ='$modir_email', password='$modir_pass',modir_type='4',dastresi='$value_form',accept_gharardad='$accept_gharardad'";
+
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+      }
+      else
+       $status="duplicate_entry";
+    }
+    else
+      $status="entry_error";
+  }
+
+ if (strcmp($action,"delete_modir")==0)
+ {
+    $query="delete from modir_daneshkade where modir_username = \"$delete_id\"";
+    
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_elmi");
+    
+ }
+ 
+ 
+ 
+   if (strcmp($action,"edit_modir_second")==0)
+  {
+  $value_form="";
+      for($i=1;$i<40;$i++)
+  	   {
+	    $var= "a".$i;
+	    
+		  if(strlen(trim($value_form))<=0)
+		    $value_form=$var."="."\"".addslashes($$var)."\"";
+		  else
+		    $value_form=$value_form.",".$var."="."\"".addslashes($$var)."\"";
+	     
+	   
+  	   }
+     if( strlen(trim($modir_name)) > 0 && strlen(trim($modir_family)) > 0   )
+    {
+	  if(strlen(trim($saltavalod)) > 5)
+		 $saltavalod="";
+      $query="select * from modir_daneshkade where modir_username=\"$modir_username\"";
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi 12");
+
+      if ( mysql_num_rows($result) > 0 )
+      {
+
+        $query="update  modir_daneshkade set modir_name='$modir_name' , modir_family='$modir_family', modir_email  ='$modir_email',dastresi='$value_form',accept_gharardad='$accept_gharardad' where modir_username='$modir_username'";
+      
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+      }
+      else
+       $status="duplicate_entry";
+    }
+    else
+    {
+      $status="entry_error";
+      $action="edit_modir";
+    }
+  }
+ 
+ 
+ 
+ if (strcmp($action,"edit_modir")==0) 
+ {
+ 	$query="select * from modir_daneshkade where modir_username='$modir_username'";
+ 	$result=mysql_query($query) or die("Error in selecting data from karshenasan"); 	
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$modir_name=$row_fetched["modir_name"];
+ 	$modir_family=$row_fetched["modir_family"];
+ 	$modir_email=$row_fetched["modir_email"];
+ 	$dastresi=$row_fetched["dastresi"];
+ 	$accept_gharardad=$row_fetched["accept_gharardad"];	
+ 	//$i=check_value($id,"a1");
+ 	
+ }
+ else
+ {
+ 	$modir_name="";
+ 	$modir_family="";
+ 	$modir_email=""; 
+ 	$accept_gharardad=""; 
+ }
+
+}
+
+if(strcmp($action,"edit_modir")==0)
+ echo "<form name=\"add_karshenas\" method=\"post\" id=\"form1\"   action=\"$PHP_SELF?action=edit_modir_second&admin=$admin&seed=$seed&modir_username=$modir_username\">"; 
+else 
+ echo "<form name=\"add_karshenas\" id=\"form1\" method=\"post\"  action=\"$PHP_SELF?action=add_modir&admin=$admin&seed=$seed\">"; 
+ 
+ 
+ ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/moavenin.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" align="center"  cellspacing="0" cellpadding="2"  bordercolor="#333333"  style="border-style: solid; border-width: 2;">
+<tr><td width="100%" >
+        <table border="0" width="500"  cellspacing="0" cellpadding="2"  style="border-style: solid; border-width: 2;" >
+        <?
+          if (strcmp($status,"entry_error")==0)
+          {
+            echo "<tr>";
+            echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+            echo "</tr>";
+          }
+          if (strcmp($status,"duplicate_entry")==0)
+          {
+            echo "<tr>";
+            echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+            echo "</tr>";
+          }
+        ?>
+          <tr>
+            <td width="300" align="right"><input type="text" value="<? echo $modir_name; ?>" name="modir_name" size="15" class="edit-user"dir=RTL   ></td>
+            <td width="100" class="tahoma1"><span class="star-message">*</span> نام</td>
+          </tr>
+        
+          <tr>
+            <td width="300" align="right"><input type="text" value="<? echo $modir_family; ?>" name="modir_family" size="15" class="edit-user" dir=RTL   ></td>
+            <td width="100" class="tahoma1"><span class="star-message">*</span>نام خانوادگي</td>
+          </tr>
+         
+        
+          <tr>
+            <td width="300" align="right"><input type="text" value="<? echo $modir_email;?>" value="پست الکترونيکي نام کاربري ايشان است" onfocus="kar_email.value='' " name="modir_email" size="15" class="edit-user" ></td>
+            <td width="100" class="tahoma1">پست الکترونيکي</td>
+          </tr>
+           <?php //$i=check_field_value($dastresi,"a1");
+              		if($accept_gharardad=="on")
+              			$select1="checked";
+              		else
+              			$select1="";
+              		//$i=check_field_value($dastresi,"a2");
+              		
+              ?>
+           <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select1;?> id="a2" name="accept_gharardad" ></td>
+                <td width="300" class="tahoma1">تاييد قرارداد</td>
+                
+          </tr>
+         
+         
+        <?
+          if(strcmp($action,"edit_modir")!=0)
+        {
+        ?>
+          <tr>
+            <td width="300" align="right"><input type="text" name="username" size="15" class="edit-user" ></td>
+            <td width="100" class="tahoma1"><span class="star-message">*</span>نام کاربري</td>
+          </tr>
+           <tr>
+            <td width="300" align="right"><input type="password" name="modir_pass" size="15" class="edit-user" ></td>
+            <td width="100" class="tahoma1"><span class="star-message">*</span>رمز عبور</td>
+          </tr>
+        
+          <tr>
+            <td width="300" align="right"><input type="password" name="modir_re_pass" size="15" class="edit-user" ></td>
+            <td width="100" class="tahoma1"><span class="star-message">*</span>تکرار رمز عبور</td>
+          </tr>
+          
+        <?
+        }
+        ?>
+        </table>
+        </td>
+</tr>
+<tr>
+	<td width="100%">
+        <table border="0" width="500"  cellspacing="0" cellpadding="2"  style="border-style: solid; border-width: 2;">
+       		 <tr>
+                <td dir="ltr" width="50" align="right"><input dir="rtl" type="checkbox" id="a0" onclick="selectall('menue');" name="a0" ></td>
+                <td dir="ltr" width="100" class="tahoma1">همه موارد</td>
+               
+                <td dir="rtl" width="250" class="tahoma1">دسترسي به منوهاي اصلي </td>
+                
+                
+              </tr>
+              <?php $i=check_field_value($dastresi,"a1");
+              		if($i=="on")
+              			$select1="checked";
+              		else
+              			$select1="";
+              		$i=check_field_value($dastresi,"a2");
+              		if($i=="on")
+              			$select2="checked";
+              		else
+              			$select2="";
+              		
+              ?>
+            <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select2;?> id="a2" name="a2" ></td>
+                <td width="300" class="tahoma1">HSR طرحهاي تحقيقاتي</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select1;?> name="a1" id="a1"   ></td>
+                <td width="300" class="tahoma1">طرحهاي تحقيقاتي</td>
+              </tr>
+               <?php $i=check_field_value($dastresi,"a3");
+              		if($i=="on")
+              			$select3="checked";
+              		else
+              			$select3="";
+              		$i=check_field_value($dastresi,"a4");
+              		if($i=="on")
+              			$select4="checked";
+              		else
+              			$select4="";
+              		
+              ?>
+               <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select4;?> name="a4"  id="a4" ></td>
+                <td width="300" class="tahoma1">بررسي اخلاقي پايان نامه ها</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select3;?> name="a3" id="a3"  ></td>
+                <td width="300" class="tahoma1">مراکز مستقل</td>
+             
+              </tr>
+        		 <?php $i=check_field_value($dastresi,"a5");
+              		if($i=="on")
+              			$select5="checked";
+              		else
+              			$select5="";
+              		$i=check_field_value($dastresi,"a6");
+              		if($i=="on")
+              			$select6="checked";
+              		else
+              			$select6="";
+              		
+              ?>
+               <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select6;?> name="a6"  id="a6" ></td>
+                <td width="300" class="tahoma1">پيام کوتاه</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select5;?> name="a5" id="a5"  ></td>
+                <td width="300" class="tahoma1">طرح هاي قديمي</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a7");
+              		if($i=="on")
+              			$select7="checked";
+              		else
+              			$select7="";
+              		$i=check_field_value($dastresi,"a8");
+              		if($i=="on")
+              			$select8="checked";
+              		else
+              			$select8="";
+              		
+              ?>
+               <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select8;?> name="a8" id="a8"  ></td>
+                <td width="300" class="tahoma1">کارشناسان و ناظرين</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select7;?> name="a7" id="a7"  ></td>
+                <td width="300" class="tahoma1">گزارشات نهايي تاييد نشده</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a9");
+              		if($i=="on")
+              			$select9="checked";
+              		else
+              			$select9="";
+              		$i=check_field_value($dastresi,"a10");
+              		if($i=="on")
+              			$select10="checked";
+              		else
+              			$select10="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select10;?> name="a10" id="a10"  ></td>
+                <td width="300" class="tahoma1">مجريان</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select9;?> name="a9" id="a9"  ></td>
+                <td width="300" class="tahoma1">شوراي پژوهشي</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a11");
+              		if($i=="on")
+              			$select11="checked";
+              		else
+              			$select11="";
+              		$i=check_field_value($dastresi,"a12");
+              		if($i=="on")
+              			$select12="checked";
+              		else
+              			$select12="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select12;?> name="a12"  id="a12" ></td>
+                <td width="300" class="tahoma1">دبيرخانه</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select11;?> name="a11"  id="a11" ></td>
+                <td width="300" class="tahoma1">ثوابت سيستم</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a13");
+              		if($i=="on")
+              			$select13="checked";
+              		else
+              			$select13="";
+              		$i=check_field_value($dastresi,"a14");
+              		if($i=="on")
+              			$select14="checked";
+              		else
+              			$select14="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select14;?> name="a14"  id="a14" ></td>
+                <td width="300" class="tahoma1">ارسال فايل</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select13;?> name="a13" id="a13"  ></td>
+                <td width="300" class="tahoma1">گزارشات</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a15");
+              		if($i=="on")
+              			$select15="checked";
+              		else
+              			$select15="";
+              		$i=check_field_value($dastresi,"a16");
+              		if($i=="on")
+              			$select16="checked";
+              		else
+              			$select16="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select16;?> name="a16" id="a16"  ></td>
+                <td width="300" class="tahoma1">تصحيح در نرم افزار</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select15;?> name="a15"  id="a15" ></td>
+                <td width="300" class="tahoma1">تصحيح در جدول گانت</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a17");
+              		if($i=="on")
+              			$select17="checked";
+              		else
+              			$select17="";
+              		$i=check_field_value($dastresi,"a18");
+              		if($i=="on")
+              			$select18="checked";
+              		else
+              			$select18="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select18;?> name="a18" id="a18"  ></td>
+                <td width="300" class="tahoma1">پيام کارشناسان</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select17;?> name="a17" id="a17"  ></td>
+                <td width="300" class="tahoma1">ارسال فايل به همکاران</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a19");
+              		if($i=="on")
+              			$select19="checked";
+              		else
+              			$select19="";
+              		$i=check_field_value($dastresi,"a20");
+              		if($i=="on")
+              			$select20="checked";
+              		else
+              			$select20="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select20;?> name="a20"  id="a20" ></td>
+                <td width="300" class="tahoma1">تعريف معاون</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select19;?> name="a19"  id="a19" ></td>
+                <td width="300" class="tahoma1">اطلاع رساني</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a21");
+              		if($i=="on")
+              			$select21="checked";
+              		else
+              			$select21="";
+              		$i=check_field_value($dastresi,"a22");
+              		if($i=="on")
+              			$select22="checked";
+              		else
+              			$select22="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select22;?> name="a22"  id="a22" ></td>
+                <td width="300" class="tahoma1">تغيير کد طرح</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select21;?> name="a21"  id="a21" ></td>
+                <td width="300" class="tahoma1">مديريت کاربران</td>
+             
+              </tr>
+               <?php $i=check_field_value($dastresi,"a23");
+              		if($i=="on")
+              			$select23="checked";
+              		else
+              			$select23="";
+              		$i=check_field_value($dastresi,"a24");
+              		if($i=="on")
+              			$select24="checked";
+              		else
+              			$select24="";
+              		
+              ?>
+              <tr>
+               
+                <td width="100" align="right"><input type="checkbox" <?php echo $select24;?> name="a24" id="a24"  ></td>
+                <td width="300" class="tahoma1"> تست</td>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select23;?> name="a23"  id="a23" ></td>
+                <td width="300" class="tahoma1">تغيير نام مجري طرح</td>
+             
+              </tr>
+        </table>
+        </td>
+        
+</tr>
+<tr>
+	<td width="100%">
+		<table border="0" width="500"  cellspacing="0" cellpadding="2"  style="border-style: solid; border-width: 2;">
+       		 <tr>
+                <td dir="ltr" width="50" align="right"><input dir="rtl" type="checkbox" id="a00" onclick="selectall('sub_menue');" name="a00" ></td>
+                <td dir="ltr" width="100" class="tahoma1">همه موارد</td>
+               
+                <td dir="ltr" width="250" class="tahoma1">دسترسي به زير منوها </td> 
+              </tr>
+              <?php $i=check_field_value($dastresi,"a25");
+              		if($i=="on")
+              			$select25="checked";
+              		else
+              			$select25="";
+              		$i=check_field_value($dastresi,"a26");
+              		if($i=="on")
+              			$select26="checked";
+              		else
+              			$select26="";
+              		
+              ?>
+              <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select26;?> id="a26" name="a26" ></td>
+                <td width="300" class="tahoma1">آرشيو طرح</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select25;?> name="a25" id="a25"   ></td>
+                <td width="300" class="tahoma1">ويرايش طرح</td>
+              </tr>
+              <?php $i=check_field_value($dastresi,"a27");
+              		if($i=="on")
+              			$select27="checked";
+              		else
+              			$select27="";
+              		$i=check_field_value($dastresi,"a28");
+              		if($i=="on")
+              			$select28="checked";
+              		else
+              			$select28="";
+              		
+              ?>
+               <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select28;?> id="a28" name="a28" ></td>
+                <td width="300" class="tahoma1">ارجاع طرح به دانشکده</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select27;?> name="a27" id="a27"   ></td>
+                <td width="300" class="tahoma1">نظرات</td>
+              </tr>
+              <?php $i=check_field_value($dastresi,"a29");
+              		if($i=="on")
+              			$select29="checked";
+              		else
+              			$selcect1="";
+              		$i=check_field_value($dastresi,"a30");
+              		if($i=="on")
+              			$select30="checked";
+              		else
+              			$select30="";
+              		
+              ?>
+               <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select30;?> id="a30" name="a30" ></td>
+                <td width="300" class="tahoma1">ارسال طرح به قبل از تصويب</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select29;?> name="a29" id="a29"   ></td>
+                <td width="300" class="tahoma1">تاييد دريافت</td>
+              </tr>
+              <?php $i=check_field_value($dastresi,"a31");
+              		if($i=="on")
+              			$select31="checked";
+              		else
+              			$selcect31="";
+              		$i=check_field_value($dastresi,"a32");
+              		if($i=="on")
+              			$select32="checked";
+              		else
+              			$select32="";
+              		
+              ?>
+               <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select32;?> id="a32" name="a32" ></td>
+                <td width="300" class="tahoma1">مبلغ پيشنهادي براي قرارداد</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select31;?> name="a31" id="a31"   ></td>
+                <td width="300" class="tahoma1">ارسال طرح به بعد از تصويب</td>
+              </tr>
+              <?php $i=check_field_value($dastresi,"a33");
+              		if($i=="on")
+              			$select33="checked";
+              		else
+              			$select33="";
+              		$i=check_field_value($dastresi,"a34");
+              		if($i=="on")
+              			$select34="checked";
+              		else
+              			$select34="";
+              		
+              ?>
+                <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select34;?> id="a34" name="a34" ></td>
+                <td width="300" class="tahoma1">نظر ناظرين</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select33;?> name="a33" id="a33"   ></td>
+                <td width="300" class="tahoma1">مشاهده گزارشات</td>
+              </tr>
+              <?php $i=check_field_value($dastresi,"a35");
+              		if($i=="on")
+              			$select35="checked";
+              		else
+              			$select35="";
+              		$i=check_field_value($dastresi,"a36");
+              		if($i=="on")
+              			$select36="checked";
+              		else
+              			$select36="";
+              		
+              ?>
+              <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select36;?> id="a36" name="a36" ></td>
+                <td width="300" class="tahoma1">چاپ قرارداد</td>
+                
+                <td width="100" align="right"><input type="checkbox" <?php echo $select35;?> name="a35" id="a35"   ></td>
+                <td width="300" class="tahoma1">گزارش پرداخت</td>
+              </tr>
+              <?php 
+              		$i=check_field_value($dastresi,"a37");
+              		if($i=="on")
+              			$select37="checked";
+              		else
+              			$select37="";
+              		
+              ?>
+               <tr>
+                <td width="100" align="right"><input type="checkbox" <?php echo $select37;?> id="a37" name="a37" ></td>
+                <td width="300" class="tahoma1">ارسال مستقيم نامه به مجري</td>
+                
+              </tr>
+              
+		</table>
+	</td>
+</tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+
+ <?
+   $query="select * from modir_daneshkade where modir_type='4' order by  modir_name ";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+    echo "<table border=\"1\" width=\"500\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"500\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/top-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">کلمه عبور</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">حذف</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">ويرايش</td>";
+    echo "<td width=\"123\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام خانوادگي</td>";
+    echo "<td width=\"104\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام</td>";
+    echo "<td width=\"100\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام کاربري</td>";
+    echo "<td width=\"16\"  background=\"image/top-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+   $color="#E2E0E0";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    $mycod_karshenas = $myrow_fetched["modir_username"];
+    echo "<tr bgcolor=\"$color\">";
+    echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href=\"change_users_password.phtml?admin=$admin&seed=$seed&db=modir_daneshkade&username=".$myrow_fetched["modir_username"]."&user_field=modir_username\" ><img border=\"0\" src=\"image/password.gif\" width=\"11\" height=\"13\" alt=\"Change Password\" ></a></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" onclick='window.open(\"del_assistant.phtml?mainwindow=add_assistant.phtml&admin=$admin&seed=$seed&action=del_assistant&delete_id=".$myrow_fetched["modir_username"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href='$PHP_SELF?admin=$admin&seed=$seed&modir_username=$mycod_karshenas&action=edit_modir'><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenasan_detail.phtml?admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["modir_family"],0,18)."</a></p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenasan_detail.phtml?admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["modir_name"],0,18)."</a></p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenasan_detail.phtml?admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["modir_username"],0,18)."</a></p></td>";
+    echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+   }
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"123\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"104\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"100\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\"></td>";
+    echo "</tr>";
+
+   echo "</table>";
+
+  }
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

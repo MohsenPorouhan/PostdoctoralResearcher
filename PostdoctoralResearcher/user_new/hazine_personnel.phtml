@@ -1,0 +1,1021 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+
+header_forms($admin,$seed);
+?>
+<link rel="stylesheet" type="text/css"
+	href="../assets/plugins/select2/select2-rtl.css" />
+<link id="select2-metronic" rel="stylesheet" type="text/css"
+	href="../assets/plugins/select2/select2-metronic-rtl.css" />
+<link id="DT_bootstrap" rel="stylesheet"
+	href="../assets/plugins/data-tables/DT_bootstrap_rtl.css" />
+<!--  <link href="../assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet" />-->
+<!--  <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" />-->
+<link
+	href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css"
+	rel="stylesheet" />
+<link
+	href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css"
+	rel="stylesheet" />
+	<link id="toastr" rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+
+<style>
+.modal-body p {
+	text-align: center;
+}
+</style>
+<?php
+$menu_id="2";
+$sub_menu_id="1";
+include("include/new_menu.php");
+
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+
+<!-- BEGIN CONTENT -->
+<div class="page-content-wrapper">
+	<div class="page-content">
+		<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+		<div class="modal fade" id="portlet-config" tabindex="-1"
+			role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true"></button>
+						<h4 class="modal-title">راهنما</h4>
+					</div>
+					<div class="modal-body">
+						<p>کليه هزينه ها به ريال ميباشد</p>
+                                <p>مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</p>
+                                <p>امکان ورود هزينه هاي پرسنلي به دو فرم زير مي باشد</p>
+                                <p>1- اين هزينه مربوط به فعاليت تعريف شده در جدول گانت و مرتبط با يکي از مجريان يا همکاران مي باشد که در اين صورت لازم است نام فرد انجام دهنده فعاليت را انتخاب نموده و نوع فعاليت را تايپ نماييد در چنين حالتي و بر اساس شرح فوق فيلد تعداد افراد غير فعال است نکته ديگر اين که سيستم دو فغاليت مشابه را ثبت نمي نمايد فلذا در فيلد نوع فعاليت براي افراد مختلف فعاليتهاي مختلف بايد تايپ شود چنانچه فعاليتها دقيقا مشابه مي باشد بعد از فعاليت شماره هاي 1و2و3و ... را وارد نماييد تا فعاليت شما ثبت گردد </p>
+                                <p>2-چنانچه هزينه ها براي فعاليتهاي تعدادي افراد يا براي فعاليتهاي قابل واگذاري باشد در اين صورت در گزينه نام مجري / همکار گزينه * را انتخاب نماييد در چنين حالتي مي توانيد تعداد افراد را وارد نماييدمثلا فعاليت خونگيري توسط افراد نامشخص در پروپوزال بايد گزينه ستاره را انتخاب نمود و اگر 3 نفر خون گيري مي کنند تعداد افراد را 3 وارد شود </p>
+                                <p>درجه علمي و تخصص مجريان و همكاران طرح كه قبلا تعريف شده است ، به صورت خودكار درج خواهد شد</p>
+                            </div>
+					<div class="modal-footer">
+						<button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+		<!-- BEGIN PAGE HEADER-->
+		<div class="row">
+			<div class="col-md-12">
+				<!-- BEGIN PAGE TITLE & BREADCRUMB-->
+				<h3 class="page-title">
+					<small id="page-title">عنوان طرح : <? echo $tarh_name;?></small>
+                            
+                        </h3>
+				<ul class="page-breadcrumb breadcrumb">
+
+					<li><i class="fa fa-home"></i> <a id="navigator-home" href="home.php"> خانه </a>
+						<i id="fa-angle" class="fa fa-angle-left"></i></li>
+					<li><a id="send-edit" href="tarh_list.phtml"> ارسال/ويرايش طرح </a> <i id="fa-angle2" class="fa fa-angle-left"></i>
+					</li>
+					<li><a id="hazine_personnel" href="hazine_personnel.phtml?cod_tarh=<?php echo $cod_tarh; ?>"> هزينه پرسنلي </a></li>
+				</ul>
+				<!-- END PAGE TITLE & BREADCRUMB-->
+			</div>
+		</div>
+		<!-- END PAGE HEADER-->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="portlet box grey">
+					<div class="portlet-title">
+						<div id="caption-grid"  class="caption">
+							<i class="fa fa-magic"></i>ويزارد
+						</div>
+						
+					</div>
+					<div class="portlet-body">
+						<div class="row">
+                                    <?php  $active_id="7"; include("include/wizard.php");?>
+                                    <div
+								class="col-md-9 col-sm-12 col-xs-12">
+								<div class="portlet box blue">
+									<div class="portlet-title">
+										<div id="hazine_personnel_title" class="caption">
+											<i class="fa fa-reorder">هزينه پرسنلي</i>
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a id="portlet_config" href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body form-horizontal">
+										<!-- BEGIN FORM-->
+
+										<div class="modal fade" id="basic" tabindex="-1" role="basic"
+											aria-hidden="true">
+											<div class="modal-dialog ">
+												<div class="modal-content">
+													<div class="modal-header bg-blue">
+														<button type="button" id="modal-close" class="close"
+															data-dismiss="modal" aria-hidden="true"></button>
+														   <h4 id="sabt_hazine_personnel" class="modal-title">
+							                                 <i class="fa fa-file-o" ></i>
+							                                  ثبت هزينه پرسنلي
+							                               </h4>
+													</div>
+													<div class="modal-body">
+
+														
+																<!-- BEGIN FORM-->
+																<!-- <form name="mojri_tarh" id="mojri_tarh_sabt" action="mojri_tarh.php?action=add_mojri&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code" method="POST" class="form-horizontal">-->	
+																	<?php 
+																	     echo "<form name=\"hazine_personnel\" id=\"hazine_personnel_form\" method=\"post\" action=\"hazine_personnel_sabt.php?action=add_hazine_personnel&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" class=\"form-horizontal\">";
+																     ?>
+																   <!-- <input name="family" type="hidden" value="<?php //echo $cod_tarh;?>" class="form-control" placeholder="">-->
+																<input id="cod_tarh" name="cod_tarh" type="hidden"
+																	class="form-control" value="<?php echo $cod_tarh;?>"> <input
+																	id="cod_hazine" name="cod_hazine" type="hidden"
+																	class="form-control">
+																<div class="form-body">
+																
+																 <div id="alert_danger" class="alert alert-danger display-hide">
+																	<button class="close" data-close="alert"></button>
+																	پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																 </div>
+																	<div class="row">
+
+																		<!--/span-->
+
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="mojri_name_label" class="control-label col-md-5">
+																					نام مجري
+																					<span class="required">
+																							 *
+																						</span>
+																						</label>
+																				<div class="col-md-7">
+																				    <div class="input-icon right">
+																								<i class="fa"></i>
+																					<select id="mojri_code" name="mojri_code"
+																						class="select2 form-control input-sm input-small">
+																						<option id="option13" value="">نام مجري / همکار / ديگر افراد</option>
+																						<option id="" value="-2">*</option>
+																			                   <?
+																				                   $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+																				                   $result1=mysql_query($query1) or die("Error");
+																				                   
+																				                   $query2="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" ";
+																				                   $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+																								    while($row_fetched=mysql_fetch_array($result1))
+																								    {
+																								    	 $darajeelmi=$row_fetched["darajeelmi"];
+																									   	 $q="select * from darajeelmi where darajeelmi='$darajeelmi'";
+																									   	  
+																									    $daraje_query_result=mysql_query($q);
+																									    $mojri_name_family=$row_fetched["name"]."&nbsp;".$row_fetched["family"];
+																									    if(mysql_num_rows($daraje_query_result)>0)
+																									    {
+																									    	$daraje_rf=mysql_fetch_array($daraje_query_result);
+																									    	if($la=="en")
+																									    		$mojri_name_family=$mojri_name_family."-".$daraje_rf["darajeelmi_english_desc"];
+																									    	else
+																									    		$mojri_name_family=$mojri_name_family."-".$daraje_rf["darajeelmi_desc"];
+																									    }
+																								      echo "<option value=\"".$row_fetched["email"]."\">".$mojri_name_family."</option>";
+																								    }
+																								     while($row_fetched=mysql_fetch_array($result2))
+																								    {
+																								    	
+																								      $darajeelmi=$row_fetched["darajeelmi"];
+																									   	 $q="select * from darajeelmi where darajeelmi='$darajeelmi'";
+																									   	  
+																									    $daraje_query_result=mysql_query($q);
+																									   $mojri_name_family=$row_fetched["name"]."&nbsp;".$row_fetched["family"];
+																									    if(mysql_num_rows($daraje_query_result)>0)
+																									    {
+																									    	$daraje_rf=mysql_fetch_array($daraje_query_result);
+																									    	if($la=="en")
+																									    		$mojri_name_family=$mojri_name_family."-".$daraje_rf["darajeelmi_english_desc"];
+																									    	else
+																									    		$mojri_name_family=$mojri_name_family."-".$daraje_rf["darajeelmi_desc"];
+																									    }
+																								      echo "<option value=\"".$row_fetched["mojri_code"]."\">".$mojri_name_family."</option>";
+																								    }
+																							     ?>
+																			                </select>
+																			        </div>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="activity_type_label" class="control-label col-md-5">
+																					نوع فعاليت
+																					<span class="required">
+																							 *
+																						</span></label>
+																				<div class="col-md-7">
+																				  <div class="input-icon right">
+																								<i class="fa"></i>
+																					<input id="activity_type" name="activity_type"
+																						type="text" class="form-control input-sm input-small" placeholder="">
+																				 </div>
+																				</div>
+																			</div>
+																		</div>
+																		<!--/span-->
+																	</div>
+																	<!--/row-->
+
+																	<div class="row">
+
+																		<!--/span-->
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="persons_label" class="control-label col-md-5">
+																					تعداد افراد
+																					<span class="required">
+																							 *
+																						</span>
+																						</label>
+																				<div class="col-md-7">
+																				  <div class="input-icon right">
+																					<i class="fa"></i>
+																					<input id="persons" name="persons" type="text"
+																						class="form-control input-sm input-small" placeholder="">
+																				  </div>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="degree_label" class="control-label col-md-5">
+																					درجه علمي</label>
+																				<div class="col-md-7">
+																					<select id="degree" name="degree"
+																						class="select2 form-control input-sm input-small">
+																						<option id="option0" value="-1">انتخاب نماييد</option>
+																			                     <?
+																			                     $query="select * from darajeelmi order by darajeelmi_desc ";
+																			                     $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi 1");
+																			                     while($row_fetched=mysql_fetch_array($qresult))
+																			                     {
+																									if($la=="en")
+																			                     	echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_english_desc"]."</option>";
+																			                     	else 
+																			                     	echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_desc"]."</option>";
+																								 }
+																			                     ?>
+																			                </select>
+																				</div>
+																			</div>
+																		</div>
+																		<!--/span-->
+																	</div>
+																	<div class="row">
+
+																		<!--/span-->
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="takhasos_label" class="control-label col-md-5">تخصص</label>
+																				<div class="col-md-7">
+																					<input id="takhasos" name="takhasos" type="text"
+																						class="form-control input-sm input-small" placeholder="">
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="majmoa_saat_label" class="control-label col-md-5">
+																					مجموع ساعات
+																					<span class="required">
+																							 *
+																						</span>
+																						</label>
+																				<div class="col-md-7">
+																				   <div class="input-icon right">
+																						<i class="fa"></i>
+																					<input id="majmoa_saat" name="majmoa_saat"
+																						type="text" class="form-control input-sm input-small" placeholder="">
+																				  </div>
+																				</div>
+																			</div>
+																		</div>
+																		<!--/span-->
+																	</div>
+																	<div class="row">
+																		<div class="col-md-6">
+																			<div class="form-group">
+																				<label id="per_hour_label" class="control-label col-md-5">حق الزحمه در ساعات
+																					
+																					<span class="required">
+																							 *
+																						</span>
+																						</label>
+																				<div class="col-md-7">
+																				  <div class="input-icon right">
+																					<i class="fa"></i>
+																					<input id="per_hour" name="per_hour" type="text" class="form-control input-sm input-small" placeholder="">
+																				  </div>
+																				</div>
+																			</div>
+																		</div>
+																		
+																	</div>
+
+
+
+																</div>
+																
+
+
+
+
+																<!-- END FORM-->
+															
+
+													</div>
+													  <div class="modal-footer">
+							                                        <button type="submit" class="btn green input-sm input-small" id="save">ذخيره</button>
+																	<button type="button" class="btn red input-sm input-small" id="cancel" data-dismiss="modal"><i class="fa fa-times"></i>انصراف</button>
+													 </div>
+												</div>
+												<!-- /.modal-content -->
+											</div>
+											<!-- /.modal-dialog -->
+										</div>
+
+										<div class="modal fade " id="delete" tabindex="-1"
+											role="basic" aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal"
+															aria-hidden="true"></button>
+														<h4 class="modal-title">
+															<i class="fa fa-file-o"></i>
+
+														</h4>
+													</div>
+													<div class="modal-body">
+														<!-- BEGIN FORM-->
+
+														<div id="sure" class="form-body">
+															<h4 class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+														</div>
+														<div class="form-actions fluid">
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="col-md-offset-3 col-md-9">
+																		<button id="yes" type="submit" class="btn green">بلي</button>
+																		<button id="no" type="button" class="btn red"
+																			data-dismiss="modal">
+																			<i class="fa fa-times"></i>خير
+																		</button>
+																	</div>
+																</div>
+																<div class="col-md-6"></div>
+															</div>
+														</div>
+
+														<!-- END FORM-->
+													</div>
+
+												</div>
+												<!-- /.modal-content -->
+											</div>
+											<!-- /.modal-dialog -->
+										</div>
+										</form>
+										<a id="sabt_hazine" class="btn blue btn-sm pull-left" data-toggle="modal"
+											href="#basic"> ثبت هزينه پرسنلي </a>
+										<!-- END FORM-->
+										<div class="table-responsive">
+											<table class="table table-striped table-bordered table-hover"
+												id="sample_1">
+												<thead>
+													<tr>
+														<th id="th1" class="">نام مجري / همکار / ديگر افراي</th>
+														<th id="th2" class="">نوع فعاليت </th>
+														<th id="th3" class="">تعداد افراد</th>
+														<th id="th4" class="">درجه علمي</th>
+														<th id="th5" class="">تخصص</th>
+														<th id="th6" class="">مجموع ساعات</th>
+														<th id="th7" class=""> حق الزحمه در ساعت</th>
+														<th id="th8" class="">جمع</th>
+														<th id="th9" class="">ويرايش</th>
+														<th id="th10" class="">حذف</th>
+														<th id="th11" class="">کد هزينه</th>
+														<th id="th12" class="hidden">کد مجري</th>
+													</tr>
+	
+												</thead>
+	
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+		<!-- END PAGE CONTENT-->
+	</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en")
+	{ 
+	document.getElementById("portlet_config").setAttribute("title","Information");
+	document.getElementById("page-title").textContent="Research Title :";
+	document.getElementById("navigator-home").textContent="Home";
+	document.getElementById("send-edit").textContent="Send / Edit Research";
+	document.getElementById("hazine_personnel_title").innerHTML="<i  class='fa fa-reorder'></i>Personnel cost";
+	document.getElementById("hazine_personnel").textContent="Personnel costs";
+	document.getElementById("sabt_hazine_personnel").innerHTML="<i class='fa fa-file-o' ></i>Registration personnel cost";
+	document.getElementById("mojri_name_label").innerHTML="Executive name <span class='required'>*</span>";
+	document.getElementById("activity_type_label").innerHTML="Activitis Type <span class='required'>*</span>";
+	document.getElementById("persons_label").innerHTML="Number of persons <span class='required'>*</span>";
+	document.getElementById("degree_label").innerHTML="Degree";
+	document.getElementById("takhasos_label").innerHTML="Experience";
+	document.getElementById("majmoa_saat_label").innerHTML="Total hours <span class='required'>*</span>";
+	document.getElementById("per_hour_label").innerHTML="FEES hour <span class='required'>*</span>";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("fa-angle2").className="fa fa-angle-right";
+	document.getElementById("save").textContent="Save";
+	document.getElementById("cancel").textContent="Cancel";
+	document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+	document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+	document.getElementById("toastr").href="../assets/plugins/bootstrap-toastr/toastr.min.css";
+	document.getElementById("option13").innerHTML="<option id='option13' value=''>Choose</option>";
+	document.getElementById("th1").textContent="Name";
+	document.getElementById("th2").textContent="Activitis Type";
+	document.getElementById("th3").textContent="Number of persons";
+	document.getElementById("th4").textContent="Degree";
+	document.getElementById("th5").textContent="Experience";
+	document.getElementById("th6").textContent="Total hours";
+	document.getElementById("th7").textContent="FEES hour";
+	document.getElementById("th8").textContent="Total";
+	document.getElementById("th9").textContent="Edit";
+	document.getElementById("th10").textContent="Delete";
+	document.getElementById("th11").textContent="Code cost";
+	document.getElementById("th12").textContent="Code executive";
+	document.getElementById("option0").textContent="Choose";
+	document.getElementById("sabt_hazine").textContent="Registration personnel cost";
+	document.getElementById("alert_danger").innerHTML="<button class='close' data-close='alert'></button>You have some form errors. Please check below.";
+	document.getElementById("sure").innerHTML="<h4 class='form-section'>Are you sure you want to delete this item</h4>";
+	document.getElementById("yes").textContent="Yes";
+	document.getElementById("no").textContent="No";
+	
+	
+	}
+
+
+</script>
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script type="text/javascript"src="../assets/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" language="javascript"src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"src="../assets/plugins/data-tables/DT_bootstrap.js"></script>
+<script type="text/javascript" language="javascript"src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+<script type="text/javascript" language="javascript"src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+<script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js"type="text/javascript"></script>
+
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="../assets/scripts/core/app.js"></script>
+<script src="../assets/scripts/custom/form-samples.js"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+	jQuery(document).ready(function() {    
+	   // initiate layout and plugins
+	  // App.init();
+	  // FormSamples.init();
+	   $('body').addClass(" page-sidebar-closed");
+	  // $(".select2").select2();
+	});
+	</script>
+<!-- END JAVASCRIPTS -->
+
+<script>
+	function fixControlPosition(){
+		//ja be jayi btn haye table tools (print,copy,....)
+							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+		}
+	$("#hazine_personnel_form").submit(function(e)
+			{
+debugger;
+        var form2 = $('#hazine_personnel_form');
+        var error2 = $('.alert-danger', form2);
+        var success2 = $('.alert-success', form2);
+		if(language=="en")
+		{
+	        form2.validate({
+	            errorElement: 'span', //default input error message container
+	            errorClass: 'help-block', // default input error message class
+	            focusInvalid: false, // do not focus the last invalid input
+	            ignore: "",
+	            rules:{
+	        	          mojri_code:{
+	  	                  required:true
+	  	                  },
+	    	              activity_type:{
+	  	                  required:true
+	  			          },
+	    			      persons:{
+	    			          number: true,
+	  		                  required:true
+	  				      },
+	    				  majmoa_saat:{
+	    				      number: true,
+	  		                  required:true
+	  		                  
+	  				      },
+	  				      per_hour:{
+	    				      number: true,
+	  		                  required:true
+	  		               
+	  				      },
+	  				      sex:{
+	    				      required:true
+	  	  				      }
+		  				  
+	  	              },
+	
+	            invalidHandler: function (event, validator) { //display error alert on form submit              
+	                    success2.hide();
+	                    error2.show();
+	                    App.scrollTo(error2, -200);
+	            },
+	
+	            errorPlacement: function (error, element) { // render error placement for each input type
+	                var icon = $(element).parent('.input-icon').children('i');
+	                icon.removeClass('fa-check').addClass("fa-warning");  
+	                icon.attr("data-original-title", error.text()).tooltip();
+	            },
+	
+	            highlight: function (element) { // hightlight error inputs
+	                $(element)
+	                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	            },
+	
+	            unhighlight: function (element) { // revert the change done by hightlight
+	                
+	            },
+	
+	            success: function (label, element) {
+	                var icon = $(element).parent('.input-icon').children('i');
+	                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                icon.removeClass("fa-warning").addClass("fa-check");
+	            },
+	
+	            submitHandler: function (form) {
+	                success2.show();
+	                error2.hide();
+	            }
+	        });
+        }else
+            {
+            form2.validate({
+	            errorElement: 'span', //default input error message container
+	            errorClass: 'help-block', // default input error message class
+	            focusInvalid: false, // do not focus the last invalid input
+	            ignore: "",
+	            rules:{
+	        	          mojri_code:{
+	  	                  required:true
+	  	                  },
+	    	              activity_type:{
+	  	                  required:true
+	  			          },
+	    			      persons:{
+	    			          number: true,
+	  		                  required:true
+	  				      },
+	    				  majmoa_saat:{
+	    				      number: true,
+	  		                  required:true
+	  		                  
+	  				      },
+	  				      per_hour:{
+	    				      number: true,
+	  		                  required:true
+	  		               
+	  				      },
+	  				      sex:{
+	    				      required:true
+	  	  				      }
+		  				  
+	  	              },
+		  	            messages:{
+	    	            	      mojri_code:{
+			  	                  required:"پر کردن اين فيلد الزامي مي باشد"
+			  	            	  },
+				  	              activity_type:{
+			  	                      required:"پر کردن اين فيلد الزامي مي باشد"
+			  	    		          },
+				  	    		      persons:{
+				  	    		      number: "لطفا عدد وارد نماييد.",
+			  	                      required:"پر کردن اين فيلد الزامي مي باشد"
+			  	    		          },
+				  	    		      majmoa_saat:{
+			  	                      required:"پر کردن اين فيلد الزامي مي باشد",
+				  	                    number: "لطفا عدد وارد نماييد."
+			  	                      
+			  	    		          },  
+			      		              per_hour:{
+			  	                      required:"پر کردن اين فيلد الزامي مي باشد",
+				  	                    number: "لطفا عدد وارد نماييد."
+			  	                      
+			  	    		          }  ,
+			  	              },
+	  	              
+	
+	            invalidHandler: function (event, validator) { //display error alert on form submit              
+	                    success2.hide();
+	                    error2.show();
+	                    App.scrollTo(error2, -200);
+	            },
+	
+	            errorPlacement: function (error, element) { // render error placement for each input type
+	                var icon = $(element).parent('.input-icon').children('i');
+	                icon.removeClass('fa-check').addClass("fa-warning");  
+	                icon.attr("data-original-title", error.text()).tooltip();
+	            },
+	
+	            highlight: function (element) { // hightlight error inputs
+	                $(element)
+	                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	            },
+	
+	            unhighlight: function (element) { // revert the change done by hightlight
+	                
+	            },
+	
+	            success: function (label, element) {
+	                var icon = $(element).parent('.input-icon').children('i');
+	                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                icon.removeClass("fa-warning").addClass("fa-check");
+	            },
+	
+	            submitHandler: function (form) {
+	                success2.show();
+	                error2.hide();
+	            }
+	        });
+            }
+
+		//dicision for edit or add
+		debugger;
+				var formURL;
+				var postData = $(this).serializeArray();
+				if(jadvZar_IsNew=="insert")		
+					 formURL = $(this).attr("action");
+				else if(jadvZar_IsNew=="edit")		
+					formURL="hazine_personnel_sabt.php?action=edit_hazine_personnel";
+				else if(jadvZar_IsNew=="delete")		
+					formURL="hazine_personnel_sabt.php?action=delete_hazine";
+				if($("#hazine_personnel_form").valid() || (jadvZar_IsNew=="delete"))
+				{
+				    $(".green").attr("disabled","disabled");
+				$.ajax(
+				{
+					url : formURL,
+					type: "POST",
+					data : postData,
+					success:function(data, textStatus, jqXHR) 
+					{
+					//alert(data);
+					if(data=="inserted")
+					{
+						toastr.options.timeOut="5000";
+				        toastr.options.positionClass="toast-top-right";
+						toastr.success('با موفقيت ثبت شد');
+					}
+					
+					if(data=="exist"){
+						$("#hazine_personnel_i").switchClass( "fa-times", "fa-check", 1000, "easeInOutQuad" );
+						}
+					else if(data=="notexist"){
+						
+						$("#hazine_personnel_i").switchClass( "fa-check", "fa-times", 1000, "easeInOutQuad" );
+						}
+					jadvZar_IsNew="insert";
+					$("#basic").modal('hide');
+					$("#delete").modal('hide');
+					$("#hazine_personnel_form")[0].reset();
+					//Begin of reset form validation 
+				    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+				    $(".input-icon .fa-check").switchClass("fa-check","fa");
+				    $(".alert-danger").hide();
+				    $('.form-group').removeClass('has-error');
+				    $('.form-group').removeClass('has-success');
+				    //End of reset form validation
+				    	//debugger;
+				            var uniSelect = $("#uniSelect");
+				            var temp = $("#temp");
+				            uniSelect.appendTo(temp);
+				    		
+				            $("#sample_1").DataTable().destroy();
+				    		
+				            show_dataTable();
+				           
+				            
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+					}
+				}).always($(".green").removeAttr("disabled","disabled"));
+				}
+			    e.preventDefault();	//STOP default action
+			  //  $("#jadval_zarayeb_form").submit(); //SUBMIT FORM
+			});
+				
+			
+	 </script>
+<script>
+var buttonText;
+var sButtonText;
+var info;
+//var	language="en";
+if(language=="en"){
+	buttonText="Visibel Columns";
+	sButtonText="Print";
+	sButtonText2="Save";
+	info="view _START_ to _END_ from _TOTAL_ items";
+	sLengthMenu="View Content _MENU_";
+	sZeroRecords="Not Found";
+	sInfoEmpty="Empty";
+	sInfoFiltered="(Filtered From _MAX_ Items)";
+	sSearch="Search";
+	sFirst="First";
+	sPrevious="Previous";
+	sNext="Next";
+	sLast="Last";
+	
+	
+}
+else
+{
+	buttonText="ستون هاي قابل نمايش";
+	sButtonText="چاپ";
+	sButtonText2="ذخيره";
+	info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+	sLengthMenu="نمايش محتويات _MENU_";
+	sZeroRecords="موردي يافت نشد";
+	sInfoEmpty="تهي";
+	sInfoFiltered="(فيلتر شده از مجموع _MAX_ مورد)";
+	sSearch="جستجو";
+	sFirst="ابتدا";
+	sPrevious="قبلي";
+	sNext="بعدي";
+	sLast="انتها";
+	
+}
+	
+	 $(document).ready(function() {
+		    var detailRows = [];
+		   			
+			show_dataTable();		
+		   
+
+	 });
+		function show_dataTable(){
+			 var dt;	
+			 dt = $('#sample_1').DataTable({
+					"dom": 'CT<"clearfix">lfrtip',
+			        "tableTools": {
+			            "sRowSelect": "os",
+						 "aButtons": [
+			                 
+	    						{
+	    							"sExtends": "print",
+	    							"sButtonText": sButtonText
+	    						},
+	    						
+	    						{
+	    							"sExtends":    "collection",
+	    							"sButtonText": sButtonText2,
+	    							"aButtons":    [ 
+	    												"csv", 
+	    												"xls"
+	    											]
+	    						}
+			            ],
+			            
+						"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+			        },
+			        "fnInitComplete": function(oSettings, json) {
+						
+						fixControlPosition();
+						
+		                },
+			        "fnDrawCallback": function(oSettings) {
+			            var trs = $("#sample_1 tr");
+			            for (var i = 1; i < trs.length; i++) {
+
+			                var rowId = ($(trs[i]).attr('id'));
+			                $("#" + rowId + " td:last-child").trigger('click');
+
+			            }
+			            $('.edit_btn').on('click', function() {
+			                debugger;
+			                var tr = $(this).closest('tr');
+			                var row = dt.row(tr);
+			                //var idx = $.inArray(tr.attr('id'), detailRows);
+			                $('#cod_hazine')[0].value = row.data().cod_hazine;
+
+			                if(row.data().mojri_code=="-2")
+			                	$('#mojri_code option[value="-2"]').attr("selected", "selected");
+			                
+			                <?php
+			                
+			                $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+			                $result1=mysql_query($query1) or die("Error");
+			                 
+			                $query2="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" ";
+			                $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+			                
+			                while($row_fetched=mysql_fetch_array($result1))
+			                		{ ?>
+			                		
+	                			 if(row.data().mojri_code=="<?php echo $row_fetched['email']; ?>"){
+	                					
+	                              $('#mojri_code option[value="<?php echo $row_fetched['email']; ?>"]').attr("selected", "selected");
+	                			   }
+	                			 //  echo "<option value=\"".$row_fetched["email"]."\">".$mojri_name_family."</option>";
+	                		 <?php 
+	                	              }
+			              	     while($row_fetched=mysql_fetch_array($result2))
+			                	    {
+			                	   	?>
+	                                if(row.data().mojri_code=="<?php echo $row_fetched['mojri_code']; ?>"){
+	                			
+	                                $('#mojri_code option[value="<?php echo $row_fetched['mojri_code']; ?>"]').attr("selected", "selected");
+	                			       }
+	                			      <?php 
+	                				 }
+	                			?>
+	                		
+			                $('#activity_type')[0].value = row.data().activity_type;
+			                $('#persons')[0].value = row.data().persons;
+			               
+			                <?
+				                     $query="select * from darajeelmi order by darajeelmi_desc ";
+				                     $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi 1");
+				                     while($row_fetched=mysql_fetch_array($qresult))
+				                     {
+				                     ?>
+				                    
+	                      
+			                //alert(row.data().daraje_mojri);
+			                if(language=="en")
+			                {
+				                if(row.data().daraje_mojri=="<?php echo $row_fetched['darajeelmi_english_desc'] ?>"){
+				                	$('#degree option[value="<?php echo $row_fetched['darajeelmi'] ?>"]').attr("selected", "selected");}
+			                }else
+			                {
+			                	if(row.data().daraje_mojri=="<?php echo $row_fetched['darajeelmi_desc'] ?>"){
+				                	$('#degree option[value="<?php echo $row_fetched['darajeelmi'] ?>"]').attr("selected", "selected");}
+				            }    
+			                
+				            <?php 	 
+	                       }
+			                
+				                     //	echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_desc"]."</option>";
+	                      ?>
+			                $('#takhasos')[0].value = row.data().takhasos;
+			                $('#majmoa_saat')[0].value = row.data().majmoa_saat;
+			                $('#per_hour')[0].value = row.data().per_hour;
+			                jadvZar_IsNew="edit";
+			                $("#basic").modal('show');
+//			                if (row.child.isShown()) {
+//			                    tr.removeClass('details');
+//			                    row.child.hide();
+	//
+//			                    // Remove from the 'open' array
+//			                    detailRows.splice(idx, 1);
+//			                } else {
+//			                    tr.addClass('details');
+//			                    row.child(format(row.data())).show();
+	//
+//			                    // Add to the 'open' array
+//			                    if (idx === -1) {
+//			                        detailRows.push(tr.attr('id'));
+//			                    }
+//			                }
+			            });
+			            $('.delete_btn').on('click', function() {
+			                debugger;
+			                var tr = $(this).closest('tr');
+			                var row = dt.row(tr);
+			                $('#cod_hazine')[0].value = row.data().cod_hazine;
+			                
+			                jadvZar_IsNew="delete";
+			                $("#delete").modal('show');
+		                
+			            });
+			        },
+			        "colVis": {
+			           "buttonText": buttonText,
+			        	exclude:[10,11]
+		
+			       },
+	                "paging": true,
+	                'bPaginate': true,
+	                "pagingType": "full_numbers",
+	                "processing": true,
+	                "serverSide": true,
+	                "bDestroy": true,
+	                "bAutoWidth": false,
+	                "language": {
+	            		
+	                    "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+	                    "sLengthMenu": sLengthMenu,
+	                    "sZeroRecords": sZeroRecords,
+	                    "info": info,
+	                    "sInfoEmpty": sInfoEmpty,
+	                    "sInfoFiltered": sInfoFiltered,
+	                    "sInfoPostFix": "",
+	                    "sSearch": sSearch,
+	                    "sUrl": "",
+	                    "oPaginate" : {
+	                        "sFirst": sFirst,
+	                        "sPrevious": sPrevious,
+	                        "sNext": sNext,
+	                        "sLast": sLast
+	                    }
+	                },
+			        "sAjaxSource": "hazine_personnel_sabt.php?admin=<?php echo $admin;?>&seed=<?php echo $seed;?>&cod_tarh=<?php echo $cod_tarh;?>&action=hazine_personnel_list" ,
+			        "aoColumns": [
+					{ "data": "mojri_name_family" },
+					{ "data": "activity_type" },
+					{ "data": "persons" },
+					{ "data": "daraje_mojri" },
+					{ "data": "takhasos" },
+					{ "data": "majmoa_saat" },
+					{ "data": "per_hour" },
+					{ "data": "my_summary","bSortable": false },					
+					{ "data": "edit", "bSortable": false },
+					{ "data": "delete", "bSortable": false },
+					{ "data": "cod_hazine","sClass": "hidden"},
+					{ "data": "mojri_code","sClass": "hidden"}
+			        ]
+
+			    });
+			}
+		var jadvZar_IsNew="insert";
+
+		$('#basic').on('hidden.bs.modal', function () {
+		   // debugger;
+		    jadvZar_IsNew="insert";
+		    $("#hazine_personnel_form")[0].reset();
+		    $('#mojri_code').prop('selectedIndex',"");
+		    $('#degree').prop('selectedIndex',"");
+		    //Begin of reset form validation 
+		    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+		    $(".input-icon .fa-check").switchClass("fa-check","fa");
+		    $(".alert-danger").hide();
+		    $('.form-group').removeClass('has-error');
+		    $('.form-group').removeClass('has-success');
+		    //End of reset form validation
+		});
+		$('#delete').on('hidden.bs.modal', function () {
+			    debugger;
+			    jadvZar_IsNew="insert";
+			    $("#hazine_personnel_form")[0].reset();
+			    $('#mojri_code').prop('selectedIndex',"");
+			    $('#degree').prop('selectedIndex',"");
+			});
+			 
+	 </script>
+
+<?php
+footer_forms($admin,$seed);
+?>

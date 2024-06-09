@@ -1,0 +1,175 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+
+if(isset($action))
+{
+   if (strcmp($action,"change_status")==0   )
+  {
+	  
+	 
+       $date=$year."-".$month."-".$day;
+	   
+    $query="update tarh set payannameh_submission_date='$date', submission_payanname_center_status ='1',finished='1' where cod_tarh='$cod_tarh' and version='-1'";
+ 
+    $result=mysql_query($query) or die("Error in updating tarh type in tarh");
+    insert_position($cod_tarh,"35",$admin);
+    
+     ?>
+           <script language="javascript">
+           window.location="<? echo "tarh_list_new_after_submit".".phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&main_window=$main_window\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=1>
+  <TBODY>
+    <TR>
+    <TD align=right width="100%"  class="tahoma1" height=19>
+     
+      ارسال به پايان نامه هاي بعد از تصويب
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+ 
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+
+ <tr>
+    <td width="100%" colspan="2" class="tahoma1">
+      <p align="center">ارسال به  پايان نامه هاي بعد از تصويب</td>
+</tr>
+ 
+<tr>
+    <td width="350" align="right">
+ 
+     	 <select size="1" dir="rtl"  name="year" class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option <? echo $c1;  ?> value="1385">1385</option>
+	  	  <option <? echo $c2;  ?> value="1386">1386</option>
+	      <option <? echo $c3;  ?> value="1387">1387</option>
+	      <option <? echo $c4;  ?> value="1388">1388</option>
+	      <option <? echo $c5;  ?> value="1389">1389</option>
+	      <option <? echo $c6;  ?> value="1390">1390</option>
+		  <option <? echo $c7;  ?> value="1391">1391</option>
+		  <option <? echo $c8;  ?> value="1392">1392</option>
+		  <option <? echo $c9;  ?> value="1393">1393</option>
+		  <option <? echo $c10; ?> value="1394">1394</option>
+          <option <? echo $c11; ?> value="1395">1395</option>
+          <option <? echo $c12; ?> value="1396">1396</option>
+          <option <? echo $c13; ?> value="1397">1397</option>
+          <option <? echo $c14; ?> value="1398">1398</option>
+          <option <? echo $c15; ?> value="1399">1399</option>
+        
+
+        </select>
+        
+        
+        <select size="1" dir="rtl"  name="month"  class="combo-date">
+         <option selected value="-1">انتخاب</option>
+          <option <? echo $c1; ?> value="01">فروردين</option>
+          <option <? echo $c2; ?> value="02">ارديبهشت</option>
+          <option <? echo $c3; ?> value="03">خرداد</option>
+          <option <? echo $c4; ?> value="04">تير</option>
+          <option <? echo $c5; ?> value="05">مرداد</option>
+          <option <? echo $c6; ?> value="06">شهريور</option>
+          <option <? echo $c7; ?> value="07">مهر</option>
+          <option <? echo $c8; ?> value="08">آبان</option>
+          <option <? echo $c9; ?> value="09">آذر</option>
+          <option <? echo $c10; ?> value="10">دي</option>
+          <option <? echo $c11; ?> value="11">بهمن</option>
+          <option <? echo $c12; ?> value="12">اسفند</option>
+        </select>
+ 
+        <select size="1" dir="rtl"  name="day"  class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option <? echo $c1; ?> value="01">1</option>
+          <option <? echo $c2; ?> value="02">2</option>
+          <option <? echo $c3; ?> value="03">3</option>
+          <option <? echo $c4; ?> value="04">4</option>
+          <option <? echo $c5; ?> value="05">5</option>
+          <option <? echo $c6; ?> value="06">6</option>
+          <option <? echo $c7; ?> value="07">7</option>
+          <option <? echo $c8; ?> value="08">8</option>
+          <option <? echo $c9; ?> value="09">9</option>
+          <option <? echo $c10; ?> value="10">10</option>
+          <option <? echo $c11; ?> value="11">11</option>
+          <option <? echo $c12; ?> value="12">12</option>
+          <option <? echo $c13; ?> value="13">13</option>
+          <option <? echo $c14; ?> value="14">14</option>
+          <option <? echo $c15; ?> value="15">15</option>
+          <option <? echo $c16; ?> value="16">16</option>
+          <option <? echo $c17; ?> value="17">17</option>
+          <option <? echo $c18; ?> value="18">18</option>
+          <option <? echo $c19; ?> value="19">19</option>
+          <option <? echo $c20; ?> value="20">20</option>
+          <option <? echo $c21; ?> value="21">21</option>
+		  <option <? echo $c22; ?> value="22">22</option>
+		  <option <? echo $c23; ?> value="23">23</option>
+		  <option <? echo $c24; ?> value="24">24</option>
+		  <option <? echo $c25; ?> value="25">25</option>
+		  <option <? echo $c26; ?> value="26">26</option>
+		  <option <? echo $c27; ?> value="27">27</option>
+		  <option <? echo $c28; ?> value="28">28</option>
+		  <option <? echo $c29; ?> value="29">29</option>
+		  <option <? echo $c30; ?> value="30">30</option>
+		  <option <? echo $c31; ?> value="31">31</option>
+        </select>
+ 
+	
+	
+	
+	
+	
+	</td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>زمان تصويب پايان نامه</td>
+  </tr> 
+  
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="javascript:go(-1)" >بازگشت</a></td>
+  </tr>
+</table>
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

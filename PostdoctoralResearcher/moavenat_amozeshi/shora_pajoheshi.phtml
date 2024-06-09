@@ -1,0 +1,72 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+?>
+
+<center>
+
+<table border="0"  width="380" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="129"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/shora_pajoheshi.gif"  height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+
+<!-- <table border="0"  width="380"  cellspacing="0" cellpadding="0">
+ <tr >
+ <TD  background="image/title-bg.gif" align=left valign="bottom"  >
+      <IMG src="image/title-left.gif"  >
+ </TD>
+  <TD background="image/title-bg.gif"  valign="bottom" >
+ </TD>
+  <TD  align=right valign="center" align="right" background="image/title-bg.gif" >
+    <IMG src="image/title-right.gif">
+ </TD>
+ </tr>
+</table>  -->
+
+<table border="0" bgcolor="#EEE7F8" width="380"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <tr>
+<!--    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "add_shora_pajoheshi.phtml?admin=$admin&seed=$seed"; ?>">تعريف اعضاي شوراي پژوهشي</a></td> -->
+    <td width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "taarif_shora.phtml?admin=$admin&seed=$seed"; ?>">تعريف شوراي پژوهشي</a></td>
+  </tr>
+   
+   <tr>
+    <td width="500" class="tahoma1"  align="middle"><a style="text-decoration: none" href="<? echo "jalase_shora.phtml?admin=$admin&seed=$seed"; ?>">تعريف جلسه شوراي پژوهشي</a></td>
+  </tr>
+  <tr>
+    <td width="500" class="tahoma1"  align="middle"><a style="text-decoration: none" href="<? echo "daraje-elmi.phtml?admin=$admin&seed=$seed"; ?>">جلسات شوراي پژوهشي</a></td>
+  </tr>
+</table>
+
+</div>
+</td>
+</tr>
+</table>
+
+</center>
+<?
+ footer_forms($admin,$seed);
+?>
+

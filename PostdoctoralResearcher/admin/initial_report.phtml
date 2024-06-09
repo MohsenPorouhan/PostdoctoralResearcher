@@ -1,0 +1,40 @@
+<?
+include("include/include.phtml");
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 1 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+
+ 
+    
+     prepare_database($admin);
+  ?>
+           <script language="javascript">
+           window.location="<? echo "reporting.phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+  
+ 
+?>

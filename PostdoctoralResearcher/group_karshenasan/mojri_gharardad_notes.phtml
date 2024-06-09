@@ -1,0 +1,461 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+$year_date = date("Y") - 1921 ;
+$today=str_replace("/","-",today());
+
+ 
+echo "<br>";
+
+
+
+
+ $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ 
+ $result=mysql_query($query) or die("Error");
+ $exists=0;
+ if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$mojri=$row_fetched["mojri_code"];
+ 	$heiat_elmi=$row_fetched["heiat_elmi"];
+ 	$start_time=$row_fetched["start_time"];
+ 	$pish_pardakht=$row_fetched["pish_pardakht"];
+ 	$payanname=$row_fetched["payanname"];
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+ 	$time_month=$row_fetched["time_month"];
+    $exists=1; 	
+    $date_send= $row_fetched["submit_date"]; 
+		  $hesab=$row_fetched["hesab"];
+     $mobile=$row_fetched["mobile"];
+
+ } 	
+ else
+ {
+ 	$payanname="";
+ 	$mojri="";
+ 	$heiat_elmi="";
+ 	$start_time="";
+ 	$pish_pardakht="";
+ 	$nazerin="";
+ 	$time_month="";
+ 	$unnazerin="";
+ 	 $date_send="";
+	 	  $hesab='';
+     $mobile='';
+
+ 
+ }
+ 
+ 
+ $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+  
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_user_answer&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500"  dir="rtl" class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500"  dir="rtl" class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."تاريخ ارسال نظر   : ".$date_send ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+
+
+
+
+ <TABLE cellSpacing=0 cellPadding=0 border=0 width="100%">
+  <TBODY>
+    <TR>
+    <TD align=middle width="100%"   height=19 class="tahoma1" align="right">
+    (پاسخ به سوالات کارشناسان (مرحله اول 
+	</TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  
+  
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.طرحي با اين عنوان وجود دارد</td>";
+    echo "</tr>";
+  }
+?>
+  
+    <tr>
+    <td colspan="2" width="100%" colspan="2" class="tahoma1"><span class="star-message">
+	
+	
+	
+	
+	
+<?	
+
+	$query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	
+	$result1=mysql_query($query1) or die("Error");
+   $query="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+
+
+
+
+//	$query1="select * from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	
+//	$result1=mysql_query($query1) or die("Error");
+ //  $query="select * from mojri , tarh where mojri.mojri_code = tarh.modir_tarh  and tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+ //  $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+  
+  
+   if(mysql_num_rows($result) > 0 || mysql_num_rows($result1) > 0)
+   {
+   	$i=0;
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+    ?>
+    <table border="0" width="100%" cellpadding="1" cellspacing="1">
+     <tr>
+    <td width="100%"  colspan="3">
+
+      <p align="center" class="verdana1"><font color="black">مجري طرف قرارداد</font></td>
+    </tr>
+    <tr>
+    
+   
+      <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ 
+
+
+
+ while($row_fetched1=mysql_fetch_array($result1))
+ {
+  
+   $cod_mojri=$row_fetched1["email"];
+   if($exists==1)
+     if(strcmp($cod_mojri,$mojri)==0)
+     {
+   	   $checked="1";
+     }
+     else
+     {
+   	   $checked="";
+     }
+   
+   
+  if(strcmp($checked,"1")==0)
+  { 
+    echo "<tr>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched1["family"]."</td>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched1["name"]."</td>";
+    echo "</tr>";
+  }
+ 
+ }
+ 
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  
+  $cod_mojri=$row_fetched["mojri_code"];
+  
+  if($exists==1)
+   if(strcmp($cod_mojri,$mojri)==0)
+   {
+   	 $checked="1";
+   }
+   else
+   {
+   	 $checked="";
+   }
+   
+  
+ 
+  if(strcmp($checked,"1")==0)
+  { 
+    echo "<tr>";
+
+  //echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"radio\" value=\"$cod_mojri\" $checked  name=\"mojri_name\"></td>";  
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["family"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["name"]."</td>";
+  echo "</tr>";
+  }
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+ ?>
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</td>
+  </tr>
+  <?
+   
+  if(strcmp($heiat_elmi,"1")==0)
+    $heiat_elmi="بلي";
+  else
+     $heiat_elmi="خير";   
+  ?>
+  
+      <tr>
+    <td width="350" align="right"  class="tahoma1"> <? echo  $hesab  ; ?>  </td>
+    <td width="150" class="tahoma1">شماره حساب طرف قرارداد</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"  class="tahoma1">  <? echo  $mobile  ; ?> </td>
+    <td width="150" class="tahoma1">شماره موبايل طرف قرارداد</td>
+  </tr>
+
+   <tr>
+    <td width="350" align="right" class="tahoma1"><? echo $heiat_elmi; ?></td>
+    <td width="150" class="tahoma1">آيا فرد در استخدام دانشگاه است ؟</td>
+  </tr>
+ 
+
+ <?
+   
+  if(strcmp($pish_pardakht,"1")==0)
+     $pish_pardakht="بلي";
+  else
+     $pish_pardakht="خير";  
+  ?>
+   <tr>
+    <td width="350" align="right" class="tahoma1"><? echo $pish_pardakht; ?> </td>
+    <td width="150" class="tahoma1">? آيا نياز به پيش پرداخت داريد</td>
+  </tr>
+  
+
+
+  
+  <?
+  $no_payanname_selected="";
+  $payanname_selected="";
+  if(strcmp($payanname,"1")==0)
+    $payanname="بلي";
+  else
+    $payanname="خير";  
+  ?>
+   <tr>
+    <td width="350" align="right"  class="tahoma1"><? echo $payanname; ?> </td>
+    <td width="150" class="tahoma1">آيا طرح ماحصل پايان نامه است ؟</td>
+  </tr>
+<tr>
+    <td width="350" align="right"  class="tahoma1"><? echo $nazerin; ?></td>
+    <td width="150" class="tahoma1">:ناظرين پيشنهادي شما</td>
+  </tr>
+
+<tr>
+    <td width="350" align="right"  class="tahoma1"><? echo $unnazerin; ?></td>
+    <td width="150" class="tahoma1">افرادي که نمي خواهيد ناظر شما باشند</td>
+  </tr>
+
+
+
+
+  
+<tr>
+    <td width="350" align="right" class="tahoma1">
+	
+	
+  
+    <? echo $start_time; ?>	  
+	
+	
+	</td>
+    <td width="150" class="tahoma1">:زمان دقيق شروع قرارداد</td>
+  </tr>
+<tr>
+    <td width="350" align="right" class="tahoma1">
+	
+
+
+<tr>
+    <td width="350" align="right" class="tahoma1">
+    <? echo $time_month; ?>	  
+	</td>
+    <td width="150" class="tahoma1">:زمان پيشنهادي شما براي اتمام قرارداد به ماه</td>
+  </tr>
+  
+
+  
+</table>
+
+<?
+ $query="select * from factor_gharardad  where  cod_tarh=\"$cod_tarh\" ";
+
+ $result=mysql_query($query) or die("Error in query data from tarh-type");
+ if(mysql_num_rows($result) > 0)
+{
+    echo "<table border=\"0\" width=\"500\" bgcolor=\"#EEE7F8\"  cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+
+    echo "<tr>";
+    
+    
+    
+    echo "<td width=\"50%\" colspan=\"2\" height=\"20\" class=\"tahoma1\" align=\"center\"><b>سفته هاي ضمانت</b></td>";
+    
+    
+    echo "</tr>";
+
+    echo "<tr>";
+    
+    
+    
+    echo "<td width=\"50%\" height=\"20\" class=\"tahoma1\" align=\"center\"><b>مبلغ سفته ها</b></td>";
+    
+    echo "<td width=\"50%\" height=\"20\" class=\"tahoma1\" align=\"center\"><b>شماره سريال سفته ها</b></td>";
+    
+    echo "</tr>";
+  $Query=mysql_query("select * from factor_gharardad  where cod_tarh='$cod_tarh'") or die("Error in selecting tarh-type");
+  while($row_fetched=mysql_fetch_array($Query))
+  {
+   if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+   else
+     $color="#E2E0E0";
+  echo "<tr bgcolor=\"$color\">";
+    
+  
+  
+  echo "<td width=\"50%\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["safte_mablagh"],0,100)."</td>";
+
+  echo "<td width=\"50%\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["safte_number"],0,100)."</td>";
+  
+  echo "</tr>";
+
+  }
+   
+  echo "</table>";
+}
+
+
+ 
+ $query="select * from gozaresh_gharardad  where  cod_tarh=\"$cod_tarh\" ";
+
+ $result=mysql_query($query) or die("Error in query data from tarh-type");
+ if(mysql_num_rows($result) > 0)
+ {
+	echo "<table border=\"0\" width=\"500\" bgcolor=\"#EEE7F8\"  cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+    echo "<tr>";   
+    echo "<td colspan=3 width=\"100%\" align=\"center\"  height=\"20\" class=\"tahoma1\" align=\"center\"><b>تاريخ گزارشات طرح</b></td>";
+        
+    echo "</tr>";
+    
+    echo "<tr>";   
+    echo "<td width=\"100\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">توضيح</td>";
+    echo "<td width=\"200\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">تاريخ </td>";
+    echo "<td width=\"200\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">مرحله</td>";
+    
+    echo "</tr>";
+  $Query=mysql_query("select * from gozaresh_gharardad  where cod_tarh='$cod_tarh'") or die("Error in selecting tarh-type");
+  while($row_fetched=mysql_fetch_array($Query))
+  {
+   if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+   else
+     $color="#E2E0E0";
+  echo "<tr bgcolor=\"$color\">";  
+  echo "<td width=\"100\">";
+  echo "<p align=\"center\"  class=\"tahoma1\"> تا انتهاي ماه  ".$row_fetched["percent_gozaresh"]." ام </td>";
+  echo "<td width=\"200\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["date_gozaresh"],0,100)."</td>";
+  
+  
+  echo "<td width=\"200\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["marhale"],0,100)."</td>";
+  
+  echo "</tr>";
+
+  }
+  echo "</table>";
+}
+ 
+  footer_forms($admin,$seed);
+ ?>

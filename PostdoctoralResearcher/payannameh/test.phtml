@@ -1,0 +1,16 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 //EN">
+<html>
+<head>
+       <title>Title here!</title>
+</head>
+<body>
+<?php
+include("include/database-connect.phtml");
+include("include/include.phtml");
+$query="CREATE TABLE `karshenas_type` (  karshenas_type int(5) NOT NULL auto_increment,  karshenas_type_desc varchar(250) NOT NULL default '',  karshenas_type_english_desc varchar(250) NOT NULL default '',  creator varchar(150) default NULL,  PRIMARY KEY  (karshenas_type))";
+echo $query;
+$result=mysql_query($query);
+echo mysql_error();
+?>
+</body>
+</html>

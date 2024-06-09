@@ -1,0 +1,216 @@
+<script language="javascript" src="js/farsi.js"></script>
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+//header_forms($admin,$seed);
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+
+ //------------------------------------------------------------------------------------------------------------
+  if(isset($action) && strcmp($action,"send_sms")==0 )
+  {  	   
+   	   
+$username = 'niazi_ws';
+$password = 'pahsmn';
+$domain = 'niazi';
+
+
+// Connect ...
+//$client = new soapclient('http://192.168.0.1/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+$client = new soapclient('http://messaging.magfa.com/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+
+
+// Read error
+$err = $client->getError();
+if ($err) {
+	echo "<h2>Constructor error</h2><pre>$err</pre>";
+}
+$client->setCredentials($username, $password, 'basic');
+
+// Authentication
+ 
+$j=0;
+ 
+  $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+		array("sdfsdfsdf"),			//Message
+		array("+989133264926","+989133264926"),			//Destination
+						//UDH
+		)
+	);
+	
+	
+	 print_r($result);
+ exit();
+ 
+$a="";
+$b="";
+$c="";
+//$letter_body=iconv("windows-1256", "UTF-8",$letter_body);
+for($i=0;$i<strlen($letter_body);$i+=131)
+{
+	if($i==0)
+	  $a=substr($letter_body,$i,131);
+	 else 
+	if($i>=131 && $i<262)
+	  $b=substr($letter_body,$i,131);
+	 else 
+    if($i>=262 && $i<393)
+	  $c=substr($letter_body,$i,131);
+    
+  //$msg1[$j]=substr($message,$i,160);
+  $j++;	
+}
+
+echo strlen( $letter_body);
+ 
+ 
+ if(strlen($letter_body) <131 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+		array("$a"),			//Message
+		array("+989133264926"),			//Destination
+						//UDH
+		)
+	);
+	
+ 	//echo $msg1($k-1);
+ 
+ //echo "<br>".$k."<br>";
+  print_r($result);
+ if ($client->fault) {
+	echo '<h2>Fault 1111</h2><pre>';	   
+    }   
+	
+	echo "111111111111111111111111111111";   
+}
+
+
+//-----------------------------------------------------------------------------------
+
+ if(strlen($letter_body)>=131 && strlen($letter_body)<262)
+ {      
+ 
+ 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b"), 			//Message
+		array("+989133264926","+989133264926"),			//Destination
+		 array("",""),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02"), 
+					//UDH
+		)
+	);
+	print_r($result);
+	 
+  if ($client->fault) {
+	echo '<h2>Fault 2222</h2><pre>';	   
+    }  
+    else
+    echo $a.$b."2222222222222222222222222222222222";
+  }    
+  
+  //-------------------------------------------------------------------------------------
+  
+  if(strlen($letter_body)>=262 && strlen($letter_body)<393)
+ { 	 
+ 	
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+	    array("$a","$b","$c" ), 			//Message
+		array("+989133264926","+989133264926","+989133264926"),			//Destination
+	    array("",""),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02","%05%00%03%47%02%03") ,
+		 			//UDH
+		)
+	);	
+ 	
+ /*   $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+	    array("$a" ), 			//Message
+		array("+989133264926"),			//Destination
+		array(""),				//Originator
+		array("%05%00%03%23%02%01"),
+		array(1)				//UDH
+		)
+	);
+	
+	
+   $result["enqueue2"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+	    array("$b" ), 			//Message
+		array("+989133264926"),			//Destination
+		array(""),				//Originator
+		array("%05%00%03%23%02%02"),
+		array(1)				//UDH
+		)
+	);
+	
+	  $result["enqueue3"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+	    array("$c" ), 			//Message
+		array("+989133264926"),			//Destination
+		array(""),				//Originator
+		array("%05%00%03%23%02%03"),
+		array(1)				//UDH
+		)
+	);
+	
+  */
+   
+ if ($client->fault) {
+	echo '<h2>Fault 3333</h2><pre>';	   
+    }  
+       
+         echo "33333333333333333333333333333333333333333";
+    print_r($result);
+   // exit();
+ }
+ 
+
+exit();
+} 
+
+?>
+
+
+<? echo "<form name=\"sms\" method=\"post\"  action=\"$PHP_SELF?action=send_sms&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+ 
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+    
+            
+ <tr>
+    <td  width="66%" align="right">
+	<textarea class="edit-user"  name="letter_body" wrap="physical" cols="38" rows="5"></textarea>
+
+  
+            <tr>
+              <td width="100%" colspan="2" >
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+          </table>
+          
+</form>
+
+

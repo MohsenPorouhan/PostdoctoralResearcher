@@ -1,0 +1,190 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_vasayel_kharid")==0)
+  {
+
+     if(strlen(trim($name_dastgah)) > 0 && strlen(trim($company)) > 0 && strlen(trim($country)) > 0 && strlen(trim($country)) > 0 && strlen(trim($count)) > 0 && strlen(trim($price)) > 0 )
+     {
+      $query="select * from fhrest_vasayel_kharid where  name_dastgah=\"$name_dastgah\" and cod_tarh=\"$cod_tarh\"";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+        $query  = "insert into fhrest_vasayel_kharid set name_dastgah=\"$name_dastgah\",company=\"$company\" , country=\"$country\",usage_unusage=\"$usage_unusage\",count=\"$count\",price=\"$price\",cod_tarh=\"$cod_tarh\"";
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        $action=$activity_type."ثبت فهرست وسايلي که بايد خريداري شود با عنوان"."<br>".$name_dastgah." براي طرح با کد "."<br>".$cod_tarh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+     else
+       $status="entry_error";
+  }
+  if (strcmp($action,"delete_fehrest_kharid")==0)
+ {
+    $query="delete from fhrest_vasayel_kharid where cod_kharid = \"$delete_id\" and cod_tarh=\"$cod_tarh\"";
+
+    $result=mysql_query($query) or die("Error in  delete data from hazine azmayesh");
+    $action=$activity_type."حذف فهرست وسايلي که بايد خريداري شود  براي طرح"."<br>".$cod_tarh;
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+ }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_vasayel_kharid&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/kharid_aghlam.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="name_dastgah" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نام دستگاه</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="company" size="20" value="" class="edit-user" dir=RTL    ></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>شرکت سازنده</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="country" size="20" value="" class="edit-user"  dir=RTL   ></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>کشور</td>
+  </tr>
+
+  <tr>
+ <td width="350" align="right">
+ <select size="1" name="usage_unusage" dir="rtl" class="combo">
+    <option value="0" class="in">مصرفي</option>
+    <option value="1" class="in">غير مصرفي</option>
+
+ </td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>مصرفي يا غير مصرفي</td>
+ </tr>
+
+ <tr>
+ <td width="350" align="right"><input type="text" name="count" size="20" value="" class="edit-user" ></td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>تعداد يا مقدار</td>
+ </tr>
+ 
+  <tr>
+ <td width="350" align="right"><input type="text" name="price" size="20" value="" class="edit-user" ></td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>قيمت واحد</td>
+ </tr>
+ 
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+  </tr>
+</table>
+
+
+
+  <?
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\" order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+     echo "<tr>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">قيمت کل</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">قيمت واحد</td>";
+     echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">تعداد يا مقدار</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">مصرفي يا غير مصرفي</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">کشور</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma1\">شرکت سازنده</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام دستگاه</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=fehrest_kharid.phtml&admin=$admin&seed=$seed&action=delete_fehrest_kharid&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_kharid"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $price_of_every_row=$row_fetched["count"]*$row_fetched["price"];
+       $price_all=$price_all+$price_of_every_row;
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".$price_of_every_row."</td>";
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".$row_fetched["price"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$row_fetched["count"]."</td>";
+       if( $row_fetched["usage_unusage"] == "0" )
+         echo "<td align=\"center\"  class=\"tahoma1\" >مصرفي</td>";
+       else
+         echo "<td align=\"center\"  class=\"tahoma1\" >غير مصرفي</td>";
+
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["country"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["company"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["name_dastgah"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">".$price_all."</td>";
+      echo "<td align=\"right\" colspan=\"7\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+ footer_forms($admin,$seed);
+?>
+

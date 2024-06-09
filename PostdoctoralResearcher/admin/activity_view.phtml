@@ -1,0 +1,183 @@
+<?
+ include("include/styles.phtml");
+
+ include("include/database-connect.phtml");
+if(!isset($version))
+  $version='-1';
+?>
+<META http-equiv=content-type content=text/html;charset=utf-8>
+<table border="0" width="100%" colspan="0" cellspan="0">
+
+    <tr>
+         <td width="100%" valign="top" align="right" colspan="4">
+            <span <? echo $lable_font_style; ?> dir="rtl"><b>جدول زماني مراحل اجرا و پيشرفت کار</b></span></td>
+       </tr>
+  <tr>
+            <td width="100%" colspan="4" valign="top" align="justify">
+			  <span <? echo $text_font_style; ?>>
+
+
+
+
+<?
+ $q="select max(end_mon) from activities where cod_tarh='$cod_tarh'  and version='$version'";
+
+ $r=mysql_query($q) or die("server error1");
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+   $max_mon=$l["max(end_mon)"];
+ }
+ $q="select * from activities where cod_tarh='$cod_tarh'  and version='-1'";
+ $r=mysql_query($q) or die("server error2");
+?>
+<table border="1" dir="ltr" width="100%" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="53%" align="right" valign="top">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  $moncounter=$max_mon;
+  while($moncounter>0)
+   {
+?>
+
+          <td width="50" align="right">
+      <table border="1" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+         echo "<td width=\"50\" align=center>ماه $moncounter</td>";
+//         echo "<td width=\"20\" align=center></td>";
+?>
+        </tr>
+      </table></td>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="31%">
+      <p align="center"><b>
+      <table border="0" width="150" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1">
+  <tr>
+    <td width="100%" align="center">
+	  زمان کل
+    </td>
+  </tr>
+</table>
+	  </b></td>
+    <td width="50%">
+      <p align="center"><b><table border="0" width="300" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1">
+  <tr>
+    <td width="100%" align="center">
+فعاليتهاي اجرايي
+    </td>
+  </tr>
+</table>
+
+</b></td>
+    <td width="6%">
+      <p align="center"><b>رديف</b></td>
+   
+  </tr>
+<?
+$row_number=1;
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+  {
+   $activity=$l["activity"];
+   $myorder=$l["myorder"];
+   $act_code=$l["act_code"];
+   $start_mon=$l["start_mon"];
+   $start_week=$l["start_week"];
+   $end_mon=$l["end_mon"];
+   $end_week=$l["end_week"];
+   $end_by_week=($end_mon*4)-(4-$end_week);
+//   echo "end by week=$end_by_week    end mon=$end_mon";
+if($start_mon==1)
+   $start_by_week=$start_week-1;
+else
+{
+  $var_week=$start_week-1;
+  $start_by_week=($start_mon*4)-(4-$var_week);
+}
+//   $start_by_week=(($start_mon-1)*4)-($start_week-1);
+//   echo "   start by week=$start_by_week    start mon=$start_mon";
+
+//   $total_time_week=$end_by_week - ($start_by_week-1);
+   $total_time_week=$end_by_week - $start_by_week;
+   $total_mon=(int)($total_time_week/4);
+   $total_week=(int)($total_time_week-$total_mon*4);
+   $weekcounter=$max_mon*4;
+   $moncounter=$max_mon;
+   if($start_by_week<0)
+     $start_by_week=$start_by_week*-1;
+   if($end_by_week<0)
+     $end_by_week=$end_by_week*-1;
+?>
+  <tr>
+    <td width="53%" align="right" valign="middle">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  while($moncounter>0)
+   {
+?>
+
+          <td width="100" align="right">
+      <table border="1"  width="50" height="100%" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+	    $tmp1=$moncounter*4;
+	    $tmp2=($moncounter-1)*4;
+        while (($tmp1>=$weekcounter) && ($tmp2<$weekcounter))
+        {
+       	 if (($weekcounter<=$end_by_week) && ($weekcounter>$start_by_week))
+			$bgcolor="bgcolor=\"blue\"";
+  		 else
+			$bgcolor="";
+//         $real_week=(int)($weekcounter/4)+($weekcounter-($weekcounter/4)*4);
+         echo "<td width=\"25%\" $bgcolor>&nbsp;</td>";
+		 $weekcounter--;
+        }
+?>
+        </tr>
+      </table>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="11%" dir="rtl" align="center">
+	<?
+	 if (($total_mon!=0) && ($total_week!=0))
+	   echo " $total_mon  ماه و  $total_week هفته";
+     else
+     {
+	  if ($total_mon!=0)
+	   echo "$total_mon ماه";
+	  if ($total_week!=0)
+	   echo "$total_week هفته";
+	 }
+	?>
+	</td>
+    <td width="30%" align="center"><? echo $activity; ?></td>
+    <td width="6%" align="center"><? echo $row_number; ?></td>
+    
+  </tr>
+<?
+$row_number++;
+
+   }
+ }
+?>
+</table>
+
+

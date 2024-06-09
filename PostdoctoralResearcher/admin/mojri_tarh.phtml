@@ -1,0 +1,540 @@
+<?
+
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+
+<?
+echo "<br>";
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and creator=\"$admin\"  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+
+if(isset($action))
+{
+  if (strcmp($action,"add_mojri")==0)
+  {
+     if(strlen(trim($name)) > 0  && strlen(trim($family)) > 0 &&  strlen(trim($email)) > 0  &&  strstr($email, '@') )
+     {
+      //$query="select * from mojri where  name = \"$name\" and family=\"$family\" ";
+     // $result=mysql_query($query) or die("Error in selecting data from  mojri list ");
+      if ( 1 )
+      {
+        $query = "select * from mojri";
+        $result = mysql_query($query) or die("Error in Selecting data from mojri");
+        if ( mysql_num_rows($result) > 0 )
+        {
+          $query = "select max(mojri_code) as max_mojri from mojri";
+          $result = mysql_query($query) or die("Error in Selecting data from mojri");
+          $row_fetched = mysql_fetch_array($result);
+          $maxnum = intval($row_fetched["max_mojri"]);
+	      $maxnum = $maxnum +1;
+        }
+        else
+         $maxnum=1;
+        $query  = "insert into mojri set  mobile='$mobile',name=\"$name\" , family=\"$family\", shno = \"$shno\",  birth_date  = \"$birth_date\", work_addr = \"$work_addr\", home_addr = \"$home_addr\", telno = \"$telno\", fax =\"$fax\", melli_code =\"$cod_melli\", email =\"$email\", darajeelmi = $degree , takhasos = \"$takhasos\" ,  semat = \"$semat\", univ_madrak = \"$univ_madrak\" ,country_univ = \"$country_univ\" , mojri_code = \"$maxnum\" , cod_bank=\"$cod_bank\" , bank_name=\"$bank_name\" , shoabe=\"$shoabe\" , hesab=\"$hesab\",sex=\"$sex\"";
+		
+		$result = mysql_query($query) or die("Error in inserting data into mojri list#1");
+    	
+        $query = "insert into mojri_tarh set mojri_or_hamkar=\"$mojri_or_hamkar\",mojri_code = \"$maxnum\" , cod_tarh=\"$cod_tarh\" ";
+		
+		$result = mysql_query($query) or die("Error in inserting data into mojri_tarh#2");
+        $action="اضافه کردن مجري طرح با نام "."<br>".$name."&nbsp;&nbsp;".$family;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+        //message_show("مشخصات مجري /همکار مورد نظر ثبت شد","green");	 
+		$status="add_mojri";  
+		$action="";
+		  $mojri_or_hamkar="";	
+  	   $name="";	
+  	   $family="";
+  	   $shno="";
+  	   $birth_date="";
+  	   $work_addr="";
+  	   $home_addr="";
+  	   $telno_home="";
+  	   $fax="";
+  	   $melli_code="";
+  	   $email="";
+  	   $darajeelmi="";
+  	   $takhasos="";
+  	   $semat="";
+  	   $univ_madrak="";
+  	   $country_univ="";
+  	   $hesab="";
+  	   $bank_name="";
+  	   $shoabe="";
+  	   $cod_bank="";
+  	   $sex="";
+  	   $telno_work="";
+  	   $telno="";  	   
+  	    
+      }
+    
+	
+	/*
+	  else
+       {
+         
+         $row_fetched = mysql_fetch_array($result);
+         $mojri_code = $row_fetched["mojri_code"];
+         $query  = "select * from  mojri_tarh where mojri_code = \"$mojri_code\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+ 	     $result = mysql_query($query) or die("Error in selection data from mojri_tarh");
+	     if(mysql_num_rows($result) <= 0)
+	     {
+  	       $query  = "insert into mojri_tarh set  mojri_or_hamkar=\"$mojri_or_hamkar\",mojri_code = \"$mojri_code\" , cod_tarh=\"$cod_tarh\" ";
+  	       //echo $query;
+           $result = mysql_query($query) or die("Error in inserting data into mojri_tarh");
+           $action="اضافه کردن مجري طرح با نام "."<br>".$name."&nbsp;&nbsp;".$family;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+           $status="add_mojri";
+           $action="";
+             $mojri_or_hamkar="";	
+  	   $name="";	
+  	   $family="";
+  	   $shno="";
+  	   $birth_date="";
+  	   $work_addr="";
+  	   $home_addr="";
+  	   $telno_home="";
+  	   $fax="";
+  	   $melli_code="";
+  	   $email="";
+  	   $darajeelmi="";
+  	   $takhasos="";
+  	   $semat="";
+  	   $univ_madrak="";
+  	   $country_univ="";
+  	   $hesab="";
+  	   $bank_name="";
+  	   $shoabe="";
+  	   $cod_bank="";
+  	   $sex="";
+  	   $telno_work="";
+  	   $telno="";  	   
+         }
+       }
+         */  	   	
+  	   $mojri_or_hamkar="";	
+  	   $name="";	
+  	   $family="";
+  	   $shno="";
+  	   $birth_date="";
+  	   $work_addr="";
+  	   $home_addr="";
+  	   $telno_home="";
+  	   $fax="";
+  	   $melli_code="";
+  	   $email="";
+  	   $darajeelmi="";
+  	   $takhasos="";
+  	   $semat="";
+  	   $univ_madrak="";
+  	   $country_univ="";
+  	   $hesab="";
+  	   $bank_name="";
+  	   $shoabe="";
+  	   $cod_bank="";
+  	   $sex="";
+  	   $telno_work="";
+  	   $telno="";  	   
+  	
+     }
+     else
+       $status="entry_error";
+  }
+  if (strcmp($action,"delete_mojri")==0)
+ {
+    $query="delete from mojri_tarh where mojri_code = \"$delete_id\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+    
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_elmi");
+    $action="حذف مجري طرح از طرح"."<br>".$cod_tarh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+   
+   
+ }
+
+
+  if (strcmp($action,"edit_mojri")==0)
+  {
+  	$query="select * from mojri_tarh , mojri where  mojri.mojri_code='$mojri_code' and mojri_tarh.mojri_code=mojri.mojri_code and mojri_tarh.cod_tarh='$cod_tarh'  and mojri_tarh.version='-1'";
+  	
+	$result=mysql_query($query) or die("Error in selecting data from mojri");
+  	if(mysql_num_rows($result) > 0)
+  	{
+  	   $row_fetched=mysql_fetch_array($result);	
+  	   $name=$row_fetched["name"];	
+  	   $family=$row_fetched["family"];
+  	   $shno=$row_fetched["shno"];
+  	   $birth_date=$row_fetched["birth_date"];
+  	   $work_addr=$row_fetched["work_addr"];
+  	   $home_addr=$row_fetched["home_addr"];
+  	   $telno_home=$row_fetched["telno_home"];
+  	   $fax=$row_fetched["fax"];
+  	   $melli_code=$row_fetched["melli_code"];
+  	   $email=$row_fetched["email"];
+  	   $darajeelmi=$row_fetched["darajeelmi"];
+  	   $takhasos=$row_fetched["takhasos"];
+  	   $semat=$row_fetched["semat"];
+  	   $univ_madrak=$row_fetched["univ_madrak"];
+  	   $country_univ=$row_fetched["country_univ"];
+  	   $hesab=$row_fetched["hesab"];
+  	   $bank_name=$row_fetched["bank_name"];
+  	   $shoabe=$row_fetched["shoabe"];
+  	   $cod_bank=$row_fetched["cod_bank"];
+  	   $sex=$row_fetched["sex"];
+  	   $telno_work=$row_fetched["telno_work"];
+  	   $telno=$row_fetched["telno"];
+	   $mojri_or_hamkar=$row_fetched["mojri_or_hamkar"];  	    	
+	   $mobile=$row_fetched["mobile"];   
+  	}
+  	else
+  	{  	   	
+  	   $mojri_or_hamkar="";	
+  	   $name="";	
+  	   $family="";
+  	   $shno="";
+  	   $birth_date="";
+  	   $work_addr="";
+  	   $home_addr="";
+  	   $telno_home="";
+  	   $fax="";
+  	   $melli_code="";
+  	   $email="";
+  	   $darajeelmi="";
+  	   $takhasos="";
+  	   $semat="";
+  	   $univ_madrak="";
+  	   $country_univ="";
+  	   $hesab="";
+  	   $bank_name="";
+  	   $shoabe="";
+  	   $cod_bank="";
+  	   $sex="";
+  	   $telno_work="";
+  	   $telno="";  	   
+  	}
+  	
+  }
+  
+  
+  if (strcmp($action,"edit_mojri_sabt")==0)
+  {
+  	
+  	if(strlen(trim($name)) > 0  && strlen(trim($family)) > 0 &&  strlen(trim($email)) > 0  &&  strstr($email, '@') )
+     {
+      $query="select * from mojri where  name = \"$name\" and family=\"$family\" ";
+      $result=mysql_query($query) or die("Error in selecting data from  mojri list ");
+      if ( mysql_num_rows($result) > 0 )
+      {
+        
+        $query  = "update mojri set  mobile='$mobile',sex=\"$sex\", name=\"$name\" , family=\"$family\", shno = \"$shno\",  birth_date  = \"$birth_date\", work_addr = \"$work_addr\", home_addr = \"$home_addr\", telno = \"$telno\", fax =\"$fax\", melli_code =\"$cod_melli\", email =\"$email\", darajeelmi = $degree , takhasos = \"$takhasos\" ,  semat = \"$semat\", univ_madrak = \"$univ_madrak\" ,country_univ = \"$country_univ\" ,  cod_bank=\"$cod_bank\" , bank_name=\"$bank_name\" , shoabe=\"$shoabe\" , hesab=\"$hesab\",sex=\"$sex\" where mojri_code = \"$mojri_code\" ";		
+		$result = mysql_query($query) or die("Error in inserting data into mojri list#1");
+        $query = "update mojri_tarh set mojri_or_hamkar=\"$mojri_or_hamkar\" where mojri_code = \"$mojri_code\" and cod_tarh=\"$cod_tarh\" and version='-1'";
+		$result = mysql_query($query) or die("Error in inserting data into mojri_tarh#2");
+        $action="ويرايش مجري طرح با عنوان"."<br>".$name."&nbsp;&nbsp;".$family;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+         $status="add_mojri";
+          $mojri_or_hamkar="";	
+  	   $name="";	
+  	   $family="";
+  	   $shno="";
+  	   $birth_date="";
+  	   $work_addr="";
+  	   $home_addr="";
+  	   $telno_home="";
+  	   $fax="";
+  	   $melli_code="";
+  	   $email="";
+  	   $darajeelmi="";
+  	   $takhasos="";
+  	   $semat="";
+  	   $univ_madrak="";
+  	   $country_univ="";
+  	   $hesab="";
+  	   $bank_name="";
+  	   $shoabe="";
+  	   $cod_bank="";
+  	   $sex="";
+  	   $telno_work="";
+  	   $telno="";  	   
+  	   $action="";
+      }
+     
+      
+     }
+     else
+       $status="entry_error";
+  }
+}
+
+?>
+
+<?
+
+if(strcmp($action,"edit_mojri")!=0) 
+   echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_mojri&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">";
+else 
+   echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=edit_mojri_sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">";
+ 
+ 
+ 
+ $mojri_query="select * from user_login,tarh where tarh.cod_tarh='$cod_tarh' and user_login.email=tarh.creator ";
+ $mojri_result=mysql_query($mojri_query) or die("Error");
+ $row_fetch_mojri=mysql_fetch_array( $mojri_result );
+ $mojri_name = $row_fetch_mojri["name"]."&nbsp;".$row_fetch_mojri["family"];
+  ?>
+
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo "<b>"."مجري اصلي طرح  : ".$mojri_name."</b>" ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+   <br>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>    
+    <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=middle width="251"  background="image/mojri_hamkar.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+
+  if (strcmp($status,"add_mojri")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\"> مجري / همکار مربوطه ثبت شد مشخصات ايشان در ليست زير موجود است</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="name" size="20" value="<? echo "$name"; ?>" class="edit-user"dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span> نام</td>
+  </tr>
+
+  <tr>
+  <td width="350" align="right"><input type="text" name="family" size="20" value="<? echo "$family"; ?>" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نام خانوادگي</td>
+  </tr>
+  
+   <tr>
+   <td width="350" align="right">
+  
+   <select size="1" name="mojri_or_hamkar" class="edit-user" dir="rtl">
+   <?
+    if(strcmp($mojri_or_hamkar,"0")==0)
+      $mojri_checked=" selected ";
+    else
+	  $mojri_checked="";
+	  
+    if(strcmp($mojri_or_hamkar,"1")==0)
+      $hamkar_checked=" selected ";
+    else
+	  $hamkar_checked="";
+	  
+   ?>
+      <option value="0" <? echo $mojri_checked; ?> class="tahoma1">مجري</option>
+      <option value="1" <? echo $hamkar_checked; ?> class="tahoma1">همکار</option>
+    </select></td>
+    <td width="150" class="tahoma1">(نوع همکاري(مجري/همکار</td>
+    </tr>
+  
+  
+   
+  
+
+<!--  <tr>
+    <td width="350" align="right"><input type="text" name="home_addr_en" size="20" value="" class="edit-user" ></td>
+    <td width="150" class="tahoma1">(آدرس منزل (انگليسي</td>
+  </tr>  -->
+
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="email" size="20" value="<? echo "$email"; ?>" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>پست الکترونيکي</td>
+  </tr>
+   <tr>
+  <?
+    $query="select * from darajeelmi order by darajeelmi_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    
+  ?>
+    <td width="350" align="right"><select size="1" name="degree" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+    echo "darajeelmi:".$darajeelmi;
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+      if(strcmp($darajeelmi,$row_fetched["darajeelmi"])==0)
+	    $checked_daraje=" selected ";
+	  else
+	    $checked_daraje="";  
+			
+      echo "<option $checked_daraje value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$row_fetched["darajeelmi_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">مرتبه علمي</td>
+  </tr>
+
+ 
+ 
+  <tr>
+    <td width="350" align="right"><input type="text" name="mobile" size="20"   value="<? echo "$mobile"; ?>"></td>
+    <td width="150" class="tahoma1">تلفن همراه</td>
+  </tr>
+  
+
+<!--  <tr>
+    <td width="350" align="right"><input type="text" name="country_univ_e" size="20"  value="" class="edit-user" ></td>
+    <td width="150" class="tahoma1">(کشور محل اخذ مدرک (انگليسي</td>
+  </tr>  -->
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+
+
+ <?
+   
+   $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"  and mojri_tarh.version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+    echo "<table border=\"1\" width=\"500\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"500\"  cellspacing=\"0\" cellpadding=\"0\" >"; 
+	 echo "<tr>";
+      echo "<td width=\"100%\"  colspan='7'   height=\"20\"><p align=\"center\" class=\"tahoma1\">ساير مجريان طرح </p></td>";
+    echo "</tr>"; 
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/top-left.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">حذف</p></td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">ويرايش</p></td>";
+    echo "<td width=\"70\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نوع همکاري</p></td>";
+    echo "<td width=\"146\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نام خانوادگي</p></td>";
+    echo "<td width=\"158\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نام</p></td>";
+    echo "<td width=\"16\"  background=\"image/top-right.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+   $color="#E2E0E0";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    echo "<tr bgcolor=\"$color\">";
+    echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\">&nbsp;</td>";
+    $mojri_code = $myrow_fetched["mojri_code"];
+    //echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=mojri_tarh.phtml&admin=$admin&seed=$seed&action=delete_mojri&cod_tarh=".$cod_tarh."&delete_id=".$myrow_fetched["mojri_code"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a style=\"text-decoration:none\" href=\"mojri_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code&action=edit_mojri\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+    
+    $hamkari=$myrow_fetched["mojri_or_hamkar"];
+    if(strcmp(trim($hamkari),"0")==0)
+      $hamkari="مجري";
+    else
+      $hamkari="همکار";
+    echo "<td class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$hamkari."</a></p></td>";
+
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".substr($myrow_fetched["family"],0,18)."</a></p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".substr($myrow_fetched["name"],0,18)."</a></p></td>";
+    echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+   }
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"70\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"146\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"158\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+
+   echo "</table>";
+
+  }
+  footer_forms($admin,$seed);
+ ?>

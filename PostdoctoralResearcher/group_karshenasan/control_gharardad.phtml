@@ -1,0 +1,862 @@
+<script>
+function checkit()
+{
+	var key;
+	key = window.event.keyCode
+	
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	{
+		if(key!=46)
+	      window.event.returnValue= false;
+	    else  
+	    window.event.returnValue= true
+	}
+
+	  
+}
+</script> 
+
+
+<script type="text/javascript">
+function changetextbox()
+{ 
+	var x=document.getElementById("tamin_etebar");
+	var y=document.getElementById("grant_type");
+    if (document.getElementById("tarh_type").value == "3") {
+        
+    	x.style.display = 'block';
+    	y.style.display = 'none';
+    }
+    else if (document.getElementById("tarh_type").value == "2") {
+    	
+        //alert(document.getElementById("tarh_type").value);
+    	x.style.display = 'none';
+    	y.style.display = 'block';    	
+    }
+
+ else if (document.getElementById("tarh_type").value == "1") {
+    	
+        //alert(document.getElementById("tarh_type").value);
+    	y.style.display = 'none';
+    	x.style.display = 'none';
+    	
+    }
+}
+//----------------------------------------------
+
+function disablefield()
+{	
+	var x=document.getElementById("maghta");
+	
+if ( document.getElementById('payanname_yes').checked == true ){
+	x.style.display = 'none';
+//document.getElementById('PhoneNumber').disabled = true
+	}
+ if (document.getElementById('payanname_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	}
+}
+//----------------------------------------------
+function disablefield2()
+{	
+	var x=document.getElementById("mahale_tamin_etebar");
+	var y=document.getElementById("mablagh_tamin_etebar");
+	var z=document.getElementById("nahveye_tamin_etebar");
+		
+if ( document.getElementById('tamin_etebar_yes').checked == true ){
+		//alert("hhhhh");
+		x.style.display = 'none';
+		y.style.display = 'none';
+		z.style.display = 'none';
+
+	}
+ if (document.getElementById('tamin_etebar_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	 y.style.display = 'block';
+	 z.style.display = 'block';
+	}
+}
+//----------------------------------------------
+function disablefield3()
+{	
+	var x=document.getElementById("num_safte");
+	var y=document.getElementById("mablagh_safte");
+	
+if ( document.getElementById('need_safte_yes').checked == true ){
+		//alert("hhhhh");
+	x.style.display = 'none';
+	y.style.display = 'none';
+		
+	}
+ if (document.getElementById('need_safte_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	 y.style.display = 'block';
+	}
+}
+
+//----------------------------------------------
+function disablefield4()
+{	
+	var x=document.getElementById("letter");
+	var y=document.getElementById("letter_no");
+	var z=document.getElementById("mablagh_mosharekat");
+		
+if ( document.getElementById('tarh_moshtarak_yes').checked == true ){
+		//alert("hhhhh");
+	x.style.display = 'none';
+	y.style.display = 'none';
+	z.style.display ='none';
+		
+	}
+ if (document.getElementById('tarh_moshtarak_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	 y.style.display = 'block';
+	 z.style.display = 'block';
+	}
+}
+//-------------------------------------------------
+function disablefield5()
+{	
+	var x=document.getElementById("letter_no_akhlagh");
+	var y=document.getElementById("date");
+	
+	 if (document.getElementById("commite_akhlagh_confirm").value == "3") {
+	        
+	    	x.style.display = 'block';
+	    	y.style.display = 'block';
+	    }
+	    else  {
+	    	
+	        //alert(document.getElementById("tarh_type").value);
+	    	x.style.display = 'none';
+	    	y.style.display = 'none';    	
+	    }
+}
+//-------------------------------------------------
+
+function changetextbox2()
+{ 
+	var x=document.getElementById("tarh_takhiri_no");
+	
+    if (document.getElementById("tarh_takhiri").value == "1") {
+        
+    	x.style.display = 'block';
+    	
+    }
+    else if (document.getElementById("tarh_takhiri").value == "2") {
+    	
+    	x.style.display = 'none';
+    	
+    }
+}
+
+</script>
+
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+$query="select * from group_karshenasan where  username=\"$admin\"";
+$result=mysql_query($query) or die("Error in selecting data from tarh  ");
+$row_fetched = mysql_fetch_array( $result );
+$cod_karshenas=$row_fetched["cod_karshenas"];
+//echo date("Y-m-d");
+if(isset($action))
+{
+  if (strcmp($action,"add_control_gharardad")==0)
+  {
+   	
+	        
+   if(strlen(trim($etebar_proposal)) >= 0   && $tarh_type!= 0  && strlen(trim($is_payan_name)) >= 0   &&  strlen(trim($has_tamin_etebar)) >= 0 &&  strlen(trim($tarh_moshtarak)) >= 0 &&  strlen(trim($mablagh_tarh)) > 0 &&  strlen(trim($mablagh_nahaei)) > 0 
+    && $tarh_takhiri!=0 && $shora_cond!=0 && $commite_akhlagh_confirm !=0 && $davar_mali_shorot!= 0 && $karshenas !=0 )
+    {
+    	$mablagh_tarh=str_replace(",","",$mablagh_tarh);
+      	$mablagh_nahaei=str_replace(",","",$mablagh_nahaei);
+      	$mablagh_mosharekat=str_replace(",","",$mablagh_mosharekat);
+      	$mablagh_tamin_etebar=str_replace(",","",$mablagh_tamin_etebar);
+      	$etebar_proposal=str_replace(",","",$etebar_proposal);
+    	
+    	$suppliant_date = $year."/". $month."/". $day;
+      $query="select * from control_gharardad_tarh where (cod_tarh=\"$cod_tarh\") and cod_karshenas=\"$cod_karshenas\"";
+      $result=mysql_query($query) or die("Error in selecting data from tarh  ");
+
+      if ( mysql_num_rows($result) <= 0 )
+      {
+
+          $year_date = date("Y") - 1921 ;
+  	    
+       $hijri_date =jalali_to_gregorian($year,$month,$day);
+       $year=$hijri_date[0];
+       $month=str_pad($hijri_date[1],2,"0",STR_PAD_LEFT);
+       $day=str_pad($hijri_date[2],2,"0",STR_PAD_LEFT);
+       $date=$year."-".$month."-".$day; 
+       
+		  $query="insert into control_gharardad_tarh  set  cod_tarh='$cod_tarh',etebar_proposal='$etebar_proposal',cod_karshenas='$cod_karshenas',mojri_name='$First_mojri_name',vabastegi='$vabastegi',tarh_type='$tarh_type',tamin_etebar='$tamin_etebar',is_payan_name='$is_payan_name',maghta='$maghta',grant_type='$grant_type',has_tamin_etebar='$has_tamin_etebar',mahale_tamin_etebar='$mahale_tamin_etebar',mablagh_tamin_etebar='$mablagh_tamin_etebar',nahveye_tamin_etebar='$nahveye_tamin_etebar',tarh_moshtarak='$tarh_moshtarak',letter='$letter',letter_no='$letter_no',mablagh_mosharekat='$mablagh_mosharekat',mablagh_tarh='$mablagh_tarh',mablagh_nahaei='$mablagh_nahaei',need_safte='$need_safte',num_safte='$num_safte',mablagh_safte='$mablagh_safte',tarh_takhiri='$tarh_takhiri',tarh_takhiri_no='$tarh_takhiri_no',shora_cond='$shora_cond',commite_akhlagh_confirm='$commite_akhlagh_confirm',davar_mali_shorot='$davar_mali_shorot',karshenas='$karshenas',nazer_pishnahadi='$nazer_pishnahadi',letter_no_akhlagh='$letter_no_akhlagh',letter_date_akhlagh='$date',shorot_gharardad='$shorot_gharardad', date='".date("Y-m-d")."'";
+		  //echo $query;
+	      $result=mysql_query($query) or die("Error in inserting data into tarh #100");
+          $action="ثبت کنترل قرارداد طرح با کد"."<br>".$cod_tarh;
+          set_log($action,$admin,date("Y-m-d, g:i a"));
+        
+          
+          // message_show("فرم کنترل قرارداد مربوط به اين طرح ثبت شد","green");
+		          
+          // footer_forms($admin,$seed);
+          // exit();
+           ?>
+          <script language="javascript">
+           window.location="<? echo "tarh_list.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script>
+           <?
+           
+
+         }
+         else
+          $status="duplicate_entry";
+    }
+   else
+      $status="entry_error";
+  }
+
+}
+
+
+
+
+ $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+   
+
+
+echo "<form name=\"sabt_maghale\" method=\"post\"  action=\"$PHP_SELF?action=add_control_gharardad&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="600" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+
+<center>
+<TABLE cellSpacing=0  width="600" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."موضوع کنترل قرارداد طرح شماره   : ".$cod_tarh;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+
+
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width:1px; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">کنترل قرارداد اين طرح قبلا ثبت شده است</td>";
+    echo "</tr>";
+  }
+?>
+
+	  <tr>
+	    <td width="350" align="right" class="tahoma1"><?echo  $First_mojri_name; ?></td>
+	    <td width="250" align="center" class="tahoma1">نام ثبت کننده طرح</td>
+	  </tr>
+	  
+
+	<!--  <tr>
+	    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="vabastegi">هيات علمي<input type="radio" value="1" name="vabastegi">کارمند: رسمي<input type="radio" value="2" name="vabastegi">پيماني <input type="radio" value="3" name="vabastegi">قراردادي </td>
+	    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>وضعيت وابستگي</td>
+	 </tr> -->
+
+
+   <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" id="tarh_type" name="tarh_type" onChange="changetextbox();">
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">معمولي</option>
+          <option value="2"> گرنت</option>
+          <option value="3"> HSR</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> نوع طرح</td>
+ </tr>
+<!-- 
+ <tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="tarh_type">معمولي<input type="radio" value="1" name="tarh_type">گرنت<input type="radio" value="2" name="tarh_type">HSR</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>نوع طرح</td>
+ </tr> --> 
+
+  <tr id="tamin_etebar" style="display:none;">
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1"  name="tamin_etebar"  >
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1"> تامين اعتبار طرح HSR از معاونت پژوهشي يا EDC</option>
+          <option value="2">تامين اعتبار از ساير منابع (معاونت ها، دانشکده ها،مراکز تحقيقاتي ,...)</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"> تامين اعتبار</td>
+ </tr>
+ 
+ <!--   <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" id="grant_type" name="grant_type" disabled="disabled" >
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">1</option>
+          <option value="2"> 2</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"> نوع گرنت</td>
+ </tr> -->
+ 
+ <tr id="grant_type" style="display:none;" >
+    <td width="350" align="right"><input type="text"  name="grant_type" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1"> نوع گرنت </td>
+</tr>
+ 
+<!--
+<tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="tamin_etebar">ضميمه است HSR نامه تامين اعتبار طرح <br/> <input type="radio" value="1" name="tamin_etebar">EDC از معاونت پژوهشي يا HSR تامين اعتبار طرح </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>تامين اعتبار</td>
+ </tr>  -->
+
+<tr>
+    <td width="350" align="right" class="tahoma1">
+     <input type="radio" value="0" id="payanname_no" name="is_payan_name" onclick="disablefield();">نمي باشد
+    <input type="radio" value="1" id="payanname_yes" name="is_payan_name" onclick="disablefield();" >مي باشد 
+    
+    </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>پايان نامه </td>
+</tr>
+
+  <tr id="maghta" style="display:none;">
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" name="maghta"  >
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">عمومي</option>
+          <option value="2"> تخصص</option>
+          <option value="3"> ارشد</option>
+          <option value="4"> فوق تخصص </option>
+          <option value="5"> Ph.D</option>
+          <option value="6"> MPH</option>
+          <option value="7"> PhD By Research</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"> مقطع</td>
+ </tr>
+
+<tr>
+    <td width="350" align="right" class="tahoma1">
+	    <input type="radio" value="0" id="tamin_etebar_no" name="has_tamin_etebar" onclick="disablefield2();">ندارد 
+	    <input type="radio" value="1" id="tamin_etebar_yes" name="has_tamin_etebar" onclick="disablefield2();">دارد
+	</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>تامين اعتبار از ساير سازمانها </td>
+</tr>
+  <tr id="mahale_tamin_etebar" style="display:none;" >
+    <td width="350" align="right"><input type="text" name="mahale_tamin_etebar" size="20"  class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">محل تامين اعتبار</td>
+  </tr>
+  
+    <tr id="mablagh_tamin_etebar" style="display:none;" >
+    <td width="350" align="right"><input type="text" name="mablagh_tamin_etebar"  size="20"  class="edit-user" dir=RTL onkeyup="MakingMoneyForm(this)"   onkeypress="return checkit()" ></td>
+    <td width="250" align="center" class="tahoma1">مبلغ تامين اعتبار</td>
+  </tr>
+  
+  <tr id="nahveye_tamin_etebar" style="display:none;" >
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" name="nahveye_tamin_etebar">
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">اعتبار به دانشگاه پرداخت نمي شود</option>
+          <option value="2">اعتبار به دانشگاه پرداخت مي شود و نامه تامين اعتبار دارد</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1">نحوه تامين اعتبار</td>
+ </tr>
+ 
+
+<tr>
+    <td width="350" align="right" class="tahoma1">
+     <input type="radio" value="0" id="tarh_moshtarak_no" name="tarh_moshtarak" onclick="disablefield4();">نمي  باشد
+    <input type="radio" value="1" id="tarh_moshtarak_yes" name="tarh_moshtarak" onclick="disablefield4();">مي باشد  
+   
+    </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>طرح مشترک با دانشکده/ مرکز ديگر </td>
+</tr>
+<tr id="letter" style="display:none;">
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1"  name="letter"  >
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">دارد</option>
+          <option value="2"> درصورتجلسه دانشکده/ مرکز ذکر شده است</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"> نامه</td>
+ </tr>
+
+<tr id="letter_no" style="display:none;">
+    <td width="350" align="right"><input type="text"  name="letter_no" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">شماره نامه </td>
+</tr>
+
+<tr id="mablagh_mosharekat" style="display:none;">
+    <td width="350" align="right"><input type="text"  name="mablagh_mosharekat" size="20"    onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()" dir=RTL ></td>
+    <td width="250" align="center" class="tahoma1">مبلغ مشارکت مالي </td>
+  </tr>
+  <?
+  	$qt1="select * from jalase_shora_tarh where cod_tarh='$cod_tarh'";
+  //	echo $qt1;
+  $rt1=mysql_query($qt1) or die("error");
+  $budje_mosavab=0;
+  if(mysql_num_rows($rt1) > 0)
+  {
+  	 while($rft1=mysql_fetch_array($rt1)){
+  	 $budje_mosavab=$rft1["budjeh"];
+  	 } 
+  } 
+  $budje_mosavab=str_replace("/","",$budje_mosavab);
+  $budje_mosavab=number_format($budje_mosavab);
+  ?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="mablagh_tarh" size="20"    onkeyup="MakingMoneyForm(this)"  class="edit-user" value='<? echo $budje_mosavab;?>' onkeypress="return checkit()" dir=RTL  ></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>مبلغ طرح در صورتجلسه امضا شده دانشکده/ مرکز</td>
+  </tr>
+  
+   <tr>
+    <td width="350" align="right"><input type="text" name="etebar_proposal" size="20"    onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()" dir=RTL  ></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>اعتبار قيد شده در پروپزال</td>
+  </tr>
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="mablagh_nahaei" size="20"   onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()" dir=RTL  ></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>مبلغ نهايي شده در حوزه که هنگام آماده به قرارداد اعلام شده است</td>
+  </tr>
+  
+<!--  <tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" id="need_safte_yes" name="need_safte" onclick="disablefield3();">نياز دارد <input type="radio" value="1" id="need_safte_no" name="need_safte" onclick="disablefield3();">نياز ندارد</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>اخذ سفته </td>
+</tr>
+<tr id="num_safte" style="display:none;">
+    <td width="350" align="right"><input type="text"  name="num_safte" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">تعداد سفته اخذ شده</td>
+ </tr>
+<tr id="mablagh_safte" style="display:none;">
+    <td width="350" align="right"><input type="text"  name="mablagh_safte" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">مبلغ سفته اخذ شده</td>
+ </tr>
+  --> 
+ <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" id="tarh_takhiri" name="tarh_takhiri"  onChange="changetextbox2();" >
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">دارد و در صورت تاييد مديريت قرارداد بسته خواهد شد </option>
+          <option value="2">ندارد </option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> وضعيت مجري از نظر طرح تاخيري</td>
+ </tr>
+ <!-- 
+  <tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="tarh_takhiri"> ندارد <input type="radio" value="1" name="tarh_takhiri">دارد و با تاييد مديريت قرارداد بسته شده است</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>طرح تاخيري </td>
+</tr> -->
+
+<tr id="tarh_takhiri_no" style="display:none;">
+    <td width="350" align="right"><input type="text"  name="tarh_takhiri_no" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">شماره طرح يا طرح هاي تاخيري مجري</td>
+</tr>
+
+ <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" name="shora_cond">
+          <option value="0" selected>انتخاب کنيد</option>
+          <option value="1">نداشته است </option>
+          <option value="2"> داشته است و محقق شده است</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> شروط شوراي پژوهش</td>
+ </tr>
+<!-- <tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="shora_shorut"> نداشته است <input type="radio" value="1" name="shora_shorut">داشته است و محقق شده است</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>شروط شوراي پژوهش  </td>
+</tr> -->
+
+ <tr>
+ <td align="center" >
+	 <select class="edit-user" dir="rtl" size="1" name="commite_akhlagh_confirm" onchange='disablefield5();'>
+	          <option value="0" selected>انتخاب کنيد</option>
+	          <option value="1">نياز نداشته است</option>
+	          <option value="2"> نياز داشته و داخل حوزه تاييد شده</option>
+	          <option value="3"> نياز داشته وتوسط کميته تخصصي تاييد شده </option>
+	 </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> تاييديه کميته اخلاق</td>
+ </tr>
+ 
+ <tr id="letter_no_akhlagh" style="display:none;">
+    <td width="350" align="right"><input type="text"  name="letter_no_akhlagh" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">شماره نامه </td>
+</tr>
+
+<!--  
+ <tr id="date" style="display:none;">
+            <td align="right" ><select class="tahoma1" dir="rtl" size="1" name="year">
+          <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option value="1390">&#1777;&#1779;&#1785;&#1776;</option>
+          <option value="1391">&#1777;&#1779;&#1785;&#1777;</option>
+          <option value="1392">&#1777;&#1779;&#1785;&#1778;</option>
+          <option value="1393">&#1777;&#1779;&#1785;&#1779;</option>
+        </select>
+      <select class="tahoma1" dir="rtl" size="1" name="month">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="04">&#1578;&#1610;&#1585;</option>
+          <option value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option value="07">&#1605;&#1607;&#1585;</option>
+          <option value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option value="09">&#1570;&#1584;&#1585;</option>
+          <option value="10">&#1583;&#1610;</option>
+          <option value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="tahoma1" dir="rtl" size="1" name="day">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option value="01">&#1777;</option>
+          <option value="02">&#1778;</option>
+          <option value="03">&#1779;</option>
+          <option value="04">&#1780;</option>
+          <option value="05">&#1781;</option>
+          <option value="06">&#1782;</option>
+          <option value="07">&#1783;</option>
+          <option value="08">&#1784;</option>
+          <option value="09">&#1785;</option>
+          <option value="10">&#1777;&#1776;</option>
+          <option value="11">&#1777;&#1777;</option>
+          <option value="12">&#1777;&#1778;</option>
+          <option value="13">&#1777;&#1779;</option>
+          <option value="14">&#1777;&#1780;</option>
+          <option value="15">&#1777;&#1781;</option>
+          <option value="16">&#1777;&#1782;</option>
+          <option value="17">&#1777;&#1783;</option>
+          <option value="18">&#1777;&#1784;</option>
+          <option value="19">&#1777;&#1785;</option>
+          <option value="20">&#1778;&#1776;</option>
+          <option value="21">&#1778;&#1777;</option>
+          <option value="22">&#1778;&#1778;</option>
+          <option value="23">&#1778;&#1779;</option>
+          <option value="24">&#1778;&#1780;</option>
+          <option value="25">&#1778;&#1781;</option>
+          <option value="26">&#1778;&#1782;</option>
+          <option value="27">&#1778;&#1783;</option>
+          <option value="28">&#1778;&#1784;</option>
+          <option value="29">&#1778;&#1785;</option>
+          <option value="30">&#1779;&#1776;</option>
+          <option value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="250" align="right">
+                <p align="center" class="tahoma1">تاريخ نامه تاييديه اخلاق </td>
+            </tr>
+-->        
+   <tr>
+ <td align="center" >
+	 <select class="edit-user" dir="rtl" size="1" name="davar_mali_shorot">
+	          <option value="0" selected>انتخاب کنيد</option>
+	          <option value="1">داشته و در قرارداد لحاظ خواهد شد </option>
+	          <option value="2"> نداشته است</option>
+	 </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> شروط داور مالي</td>
+ </tr>
+ <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="shorot_gharardad"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="250" align="center" class="tahoma1">شروط خاصي که بايد در متن قرارداد لحاظ شود</td>
+  </tr>
+   <tr>
+  <?
+    $query="select * from control_gharardad_karshenas order by id ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td align="center"><select size="1" name="karshenas" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+         echo "<option value=\"".$row_fetched["id"]."\" class=\"tahoma1\">".$row_fetched["karshenas_name"]." ".$row_fetched["karshenas_family"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="250" align="left" class="tahoma1"><p align="center" class="tahoma1"><span class="star-message">*</span> نام کارشناس طرح</td>
+  </tr>
+ <!--    <tr>
+ <td align="center" >
+	 <select class="edit-user" dir="rtl" size="1" name="karshenas">
+	          <option value="0" selected>انتخاب کنيد</option>
+	          <option value="1">زهرا احدي </option>
+	          <option value="2"> ناهيد مستوفي</option>
+	          <option value="3"> مريم خليل پور</option>
+	          <option value="4"> هاجر معمايي</option>
+	          <option value="5"> الهه علمدار</option>
+	          <option value="6"> فاطمه سعيدي</option>
+	          <option value="7"> عصمت کريمي</option>
+	          <option value="8"> شبنم نوروز زاده</option>
+	          <option value="9"> نسترن انوشه</option>
+	          <option value="9"> هانيه رستم آبادي</option>
+	          <option value="9"> فريبا اکبري</option>
+	 </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> نام کارشناس طرح</td>
+ </tr>
+
+
+   <tr>
+    <td width="350" align="right"><input type="text" name="nazer_pishnahadi" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">ناظر پيشنهادي کارشناس</td>
+  </tr>
+ 
+   <tr>
+    <td width="350" align="right"><input type="text" name="maghale_name" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>عنوان مقاله</td>
+  </tr>
+
+ <tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="language">انگليسي<input type="radio" value="1" name="language">فارسي<input type="radio" value="2" name="language">عربي</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>زبان ارائه/چاپ</td>
+  </tr>
+  
+<tr>
+    <td width="400" align="right" class="tahoma1"><input type="radio" value="0" name="location">مجله علمي/پژوهشي<input type="radio" value="1" name="location">مجله علمي/تخصصي<input type="radio" value="2" name="location">مجله علمي/ترويجي</td>
+    
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>محل ارائه/چاپ</td>
+  </tr>
+  <tr>
+    <td width="350" align="right" class="tahoma1">
+     <input type="radio" value="3" name="location">همايش-کنفرانس<input type="radio" value="4" name="location">سمينار<input type="radio" value="5" name="location">ISIمجله<input type="radio" value="6" name="location"> ISCمجله </td>
+  </tr>
+
+   <tr>
+    <td width="350" align="right"><input type="text" name="title_location" size="20"   class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>عنوان محل ارائه/چاپ</td>
+  </tr>
+  
+  <tr>
+    <td width="350" align="right" class="tahoma1"><input type="radio" value="0" name="meghyas">ملي<input type="radio" value="1" name="meghyas">بين المللي خارج از ايران<input type="radio" value="2" name="meghyas">بين المللي در ايران</td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>مقياس-براي سمينارها و همايش ها</td>
+  </tr>
+  <tr>
+   <td align="right" ><select class="in3" dir="rtl" size="1" name="year1">
+          <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option value="1390">&#1777;&#1779;&#1785;&#1776;</option>
+          <option value="1391">&#1777;&#1779;&#1785;&#1777;</option>
+        </select>
+      <select class="in3" dir="rtl" size="1" name="month1">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="04">&#1578;&#1610;&#1585;</option>
+          <option value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option value="07">&#1605;&#1607;&#1585;</option>
+          <option value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option value="09">&#1570;&#1584;&#1585;</option>
+          <option value="10">&#1583;&#1610;</option>
+          <option value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="day1">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option value="01">&#1777;</option>
+          <option value="02">&#1778;</option>
+          <option value="03">&#1779;</option>
+          <option value="04">&#1780;</option>
+          <option value="05">&#1781;</option>
+          <option value="06">&#1782;</option>
+          <option value="07">&#1783;</option>
+          <option value="08">&#1784;</option>
+          <option value="09">&#1785;</option>
+          <option value="10">&#1777;&#1776;</option>
+          <option value="11">&#1777;&#1777;</option>
+          <option value="12">&#1777;&#1778;</option>
+          <option value="13">&#1777;&#1779;</option>
+          <option value="14">&#1777;&#1780;</option>
+          <option value="15">&#1777;&#1781;</option>
+          <option value="16">&#1777;&#1782;</option>
+          <option value="17">&#1777;&#1783;</option>
+          <option value="18">&#1777;&#1784;</option>
+          <option value="19">&#1777;&#1785;</option>
+          <option value="20">&#1778;&#1776;</option>
+          <option value="21">&#1778;&#1777;</option>
+          <option value="22">&#1778;&#1778;</option>
+          <option value="23">&#1778;&#1779;</option>
+          <option value="24">&#1778;&#1780;</option>
+          <option value="25">&#1778;&#1781;</option>
+          <option value="26">&#1778;&#1782;</option>
+          <option value="27">&#1778;&#1783;</option>
+          <option value="28">&#1778;&#1784;</option>
+          <option value="29">&#1778;&#1785;</option>
+          <option value="30">&#1779;&#1776;</option>
+          <option value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="250" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>آخرين مهلت ارسال چکيده</td>
+            </tr>
+              <tr>
+   <td align="right" ><select class="in3" dir="rtl" size="1" name="year2">
+          <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option value="1390">&#1777;&#1779;&#1785;&#1776;</option>
+          <option value="1391">&#1777;&#1779;&#1785;&#1777;</option>
+        </select>
+      <select class="in3" dir="rtl" size="1" name="month2">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="04">&#1578;&#1610;&#1585;</option>
+          <option value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option value="07">&#1605;&#1607;&#1585;</option>
+          <option value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option value="09">&#1570;&#1584;&#1585;</option>
+          <option value="10">&#1583;&#1610;</option>
+          <option value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="day2">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option value="01">&#1777;</option>
+          <option value="02">&#1778;</option>
+          <option value="03">&#1779;</option>
+          <option value="04">&#1780;</option>
+          <option value="05">&#1781;</option>
+          <option value="06">&#1782;</option>
+          <option value="07">&#1783;</option>
+          <option value="08">&#1784;</option>
+          <option value="09">&#1785;</option>
+          <option value="10">&#1777;&#1776;</option>
+          <option value="11">&#1777;&#1777;</option>
+          <option value="12">&#1777;&#1778;</option>
+          <option value="13">&#1777;&#1779;</option>
+          <option value="14">&#1777;&#1780;</option>
+          <option value="15">&#1777;&#1781;</option>
+          <option value="16">&#1777;&#1782;</option>
+          <option value="17">&#1777;&#1783;</option>
+          <option value="18">&#1777;&#1784;</option>
+          <option value="19">&#1777;&#1785;</option>
+          <option value="20">&#1778;&#1776;</option>
+          <option value="21">&#1778;&#1777;</option>
+          <option value="22">&#1778;&#1778;</option>
+          <option value="23">&#1778;&#1779;</option>
+          <option value="24">&#1778;&#1780;</option>
+          <option value="25">&#1778;&#1781;</option>
+          <option value="26">&#1778;&#1782;</option>
+          <option value="27">&#1778;&#1783;</option>
+          <option value="28">&#1778;&#1784;</option>
+          <option value="29">&#1778;&#1785;</option>
+          <option value="30">&#1779;&#1776;</option>
+          <option value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="250" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>آخرين مهلت ارسال کل مقاله</td>
+            </tr>
+             -->
+ </table>
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+
+  
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit"  value="ثبت" name="B1" class="but-small"></p></td>
+  </tr>
+  
+</table>
+
+
+<script>
+            var temp=document.sabt_tarh.cod_group            
+            function redirect()
+            {
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex
+                myselecteditem--
+                
+                if( myselecteditem<0 )
+                  return
+               
+                for (i=0;i<group[myselecteditem].length;i++)
+                {                	
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }
+            
+
+
+            </script>
+             
+</form>
+<?
+	footer_forms($admin,$seed);
+?>

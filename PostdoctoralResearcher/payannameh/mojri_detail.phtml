@@ -1,0 +1,92 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require_once('lib/nusoap.php');
+if(!isset($version))
+  $version='-1';
+ 
+
+  if(isset($action) && strcmp($action,'send_user')==0)
+ {
+   $q="select * from user_login where email='$mojri_username'";
+  // echo $q;
+   $rs=mysql_query($q) or die("error");
+   if(mysql_num_rows($rs) > 0)
+     {
+	 $rf=mysql_fetch_array($rs);
+	 $mobile=$rf["mobile"];
+	 $pass=$rf["password"];
+	 //echo "Pajooheshyar username=$mojri_username  pajooheshyar password=$pass";
+	        send_sms($mobile,"Pajooheshyar username=$mojri_username  pajooheshyar password=$pass",$admin);
+			 message_show(".رمز ارسال شد","red");
+			 footer_forms($admin,$seed);
+			 exit();
+	 }
+ }
+ 
+ 
+  $myquery_mojri = "SELECT  * FROM  user_login WHERE user_login.email = '$mojri_username' ";
+//echo $query;
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+
+    echo "<br>";
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($myresult_mojri);
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["name"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["family"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام خانوادگي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["work_addr"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">آدرس محل کار</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["home_addr"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">آدرس منزل</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["telno"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تلفن</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["fax"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">فکس</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["email"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">پست الکترونيکي</td>";
+    echo "</tr>";
+echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a href='send_sms.phtml?admin=$admin&seed=$seed&mojri_username=".$row_fetched["email"]."&telno=".$row_fetched["mobile"]."'>".$row_fetched["mobile"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تلفن همراه</td>";
+    echo "</tr>";
+	echo "<tr>";
+ 
+    echo "<td width=\"100%\" colspan='2' bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\"><a href='$PHP_SELF?action=send_user&admin=$admin&seed=$seed&mojri_username=".$row_fetched["email"]."'>ارسال رمز عبور به مجري</a></td>";
+    echo "</tr>";
+    echo "</table>";
+  
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

@@ -1,0 +1,2828 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms();
+?>
+<!-- BEGIN PAGE LEVEL STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css"/>
+    <link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css"/>
+    
+<!--     <link rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css"/> -->
+
+<!--     <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" /> -->
+<!--     <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" /> -->
+    <link href="../assets/plugins/persian-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+    <link id="toastr" rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+    <link id="DT_bootstrap" rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css"/>
+<!-- END PAGE LEVEL STYLES -->
+    
+    <!--First of test with previous css  -->
+    <!-- <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" /> -->
+      
+    <!-- End of test with previous css -->
+    <!-- END PAGE LEVEL STYLES -->
+<?php
+
+include("include/new_menu.php");
+
+$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) > 0)
+{
+	$rf=mysql_fetch_array($result);
+	$ravesh_ejra=$rf["ravesh_ejra"];
+	$natayej=$rf["natayej"];
+	$natije_giri=$rf["natije_giri"];
+	$pishnahadat=$rf["pishnahadat"];
+	$sazmanha=$rf["sazmanha"];
+// 	$ravesh_ejra=iconv('utf-8', 'windows-1256', ($ravesh_ejra));
+// 	$natayej=iconv('utf-8', 'windows-1256', ($natayej));
+// 	$natije_giri=iconv('utf-8', 'windows-1256', ($natije_giri));
+// 	$pishnahadat=iconv('utf-8', 'windows-1256', ($pishnahadat));
+// 	$sazmanha=iconv('utf-8', 'windows-1256', ($sazmanha));
+	$chekide_latin=$rf["chekide_latin"];
+	$kalame_1=$rf["kalame_1"];
+	$kalame_2=$rf["kalame_2"];
+	$kalame_3=$rf["kalame_3"];
+	$kalame_4=$rf["kalame_4"];
+	$filename_last=$rf["file_name"];
+	$yes_no=$rf["yes_no"];
+	$form_6=$rf["form_6"];
+	$form_7=$rf["form_7"];
+}
+else
+{
+	$natayej='';
+	$natije_giri='';
+	$pishnahadat='';
+	$chekide_latin='';
+	$kalame_1='';
+	$kalame_2='';
+	$kalame_3='';
+	$kalame_4='';
+	$sazmanha='';
+	$filename_last="";
+	$yes_no="-1";
+	$form_6="";
+	 
+	$form_7="";
+
+}
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content"> 
+                	<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+		                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		                    <div class="modal-dialog">
+		                        <div class="modal-content">
+		                            <div class="modal-header">
+		                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+		                                <h4 class="modal-title">راهنما</h4>
+		                            </div>
+		                            <div class="modal-body">
+		                                در حال تکمیل می باشد.
+		                            </div>
+		                            <div class="modal-footer">
+		                                <button id="modal_close_btn" type="button" class="btn default red" data-dismiss="modal">بستن</button>
+		                            </div>
+		                        </div>
+		                        <!-- /.modal-content -->
+		                    </div>
+		                    <!-- /.modal-dialog -->
+		                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h4 class="page-title"> 
+                           <!--  <small>ارسال گزارش : <?php //echo $tarh_name;?></small> -->
+                        </h4>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="breadcrumb1" href="index.html">
+                                    خانه
+                                </a>
+                                <i id="fa-angle-left1" class="fa fa-angle-left"></i>
+                            </li>
+                            
+                            <li>
+                                <a id="breadcrumb2" href="tarh_list.phtml">
+                                    طرح هاي ارسالي شما
+                                </a>
+                                <i id="fa-angle-left2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb3" href="tarh_list.phtml?position=1">
+                                    طرح هاي پايان يافته
+                                </a>
+                                <i id="fa-angle-left3" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb4" href="final_report.phtml">
+                                    ارسال گزارش نهایی
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+                <!-- BEGIN PAGE CONTENT-->
+							<div class="row">
+				<div class="col-md-12">
+					<div class="portlet box blue" id="form_wizard_1">
+						<div class="portlet-title">
+							<div id="caption_wizard" class="caption">
+								<i class="fa fa-reorder"></i> ارسال گزارشات طرح -
+								<span class="step-title">
+									 مرحله 1 از 8
+								</span>
+							</div>
+							<div class="tools">
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a id="portlet_config" href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+						</div>
+						</div>
+						<div class="portlet-body form">
+							<form action="final_report_sabt.php?step=delete_file" class="form-horizontal" id="delete_file">
+							<input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control"  value="<?php echo $cod_tarh;?>">
+							<input name="delete_id" id="delete_id" type="hidden" >
+							 					<div class="modal fade " id="delete"  tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                    <div class="modal-header">
+							                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                        <h4 class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                       
+							                                        </h4>
+							                                    </div>
+							                                    <div class="modal-body">
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div class="form-body">
+																			<h4 id="delete_message" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+																		</div>
+																		<div class="form-actions fluid">
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="col-md-offset-3 col-md-9">
+																						<button id="del_btn_yes" type="submit"  class="btn green">بلي</button>
+																						<button id="del_btn_no" type="button" class="btn red" data-dismiss="modal" ><i class="fa fa-times"></i>خير</button>
+																					</div>
+																				</div>
+																				<div class="col-md-6">
+																				</div>
+																			</div>
+																		</div>
+																	
+																	<!-- END FORM-->
+							                                    </div>
+							                                    
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							     </form>
+							     <form action="final_report_sabt.php?action=add	_hazineh" class="form-horizontal" id="add_hazineh">
+												<input id="cod_tarh_hazineh" name="cod_tarh" type="hidden" class="form-control"  value="<?php echo $cod_tarh;?>">
+												<input name="delete_hazineh_id" id="delete_hazineh_id" type="hidden" >
+												<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog ">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+							                                        <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                      	  <h4 id="modal_title" class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                            عنوان
+							                                        </h4>
+							                                     </div>
+							                                    <div class="modal-body">
+							                                  		 
+																		<div class="form-body">
+																       <div id="alert_danger" class="alert alert-danger display-hide">
+																			<button class="close" data-close="alert"></button>
+																			پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																	      </div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="cost_lbl_modal" class="control-label col-md-5"> هزينه
+																						<span class="required">
+																							 *
+																							</span></label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input id="hazine" name="hazine" type="text" class="form-control input-sm  input-small" placeholder="" tabindex="1">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="activity_lbl_modal" class="control-label col-md-5">فعاليت 
+																							<span class="required">
+																							 *
+																							</span>
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input name="faaliat" id="faaliat" type="text" class="form-control input-sm input-small" placeholder="" tabindex="5">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="price_lbl_modal" class="control-label col-md-5">مبلغ 
+																							<span class="required">
+																							 *
+																							</span>
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">	
+																								<i class="fa"></i>
+																								<input name="mablagh" id="mablagh" type="text" class="form-control input-sm input-small" placeholder="" tabindex="5">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																		</div>										                                     
+							                                    </div>
+							                                     <div class="modal-footer">
+							                                        <button id="btn_save_modal" type="submit"  class="btn green input-sm input-small" tabindex="7">ذخيره</button>
+																	<button id="btn_cancel_modal" type="button" class="btn red input-sm input-small" data-dismiss="modal" tabindex="8"><i class="fa fa-times"></i>انصراف</button>
+							                                    </div>
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							 					<div class="modal fade" id="delete_hazineh_modal"  tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                    <div class="modal-header">
+							                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                        <h4 class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                       
+							                                        </h4>
+							                                    </div>
+							                                    <div class="modal-body">
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div class="form-body">
+																			<h4 id="delete_hazineh_message" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+																		</div>
+																		<div class="form-actions fluid">
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="col-md-offset-3 col-md-9">
+																						<button id="del_hazineh_btn_yes" type="submit"  class="btn green">بلي</button>
+																						<button id="del_hazineh_btn_no" type="button" class="btn red" data-dismiss="modal" ><i class="fa fa-times"></i>خير</button>
+																					</div>
+																				</div>
+																				<div class="col-md-6">
+																				</div>
+																			</div>
+																		</div>
+																	
+																	<!-- END FORM-->
+							                                    </div>
+							                                    
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+						    </form>
+							
+							<form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" id="submit_form">
+							<input name="cod_tarh" id="cod_tarh" type="hidden" value="<?php echo $cod_tarh;?>">
+								<div class="form-wizard">
+									<div class="form-body">
+										<ul class="nav nav-pills nav-justified steps">
+											<li>
+												<a href="#tab1" data-toggle="tab" id="step1" class="step">
+													<span class="number">
+														 1
+													</span>
+													<span id="desc1" class="desc">
+														<i class="fa fa-check"></i> خلاصه گزارش نهايي
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab2" data-toggle="tab" id="step2" class="step">
+													<span class="number">
+														 2
+													</span>
+													<span id="desc2" class="desc">
+														<i class="fa fa-check"></i>      چکيده لاتين
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab3" data-toggle="tab" id="step3" class="step active">
+													<span class="number">
+														 3
+													</span>
+													<span id="desc3" class="desc">
+														<i class="fa fa-check"></i> كلمات كليدي
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab4" data-toggle="tab" id="step4" class="step active">
+													<span class="number">
+														 4
+													</span>
+													<span id="desc4" class="desc">
+														<i class="fa fa-check"></i> فايل ضميمه 
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab5" data-toggle="tab" id="step5" class="step active">
+													<span class="number">
+														 5
+													</span>
+													<span id="desc5" class="desc">
+														<i class="fa fa-check"></i> طرح من واجد شرايط است 
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab6" data-toggle="tab" id="step6" class="step active">
+													<span class="number">
+														 6
+													</span>
+													<span id="desc6" class="desc">
+														<i class="fa fa-check"></i> مخاطبين طرح شما چه کساني هستند؟ 
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab7" data-toggle="tab" id="step7" class="step">
+													<span class="number">
+														 7
+													</span>
+													<span id="desc7" class="desc">
+														<i class="fa fa-check"></i> نحوه انتشار 
+													</span>
+												</a>
+											</li>
+											<li>
+												<a href="#tab8" data-toggle="tab" id="step8" class="step">
+													<span class="number">
+														 8
+													</span>
+													<span id="desc8" class="desc">
+														<i class="fa fa-check"></i> تکميل و ارسال
+													</span>
+												</a>
+											</li>
+										</ul>
+										<div id="bar" class="progress progress-striped active" role="progressbar">
+											<div class="progress-bar progress-bar-success">
+											</div>
+										</div>
+										<div class="tab-content">
+											<div id="alert_danger_wizard" class="alert alert-danger display-none">
+												<button class="close" data-dismiss="alert"></button>
+												پر کردن تمام فيلد هاي ستاره دار اجباري است
+											</div>
+											<div class="alert alert-success display-none hidden">
+												<button class="close" data-dismiss="alert"></button>
+												Your form validation is successful!
+											</div>
+											<div class="tab-pane active" id="tab1">
+												<h3 id="block1" class="block">خلاصه گزارش نهايي</h3>
+												<div class="form-body">
+														<div class="row">
+															<h4 class="col-md-6 col-xs-push-0">
+															    <span id="abstract_persian" >چکيده فارسي :</span>
+															 </h4>
+														</div>
+														<div class="row margin-top-20">
+															<div class="col-md-10">
+																<div class="form-group">
+																<label id="ravesh_ejra_lbl" class="control-label col-md-3">روش اجرا *</label>
+																	<div class="col-md-9">
+								                                            <textarea id="ravesh_ejra" name="ravesh_ejra" class="form-control" rows="3"><? echo $ravesh_ejra; ?></textarea>
+						                                            </div>
+					                                            </div>
+															</div>
+															
+															<!--/span-->
+														</div>
+														<div class="row">
+															<div class="col-md-10">
+																<div class="form-group">
+																<label id="outcome_lbl" class="control-label col-md-3">نتايج *</label>
+																	<div class="col-md-9">
+								                                            <textarea id="natayej" name="natayej" class="form-control" rows="3"><? echo $natayej; ?></textarea>
+						                                            </div>
+					                                            </div>
+															</div>
+														</div>
+														<!--/row-->
+														<div class="row margin-top-20">
+															<div class="col-md-10">
+																<div class="form-group">
+																<label id="conclusion_lbl" class="control-label col-md-3">نتيجه گيري</label>
+																	<div class="col-md-9">
+								                                            <textarea id="natije_giri" name="natije_giri" class="form-control" rows="3"><? echo $natije_giri; ?></textarea>
+						                                            </div>
+					                                            </div>
+															</div>
+															<!--/span-->
+														</div>
+														<div class="row margin-top-20">
+															<div class="col-md-10">
+																<div class="form-group">
+																<label id="suggestion_lbl" class="control-label col-md-3">پيشنهادات</label>
+																	<div class="col-md-9">
+								                                            <textarea id="pishnahadat" name="pishnahadat" class="form-control" rows="3"><? echo $pishnahadat; ?></textarea>
+						                                            </div>
+					                                            </div>
+															</div>
+															<!--/span-->
+														</div>
+														<div class="row margin-top-20">
+															<div class="col-md-10">
+																<div class="form-group">
+																<label id="organization_take_lbl" class="control-label col-md-3">سازمانهاي استفاده كننده از نتايج</label>
+																	<div class="col-md-9">
+								                                            <textarea id="sazmanha" name="sazmanha" class="form-control" rows="3"><? echo $sazmanha; ?></textarea>
+						                                            </div>
+					                                            </div>
+															</div>
+															<!--/span-->
+														</div>						
+											    </div>					
+											</div>
+											<div class="tab-pane" id="tab2">
+												<h3 id="block2" class="block">چکيده لاتين</h3>
+												<div class="form-body">													
+														<div class="row margin-top-20">
+															<div class="col-md-10">
+																<div class="form-group">
+																<label id="abstract_english_lbl" class="control-label col-md-3">چکيده لاتين</label>
+																	<div class="col-md-9">
+								                                            <textarea id="chekide_latin" name="chekide_latin" class="form-control" rows="3"><? echo $chekide_latin; ?></textarea>
+						                                            </div>
+					                                            </div>
+															</div>
+															<!--/span-->
+														</div>																																				
+													</div>				
+												
+											</div>
+											<div class="tab-pane" id="tab3">
+												<h3 id="block3" class="block">كلمات كليدي</h3>
+												<div class="form-body">		
+															<div class="row">
+																<div class="col-md-12">
+																	<div class="form-group">
+																		<label id="keyword1_lbl" class="control-label col-md-3">کلمه اول*</label>
+																		<div class="col-md-6">
+																			<input id="kalame_1" name="kalame_1" type="text" class="form-control" placeholder="" value="<? echo $kalame_1; ?>">
+																			
+																		</div>
+																	</div>
+																	<div class="form-group">
+																	<label id="keyword2_lbl" class="control-label col-md-3">کلمه دوم</label>
+																		<div class="col-md-6">
+																			<input id="kalame_2" name="kalame_2" type="text" class="form-control" placeholder="" value="<? echo $kalame_2; ?>">
+																			
+																		</div>
+																	</div>
+																	<div class="form-group">
+																	<label id="keyword3_lbl" class="control-label col-md-3">کلمه سوم</label>
+																		<div class="col-md-6">
+																			<input id="kalame_3" name="kalame_3" type="text" class="form-control" placeholder="" value="<? echo $kalame_3; ?>">
+																			
+																		</div>
+																	</div>
+																	<div class="form-group">
+																	<label id="keyword4_lbl" class="control-label col-md-3">کلمه چهارم</label>
+																		<div class="col-md-6">
+																			<input id="kalame_4" name="kalame_4" type="text" class="form-control" placeholder="" value="<? echo $kalame_4; ?>">
+																			
+																		</div>
+																	</div>
+																	<div>
+																		<span id="help_block1" class="help-block col-md-10 col-xs-push-1">
+																					 شما ميتوانيد تا 4 كلمه كليدي وارد نماييد. ثبت حداقل يك كلمه كليدي اجباري است. كلمه كليدي كلمه اي است كه مي توانيد با جستجوي آن به عنوان و هدف مقاله شما برسيد
+																	    </span>
+																	</div>
+																</div>									
+															</div>		
+																			
+													</div>
+											</div>
+											<div class="tab-pane" id="tab4">
+												<h3 id="block4" class="block">فايل ضميمه</h3>
+												<div class="form-body">
+												<div class="form-group">
+															<p id="help_block2" class="help-block col-md-12 text-justify">	
+																"براي ارسال گزارش نهايي طرح علاوه بر پرکردن متغير هاي ذيل، ارسال فايل گزارش نهايي که بر اساس فرمت قابل قبول اين حوزه( در منوي اطلاع رساني موجود است) الزامي است و بدون ارسال اين فايل امکان اقدام نظارت براي اين طرح مقدور نيست" 
+														    </p>
+													</div>
+													<div class="row">
+															<div class="form-group">
+															<label id="attachment_lbl" for="photo" class="control-label col-md-4">فايل ضميمه:</label>
+																<div class="col-md-3 col-md-push-1">
+																	<input type="file" id="fupload" name="fupload" accept="application/msword,application/pdf,.docx">
+																</div>
+														  </div>
+													</div>
+													<div class="row">
+														  
+																<div class="form-group">
+																<label id="is_initial_report" class="control-label col-md-4">آيا اين فايل اولين نگارش فايل گزارش نهايي است يا نگارشهاي اصلاحي بعد از آن ميباشد؟ ( شماره نگارش را مشخص نماييد)</label>
+																	<div class="col-md-4 col-md-push-1">
+																		<select id="file_row" name="file_row" class="form-control" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="1">
+																			<option value="">انتخاب کنيد</option>
+																		    <option  value="2">نگارش اول</option>
+														    				<option  value="3">(نگارش دوم (اصلاحي اول</option>
+														    				<option  value="4">(نگارش سوم (اصلاحي دوم</option>
+														    				<option  value="5">(نگارش چهارم (اصلاحي سوم</option>
+														    				<option  value="6">(نگارش پنجم (اصلاحي چهارم</option>																							        
+																		</select>
+																	</div>
+																</div>																													
+													 </div>
+													 <div class="form-group">
+															<p id="help_block3" class="help-block col-md-10 text-center">
+																	تعداد فايلهاي ارسالي حداکثر 12 عدد مي باشد	 
+														    </p>
+														    <p id="help_block4" class="help-block col-md-10 text-center">
+																	حداکثر حجم فايل 8 مگابايت مي باشد. نام فايل را انگليسي و بدون فاصله وارد کنيدفايل ارسالي بايد به فرمت Word يا PDF باشد.صرفا از فونت زر استفاده کنيد	 
+														    </p>
+														    <p id="help_block5" class="help-block col-md-10 text-center">
+																	فايلهاي ضميمه با نام انگليسي معتبر هستند	 
+														    </p>
+													</div>
+													 <div class="form-actions fluid">
+														<div class="col-md-offset-3 col-md-9">
+															<button id="upload_file_btn" type="submit" class="btn green btn-primary" data-loading-text="در حال بارگذاري...">ذخيره</button>																					
+														</div>
+													 </div>																																					
+												</div>	
+															
+												<div id="attachment_table" class="table-responsive">
+														<table class="table table-striped table-bordered table-hover">
+															<thead>
+																<th class="hidden">id</th>	
+																<th id="th1">رديف</th>
+																<th id="th2">نام فايل</th>
+																<th id="th3">حذف</th>
+															</thead>
+													
+															<tbody>
+																
+																<?php 
+																$query="select * from marhale_report where cod_tarh='$cod_tarh' and marhale='100'";
+																 
+																$result=mysql_query($query) or die("Error");
+																	
+																
+																$mycount=0;
+																$dir_name="../reports/".$cod_tarh;
+																if ($dir = @opendir($dir_name))
+																{
+																$mydir = dir($dir_name);
+																//while(($file = $mydir->read()) !== false)
+																$number_of_row=1;
+																while($file = $mydir->read())
+																{
+																	if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0 || strcmp(trim($file),"Thumbs.db")==0) && strcmp(substr($file,0,5),'final')==0 )
+																	{
+																		$myq="select * from tarh_indoing where cod_tarh='$cod_tarh' and marhale='100' and submitted='1'";
+																		$res=mysql_query($myq) or die("Error");
+																		if(mysql_num_rows($res)>0)
+																			$level_submitted='1';
+																		else
+																			$level_submitted='0';
+																?>
+																	<tr>
+																	<td><?php echo $number_of_row; ?></td>
+																	<td class="hidden"><?php echo $file;?></td>
+																	<td><a target="_blank" href="../reports/<?php echo $cod_tarh; ?>/<?php echo $file; ?>"><?php echo $file; ?></a></td>
+																	<?php
+																	if($level_submitted==0)
+																	{
+																		?>
+																	<td><?php echo "<a class=\"btn delete_buttun\" id=\"$file\" onclick=delete_element('$file') data-toggle=\"modal\" href=\"#delete\" ><i class=\"fa fa-trash-o\" ></i></a>";?></td>
+																	<?php } else{  ?>
+																	<td>غير قابل حذف</td>
+																	<?php }	?>
+																</tr>
+																<?php 
+																		$number_of_row++;
+																		}
+																		
+																	 }
+																	closedir($dir);
+																}
+																?>
+																
+															</tbody>
+														</table>
+													</div>
+											</div>
+											<div class="tab-pane" id="tab5">
+												<h3 id="block5" class="block">طرح من واجد شرايط است</h3>
+												<div class="form-body">							
+														<div id="help_block6" class="help-block text-justify">
+															طبق مصوبه آيين‌نامه اختصاص امتياز به نتايج طرح‌هاي تحقيقاتي در صورتي كه طرح شما كاربردي باشد، يعني گروه‌هاي مخاطب (به غير از ساير پژوهشگران) بتوانند از نتيجه آن بلافصل استفاده كنند، و مورد تاييد معاونت قرار گيرد، پيام تهيه شده نيز به عنوان يكي از محصولات پژوهشي در نظر گرفته خواهد شد. در صورتي كه طرح خود را واجد شرايط مي‌دانيد اين بخش را تكميل كنيد. در اين بخش لازم است پيام پژوهش خود را در يك صفحه براي مخاطب بنويسيد. چنانچه براي انواع روشهاي انتقال دانش كه در مراحل بعد به آن اشاره ميشود هزينه اي مترتب باشد اين هزينه پس از تاييد معاونت پژوهشي قابل پرداخت خواهد بود
+														</div>
+														<div class="row">
+															<div class="col-md-12">
+																<div class="form-group">
+							                                            <label id="qualified_lbl" class="col-md-3 control-label">طرح من واجد شرايط است</label>
+							                                            <div class="radio-list col-md-9">
+							                                            	 <?php
+								                                             $checked="   ";
+								                                            
+								                                             if(strcmp($yes_no,"0")==0)
+								                                            	$checked=" checked='checked' ";
+							                                            	 ?>												                                            										
+																			 <label class="radio-inline">
+				                                                                  <input id="data_title_yes"  type="radio" name="yes_no" value="0" data-title="بلي" <?php echo $checked; ?>><span id="qualified_yes"> بلي </span>
+				                                                             </label>
+				                                                             <?php 
+				                                                             $checked="   ";
+				                                                             if(strcmp($yes_no,"1")==0)
+				                                                             	$checked=" checked='checked' ";
+				                                                             ?>
+																			 <label class="radio-inline">
+				                                                                  <input id="no" type="radio" name="yes_no" value="1" data-title="خير" <?php echo $checked; ?>> <span id="qualified_no">خير</span> 
+				                                                              </label>	
+							                                            </div>
+					                                       	 	</div>
+															</div>									
+														</div>	
+														<div id="help_block7" class="help-block">
+																بديهي است که قابليت انتقال نتيجه طرح پس از تاييد معاونت پژوهشي تعيين خواهد شد.  
+														</div>																																				
+												</div>				
+											</div>
+											<div class="tab-pane" id="tab6">
+												<h3 id="block6" class="block">مخاطبان طرح شما چه کساني هستند؟</h3>
+												<div id="help_block8" class="help-block">
+												(گروه مخاطب به فرد يا گروهي گفته مي شود که بتواند از نتايج طرح به طور مستقيم استفاده کند.) 
+												</div>
+												<div class="form-body">
+														<div class="panel-group accordion" id="accordion1">
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="patient_a" class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1_1">
+																			 بيماران و مردم
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_1_1" class="panel-collapse in">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="col-md-12">
+												                                                <div class="checkbox-list">
+												                                                    <label class="checkbox-inline">
+												                                                           <?
+																											 	 $i='';
+																												 $sl1="";
+																												 $i=check_field_value($form_6,"form6_0");
+																											     if(strcmp(trim($i),'"1"')==0)
+																											   		 $sl1="checked=\"checked\"";
+																											?>
+												                                                        <input <? echo $sl1; ?> type="checkbox" id="form6_0" name="form6_0" value="1"> 
+												                                                        <span id="patient_chk">
+												                                                        	<span class="bold">بيماران و مردم </span>(مخاطب خود را دقيقا مشخص کنيد. مثلا بنويسيد "بيماران مبتلا به ديابت نوع 1") 
+												                                                        </span>
+												                                                    </label>
+												                                                </div>                                               	
+												                                            </div>
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<span id="help_block9"  class="help-block text-justify col-md-11 pull-right">
+														                                                	در صورتي که نتايج پژوهش شما از نظر علمي قابليت استناد بالايي دارد و به نظر شما آگاهي از آن براي مردم و بيماران مناسب مي باشد، پيام هاي اصلي طرح را بدون استفاده از واژگان پيچيده و به زبان ساده حداكثر در يک صفحه بنويسيد. درنظر داشته باشيد خوانندگان اين سطور گروه هاي مختلف مردم مي باشند.   
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											        <?
+																													 	 $i='';
+																														 $sl1="";
+																														 $i=check_field_value($form_6,"form6_1");
+																													    
+																													     
+																													?>
+																		                                            <textarea id="form6_1" name="form6_1" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">
+																										<span id="help_block10" class="help-block text-justify col-md-11 col-md-push-1 pull-left">
+														                                                	مخاطب خود را مشخص کنيد  
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											        <?
+																													 	 $i='';
+																														 $sl1="";
+																													 	 $i=check_field_value($form_6,"form6_9");
+																													    
+																													     
+																													?>
+																		                                            <textarea id="form6_9" name="form6_9" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->	
+																		</div>
+																	</div>
+																</div>
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="policy_a" class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1_2">
+																			 مديران و سياست‌گذاران
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_1_2" class="panel-collapse collapse">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="col-md-12">
+												                                                <div class="checkbox-list">
+												                                                    <label class="checkbox-inline">
+												                                                             <?
+																											 	 $i='';
+																												 $sl1="";
+																											 	 $i=check_field_value($form_6,"form6_2");
+																											     if(strcmp(trim($i),'"1"')==0)
+																											   		 $sl1="checked=\"checked\"";
+																											     
+																											?>
+												                                                        <input <? echo $sl1; ?> type="checkbox" id="form6_2" name="form6_2" value="1"> 
+												                                                        <span id="policy_chk">
+												                                                        	<span class="bold">مديران و سياست‌گذاران </span>(مخاطب خود را دقيقا مشخص کنيد. مثلا «روساي مراكز بهداشتي درماني») 
+												                                                   		</span>
+												                                                    </label>
+												                                                </div>                                               	
+												                                            </div>
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<span id="help_block11" class="help-block text-justify col-md-11 pull-right">
+														                                                	در صورتي که نتايج پژوهش شما از نظر علمي قابليت استناد بالايي دارد وگرچه براي انتقال به عموم مردم مناسب نمي باشد، ولي ممكن است آگاهي از پيام اين پژوهش براي گروه هاي خاص نظير مديران و سياست‌گذاران نظام سلامت، ارايه كنندگان خدمات بهداشتي و درماني و يا ساير كارشناسان و متخصصين مفيد باشد، گروه هاي مخاطب خود را مشخص کنيد و پيام هاي اصلي طرح را حداكثر در سه صفحه بدون استفاده از لغات تخصصي و به زبان ساده بنويسيد. درنظر داشته باشيد كه خوانندگان اين سطور ممكن است افرادي با تخصص هاي متفاوت باشند. 
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											      <?
+																													 	 $i='';
+																														 $sl1="";
+																													 	 $i=check_field_value($form_6,"form6_3");   
+																												  ?>
+																		                                            <textarea id="form6_3" name="form6_3" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">
+																										<span id="help_block12" class="help-block text-justify col-md-11 col-md-push-1 pull-left">
+														                                                	مخاطب خود را مشخص کنيد  
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											        <?
+																													 	 $i='';
+																														 $sl1="";
+																													     $i=check_field_value($form_6,"form6_10");
+																													?>
+																		                                            <textarea id="form6_10" name="form6_10" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->	
+																		</div>
+																	</div>
+																</div>
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="health_a" class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1_3">
+																			ارايه كنندگان خدمات بهداشتي و درماني
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_1_3" class="panel-collapse collapse">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="col-md-12">
+												                                                <div class="checkbox-list">
+												                                                    <label class="checkbox-inline">
+												                                                         <?
+																											 	 $i='';
+																												 $sl1="";
+																											 	 $i=check_field_value($form_6,"form6_4");
+																											     if(strcmp(trim($i),'"1"')==0)
+																											    	$sl1="checked=\"checked\"";
+																											     
+																										  ?>
+												                                                        <input <? echo $sl1; ?> type="checkbox" id="form6_4" name="form6_4" value="1"> 
+												                                                        <span  id="health_chk" >
+												                                                        	<span class="bold">ارايه كنندگان خدمات بهداشتي و درماني شامل دندانپزشكان، پزشكان، داروسازان، پيراپزشكان، پرستاران، ماماها </span>(مخاطب خود را دقيقا مشخص کنيد. مثلا "فيزيوتراپيست هايي که بالغين مبتلا به سيب شانه را مداوا مي کنند")  
+												                                                   		</span>
+												                                                    </label>
+												                                                </div>                                               	
+												                                            </div>
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<span class="help-block text-jusrify col-md-11 pull-right">
+														                                                	<!--  -->  
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											   <?
+																												 	 $i='';
+																													 $sl1="";
+																												 	 $i=check_field_value($form_6,"form6_5");   
+																											   ?>
+																		                                            <textarea id="form6_5" name="form6_5" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">
+																										<span id="help_block13" class="help-block text-justify col-md-11 col-md-push-1 pull-left">
+														                                                	مخاطب خود را مشخص کنيد  
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											 <?
+																												 	 $i='';
+																													 $sl1="";
+																												 	 $i=check_field_value($form_6,"form6_11");     
+																											 ?>
+																		                                            <textarea id="form6_11" name="form6_11" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																		</div>
+																	</div>
+																</div>
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="addressee_a" class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1_4">
+																			 ساير مخاطبين
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_1_4" class="panel-collapse collapse">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="col-md-12">
+												                                                <div class="checkbox-list">
+												                                                    <label class="checkbox-inline">
+												                                                           <?
+																											 	 $i='';
+																												 $sl1="";
+																											 	 $i=check_field_value($form_6,"form6_6");
+																											     if(strcmp(trim($i),'"1"')==0)
+																											    	$sl1="checked=\"checked\"";
+																											     
+																											?>
+												                                                        <input <? echo $sl1; ?> type="checkbox" id="form6_6" name="form6_6" value="1"> 
+												                                                        <span  id="addressee_chk">
+												                                                       		 <span class="bold">ساير مخاطبين مانند مهندسين، كارشناسان و مديران خارج از نظام سلامت (مخاطب خود را دقيقا مشخص کنيد. مثلا "مهندسين صنايع غذايي کارخانجات توليدکننده فرآورده هاي کنسروي")  </span>  
+												                                                 		 </span>
+												                                                    </label>
+												                                                </div>                                               	
+												                                            </div>
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<span class="help-block text-justify col-md-11 pull-right">
+														                                                	<!--  -->  
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											 <?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_6,"form6_7");
+																								     
+																											 ?>
+																		                                            <textarea id="form6_7" name="form6_7" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">
+																										<span id="help_block14" class="help-block text-justify col-md-11 col-md-push-1 pull-left">
+														                                                	مخاطب خود را مشخص کنيد  
+														                                                </span> 
+																										<div class="form-group">
+																											<label class="control-label col-md-3"></label>
+																											<div class="col-md-9">
+																											        <?
+																													 	 $i='';
+																														 $sl1="";
+																													     $i=check_field_value($form_6,"form6_12");
+																											
+																													?>
+																		                                            <textarea id="form6_12" name="form6_12" class="form-control" rows="3"><? echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->	
+																		</div>
+																	</div>
+																</div>
+														    </div>
+				                                            <div class="row">
+																<div class="col-md-12">
+																	<div class="form-group">
+								                                            <div class="radio-list text-justify col-md-12">
+							                                            	     <span id="help_block15" class="bold">در صورت تکميل اين بخش و تائيد آن توسط مديريت پژوهش ، امتياز مربوط به محصولات پژوهشي به طرح شما تعلق مي گيرد و پيام پژوهش شما جهت اطلاع رساني به مخاطبين بر روي وب سايت به نمايش گذاشته خواهد شد.   
+																									آيا به غير از انتشار مقاله و يا ارائه نتايج طرح در كنگره ها و سمينارها، و قرار دادن پيام پژوهش در وب سايت راه ديگري براي انتقال نتايج طرح خود در نظر داريد؟
+				                                                                 </span>												                                            										
+																				 <label class="radio-inline">
+																				       <?
+																						 	 $i='';
+																							 $sl1="";
+																						     $i=check_field_value($form_6,"form6_8");
+																							 if(strcmp(trim($i),'"0"')==0)
+																							     $sl1="checked=\"checked\"";
+																						     
+																						?>
+					                                                                  <input <? echo $sl1; ?> type="radio" id="form6_8_y" data-title="بلي" name="form6_8" value="0" ><span id="form6_8_yes"> بلي </span>
+					                                                             </label>
+																				 <label class="radio-inline">
+																				  <?
+																						 $sl1="";
+																					     if(strcmp(trim($i),'"1"')==0)
+																					       $sl1="checked=\"checked\"";
+																				  ?>
+					                                                                  <input <? echo $sl1; ?> type="radio" id="form6_8_n" data-title="خير" name="form6_8" value="1"><span id="form6_8_no"> خير </span>  
+					                                                              </label>	
+								                                            </div>
+						                                       	 	</div>
+																</div>									
+														     </div>	
+														<!--/row-->																																			
+												</div>	
+												<!-- /form-body -->			
+											</div>
+											<div class="tab-pane" id="tab7">
+												<h3 id="block7" class="block">نحوه انتشار </h3>
+												<div id="help_block16" class="help-block text-justify">
+												در صورتي كه براي انتقال نتايج پژوهش خود برنامه قابل اجرايي (بجز قرار دادن پيام پژوهش خود در وب سايت، انتشار مقاله و ارائه نتايج در کنگره ها و سمينارها) مد نظر داريد، طبق مصوبه شوراي پژوهشي، دانشگاه قادر به پرداخت بودجه اي براي فعاليت هاي شما مي باشد. بديهي است هزينه فعاليت هاي انتقال دانش حاصل از پژوهش تنها پس از تاييد معاونت پژوهشي قابل پرداخت خواهد بود. لطفا روش هاي پيشنهادي خود را به تفكيك گروه مخاطب، در جدول زير ذكر نماييد 
+												</div>
+												<div class="form-body">
+														<div class="panel-group accordion" id="accordion2">
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="patient_a_2" class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2_1">
+																			 بيماران و مردم
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_2_1" class="panel-collapse in">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<span class="help-block text-justify col-md-11 pull-right">
+														                                                	  
+														                                                </span> 
+																										<div class="form-group">
+																											<label id="patient_lbl1" class="control-label col-md-3">گروه مخاطب به صورت دقيق مشخص گردد </label>
+																											<div class="col-md-9">
+																											  <?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_0");  
+																											  ?>
+																		                                            <textarea id="form7_0" name="form7_0" class="form-control" rows="3"><?  echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">	
+																										<div class="form-group">
+																											<label id="patient_lbl2" class="control-label col-md-3">روش انتشار</label>
+																											<div class="col-md-9">
+																											   <?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_1");
+																												    
+																												     
+																											   ?>
+																		                                            <textarea id="form7_1" name="form7_1" class="form-control" rows="3"><?  echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->	
+																		</div>
+																	</div>
+																</div>
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="policy_a_2" class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2_2">
+																			 مديران و سياست‌گذاران
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_2_2" class="panel-collapse collapse">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">                                        
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<div class="form-group">
+																											<label id="policy_lbl1" class="control-label col-md-3">گروه مخاطب به صورت دقيق مشخص گردد </label>
+																											<div class="col-md-9">
+																											    <?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_2");
+																												    
+																												     
+																												?>
+																		                                            <textarea id="form7_2" name="form7_2" class="form-control" rows="3"><?php echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">
+																										<div class="form-group">
+																											<label id="policy_lbl2" class="control-label col-md-3">روش انتشار</label>
+																											<div class="col-md-9">
+																											    <?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_3");
+																												?>
+																		                                            <textarea id="form7_3" name="form7_3" class="form-control" rows="3"><?php echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->	
+																		</div>
+																	</div>
+																</div>
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="health_a_2" class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2_3">
+																			ارايه كنندگان خدمات بهداشتي و درماني شامل دندانپزشكان، پزشكان، داروسازان، پيراپزشكان، پرستاران، ماماها
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_2_3" class="panel-collapse collapse">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="row">
+																								<div class="col-md-10">
+																										<div class="form-group">
+																											<label id="health_lbl1" class="control-label col-md-3">گروه مخاطب به صورت دقيق مشخص گردد </label>
+																											<div class="col-md-9">
+																											<?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_4");
+																											?>
+																		                                            <textarea id="form7_4" name="form7_4" class="form-control" rows="3"><?php echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">
+																										<div class="form-group">
+																											<label id="health_lbl2" class="control-label col-md-3">روش انتشار</label>
+																											<div class="col-md-9">
+																											<?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_5");
+																											?>
+																		                                            <textarea id="form7_5" name="form7_5" class="form-control" rows="3"><?php echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																		</div>
+																	</div>
+																</div>
+																<div class="panel panel-default">
+																	<div class="panel-heading">
+																		<h4 class="panel-title">
+																		<a id="addressee_a_2"  class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2_4">
+																			 ساير مخاطبين مانند مهندسين، كارشناسان و مديران خارج از نظام سلامت 
+																		</a>
+																		</h4>
+																	</div>
+																	<div id="collapse_2_4" class="panel-collapse collapse">
+																		<div class="panel-body">
+																			<div class="row">
+																				<div class="col-md-12">
+																					<div class="form-group">
+												                                            <div class="row">
+																								<div class="col-md-10">						
+																										<div class="form-group">
+																											<label id="addressee_lbl1"  class="control-label col-md-3">گروه مخاطب به صورت دقيق مشخص گردد </label>
+																											<div class="col-md-9">
+																											<?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_6");
+																											?>
+																		                                            <textarea id="form7_6" name="form7_6" class="form-control" rows="3"><?php echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+																							<div class="row">
+																								<div class="col-md-10">					
+																										<div class="form-group">
+																											<label id="addressee_lbl2"  class="control-label col-md-3">روش انتشار</label>
+																											<div class="col-md-9">
+																											<?
+																												 	 $i='';
+																													 $sl1="";
+																												     $i=check_field_value($form_7,"form7_3");
+																											?>
+																		                                            <textarea id="form7_7" name="form7_7" class="form-control" rows="3"><?php echo $i; ?></textarea>
+																                                            </div>
+															                                            </div>
+																								</div>
+																								<!--/span-->
+																							</div>
+					                                      				  			</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->	
+																		</div>
+																	</div>
+																</div>
+														    </div>
+				                                            <div class="row">
+																<div class="col-md-12">
+																	<div class="form-group">
+								                                            <div class="radio-list text-justify col-md-12">
+							                                            	     <span id="help_block17" class="bold">
+																					* تاييد نهايي روش انتشار با معاونت پژوهشي است.  				
+				                                                                 </span>
+								                                            </div>
+						                                       	 	</div>
+																</div>									
+														     </div>	
+														     <div class="row">
+																<div class="col-md-12">
+																	<div class="form-group">
+								                                            <div id="help_block18" class="radio-list text-justify col-md-12">
+							                                            	     <span class="bold">
+																					لطفا هزينه هاي مربوطه را در جدول زير مشخص فرماييد.				
+				                                                                 </span>
+								                                            </div>
+								                                            <div class="radio-list text-justify col-md-12">
+							                                            	     <span id="help_block19" class="bold">
+																					مجري محترم ، در وارد کردن کليه هزينه هاي فعاليت هاي خود از اعداد بدون جدا کننده (, - / ) استفاده کنيد				
+				                                                                 </span>
+								                                            </div>
+								                                            <div class="radio-list text-justify col-md-12">
+							                                            	     <span id="help_block20" class="bold">
+																					پس از کارشناسي هزينه و تاييد آن نتيجه از طريق پست الكترونيك به شما اعلام خواهد شد و مي توانيد فعاليت هاي انتقال دانش خود را آغاز کنيد. پرداخت هزينه فعاليت هاي انتقال دانش مبني بر ارائه گزارش و مستندات اين فعاليت ها مي باشد 			
+				                                                                 </span>
+								                                            </div>
+						                                       	 	</div>
+																</div>									
+													    </div>	
+														<!--/row-->	
+														<div>
+															 <a id="new_variable" class="btn blue btn-sm pull-left" data-toggle="modal" href="#basic">
+										                           ثبت هزينه جديد
+										                     </a>
+														</div>
+														<div class="table-responsive">
+														<table class="table table-striped table-hover table-bordered sample_1" id="sample_1">
+																<thead>
+																		<tr>
+																			<th class="hidden">
+																				 id
+																			</th>
+																			<th id="th1_cost">
+																				 هزينه
+																			</th>
+																			<th id="th2_cost">
+																				 فعاليت
+																			</th>
+																			<th id="th3_cost">
+																				 مبلغ
+																			</th>
+																			<th id="th4_cost">
+																				 حذف
+																			</th>
+																			<th class="hidden">
+																				 cod_tarh
+																			</th>
+																		</tr>
+																</thead>
+																<tbody>
+																
+																</tbody>
+														</table>	
+														</div>																																
+												</div>	
+												<!-- /form-body -->			
+											</div>
+											<div class="tab-pane" id="tab8">
+												<h3 id="block8" class="block">تکميل و ارسال</h3>
+												<h4 id="form_section1" class="form-section">چکيده</h4>
+												<div class="form-group">
+													<label id="form_section1_lbl1"  class="control-label col-md-3">روش اجرا</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="ravesh_ejra">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section1_lbl2" class="control-label col-md-3">نتايج</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="natayej">
+														</p>
+													</div>
+												</div>
+												
+												<div class="form-group">
+													<label id="form_section1_lbl3" class="control-label col-md-3">نتيجه گيري</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="natije_giri">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section1_lbl4" class="control-label col-md-3">پيشنهادات</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="pishnahadat">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section1_lbl5" class="control-label col-md-3">سازمانهاي استفاده كننده از نتايج</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="sazmanha">
+														</p>
+													</div>
+												</div>
+												<h4 id="form_section2" class="form-section">چکيده لاتين</h4>
+												<div class="form-group">
+													<label id="form_section2_lbl1" class="control-label col-md-3">چکيده لاتين</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="chekide_latin">
+														</p>
+													</div>
+												</div>
+												<h4 id="form_section3" class="form-section">کلمات کليدي</h4>
+												<div class="form-group">
+													<label id="form_section3_lbl1" class="control-label col-md-3">کلمه اول</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="kalame_1">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section3_lbl2" class="control-label col-md-3">کلمه دوم</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="kalame_2">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section3_lbl3" class="control-label col-md-3">کلمه سوم</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="kalame_3">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section3_lbl4" class="control-label col-md-3">کلمه چهارم</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="kalame_4">
+														</p>
+													</div>
+												</div>
+												<h4 id="form_section4" class="form-section">فايل ضميمه</h4>
+												<div id="view_attachments" class="table-responsive">
+														
+												</div>
+												<h4 id="form_section5" class="form-section">طرح من واجد شرايط است</h4>
+												<div class="form-group">
+													<label id="form_section5_lbl1" class="control-label col-md-3">طرح من واجد شرايط است؟</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="yes_no">
+														</p>
+													</div>
+												</div>
+												<h4 id="form_section6" class="form-section">مخاطبان طرح شما چه کساني هستند؟</h4>
+												<div class="form-group">
+													<label id="form_section6_lbl1" class="control-label col-md-3">بيماران و مردم</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_1">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl2" class="control-label col-md-3">مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_9">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl3" class="control-label col-md-3"> مديران و سياست‌گذاران</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_3">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl4" class="control-label col-md-3">مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_10">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl5" class="control-label col-md-3">ارايه كنندگان خدمات بهداشتي و درماني شامل دندانپزشكان، پزشكان، داروسازان، پيراپزشكان، پرستاران، ماماها</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_5">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl6" class="control-label col-md-3">مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_11">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl7" class="control-label col-md-3"> ساير مخاطبين مانند مهندسين، كارشناسان و مديران خارج از نظام سلامت (مخاطب خود را دقيقا مشخص کنيد. مثلا "مهندسين صنايع غذايي کارخانجات توليدکننده فرآورده هاي کنسروي")</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_7">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl8" class="control-label col-md-3">مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_12">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section6_lbl9" class="control-label col-md-3">آيا به غير از انتشار مقاله و يا ارائه نتايج طرح در كنگره ها و سمينارها، و قرار دادن پيام پژوهش در وب سايت راه ديگري براي انتقال نتايج طرح خود در نظر داريد؟</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form6_8">
+														</p>
+													</div>
+												</div>
+												<h4 id="form_section7" class="form-section">نحوه انتشار</h4>
+												<h5 id="form_section7_title1" class="bold">بيماران و مردم</h5>
+												<div class="form-group">
+													<label id="form_section7_lbl1" class="control-label col-md-3">گروه مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_0">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section7_lbl2" class="control-label col-md-3">روش انتشار</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_1">
+														</p>
+													</div>
+												</div>
+												<h5 id="form_section7_title2" class="bold">مديران و سياست‌گذاران</h5>
+												<div class="form-group">
+													<label id="form_section7_lbl3" class="control-label col-md-3">گروه مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_2">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section7_lbl4" class="control-label col-md-3">روش انتشار</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_3">
+														</p>
+													</div>
+												</div>
+												<h5 id="form_section7_title3" class="bold">ارايه كنندگان خدمات بهداشتي و درماني شامل دندانپزشكان، پزشكان، داروسازان، پيراپزشكان، پرستاران، ماماها</h5>
+												<div class="form-group">
+													<label id="form_section7_lbl5" class="control-label col-md-3">گروه مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_4">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section7_lbl6" class="control-label col-md-3">روش انتشار</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_5">
+														</p>
+													</div>
+												</div>
+												<h5 id="form_section7_title4" class="bold">ساير مخاطبين مانند مهندسين، كارشناسان و مديران خارج از نظام سلامت (مخاطب خود را دقيقا مشخص کنيد. مثلا "مهندسين صنايع غذايي کارخانجات توليدکننده فرآورده هاي کنسروي")</h5>
+												<div class="form-group">
+													<label id="form_section7_lbl7" class="control-label col-md-3">گروه مخاطبان</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_6">
+														</p>
+													</div>
+												</div>
+												<div class="form-group">
+													<label id="form_section7_lbl8" class="control-label col-md-3">روش انتشار</label>
+													<div class="col-md-4">
+														<p class="form-control-static" data-display="form7_7">
+														</p>
+													</div>
+												</div>
+												<h5 id="form_section7_title5" class="bold">هزينه هاي مربوطه</h5>
+													<div class="table-responsive">
+														<table class="table table-striped table-hover table-bordered sample_1" id="sample_2">
+																<thead>
+																		<tr>
+																			<th class="hidden">
+																				 id
+																			</th>
+																			<th id="th1_cost_2">
+																				 هزينه
+																			</th>
+																			<th id="th2_cost_2">
+																				 فعاليت
+																			</th>
+																			<th id="th3_cost_2">
+																				 مبلغ
+																			</th>
+																			<th id="th4_cost_2">
+																				 حذف
+																			</th>
+																			<th class="hidden">
+																				 cod_tarh
+																			</th>
+																		</tr>
+																</thead>
+																<tbody>
+																
+																</tbody>
+														</table>	
+																
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-actions fluid">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="col-md-offset-3 col-md-9">
+													<a id="button_previous" href="javascript:;" class="btn default button-previous">
+														<i class="m-icon-swapleft"></i> صفحه قبل
+													</a>
+													<a id="button_next" href="javascript:;" class="btn blue button-next">
+														 ادامه <i class="m-icon-swapright m-icon-white"></i>
+													</a>
+													<a id="button_submit" href="javascript:;" class="btn green button-submit">
+														 اتمام <i class="m-icon-swapright m-icon-white"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+<!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en"){																										    
+debugger;
+//document.getElementById("page-title").textContent="Title of Research";
+document.getElementById("breadcrumb1").textContent="Home";
+document.getElementById("breadcrumb2").textContent="Your Research Projects";
+document.getElementById("breadcrumb3").textContent="Finished Projects";
+document.getElementById("breadcrumb4").textContent="Final Report";
+document.getElementById("caption_wizard").innerHTML="<i class='fa fa-reorder'></i> Form Wizard - <span class='step-title'>Step 1 of 8</span>";
+document.getElementById("delete_message").textContent="Are you sure to remove this item?";
+document.getElementById("del_btn_yes").textContent="Yes";
+document.getElementById("del_btn_no").textContent="Cancel";
+document.getElementById("fa-angle-left1").setAttribute("class","fa fa-angle-right");
+document.getElementById("fa-angle-left2").setAttribute("class","fa fa-angle-right");
+document.getElementById("fa-angle-left3").setAttribute("class","fa fa-angle-right");
+document.getElementById("modal_title").innerHTML="<i class='fa fa-file-o'></i>Title";
+document.getElementById("modal_close_btn").textContent="Close";
+document.getElementById("alert_danger").innerHTML="<button class='close' data-close='alert'></button>You have some form error.Please check below.";
+document.getElementById("cost_lbl_modal").innerHTML="Cost<span class='required'>*</span>";
+document.getElementById("activity_lbl_modal").innerHTML="Activities<span class='required'>*</span>";
+document.getElementById("price_lbl_modal").innerHTML="Price<span class='required'>*</span>";
+document.getElementById("btn_save_modal").textContent="Save";
+document.getElementById("btn_cancel_modal").textContent="Cancel";
+document.getElementById("delete_hazineh_message").textContent="Are you sure to delete this item?";
+document.getElementById("del_hazineh_btn_no").textContent="No";
+document.getElementById("del_hazineh_btn_yes").textContent="Yes";
+document.getElementById("desc1").innerHTML="<i class='fa fa-check'></i> Summary of Final Report";
+document.getElementById("desc2").innerHTML="<i class='fa fa-check'></i> Abstract";
+document.getElementById("desc3").innerHTML="<i class='fa fa-check'></i> Key Words";
+document.getElementById("desc4").innerHTML="<i class='fa fa-check'></i> Attachments";
+document.getElementById("desc5").innerHTML="<i class='fa fa-check'></i> My Project is qualified";
+document.getElementById("desc6").innerHTML="<i class='fa fa-check'></i> Who are your Project`s addressees";
+document.getElementById("desc7").innerHTML="<i class='fa fa-check'></i> Publication Type";
+document.getElementById("desc8").innerHTML="<i class='fa fa-check'></i> Completion and Submission";
+document.getElementById("alert_danger_wizard").innerHTML="<button class='close' data-dismiss='alert'></button>You have some form errors. Please check below.";
+document.getElementById("block1").textContent="Summary of Final Report";
+document.getElementById("abstract_persian").textContent="Abstract(Persian):";
+document.getElementById("ravesh_ejra_lbl").textContent="Executive Type *";
+document.getElementById("outcome_lbl").textContent="Outcomes/Results *";
+document.getElementById("conclusion_lbl").textContent="Conclusions";
+document.getElementById("suggestion_lbl").textContent="Suggestion";
+document.getElementById("organization_take_lbl").textContent="Centers/organizations which may take benefit or apply the outcomes of this research";
+document.getElementById("block2").textContent="Abstract(English):";
+document.getElementById("abstract_english_lbl").textContent="Abstract(English)";
+document.getElementById("block3").textContent="Key Words";
+document.getElementById("keyword1_lbl").textContent="ِFirst key word *";
+document.getElementById("keyword2_lbl").textContent="Second key word";
+document.getElementById("keyword3_lbl").textContent="Third key word";
+document.getElementById("keyword4_lbl").textContent="Fourth key word";
+document.getElementById("help_block1").textContent="You may enter as many as 4 key words.Entering at least one key word is required.A key word is a word by which you can search and find your desired article/subject.";
+document.getElementById("block4").textContent="Attachment File";
+document.getElementById("help_block2").textContent="You are also required to attach the final report file here in accordance with the format defined by this office.we will not be able to evaluate this proposal if you don`t attach your final report.";
+document.getElementById("attachment_lbl").textContent="Attachment File";
+document.getElementById("is_initial_report").textContent="ِIs this file the initial report or a edited report? (Please specify number of edits)";
+document.getElementById("file_row").innerHTML="<option value=''>Choose</option><option  value='2'>Initial Report</option><option  value='3'>First Edited report</option><option  value='4'>Second Edited reprot</option><option  value='5'>Third Edited reprot</option><option  value='6'>Fourth Edited reprot</option>";
+document.getElementById("help_block3").textContent="Maximum number of attached files are 12";
+document.getElementById("help_block4").textContent="Total size of the attached files must be no more than 8MB";
+document.getElementById("help_block5").textContent="Files names must be in English and in word/PDF format.";
+document.getElementById("th1").textContent="Number of row";
+document.getElementById("th2").textContent="File Name";
+document.getElementById("th3").textContent="Delete";
+document.getElementById("upload_file_btn").setAttribute("data-loading-text","Loading...");
+document.getElementById("upload_file_btn").textContent="Upload";
+document.getElementById("block5").textContent="My project is qualified?";
+//document.getElementById("help_block6").textContent="";
+document.getElementById("qualified_lbl").textContent="My project is qualified?";
+document.getElementById("qualified_yes").textContent="Yes";
+document.getElementById("qualified_no").textContent="No";
+document.getElementById("data_title_yes").setAttribute("data-title","Yes");
+document.getElementById("no").setAttribute("data-title","No");
+//document.getElementById("help_block7").textContent="";
+document.getElementById("block6").textContent="Who are your project`s addressees?";
+document.getElementById("help_block8").textContent="Addressees: The group of people who can benefit from the outcomes of this research";
+document.getElementById("patient_a").textContent="Patients and People";
+document.getElementById("patient_chk").innerHTML="<span class='bold'>Patients and People</span>(Please specify your addressees e.g. Type 1 diabetic patients)";
+//document.getElementById("help_block9").textContent="";
+document.getElementById("help_block10").textContent="Specify your addressees";
+document.getElementById("policy_a").textContent="Managers and Policy Markers";
+document.getElementById("policy_chk").innerHTML="<span class='bold'>Managers and Policy Markers</span>(Please specify your addressees)";
+document.getElementById("help_block11").textContent="In case that the results/outcomes may be useful to some particular groups such as health care managers,policy markers,health care providers,experts,epecialists,specify these groups, and write the main outcome/conclusions of your research in simple words maximum in 3 pages.Do not use complicated technical terminalegy since the readers might have different backgrounds.";
+document.getElementById("help_block12").textContent="Specify your addressees";
+document.getElementById("health_a").textContent="Health care providers";
+document.getElementById("health_chk").innerHTML="<span class='bold'>Health care providers including physician,dentists,pharmacists,paramedics,nurses,midwives</span>(specify your addressees e.g. physiotherapists who treat adults suffering from shoulder injuries.)";
+document.getElementById("help_block13").textContent="Specify your addressee/s";
+document.getElementById("addressee_a").textContent="Other addressee/s";
+document.getElementById("addressee_chk").innerHTML="<span class='bold'>Other addressees,experts managers with backgrounds other than health system</span>(specify your addressees precisely e.g. food industry engineers at the conserve production companies.)";
+document.getElementById("help_block14").textContent="Specify your addressee/s";
+document.getElementById("help_block15").textContent="In case of completing this part and its approval by the manager, all the right related to the resulted products will belong to you, and your research message to the addresses will be posted on the web site.";
+document.getElementById("form6_8_yes").textContent="Yes";
+document.getElementById("form6_8_no").textContent="No";
+document.getElementById("block7").textContent="Publication Type";
+//document.getElementById("help_block16").textContent="";
+document.getElementById("patient_a_2").textContent="Patients and People";
+document.getElementById("patient_lbl1").textContent="specify your addressees precisely";
+document.getElementById("patient_lbl2").textContent="Publication Type";
+document.getElementById("policy_a_2").textContent="Managers and Policy Markers";
+document.getElementById("policy_lbl1").textContent="specify your addressees precisely";
+document.getElementById("policy_lbl2").textContent="Publication Type";
+document.getElementById("health_a_2").textContent="Health care providers";
+document.getElementById("health_lbl1").textContent="specify your addressees precisely";
+document.getElementById("health_lbl2").textContent="Publication Type";
+document.getElementById("addressee_a_2").textContent="Other addressee/s";
+document.getElementById("addressee_lbl1").textContent="specify your addressees precisely";
+document.getElementById("addressee_lbl2").textContent="Publication Type";
+//document.getElementById("help_block17").textContent="";
+//document.getElementById("help_block18").textContent="";
+//document.getElementById("help_block19").textContent="";
+//document.getElementById("help_block20").textContent="";
+document.getElementById("new_variable").textContent="Entry new cost";
+document.getElementById("th1_cost").textContent="Cost";
+document.getElementById("th2_cost").textContent="Activities";
+document.getElementById("th3_cost").textContent="Price";
+document.getElementById("th4_cost").textContent="Delete";
+document.getElementById("block8").textContent="Completion and Submission";
+document.getElementById("form_section1").textContent="Abstracct(Persian)";
+document.getElementById("form_section1_lbl1").textContent="Executive Type";
+document.getElementById("form_section1_lbl2").textContent="Outcomes/Results";
+document.getElementById("form_section1_lbl3").textContent="Conclusions";
+document.getElementById("form_section1_lbl4").textContent="Suggestion";
+document.getElementById("form_section1_lbl5").textContent="Centers/organizations which may take benefit or apply the outcomes of this research";
+document.getElementById("form_section2").textContent="Abstract(English)";
+document.getElementById("form_section2_lbl1").textContent="Abstract(English)";
+document.getElementById("form_section3").textContent="Key Words";
+document.getElementById("form_section3_lbl1").textContent="ِFirst key word";
+document.getElementById("form_section3_lbl2").textContent="ِSecond key word";
+document.getElementById("form_section3_lbl3").textContent="ِThird key word";
+document.getElementById("form_section3_lbl4").textContent="ِFourth key word";
+document.getElementById("form_section4").textContent="Attachment File";
+document.getElementById("form_section5").textContent="My project is qualified";
+document.getElementById("form_section5_lbl1").textContent="My project is qualified?";
+document.getElementById("form_section6").textContent="Who are your project`s addressees?";
+document.getElementById("form_section6_lbl1").textContent="Patients and People";
+document.getElementById("form_section6_lbl2").textContent="Addressees";
+document.getElementById("form_section6_lbl3").textContent="Managers and Policy Markers";
+document.getElementById("form_section6_lbl4").textContent="Addressees";
+document.getElementById("form_section6_lbl5").textContent="Health care providers";
+document.getElementById("form_section6_lbl6").textContent="Addressees";
+document.getElementById("form_section6_lbl7").textContent="Other addressee/s";
+document.getElementById("form_section6_lbl8").textContent="Addressees";
+document.getElementById("form_section6_lbl9").textContent="In case of completing this part and its approval by the manager, all the right related to the resulted products will belong to you, and your research message to the addresses will be posted on the web site.";
+document.getElementById("form6_8_y").setAttribute("data-title","Yes");
+document.getElementById("form6_8_n").setAttribute("data-title","No");
+document.getElementById("form_section7").textContent="Publication Type";
+document.getElementById("form_section7_title1").textContent="Patients and People";
+document.getElementById("form_section7_lbl1").textContent="Addressees";
+document.getElementById("form_section7_lbl2").textContent="Publication Type";
+document.getElementById("form_section7_title2").textContent="Managers and Policy Markers";
+document.getElementById("form_section7_lbl3").textContent="Addressees";
+document.getElementById("form_section7_lbl4").textContent="Publication Type";
+document.getElementById("form_section7_title3").textContent="Health care providers";
+document.getElementById("form_section7_lbl5").textContent="Addressees";
+document.getElementById("form_section7_lbl6").textContent="Publication Type";
+document.getElementById("form_section7_title4").textContent="Other addressee/s";
+document.getElementById("form_section7_lbl7").textContent="Addressees";
+document.getElementById("form_section7_lbl8").textContent="Publication Type";
+document.getElementById("form_section7_title5").textContent="Costs";
+document.getElementById("th1_cost_2").textContent="Cost";
+document.getElementById("th2_cost_2").textContent="Activities";
+document.getElementById("th3_cost_2").textContent="Price";
+document.getElementById("th4_cost_2").textContent="Delete";
+document.getElementById("button_previous").innerHTML="<i class='m-icon-swapleft'></i> Previous page";
+document.getElementById("button_next").innerHTML="Continuation <i class='m-icon-swapright m-icon-white'></i>";
+document.getElementById("button_submit").innerHTML="Final <i class='m-icon-swapright m-icon-white'></i>";
+document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+document.getElementById("toastr").href="../assets/plugins/bootstrap-toastr/toastr.min.css";
+}
+</script>
+
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/data-tables/DT_bootstrap.js"></script> 
+<!-- 	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script> -->
+<!-- 	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script> -->
+	<script src="../assets/persian-datepicker/jquery.ui.datepicker-cc.all.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../assets/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+	<script type="text/javascript" src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js"></script>
+	
+    <script src="../assets/scripts/custom/form-wizard.js"></script>
+    <script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="../assets/scripts/custom/table-editable.js"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+	var buttonText;
+	var sButtonText;
+	var info;
+	//var	language="en";
+	if(language=="en"){
+		buttonText="Visibel Columns";
+		sButtonText="Print";
+		sButtonText2="Save";
+		info="view _START_ to _END_ from _TOTAL_ items";
+		sLengthMenu="View Content _MENU_";
+		sZeroRecords="Not Found";
+		sInfoEmpty="Empty";
+		sInfoFiltered="(Filtered From _MAX_ Items)";
+		sSearch="Search";
+		sFirst="First";
+		sPrevious="Previous";
+		sNext="Next";
+		sLast="Last";
+		
+		
+	}
+	else
+	{
+		buttonText="ستون هاي قابل نمايش";
+		sButtonText="چاپ";
+		sButtonText2="ذخيره";
+		info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+		sLengthMenu="نمايش محتويات _MENU_";
+		sZeroRecords="موردي يافت نشد";
+		sInfoEmpty="تهي";
+		sInfoFiltered="(فيلتر شده از مجموع _MAX_ مورد)";
+		sSearch="جستجو";
+		sFirst="ابتدا";
+		sPrevious="قبلي";
+		sNext="بعدي";
+		sLast="انتها";
+		
+	}
+    $(document).ready(function(){
+        
+    	function fixControlPosition(){
+    		//ja be jayi btn haye table tools (print,copy,....)
+    							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+    							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+    							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+    							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+    							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+    		}
+        var detailRows = [];
+	    var dt;				
+	    dt = $('.sample_1').DataTable({
+			"dom": '<"clearfix">lfrtip',
+// 	        "tableTools": {
+// 	            "sRowSelect": "os",
+// 				 "aButtons": [
+	                 
+// 					{
+						
+// 	                    "sExtends": "print",
+// 	                    "sButtonText": sButtonText
+// 	                },
+	                
+// 	                {
+// 	                    "sExtends":    "collection",
+// 	                    "sButtonText": sButtonText2,
+// 	                    "aButtons":    [ 
+// 											"csv", 
+// 											"xls"
+// 										]
+// 	                }
+// 	            ],
+	            
+// 				"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+// 	        },
+	        "fnInitComplete": function(oSettings, json) {
+	        	$("#sample_1_length label").addClass("margin-top-10");//margin top between button and datatable in step7
+	        	$("#sample_2_info").hide();//hide lable filterring in data table
+	        	$("#sample_1_info").hide();//hide lable filterring in data table
+	        	$("#sample_1_filter").hide();//hide searching in data table
+	        	$("#sample_2_filter").hide();//hide searching in data table
+				fixControlPosition();
+				
+                },
+	        "fnDrawCallback": function(oSettings) {
+	            var trs = $("#sample_1 tr");
+	            for (var i = 1; i < trs.length; i++) {
+
+	                var rowId = ($(trs[i]).attr('id'));
+	                $("#" + rowId + " td:last-child").trigger('click');
+
+	            }
+	            
+	            $('.delete_buttun').on('click', function() {
+	                debugger;
+	                var tr = $(this).closest('tr');
+	                var row = dt.row(tr);
+	                action="delete_hazineh";
+	                $('#delete_hazineh_id')[0].value = row.data().id;
+	                $('#cod_tarh_hazineh')[0].value = row.data().cod_tarh;
+	                
+	               // $("#delete").modal('show');
+                
+	            });
+	        },
+// 	        "colVis": {
+// 		           "buttonText": buttonText,
+// 		           exclude:[0]
+// 		       },
+	        
+	        "paging": false,
+	        'bPaginate': false,
+	        "pagingType": "full_numbers",
+	        "processing": true,
+	        "serverSide": true,
+	        "bDestroy": true,
+	        "bAutoWidth": false,
+	        "language": {
+	      		
+	      	  "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+	            "sLengthMenu": sLengthMenu,
+	            "sZeroRecords": sZeroRecords,
+	            "info": info,
+	            "sInfoEmpty": sInfoEmpty,
+	            "sInfoFiltered": sInfoFiltered,
+	            "sInfoPostFix": "",
+	            "sSearch": sSearch,
+	            "sUrl": "",
+	            "oPaginate" : {
+	                "sFirst": sFirst,
+	                "sPrevious": sPrevious,
+	                "sNext": sNext,
+	                "sLast": sLast
+                }
+            },
+	        "sAjaxSource": "final_report_sabt.php?action=list&admin=<?php echo $admin;?>&cod_tarh=<?php echo $cod_tarh;?>" ,
+	        "aoColumns": [
+				{ "data": "id","sClass":"hidden" },
+	            { "data": "hazine" },
+			    { "data": "faaliat" },
+                { "data": "mablagh" },
+			    { "data": "delete" , "bSortable": false },
+			    { "data": "cod_tarh","sClass":"hidden" },
+	        ]
+
+	    });
+
+		$("#add_hazineh").submit(function(e)
+		{
+			var form2 = $('#add_hazineh');
+	        var error2 = $('.alert-danger', form2);
+	        var success2 = $('.alert-success', form2);
+	        if(language=="en"){
+		       	 form2.validate({
+		             errorElement: 'span', //default input error message container
+		             errorClass: 'help-block', // default input error message class
+		             focusInvalid: false, // do not focus the last invalid input
+		             ignore: "",
+		             rules:{
+		            	 				hazine:{
+		 	  	                 		required:true,
+		 	  	                 		   digits:true
+		 	  	                  },
+			 	  	               	   faaliat:{
+			 	  	                	required:true
+		 	  	                  		
+		 	  			          },
+			 	  			       	   mablagh:{
+		 	  		                  	required:true,
+		 	  		                  	   digits:true
+		 	  				      }  				    
+		 	  	              },
+
+		             invalidHandler: function (event, validator) { //display error alert on form submit              
+		 	                    success2.hide();
+		 	                    error2.show();
+		 	                    App.scrollTo(error2, -200);
+		             },
+
+		             errorPlacement: function (error, element) { // render error placement for each input type
+		                 var icon = $(element).parent('.input-icon').children('i');
+		                 icon.removeClass('fa-check').addClass("fa-warning");  
+		                 icon.attr("data-original-title", error.text()).tooltip();
+		             },
+
+		             highlight: function (element) { // hightlight error inputs
+		                 $(element)
+		                     .closest('.form-group').addClass('has-error'); // set error class to the control group   
+		             },
+
+		             unhighlight: function (element) { // revert the change done by hightlight
+		                 
+		             },
+
+		             success: function (label, element) {
+		                 var icon = $(element).parent('.input-icon').children('i');
+		                 $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+		                 icon.removeClass("fa-warning").addClass("fa-check");
+		             },
+
+		             submitHandler: function (form) {
+		                 success2.show();
+		                 error2.hide();
+		             }
+		         });
+		}else{
+			form2.validate({
+	             errorElement: 'span', //default input error message container
+	             errorClass: 'help-block', // default input error message class
+	             focusInvalid: false, // do not focus the last invalid input
+	             ignore: "",
+	             rules:{
+	            	 				hazine:{
+	 	  	                 		required:true,
+	 	  	                 		   digits:true
+	 	  	                  },
+		 	  	               	   faaliat:{
+		 	  	                	required:true
+	 	  	                  		
+	 	  			          },
+		 	  			       	   mablagh:{
+	 	  		                  	required:true,
+	 	  		                  	   digits:true
+	 	  				      }  				    
+	 	  	              },
+		 	  	           messages:{
+			 	  	        		 hazine:{
+		  	                  		required:"پر کردن اين فيلد الزامي مي باشد",
+			  	                  	  digits:"لطفا فقط عدد وارد نماييد"
+		  	            	  },
+			  	            		faaliat:{
+			  	            		
+		  	                 		required:"پر کردن اين فيلد الزامي مي باشد"
+		  	    		          },
+			  	    		        mablagh:{
+		  	                  		required:"پر کردن اين فيلد الزامي مي باشد",
+			  	                  	digits:"لطفا فقط عدد وارد نماييد"
+		  	    		          }
+		      		          
+		  	              },
+
+	             invalidHandler: function (event, validator) { //display error alert on form submit              
+	 	                    success2.hide();
+	 	                    error2.show();
+	 	                    App.scrollTo(error2, -200);
+	             },
+
+	             errorPlacement: function (error, element) { // render error placement for each input type
+	                 var icon = $(element).parent('.input-icon').children('i');
+	                 icon.removeClass('fa-check').addClass("fa-warning");  
+	                 icon.attr("data-original-title", error.text()).tooltip();
+	             },
+
+	             highlight: function (element) { // hightlight error inputs
+	                 $(element)
+	                     .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	             },
+
+	             unhighlight: function (element) { // revert the change done by hightlight
+	                 
+	             },
+
+	             success: function (label, element) {
+	                 var icon = $(element).parent('.input-icon').children('i');
+	                 $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                 icon.removeClass("fa-warning").addClass("fa-check");
+	             },
+
+	             submitHandler: function (form) {
+	                 success2.show();
+	                 error2.hide();
+	             }
+	         });
+			}	
+			debugger;
+					if(form2.valid() || action=="delete_hazineh")
+				    {
+							var formURL;
+							var postData = $(this).serializeArray();
+							if(action=="add_hazineh")		
+								formURL="final_report_sabt.php?action=add_hazineh";
+							if(action=="delete_hazineh")
+								formURL="final_report_sabt.php?action=delete_hazineh";
+								$(".green").attr("disabled","disabled");
+							$.ajax(
+							{
+								url : formURL,
+								type: "POST",
+								data : postData,
+								success:function(data, textStatus, jqXHR) 
+								{
+										//alert(data);
+										action="add_hazineh";
+										$("#delete_hazineh_modal").modal('hide');
+										$("#basic").modal('hide');
+							            dt.ajax.url("final_report_sabt.php?action=list&admin=<?php echo $admin;?>&cod_tarh=<?php echo $cod_tarh;?>");
+							            dt.ajax.reload();
+		
+								},
+								error: function(jqXHR, textStatus, errorThrown) 
+								{
+								}
+							}).always( $(".green").removeAttr("disabled","disabled"));
+				    }
+						    e.preventDefault();	//STOP default action
+				    
+				});
+	    var action="add_hazineh";
+        });
+    $('#basic').on('hidden.bs.modal', function () {
+		   // debugger;
+    		action="add_hazineh";
+		    $("#add_hazineh")[0].reset();
+			//Begin of reset form validation 
+		    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+		    $(".input-icon .fa-check").switchClass("fa-check","fa");
+		    $(".alert-danger").hide();
+		    $('.form-group').removeClass('has-error');
+		    $('.form-group').removeClass('has-success');
+		    //End of reset form validation
+		});
+		$('#add_hazineh').on('hidden.bs.modal', function () {
+			   // debugger;
+				action="add_hazineh";
+			    $("#add_hazineh")[0].reset();
+				//Begin of reset form validation 
+			    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+			    $(".input-icon .fa-check").switchClass("fa-check","fa");
+			    $(".alert-danger").hide();
+			    $('.form-group').removeClass('has-error');
+			    $('.form-group').removeClass('has-success');
+			    //End of reset form validation
+			});
+    var FormWizard = function () {
+
+
+        return {
+            //main function to initiate the module
+            init: function () {
+                if (!jQuery().bootstrapWizard) {
+                    return;
+                }
+
+                function format(state) {
+                    if (!state.id) return state.text; // optgroup
+                    return "<img class='flag' src='assets/img/flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
+                }
+
+//                 $("#country_list").select2({
+//                     placeholder: "Select",
+//                     allowClear: true,
+//                     formatResult: format,
+//                     formatSelection: format,
+//                     escapeMarkup: function (m) {
+//                         return m;
+//                     }
+//                 });
+
+                var form = $('#submit_form');
+                var error = $('.alert-danger', form);
+                var success = $('.alert-success', form);
+                if(language=="en")
+                {
+	                form.validate({
+	                    doNotHideMessage: true, //this option enables to show the error/success messages on tab switch.
+	                    errorElement: 'span', //default input error message container
+	                    errorClass: 'help-block', // default input error message class
+	                    focusInvalid: false, // do not focus the last invalid input
+	                    rules: {
+	                        //Tab1
+	                    	ravesh_ejra: {
+	                            required: true
+	                           
+	                        },
+	                        natayej: {
+	                            required: true
+	                        },
+	                        //Tab3
+	                        kalame_1:{
+	                        	required: true
+	                            },
+	                        //Tab4
+	                        fupload: {
+	                            required: true
+	                               
+	                            },
+	                        file_row: {
+	                            required: true
+	                            },    
+	                    },
+
+	                    errorPlacement: function (error, element) { // render error placement for each input type
+	                        if (element.attr("name") == "gender") { // for uniform radio buttons, insert the after the given container
+	                            error.insertAfter("#form_gender_error");
+	                        } else if (element.attr("name") == "payment[]") { // for uniform radio buttons, insert the after the given container
+	                            error.insertAfter("#form_payment_error");
+	                        } else {
+	                            error.insertAfter(element); // for other inputs, just perform default behavior
+	                        }
+	                    },
+	
+	                    invalidHandler: function (event, validator) { //display error alert on form submit   
+	                        success.hide();
+	                        error.show();
+	                        App.scrollTo(error, -200);
+	                    },
+	
+	                    highlight: function (element) { // hightlight error inputs
+	                        $(element)
+	                            .closest('.form-group').removeClass('has-success').addClass('has-error'); // set error class to the control group
+	                    },
+	
+	                    unhighlight: function (element) { // revert the change done by hightlight
+	                        $(element)
+	                            .closest('.form-group').removeClass('has-error'); // set error class to the control group
+	                    },
+	
+	                    success: function (label) {
+	                        if (label.attr("for") == "gender" || label.attr("for") == "payment[]") { // for checkboxes and radio buttons, no need to show OK icon
+	                            label
+	                                .closest('.form-group').removeClass('has-error').addClass('has-success');
+	                            label.remove(); // remove error label here
+	                        } else { // display success icon for other inputs
+	                            label
+	                                .addClass('valid') // mark the current input as valid and display OK icon
+	                            .closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                        }
+	                    },
+	
+	                    submitHandler: function (form) {
+	    					debugger;
+	                        success.show();
+	                        error.hide();
+	    				//	fkjfjkj
+	    					debugger;
+	    					
+	                        //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
+	    					
+	                    }
+	
+	                });
+            }else{
+         	   form.validate({
+                   doNotHideMessage: true, //this option enables to show the error/success messages on tab switch.
+                   errorElement: 'span', //default input error message container
+                   errorClass: 'help-block', // default input error message class
+                   focusInvalid: false, // do not focus the last invalid input
+                   rules: {
+                       //Tab1
+                   	ravesh_ejra: {
+                           required: true
+                          
+                       },
+                       natayej: {
+                           required: true
+                       },
+                       //Tab3
+                       kalame_1:{
+                       	required: true
+                           },
+                       //Tab4
+                       fupload: {
+                           required: true
+                              
+                           },
+                       file_row: {
+                           required: true
+                           },    
+                   },
+                   messages:{
+                   	//Tab1
+                   	ravesh_ejra: {
+                           required: "پر کرن اين فيلد اجباري مي باشد"
+                          
+                       },
+                       natayej: {
+                           required: "پر کرن اين فيلد اجباري مي باشد"
+                       },
+                       //Tab3
+                       kalame_1:{
+                       	required: "پر کرن اين فيلد اجباري مي باشد"
+                           },
+                           //Tab4
+                      fupload: {
+                           required: "پر کرن اين فيلد اجباري مي باشد"
+                              
+                           },
+                      file_row: {
+                           required: "پر کرن اين فيلد اجباري مي باشد"
+                           },
+                       },
+
+                   
+
+                   errorPlacement: function (error, element) { // render error placement for each input type
+                       if (element.attr("name") == "gender") { // for uniform radio buttons, insert the after the given container
+                           error.insertAfter("#form_gender_error");
+                       } else if (element.attr("name") == "payment[]") { // for uniform radio buttons, insert the after the given container
+                           error.insertAfter("#form_payment_error");
+                       } else {
+                           error.insertAfter(element); // for other inputs, just perform default behavior
+                       }
+                   },
+
+                   invalidHandler: function (event, validator) { //display error alert on form submit   
+                       success.hide();
+                       error.show();
+                       App.scrollTo(error, -200);
+                   },
+
+                   highlight: function (element) { // hightlight error inputs
+                       $(element)
+                           .closest('.form-group').removeClass('has-success').addClass('has-error'); // set error class to the control group
+                   },
+
+                   unhighlight: function (element) { // revert the change done by hightlight
+                       $(element)
+                           .closest('.form-group').removeClass('has-error'); // set error class to the control group
+                   },
+
+                   success: function (label) {
+                       if (label.attr("for") == "gender" || label.attr("for") == "payment[]") { // for checkboxes and radio buttons, no need to show OK icon
+                           label
+                               .closest('.form-group').removeClass('has-error').addClass('has-success');
+                           label.remove(); // remove error label here
+                       } else { // display success icon for other inputs
+                           label
+                               .addClass('valid') // mark the current input as valid and display OK icon
+                           .closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                       }
+                   },
+
+                   submitHandler: function (form) {
+   					debugger;
+                       success.show();
+                       error.hide();
+   				//	fkjfjkj
+   					debugger;
+   					
+                       //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
+   					
+                   }
+
+               });
+                }
+                var displayConfirm = function() {
+                    $('#tab8 .form-control-static', form).each(function(){
+                        var input = $('[name="'+$(this).attr("data-display")+'"]', form);
+                        if (input.is(":radio")) {
+                            input = $('[name="'+$(this).attr("data-display")+'"]:checked', form);
+                        }
+                        if (input.is(":text") || input.is("textarea")) {
+                            $(this).html(input.val());
+                        } else if (input.is("select")) {
+                            $(this).html(input.find('option:selected').text());
+                        } else if (input.is(":radio") && input.is(":checked")) {
+                            $(this).html(input.attr("data-title"));
+                        } else if ($(this).attr("data-display") == 'payment') {
+                            var payment = [];
+                            $('[name="payment[]"]').each(function(){
+                                payment.push($(this).attr('data-title'));
+                            });
+                            $(this).html(payment.join("<br>"));
+                        }
+                    });
+                }
+
+                var handleTitle = function(tab, navigation, index) {
+                    var total = navigation.find('li').length;
+                    var current = index + 1;
+                    // set wizard title
+                    if(language=="en")
+                    {
+                       var step="Step ";
+                       var of=" of ";
+                    }else
+                    	{
+                    	var step=" مرحله";
+                    	var of=" از ";
+                    }
+                    $('.step-title', $('#form_wizard_1')).text(step + (index + 1) +of + total);
+                    // set done steps
+                    jQuery('li', $('#form_wizard_1')).removeClass("done");
+                    var li_list = navigation.find('li');
+                    for (var i = 0; i < index; i++) {
+                        jQuery(li_list[i]).addClass("done");
+                    }
+
+                    if (current == 1) {
+                        $('#form_wizard_1').find('.button-previous').hide();
+                    } else {
+                        $('#form_wizard_1').find('.button-previous').show();
+                    }
+
+                    if (current >= total) {
+                        $('#form_wizard_1').find('.button-next').hide();
+                        $('#form_wizard_1').find('.button-submit').show();
+                        displayConfirm();
+                    } else {
+                        $('#form_wizard_1').find('.button-next').show();
+                        $('#form_wizard_1').find('.button-submit').hide();
+                    }
+                    App.scrollTo($('.page-title'));
+                }
+
+                // default form wizard
+                $('#form_wizard_1').bootstrapWizard({
+                    'nextSelector': '.button-next',
+                    'previousSelector': '.button-previous',
+                    onTabClick: function (tab, navigation, index, clickedIndex) {
+                        debugger;
+                        success.hide();
+                        error.hide();
+                        var step_var=tab.children().attr("id");
+                        var postData = form.serializeArray();
+                        if(step_var=="step8")
+    					{
+    						$.ajax(
+    								{
+    									data:postData,
+    									url : "final_report_sabt.php?step=attachment",
+    									type: "POST",
+    									
+    									success:function(data, textStatus, jqXHR) 
+    									{
+    									$("#view_attachments").html(data);
+    									},
+    									error: function(jqXHR, textStatus, errorThrown) 
+    									{
+    									}
+    								});
+    					}
+                        else if (step_var!="step4" && form.valid() == false) {
+                            
+                            return false;
+                        }
+    					
+                        handleTitle(tab, navigation, clickedIndex);
+                    },
+                    onNext: function (tab, navigation, index) {
+                        success.hide();
+                        error.hide();
+    					debugger;
+    					var postData = form.serializeArray();
+    					var step_var=tab.children().attr("id");
+    					if(step_var=="step4")
+    					{
+    						$.ajax(
+    								{
+    									data:postData,
+    									url : "final_report_sabt.php?step=attachment",
+    									type: "POST",
+    									
+    									success:function(data, textStatus, jqXHR) 
+    									{
+    									$("#view_attachments").html(data);
+    									},
+    									error: function(jqXHR, textStatus, errorThrown) 
+    									{
+    									}
+    								});
+    					}
+    					else
+    					{
+    	                    if (form.valid() == false) {
+    	                        return false;
+    	                    }
+    						else
+    						{							
+    								$.ajax(
+    								{
+    									data:postData,
+    									url : "final_report_sabt.php?step="+step_var,
+    									type: "POST",
+    									
+    									success:function(data, textStatus, jqXHR) 
+    									{
+    											//alert(data);
+    									},
+    									error: function(jqXHR, textStatus, errorThrown) 
+    									{
+        									alert(textStatus);
+    									}
+    								});
+    							}
+    					}
+    					if(step_var=="step5")
+        					{
+		                        if($("#no").attr("checked")=="checked"){
+		                        	$('#form_wizard_1').bootstrapWizard('disable',5);
+		                        	$('#form_wizard_1').bootstrapWizard('disable',6);
+		                        	$('#form_wizard_1').bootstrapWizard('show',7);
+		                        }
+		                        else{
+		                        	$('#form_wizard_1').bootstrapWizard('enable',5);
+		                        	$('#form_wizard_1').bootstrapWizard('enable',6);
+			                    }
+                    		}
+    					if(step_var=="step6")
+    					{
+	                        if($("#form6_8_n").attr("checked")=="checked"){
+	                        	$('#form_wizard_1').bootstrapWizard('disable',6);
+	                        	$('#form_wizard_1').bootstrapWizard('show',7);
+	                        }
+	                        else{
+	                        	$('#form_wizard_1').bootstrapWizard('enable',6);
+		                    }
+                		}
+    					
+                        handleTitle(tab, navigation, index);
+                    },
+                    onPrevious: function (tab, navigation, index) {
+                    	debugger;
+                    	var step_var=tab.children().attr("id");
+                        success.hide();
+                        error.hide();
+                        handleTitle(tab, navigation, index);
+                        if(step_var=="step8")
+    					{
+        					debugger;
+	                        if($("#no").attr("checked")=="checked"){
+	                        	$('#form_wizard_1').bootstrapWizard('show',4);
+		                    }
+
+	                        if($("#form6_8_n").attr("checked")=="checked"){
+	                        	$('#form_wizard_1').bootstrapWizard('show',5);
+	                        }
+                		}
+                    },
+                    onTabShow: function (tab, navigation, index) {
+                        var total = navigation.find('li').length;
+                        var current = index + 1;
+                        var $percent = (current / total) * 100;
+                        $('#form_wizard_1').find('.progress-bar').css({
+                            width: $percent + '%'
+                        });	
+                    }
+                });
+
+                $('#form_wizard_1').find('.button-previous').hide();
+                $('#form_wizard_1 .button-submit').click(function () {
+                	var postData = form.serializeArray();
+                	$.ajax(
+    						{
+    							data:postData,
+    							url : "final_report_sabt.php?step=step4",
+    							type: "POST",
+    							
+    							success:function(data, textStatus, jqXHR) 
+    							{
+    								toastr.options.timeOut="3000";
+    						        toastr.options.positionClass="toast-top-right";
+    								toastr.success('ارسال گزارش نهايي با موفقيت انجام شد');
+    								setInterval(function(){
+    										window.location.href="tarh_list.phtml?position=2";	
+    									},3000);
+    							},
+    							error: function(jqXHR, textStatus, errorThrown) 
+    							{
+    							}
+    						});
+                }).hide();
+            }
+
+        };
+
+    }();
+    </script>
+    <script>
+        jQuery(document).ready(function () {
+       	 FormWizard.init();
+      
+                if($("#no").attr("checked")=="checked"){
+                	$('#form_wizard_1').bootstrapWizard('disable',5);
+                	$('#form_wizard_1').bootstrapWizard('disable',6);
+                }
+
+                
+                    if($("#form6_8_n").attr("checked")=="checked"){
+                    	$('#form_wizard_1').bootstrapWizard('disable',6);
+                    }
+    		
+        });
+    </script>
+     <script>
+     function delete_element(id) {
+        
+         $('#delete_id')[0].value = id;
+     
+     };
+     $("#delete_file").submit(function(e)
+  	 {
+			debugger;
+    	 	var postData = $(this).serializeArray();
+    	 	var formURL = $(this).attr("action");
+			$.ajax(
+			{
+				data:postData,
+				url : formURL,
+				data :postData ,
+			    type: "POST",	
+				success:function(data, textStatus, jqXHR) 
+				{
+					$("#attachment_table").html(data);
+					$("#view_attachments").html(data);	
+					$("#delete").modal('hide');	
+				},
+				error: function(jqXHR, textStatus, errorThrown) 
+				{
+				}
+			});
+			 e.preventDefault();	//STOP default action
+  	 });
+    </script>
+    <script>
+    	//$("#upload_file_btn").on('click', function() {
+  $("#submit_form").submit(function(e) {
+    		debugger;
+    		var error = $('.alert-danger', form);
+            var success = $('.alert-success', form);
+        	var form = $("#submit_form");
+        	if(language=="en")
+        	{
+	        	form.validate({
+	                doNotHideMessage: true, //this option enables to show the error/success messages on tab switch.
+	                errorElement: 'span', //default input error message container
+	                errorClass: 'help-block', // default input error message class
+	                focusInvalid: false, // do not focus the last invalid input
+	                rules: {
+	                    //Tab4
+	                	fupload: {
+	                        required: true
+	                       
+	                    },
+	                    file_row: {
+	                        required: true
+	                    },
+	                },
+
+	                errorPlacement: function (error, element) { // render error placement for each input type
+	                    if (element.attr("name") == "gender") { // for uniform radio buttons, insert the after the given container
+	                        error.insertAfter("#form_gender_error");
+	                    } else if (element.attr("name") == "payment[]") { // for uniform radio buttons, insert the after the given container
+	                        error.insertAfter("#form_payment_error");
+	                    } else {
+	                        error.insertAfter(element); // for other inputs, just perform default behavior
+	                    }
+	                },
+	
+	                invalidHandler: function (event, validator) { //display error alert on form submit   
+	                    success.hide();
+	                    error.show();
+	                    App.scrollTo(error, -200);
+	                },
+	
+	                highlight: function (element) { // hightlight error inputs
+	                    $(element)
+	                        .closest('.form-group').removeClass('has-success').addClass('has-error'); // set error class to the control group
+	                },
+	
+	                unhighlight: function (element) { // revert the change done by hightlight
+	                    $(element)
+	                        .closest('.form-group').removeClass('has-error'); // set error class to the control group
+	                },
+	
+	                success: function (label) {
+	                    if (label.attr("for") == "gender" || label.attr("for") == "payment[]") { // for checkboxes and radio buttons, no need to show OK icon
+	                        label
+	                            .closest('.form-group').removeClass('has-error').addClass('has-success');
+	                        label.remove(); // remove error label here
+	                    } else { // display success icon for other inputs
+	                        label
+	                            .addClass('valid') // mark the current input as valid and display OK icon
+	                        .closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                    }
+	                },
+	
+	                submitHandler: function (form) {
+						debugger;
+	                    success.show();
+	                    error.hide();
+					//	fkjfjkj
+						debugger;
+						
+	                    //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
+						
+	                }
+	
+	            });
+  }else{
+	  	form.validate({
+	        doNotHideMessage: true, //this option enables to show the error/success messages on tab switch.
+	        errorElement: 'span', //default input error message container
+	        errorClass: 'help-block', // default input error message class
+	        focusInvalid: false, // do not focus the last invalid input
+	        rules: {
+	            //Tab4
+	        	fupload: {
+	                required: true
+	               
+	            },
+	            file_row: {
+	                required: true
+	            },
+	        },
+	        messages:{
+	        	//Tab4
+	        	fupload: {
+	                required: "پر کرن اين فيلد اجباري مي باشد"
+	               
+	            },
+	            file_row: {
+	                required: "پر کرن اين فيلد اجباري مي باشد"
+	            },
+	            },
+
+	        
+
+	        errorPlacement: function (error, element) { // render error placement for each input type
+	            if (element.attr("name") == "gender") { // for uniform radio buttons, insert the after the given container
+	                error.insertAfter("#form_gender_error");
+	            } else if (element.attr("name") == "payment[]") { // for uniform radio buttons, insert the after the given container
+	                error.insertAfter("#form_payment_error");
+	            } else {
+	                error.insertAfter(element); // for other inputs, just perform default behavior
+	            }
+	        },
+
+	        invalidHandler: function (event, validator) { //display error alert on form submit   
+	            success.hide();
+	            error.show();
+	            App.scrollTo(error, -200);
+	        },
+
+	        highlight: function (element) { // hightlight error inputs
+	            $(element)
+	                .closest('.form-group').removeClass('has-success').addClass('has-error'); // set error class to the control group
+	        },
+
+	        unhighlight: function (element) { // revert the change done by hightlight
+	            $(element)
+	                .closest('.form-group').removeClass('has-error'); // set error class to the control group
+	        },
+
+	        success: function (label) {
+	            if (label.attr("for") == "gender" || label.attr("for") == "payment[]") { // for checkboxes and radio buttons, no need to show OK icon
+	                label
+	                    .closest('.form-group').removeClass('has-error').addClass('has-success');
+	                label.remove(); // remove error label here
+	            } else { // display success icon for other inputs
+	                label
+	                    .addClass('valid') // mark the current input as valid and display OK icon
+	                .closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	            }
+	        },
+
+	        submitHandler: function (form) {
+				debugger;
+	            success.show();
+	            error.hide();
+			//	fkjfjkj
+				debugger;
+				
+	            //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
+				
+	        }
+
+	    });
+	  }
+	       	 if (form.valid() == false)
+		     {
+                 return false;
+             }
+			else
+			{
+				//var formURL = $("submit_form").attr("action");
+				//var postData = form.serializeArray();
+				 var btn = $("#upload_file_btn");
+				 btn.button('loading');
+				$.ajax(
+				{
+					//data:postData,
+					url :"final_report_sabt.php?step=step4&cod_tarh="+$("#cod_tarh").val()+"&file_row="+$('#file_row :selected').val() ,	
+					//url : formURL,
+					data : new FormData(this),
+					cache: false,
+				    contentType: false,
+				    processData: false,
+				    type: "POST",
+				    
+					success:function(data, textStatus, jqXHR) 
+					{
+						//alert(data);
+						$("#attachment_table").html(data);
+						$("#view_attachments").html(data);		
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+						alert(textStatus);
+					}
+				}).always(function () { 
+					 btn.button('reset');
+				});
+				//e.preventDefault(); //STOP default action
+			   // e.unbind(); //unbind. to stop multiple form submit.
+				
+			}
+    	});
+    	
+    </script>
+    
+    
+<?php
+footer_forms($admin,$seed);
+?>
+

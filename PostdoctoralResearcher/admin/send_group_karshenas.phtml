@@ -1,0 +1,220 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+require("include/class.phpmailer.php");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/print.phtml");
+require("include/mailserver-statistics.phtml");
+include("include/vars.inc.phtml");
+
+	  	
+		   
+if(isset($action))
+{
+	if (strcmp($action,"tarh")==0)
+  {
+  	
+		$m=0;
+		 for($j=1;$j<30;$j++)
+		   {
+		   
+		    $cod='checktarh'.$j;
+		   // echo "$j";
+		    if(isset($$cod))
+		    {
+		     $cod_tarh=$$cod;
+		    $codarray[$m]=$cod_tarh;
+		    $m++;
+		    // $query="insert into group_karshenasan_tarh set send_to_karshenas_date='$mydate', cod_tarh=\"$cod_tarh\" , cod_karshenas=\"".$$mycodkarshenas."\"";
+	    
+			//$result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh 2");
+			//insert_position($cod_tarh,"7");
+		    }
+		
+		   }
+		 //  echo $codarray[0]."<br>".$codarray[1]."<br>".$codarray[2];
+  }
+  $i=0;
+  if (strcmp($action,"send_karshenas")==0)
+  {
+  	// $codarray = unserialize($_POST['codarray']);
+  	 //echo $codarray[0]."<br>".$codarray[1]."<br>".$codarray[2];
+  	 //echo "salam";
+   for($i==0;$i<100;$i++)
+   {
+    $myvariable="check".$i;
+    $myuser="value_".$i;
+    if (isset($$myvariable))
+    {
+      $myvariable="check".$i;
+      $myuser="value_".$i;
+      $mycodkarshenas = "cod_karshenas_".$i;
+      $myname_family="name_".$i;
+       $mydate=date("Y-m-d");
+	//  $mail = new PHPMailer();
+	 // ob_start();
+	  //send_mail_tarh($cod_tarh);
+     // $emailbody=ob_get_contents();
+    //  ob_end_clean();
+    //  ob_end_flush();
+
+    //  $mail->IsSMTP();                                      // set mailer to use SMTP
+    //  $mail->SMTPAuth=$smtpauth;
+   //   $mail->Username=$email_username;
+   //   $mail->Password=$email_password;
+   //   $mail->Host = $mailserver_host;  // specify main and backup server
+
+     // $mailname=$$myname_family;
+    //  $mail->From = $email_from;
+	//  $mail->FromName = $email_from_name;
+    //  $mail->AddAddress($$myuser, $mailname);
+    //  $mail->IsHTML(true);                                  // set email format to HTML
+
+     // $mail->Subject = "طرح پژوهشي ارسال شده از طرف مدير سيستم";
+     // $mail->Body    = $emailbody;
+    //  $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+     /* if(!$mail->Send())
+      {
+          $status="mail_err";
+      }
+      else
+      {
+          message_show(".طرح به کارشناس مربوطه ارسال شد","green");
+          footer_forms($admin,$seed);
+          exit();
+      }*/
+ for($j=0;$j<$m;$j++)
+		   { 
+			  $cod_tarh=$codarray[$j];
+				   
+			  $mydate=date("Y-m-d");
+		      
+			  $query="select * from group_karshenasan_tarh where   cod_tarh=\"$cod_tarh\" and cod_karshenas=\"".$$mycodkarshenas."\"";
+			  
+			  $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 1 ");
+			  if ( mysql_num_rows($result)<=0 )
+			  {
+					 echo $codarray[0]."<br>".$codarray[1]."<br>".$codarray[2];  	
+				  //echo "jj:".$cod_tarh;
+				    $query="insert into group_karshenasan_tarh set send_to_karshenas_date='$mydate', cod_tarh=\"$cod_tarh\" , cod_karshenas=\"".$$mycodkarshenas."\"";
+			    
+					$result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh 2");
+					insert_position($cod_tarh,"7");
+				    
+				 
+					  	
+			  	
+			    
+			  }
+		     }
+    }
+  }
+
+  }
+}
+   echo "<br>";
+   $query="select * from group_karshenasan where  karshenas_type='0'";
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+
+    ?>
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=send_karshenas&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&codarray=$codarray[$m]&m=$m\">"; ?>
+
+    <table border="0" width="90%" cellpadding="1" cellspacing="1">
+    <tr>
+    <td width="100%" bgcolor="#66CCFF"  colspan="7">
+    <a style="text-decoration:none" href="javascript:history.go(-1)" ><img src=images/return.gif border="0" alt="Return"></a>
+      <p align="center" class="tahoma1"><font color="black">ارسال براي مدير گروه کارشناسان </font></td>
+    </tr>
+
+	<tr>
+    <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">ارسال</font></td>
+	<td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">وضعيت ارسال</font></td>
+    <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">پست الکترونيکي</font></td>
+    <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام کاربري</font></td>      
+   <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نوع گروه کارشناسي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+  $i=0;
+   $color=$list_color_1;
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ // $cod_tarh=$row_fetched["cod_tarh"];
+  $cod_karshenas=$row_fetched["cod_karshenas"];
+  $query="select * from group_karshenasan_tarh where cod_karshenas='$cod_karshenas' and cod_tarh='$cod_tarh'";
+  
+  $result1=mysql_query($query);
+  if(mysql_num_rows($result1) > 0)
+  {
+     $sended="<b>به اين کارشناس ارسال شده</b>";
+     
+  }
+  else
+  $sended="به اين کارشناس ارسال نشده";
+   if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  if(strcmp(trim($row_fetched["karshenas_type"]),"0")==0)
+    $karshenas_type="مدير گروه کارشناسي";
+  else
+  	$karshenas_type="";
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\" name=\"check".$i."\"  value=\"ON\"></td>";
+  echo "<input type=\"hidden\" name=\"value_".$i."\" value=\"".$row_fetched["karshenas_email"]."\">";
+  echo "<input type=\"hidden\" name=\"name_".$i."\" value=\"".$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["kar_tahghigh_family"]."\">";
+  echo "<input type=\"hidden\" name=\"cod_karshenas_".$i."\" value=\"".$row_fetched["cod_karshenas"]."\">";
+  
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$sended."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_email"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["username"]."</td>";  
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$karshenas_type."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  echo "</tr>";
+  $i++;
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+ for($n=0;$n<$m;$n++){
+?>
+
+<input type='hidden' name='codarray[]' value='<?php print_r($codarray[$n]); ?>' />
+<?php 
+ }
+?> <input type='hidden' name='m' value='<?php echo $m; ?>' />
+<?php 
+echo "</table>";
+echo "<br><input type=\"submit\" value=\"ارسال\" name=\"B1\" class=\"but-small\">";
+echo "</form>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ کارشناسي  يافت نشد","red");
+}
+
+
+footer_forms($admin,$seed);
+?>
+

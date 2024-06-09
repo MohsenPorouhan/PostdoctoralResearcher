@@ -1,0 +1,34 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+      $query="select * from tarh where cod_tarh='$cod_tarh' ";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+      
+      if ( mysql_num_rows($result)>0  )
+      {
+    	$query="update karshenasan_tarh set  tarh_new='0' , receive_karshenas_date='".date("Y-m-d")."'  where  cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'   ";
+        
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="در صورتي كه طرح براي نظارت ارسال شده باشد بايد در منوي طرح هاي در حال اجرا آن را پي گيري كنيد"."<br>"."ارسال طرح به طرح هاي در حال کارشناسي"."<br>".$tarh_name;
+   
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		
+      }
+    
+  }
+}
+
+  
+
+
+

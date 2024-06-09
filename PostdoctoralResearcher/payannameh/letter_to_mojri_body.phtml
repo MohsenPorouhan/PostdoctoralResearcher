@@ -1,0 +1,509 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+//require_once('lib/nusoap.php');
+include ("../sms/include/WebServiceSms.php");
+include ("../sms/send_long_sms.php");
+echo "<br>";
+
+$query="select * from tarh where  tarh.cod_tarh=\"$cod_tarh\" ";
+
+$result = mysql_query($query) or die("Error in selecting data from tarh , mojri_tarh");
+if(mysql_num_rows($result) <= 0 )
+{
+    echo "<table border=\"0\"  height=\"100%\" width=\"400\"    cellspacing=\"0\" cellpadding=\"2\"  >";
+
+    echo "<tr>";
+    echo "<td align=\"center\"   width=\"25%\" class=\"error-message\" colspan=\"2\">.چنين پايان نامه اي وجود ندارد</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+     footer_forms($admin,$seed);
+     exit();
+    
+}
+
+$row_fetched=mysql_fetch_array($result);
+$tarh_name=$row_fetched["tarh_title_farsi"];
+
+
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if(  strlen(trim($cod_tarh))>0 && strlen(trim($letter_subject))>0)
+{
+	$mydate=date("Y-m-d");
+	$to_letter=$row_fetched["creator"];
+	$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	$q="select max(id) as max_id from letter_to_mojri where cod_tarh='$cod_tarh'";
+	$r=mysql_query($q);
+	$rf=mysql_fetch_array($r);
+	$max_l_no = $rf["max_id"]+1;
+	$letter_no=$cod_tarh."-".$max_l_no; 
+	
+	$letter_body=str_replace("'","",$letter_body);
+    $letter_body=str_replace("\"","",$letter_body);
+    $letter_body=str_replace(";","",$letter_body);
+
+	$letter_subject=str_replace("'","",$letter_subject);
+    $letter_subject=str_replace("\"","",$letter_subject);
+    $letter_subject=str_replace(";","",$letter_subject);
+ 
+    $query="insert into letter_to_mojri set admin_confirm='1',from_letter='$admin',to_letter='$to_letter',cod_daneshkade='$cod_daneshkade',cod_tarh='$cod_tarh' , letter_no='$letter_no' , letter_subject='$letter_subject' , letter_body='$letter_body' , letter_date='$mydate'";    
+     $result=mysql_query($query) or die("error in inserting data");
+    
+    
+    
+    $q="select * from user_login,tarh where tarh.creator=user_login.email and tarh.cod_tarh='$cod_tarh'";
+    
+    $res=mysql_query($q) or die("error");
+    $rf=mysql_fetch_array($res);
+    $mobile=$rf["mobile"];
+    
+    if(strlen($mobile)==11)
+    {
+     // send_sms($mobile,"be  tarh  $cod_tarh name ersal shode. lotfan dar mohit karbari khod name marboote ra molaheze konid\n research.tums.ac.ir");
+    $message_string="پژوهشيار: به پايان نامه شما با کد $cod_tarh نامه ارسال شده است.لطفا در محيط کاربري خود نامه را مشاهده نماييد. research.tums.ac.ir";
+			//$message_string=iconv("windows-1256", "UTF-8",$message_string);
+			$subject="ارسال نامه";
+			$massage_id=send_long_sms($message_string,$mobile,$subject);
+    }
+      else
+	 $status="mobile_error";   
+    
+$version='0';
+    for($i=1;$i<=18;$i++)
+    {
+      $var="C".$i;
+	  if(isset($$var))
+	  {
+	  	$version='1';
+	  	$query="insert into edit_field set cod_tarh='$cod_tarh' , cod_edit_part='$i'";
+	  	$result=mysql_query($query) or die("Error");
+	   /// echo $i."<br>";
+	  }
+	 
+    
+    }
+    if(isset($version) && strcmp($version,'1')==0)
+    {    	
+	 
+      record_duplicate('activities',$cod_tarh,'act_code','1');
+      
+	  record_duplicate('daneshjo_tarh',$cod_tarh,'','0');
+	 
+	  record_duplicate('eatebar_sazmanha',$cod_tarh,'id','1');
+ 	 record_duplicate('fhrest_vasayel_kharid',$cod_tarh,'cod_kharid','1');
+ 	  record_duplicate('hazine_azmayesh',$cod_tarh,'cod_azmayesh','1');
+ 	  record_duplicate('hazine_personnel',$cod_tarh,'cod_hazine','1');
+ 	  record_duplicate('hazine_safar',$cod_tarh,'cod_hazine_safar','1');
+ 	  record_duplicate('jadval_zarayeb',$cod_tarh,'cod_zarib','1');
+ 	  record_duplicate('mojri_tarh',$cod_tarh,'mojri_id','1');
+ 	  record_duplicate('ravesh_ejra',$cod_tarh,'ravesh_id','1');
+ 	  record_duplicate('sayer_hazine',$cod_tarh,'id','1');
+ 	  record_duplicate('tarh',$cod_tarh,'','0');
+       $query="update tarh set finished='0',edit_request='0' where cod_tarh='$cod_tarh' and version='-1' ";
+      $result=mysql_query($query) or die("error in inserting data");
+      
+    
+    }
+     $query="select * from user_login where email=\"$to_letter\"";
+   $result=mysql_query($query);
+   if(mysql_num_rows($result) > 0 )
+   {
+    $row_fetched=mysql_fetch_array($result);
+    $username=$row_fetched["email"];
+    $password=$row_fetched["password"];
+    $email=$username;
+    $name_e=$row_fetched["name_e"];
+    $family_e=$row_fetched["family_e"];
+
+
+    $mail = new PHPMailer();
+    $emailbody="";
+    $emailbody=$emailbody."<br><b>Please Check your administration area in Pajoheshyar System<b><br><br>";
+    $emailbody=$emailbody."<br>You have a New Letter For this proposal<br>";
+    $emailbody=$emailbody."<b><br>$tarh_name<br></b>";
+    $emailbody=$emailbody."<br>For Using our system Please login with Below URL<br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login.phtml>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Rahpouyan Fanavar Sabz (Rahpouyanco.com).</font></center>";
+
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye." ".$name_e;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($email, $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "You have a New Letter in $url_address (Do not reply this email)";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+    }
+    
+   }
+	
+    
+  	
+}
+else
+  $status="entry_error";
+
+if(isset($action))
+ if(strcmp($action,"del")==0)
+ {
+ 	$query="delete from letter_to_mojri where id='$delete_id' ";
+ 	
+ 	$result=mysql_query($query) or die("Error in deleting from letter_to_mojri");
+ }
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  //$tarh_name = $row_fetched["tarh_title_farsi"];
+   
+    $unlock_reason=$row_fetched["unlock_reason"];
+?>
+
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"letter_to_mojri_body.phtml?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/letter_to_mojri.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+      if (strcmp($status,"mobile_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">شماره تلفن همراه موجود در پروفايل مجري صحيح نيست</td>";
+    echo "</tr>";
+  }
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  
+
+?>
+           <tr>
+              <td colspan="2" align="left">
+                <p align="center" class="tahoma1" dir="rtl"><? echo " نامه به پايان نامه با عنوان: ".$tarh_name;?></td>
+            </tr>
+           <!-- <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="letter_no" size="48" class="edit-user" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>شماره نامه</td>
+            </tr> -->
+            
+           
+ <!-- <tr>
+    <td width="70%" align="right">
+    
+    	   <select size="1" dir="rtl"  name="mojavezyear" class="combo-date">
+          <option selected value="-1">سال</option>
+          <option value="1381">1381</option>
+          <option value="1382">1382</option>
+          <option value="1383">1383</option>
+          <option value="1384">1384</option>
+          <option value="1385">1385</option>
+	  	  <option value="1386">1386</option>
+	      <option value="1387">1387</option>
+	      <option value="1388">1388</option>
+	      <option value="1389">1389</option>
+	      <option value="1390">1390</option>
+
+        </select>
+             <select size="1" dir="rtl"  name="mojavezmon"  class="combo-date">
+         <option selected value="-1">ماه</option>
+          <option value="01">فروردين</option>
+          <option value="02">ارديبهشت</option>
+          <option value="03">خرداد</option>
+          <option value="04">تير</option>
+          <option value="05">مرداد</option>
+          <option value="06">شهريور</option>
+          <option value="07">مهر</option>
+          <option value="08">آبان</option>
+          <option value="09">آذر</option>
+          <option value="10">دي</option>
+          <option value="11">بهمن</option>
+          <option value="12">اسفند</option>
+        </select>
+
+        <select size="1" dir="rtl"  name="mojavezday"  class="combo-date">
+          <option selected value="-1">روز</option>
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+		  <option value="22">22</option>
+		  <option value="23">23</option>
+		  <option value="24">24</option>
+		  <option value="25">25</option>
+		  <option value="26">26</option>
+		  <option value="27">27</option>
+		  <option value="28">28</option>
+		  <option value="29">29</option>
+		  <option value="30">30</option>
+		  <option value="31">31</option>
+        </select>
+ 
+    </td>
+    <td width="30%" class="tahoma1">تاريخ </td>
+  </tr>
+-->
+<tr>
+   
+    <td width="80%" class="tahoma1" valign="top" align="right" dir='rtl'>&nbsp; </td>
+    <td width="20%" class="tahoma1" valign="top" align="right" dir='rtl'>&nbsp; </td>
+
+  </tr>
+
+<tr>
+   
+    <td width="80%" class="tahoma1" valign="top" align="right" dir='rtl'><? echo $unlock_reason; ?></td>
+    <td width="20%" class="tahoma1" valign="top" align="right" dir='rtl'> دليل درخواست ويرايش :</td>
+
+  </tr>
+
+
+<tr>
+   
+    <td width="80%" class="tahoma1" valign="top" align="right" dir='rtl'>&nbsp; </td>
+    <td width="20%" class="tahoma1" valign="top" align="right" dir='rtl'>&nbsp; </td>
+
+  </tr>
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="letter_subject" size="48" class="edit-user"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>موضوع</td>
+            </tr>
+ <tr>
+    <td width="66%" align="right"><textarea   rows="7"  name="letter_body"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="66%" class="tahoma1" valign="top">متن نامه</td>
+  </tr>
+             <tr>
+                <td width="100%" align="right" colspan='2' class='tahoma1'>
+                تبديل پايان نامه به حالت قابل ويرايش . شما مي توانيد با انتخاب هر كدام از قسمتهاي پايان نامه آن قسمت را به حالت قابل ويرايش در آوريد</td>
+            </tr>  
+			
+			 <tr>
+              <td width="100%" align="center" colspan='2'>
+                   
+				<table border="1" width="80%" id="table1" dir="rtl"  cellspacing="0" cellpadding="0"  class="tahoma1" style="border-style: solid; border-width: 1px">
+				<tr>
+						<td align='center'><b>همه موارد</b></td>
+						<td><input type="checkbox" name="checkall" onClick="checkUncheckAll(this);"></td>
+					</tr>
+					<tr>
+					<td>چكيده پايان نامه</td>
+					<td><input type="checkbox" name="C1" value="ON"></td>
+				</tr>
+				<tr>
+					<td>ثبت پايان نامه</td>
+					<td><input type="checkbox" name="C2" value="ON"></td>
+				</tr>
+				<tr>
+					<td>مجريان ، همکاران و دانشجويان</td>
+					<td><input type="checkbox" name="C3" value="ON"></td>
+				</tr>
+				<tr>
+					<td>استاد راهنما</td>
+					<td><input type="checkbox" name="C15" value="ON"></td>
+				</tr>
+				<tr>
+					<td>روش اجراي مطالعه</td>
+					<td><input type="checkbox" name="C4" value="ON"></td>
+				</tr>
+				<tr>
+					<td>جدول متغير ها</td>
+					<td><input type="checkbox" name="C5" value="ON"></td>
+				</tr>
+			<!--	<tr>
+					<td>جدول متغيرها</td>
+					<td><input type="checkbox" name="C6" value="ON"></td>
+				</tr>  -->
+				<tr>
+					<td>جدول زمانبندي و مراحل اجراي پايان نامه</td>
+					<td><input type="checkbox" name="C6" value="ON"></td>
+				</tr>
+				 
+				<tr>
+					<td>هزينه ها - هزينه پرسنلي</td>
+					<td><input type="checkbox" name="C7" value="ON"></td>
+				</tr>
+				
+				<tr>
+					<td>هزينه ها - هزينه آزمايشات وخدمات تخصصي</td>
+					<td><input type="checkbox" name="C8" value="ON"></td>
+				</tr>
+				<tr>
+					<td>هزينه ها - فهرست وسايل و موادي كه بايد خريداري شود</td>
+					<td><input type="checkbox" name="C9" value="ON"></td>
+				</tr>
+				<tr>
+					<td>هزينه ها - هزينه مسافرت</td>
+					<td><input type="checkbox" name="C10" value="ON"></td>
+				</tr>
+				<tr>
+					<td>هزينه ها - هزينه هاي ديگر</td>
+					<td><input type="checkbox" name="C11" value="ON"></td>
+				</tr>
+				<tr>
+					<td>هزينه هاي ديگر - تامين اعتبار از سازمانهاي ديگر</td>
+					<td><input type="checkbox" name="C12" value="ON"></td>
+				</tr>
+				<tr>
+					<td>فرم رضايت نامه</td>
+					<td><input type="checkbox" name="C16" value="ON"></td>
+				</tr>
+				<tr>
+					<td>ملاحظات اخلاقي</td>
+					<td><input type="checkbox" name="C13" value="ON"></td>
+				</tr>
+				<tr>
+					<td>ضمائم</td>
+					<td><input type="checkbox" name="C14" value="ON"></td>
+				</tr>
+					 
+				 
+				</table>
+				 </td>
+            </tr>   
+             <tr>
+              <td width="100%" align="center" colspan="2">
+                <p align="center" class="tahoma1"><span class="star-message">.ايجاد يک ويرايش جديد از پايان نامه باعث مي شود پايان نامه به حالت ويرايش در آمده و يک نسخه جديد از پايان نامه ايجاد شود</span></td>
+            </tr>
+            <tr>
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+          </table>
+          
+</form>
+       <br>   
+ <?
+ $query="select * from letter_to_mojri where cod_tarh='$cod_tarh' order by id desc";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+	echo "<tr>";
+	//echo "<td   align='center' class=\"tahoma1\">حذف</td>";
+	echo "<td   align='center' class=\"tahoma1\">نوع نامه</td>";
+	echo "<td   align='center' class=\"tahoma1\">متن نامه</td>";
+ 	echo "<td   align='center' class=\"tahoma1\">عنوان نامه</td>";
+ 	echo "<td  align='center'  class=\"tahoma1\">ارسال کننده</td>";
+ 	echo "<td   align='center' class=\"tahoma1\">شماره</td>";
+ 	echo "<td   align='center' class=\"tahoma1\">تاريخ</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	 echo "<tr>";
+     $atf_to=$row_fetched["atf_to_letter"];
+	 if(strlen(trim($atf_to)) > 0)	  
+	    $letter_type="پاسخ مجري";	  
+	  else
+	    $letter_type="نامه به مجري";
+
+	      $letter_date=$row_fetched["letter_date"];
+		  $startyear = substr($letter_date,0,4);
+		  $startmon = substr($letter_date,5,2);
+		  $startday = substr($letter_date,8,2);
+		  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+		  $farsistartdate = enum2fnum($farsistartdate);
+			 
+		   	 
+ 	 //echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=letter_to_mojri_body.phtml&admin=$admin&seed=$seed&action=delete_tarh&cod_tarh=$cod_tarh&delete_id=".$row_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 echo "<td   align='right' class=\"tahoma1\" dir=\"rtl\">".$letter_type."</td>";
+ 	 echo "<td   align='right' class=\"tahoma1\" dir=\"rtl\">".$row_fetched["letter_body"]."</td>";
+ 	 echo "<td   align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["letter_subject"]."</td>";
+ 	 echo "<td   align='right' class=\"tahoma1\">".$row_fetched["from_letter"]."</td>";
+ 	 echo "<td   align='right' class=\"tahoma1\">".$row_fetched["letter_no"]."</td>";
+ 	 echo "<td   align='center' class=\"tahoma1\">".$farsistartdate."</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ ?>
+  
+
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

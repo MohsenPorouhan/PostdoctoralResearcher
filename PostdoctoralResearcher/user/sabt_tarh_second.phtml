@@ -1,0 +1,22 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+ header_forms($admin,$seed);
+include("include/styles.phtml");
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+$result=mysql_query($query);
+$myrf=mysql_fetch_array($result) ;
+$finished=$myrf["finished"];
+
+/*if(strcmp($finished,'1')==0)
+{
+ 
+ message_show("طرح شما در حالت قفل مي باشد","red");
+ footer_forms($admin,$seed);
+ exit();	
+}*/
+include("../tarh_modification/sabt_tarh_second.phtml");
+ 
+ footer_forms($admin,$seed);
+?>
+

@@ -1,0 +1,74 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+
+echo "<br>";
+ 
+ ?>
+
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/taarif_jalase_shora.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+  <tr>
+      <td width="100%" align="center"  class="tahoma1"  >
+
+       <? echo " <a href='mosavabe.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&cod_jalase=$cod_jalase&rank_jalase=$rank_jalase'>ثبت مصوبات طرح</a>   ";  ?>
+
+      </td>
+    </tr>
+    <tr>
+      <td width="100%"  align="center" class="tahoma1"  >
+
+       <? 
+	   if(strcmp($jalase_type,"no_akhlagh")==0)
+	      echo " <a href='jalase_shora_tarhs_edit.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&cod_jalase=$cod_jalase&rank_jalase=$rank_jalase'>ثبت طرح هاي مطرح شده در جلسه</a>   ";  
+	   else	  
+          echo " <a href='jalase_shora_akhlagh_tarhs_edit.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&cod_jalase=$cod_jalase&rank_jalase=$rank_jalase'>ثبت طرح هاي مطرح شده در جلسه</a>   ";		  
+		  
+		  
+		  ?>
+	   
+	      
+
+      </td>
+    </tr>
+    
+</table>
+<br>
+ 
+ <table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+  <tr>
+      <td width="100%" align="center"  class="tahoma1"  >
+
+      <b>.موارد فوق را به ترتيب از بالا به پايين پر كنيد</b> 
+
+      </td>
+    </tr>
+   
+    
+</table>
+ <?
+  footer_forms($admin,$seed);
+?>

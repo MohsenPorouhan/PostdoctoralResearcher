@@ -1,0 +1,96 @@
+<?
+include("include/styles.phtml");
+include("include/include.phtml");
+include("include/database-connect.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+
+
+if( isset($action) )
+ if ( strlen(trim($action)) > 0 && (strcmp($action,"change")==0) && strlen(trim($password)) > 0 && strlen(trim($re_password)) > 0 && (strcmp($password,$re_password)==0) )
+ {
+
+   $query="update hesabdari set password='$password' where username = '$admin'";
+
+   $result=mysql_query($query) or die ("Error in updating data into user login");
+   
+   
+    message_show(".تغيير کلمه عبور با موفقيت انجام شد","green");
+   footer_forms($admin,$seed);
+   
+   $action="تغيير کلمه عبور";
+   set_log($action,$admin,date("Y-d-m"));
+   exit();
+   
+ }
+ else
+   $status="entry_error";
+
+
+
+
+
+?>
+
+<br>
+<br>
+<form name="user_login" action="<? echo "chg_pass.phtml?action=change&admin=$admin&seed=$seed"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="400" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="260" height="19"></td>
+                        <td align="middle" width="140" background="image/chg_pass.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="400" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">کلمات عبور با هم برابر نيستند</td>";
+        echo "</tr>";
+      }
+      ?>
+      <tr>
+        <td align="right" width="350"><input type="password" class="edit-tarh-type" name="password" size="20"></td>
+        <td class="tahoma1" width="150">کلمه عبور</td>
+      </tr>
+      <tr>
+        <td align="right" width="350"><input type="password" class="edit-tarh-type" name="re_password" size="20"></td>
+        <td class="tahoma1" width="150">تکرار کلمه عبور</td>
+      </tr>
+
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit" value="ورود" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<br>
+<?
+  footer_forms($admin,$seed);
+?>

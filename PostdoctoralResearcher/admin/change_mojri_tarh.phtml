@@ -1,0 +1,125 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if( isset($action) )
+ if ( strlen(trim($action)) > 0 && (strcmp($action,"change")==0) && strlen(trim($cod_tarh_old)) > 0 && strlen(trim($email_mojri)) > 0   )
+ {
+
+   $query="select * from  tarh where cod_tarh='$cod_tarh_old' ";
+ 
+   $result=mysql_query($query) or die ("Error in updating data into modir daneshkade");
+   if(mysql_num_rows($result) > 0)
+   {
+   	  $rf=mysql_fetch_array($result);
+      $user_email=$rf["creator"];
+   	  $query="select * from  user_login where email='$email_mojri'";
+      
+      $result=mysql_query($query) or die ("Error in updating data into modir daneshkade");
+      if(mysql_num_rows($result) > 0)
+      {
+      	
+        $query="update tarh set creator='$email_mojri' where cod_tarh=\"$cod_tarh_old\"";         
+        $result=mysql_query($query) or die("Error in updating data into tarh1");
+        //echo $query."<br>";
+		$query="update  ravesh_ejra set creator='$email_mojri' where cod_tarh=\"$cod_tarh_old\"";
+        $result=mysql_query($query) or die("Error in updating data into tarh2");
+        //echo $query."<br>";
+		$query="update  letter_to_mojri set to_letter='$email_mojri' where to_letter=\"$user_email\" and  cod_tarh=\"$cod_tarh_old\"";
+        $result=mysql_query($query) or die("Error in updating data into tarh2");
+        //echo $query."<br>";
+        $query="update  letter_to_mojri set from_letter='$email_mojri' where from_letter=\"$user_email\" and  cod_tarh=\"$cod_tarh_old\"";
+        $result=mysql_query($query) or die("Error in updating data into tarh2");
+      //  echo $query."<br>";
+        
+        $action="انتقال طرح به نام کاربري $cod_tarh_old $email_mojri";
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+      	message_show(".طرح به مجري مورد نظر انتقال يافت","green");
+        footer_forms($admin,$seed);
+		exit();
+      }
+       else
+       {
+        $status="invalid_new";
+        //exit();
+       }
+  
+   }
+   else
+     $status="invalid_old";
+ }
+ else
+   $status="entry_error";
+
+
+
+ 
+?>
+
+<br>
+<br>
+<form name="user_login" action="<? echo "change_mojri_tarh.phtml?action=change&admin=$admin&seed=$seed"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="400" border="0">
+       <tr>
+        <td width="100%" class="tahoma1" align="right">
+        تغيير نام مجري طرح
+          </td>
+      </tr>
+    
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="400" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">کدها بايد وارد شوند</td>";
+        echo "</tr>";
+      }
+       if (strcmp($status,"invalid_new")==0)
+      {
+       
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مجري با اين آدرس ايميل وجود ندارد</td>";
+        echo "</tr>";
+      }
+       if (strcmp($status,"invalid_old")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.طرحي با اين کد وجود ندارد</td>";
+        echo "</tr>";
+      }
+      ?>
+      <tr>
+        <td align="right" width="300"><input  class="edit-tarh-type" name="cod_tarh_old" size="20"></td>
+        <td class="tahoma1" width="200">کد طرح </td>
+      </tr>
+      <tr>
+        <td align="right" width="300"><input class="edit-tarh-type" name="email_mojri" size="20"></td>
+        <td class="tahoma1" width="200">آدرس ايميل مجري که بايد طرح به ايشان انتقال يابد</td>
+      </tr>
+  <tr>
+        
+        <td class="tahoma1" colspan="2" width="100%" align="center"><b>توجه : کد هاي طرح بايد به طور کامل و صحيح وارد شوند به مثال زير توجه کنيد<br> Tarh Code : 85-01-32-3456<br> نام مجري بايد آدرس ايميل ايشان بطور کامل باشد</b></td>
+      </tr>
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<br>
+<?
+  footer_forms($admin,$seed);
+?>

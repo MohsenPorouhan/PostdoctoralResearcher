@@ -1,0 +1,259 @@
+<?
+include("include/include.phtml");
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+
+?>
+
+<?php
+
+//  hamkaran  ==  1
+//  mojri     ==  2
+//  daneshjo  ==  3
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if ( ! isset($current))
+    $current = 1;
+
+$position_caution="";
+$hazine_caution="";
+$tarh_year_q="";
+$caution_all=" 1 ";
+
+if(strcmp($tarh_year,'-1')!=0)
+{
+  $tarh_year_q="prepared_report.cod_tarh like '$tarh_year"."%'";
+}
+else
+  $tarh_year_q="";
+  
+
+if(strlen(trim($morethan))>0)
+{  
+   $hazine_caution=" prepared_report.$hazine_type >$morethan "; 
+ 
+}
+else
+ 
+ 	if(strlen(trim($lowerthan))>0)
+    {
+   
+      $hazine_caution=" prepared_report.$hazine_type<$lowerthan ";
+  
+    } 
+   else
+       	if(strlen(trim($first))>0 && strlen(trim($second))>0)
+        {
+        
+           $hazine_caution="( prepared_report.$hazine_type<$first and prepared_report.$hazine_type>$second ) ";
+        
+        } 
+  
+
+
+if(strcmp($position,'-1')!=0)
+{
+  $position_caution=" prepared_report.position_tarh='$position' ";  
+}
+
+
+
+
+if(strlen($tarh_year_q) > 0 && strlen($hazine_caution) > 0  )
+{
+ $caution_all= $tarh_year_q." $GRP1 ".$hazine_caution;
+}
+
+
+if(strlen($position_caution) > 0 && strlen($hazine_caution) > 0  )
+{
+ $caution_all= $position_caution." $GRP2 ".$hazine_caution;
+}
+
+
+
+if(strlen($position_caution) > 0 && strlen($tarh_year_q) > 0  )
+{
+ $caution_all= $position_caution." $GRP2 ".$tarh_year_q;
+}
+
+
+
+if(strlen($position_caution) > 0 && strlen($tarh_year_q) > 0 && strlen($hazine_caution) > 0  )
+{
+ $caution_all= $tarh_year_q." $GRP1 ".$hazine_caution." $GRP2 ".$position_caution;
+}
+
+if(strlen($position_caution) > 0 && strlen($tarh_year_q) == 0 && strlen($hazine_caution) == 0  )
+{
+ $caution_all=$position_caution;
+}
+
+
+if(strlen($position_caution) == 0 && strlen($tarh_year_q) > 0 && strlen($hazine_caution) == 0  )
+{
+ $caution_all=$tarh_year_q;
+}
+
+
+if(strlen($position_caution) == 0 && strlen($tarh_year_q) == 0 && strlen($hazine_caution) > 0  )
+{
+ $caution_all=$hazine_caution;
+}
+
+
+	
+ // echo $caution_all;
+ // exit();
+
+ 
+   
+$query = "select * from tarh,prepared_report"." where ".$caution_all." and tarh.version='-1' and tarh.cod_tarh=prepared_report.cod_tarh group by tarh.cod_tarh ";
+    //  echo $query;
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+
+$reccount = mysql_num_rows($result);
+$query =  "select * from tarh,prepared_report"."  where ".$caution_all." and tarh.version='-1' and tarh.cod_tarh=prepared_report.cod_tarh group by tarh.cod_tarh "."  order by tarh_time desc "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+$result=mysql_query($query) or die("Error in selecting data from tarh 2");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+if($reccount > 0 )
+{
+?>
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="100%" bgcolor="#66CCFF" align="center" class="tahoma1">
+	نتيجه جستجو
+  </td>
+  </tr>
+</table>
+<?
+}
+
+if(isset($tarh_year) && strlen($tarh_year)>0)
+  $search_args=$search_args."&tarh_year=$tarh_year";
+
+if(isset($morethan)  && strlen($morethan)>0)
+  $search_args=$search_args."&morethan=$morethan";
+
+if(isset($lowerthan)  && strlen($lowerthan)>0)
+  $search_args=$search_args."&lowerthan=$lowerthan";
+
+if(isset($first)  && strlen($first)>0)
+  $search_args=$search_args."&first=$first";
+
+if(isset($second)  && strlen($second)>0)
+  $search_args=$search_args."&second=$second";
+  
+if(isset($position)  && strlen($position)>0)
+  $search_args=$search_args."&position=$position";
+
+if(isset($hazine_type)  && strlen($hazine_type)>0)
+  $search_args=$search_args."&hazine_type=$hazine_type";
+
+if(isset($GRP1)  && strlen($GRP1)>0)
+  $search_args=$search_args."&GRP1=$GRP1";
+
+  if(isset($GRP2)  && strlen($GRP2)>0)
+  $search_args=$search_args."&GRP2=$GRP2";
+
+  
+if(mysql_num_rows($result) > 0 )
+{
+$myascdescpub = $search_args;
+  pubshowpages("reporting_result.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+ ///pubshowpages("reporting_result.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$args,"90%","#66CCFF");
+?>
+
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">کل هزينه ها</font></td>
+  
+  
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">هزينه پرسنلي</font></td>
+  
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">هزينه آزمايشات</font></td>
+  
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">هزينه وسايل و مواد</font></td>
+  
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">هزينه مسافرت</font></td>
+  
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">ساير هزينه ها</font></td>
+  
+  <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">موقعيت طرح</font></td>
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    <td width="33%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td width="33%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+    <td width="4%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+  </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ $rowno=0;
+ $row=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $row++;
+  $rowno=(($current-1) * $RecPerPage ) + $row;
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $position=$row_fetched["position_tarh"];
+  echo "<tr>";
+  $mytarh_type = $row_fetched["vaziat"];
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  
+
+   echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hazine_all"]."</td>";
+   echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hazine_personnel"]."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hazine_azmayesh"]."</td>";
+   echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hazine_vasayel"]."</td>";
+   echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hazine_mosaferat"]."</td>";
+    echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["hazine_others"]."</td>";
+	   
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$position_tarh["$position"]."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$farsistartdate."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["tarh_title_farsi"]."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["cod_tarh"]."</td>";
+  echo "<td width=\"4%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($rowno)."</td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>

@@ -1,0 +1,428 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+ 
+if(isset($action))
+{
+  if (strcmp($action,"add_hazine_mosaferat")==0)
+  {
+    
+    
+     
+  }
+ }
+
+ $query="select * from daneshkade order by  daneshkade_name  desc";
+ $result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+ $my_fetched = mysql_fetch_array($result);
+ 
+?>
+	
+	
+	
+<? echo "<form name=\"sabt_tarh\" method=\"post\" action=\"report_complex_result.phtml?action=add_hazine_mosaferat&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&form_id=$form_id\">"; ?>
+<br /><br />
+<table border="0" id="myTable"  width="500" cellspacing="0" cellpadding="0" >
+  
+<tr>
+<TD   width="500" class='tahoma1' height=19 align='center'   ><b>
+    جستجوي ترکيبي
+      </b></TD>
+      
+ 
+</td>
+</tr>
+
+<tr>
+<TD   width="500" class='tahoma1' height=19 align='center'  dir='rtl' ><br /><b>
+   در هنگام جستجو کافي است صرفا قسمتي از مورد جستجو را وارد کنيد . بطور مثال براي يافتن يک طرح کافي است يک قسمت از نام آن را وارد کرده و طرح مورد نظر را بيابيد.
+      </b></TD>
+      
+ 
+</td>
+</tr>
+<tr>
+<TD   width="500" class='tahoma1' height=19 align='center'  dir='rtl' ><br /><b>
+   چنانچه هيچ موردي را ورود اطلاعات نکرديد ، همه طرح هاي مرکز شما را نمايش ميدهد
+      </b></TD>
+      
+ 
+</td>
+</tr>
+<br></br>
+</TABLE>
+
+<table border="0" id="myTable"  width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="0" >
+  
+<tr>
+	<td width="350" align="right"><select size="1"   name="cod_daneshkade" class="edit-user" dir="rtl">
+	    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+	    <?
+	
+	    while($row_fetched=mysql_fetch_array($result))
+	    {
+	         echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+	    }
+	    ?>
+	    </select>
+	    
+	   
+		</td>
+       <TD width="500"   class='tahoma1' height=19 align='right' >دانشکده  
+      </TD>
+      <?php 
+       $query="select left(cod_tarh,5) as tarh_year from tarh group by left(cod_tarh,5) order by  cod_tarh desc";
+
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td  align=\"right\" class=\"tahoma1\"><select size=\"1\" name=\"tarh_year\"  dir=\"rtl\" class=\"but-small\">";
+	if(strcmp($row_fetched["tarh_year"],'-1')==0)
+   	  $selected=" selected ";
+    else
+	  $selected=""; 
+echo "<option $selected value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if(strcmp($row_fetched["tarh_year"],$tarh_year)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["tarh_year"]."\" class=\"tahoma1\">".$row_fetched["tarh_year"]."</option>";
+ }
+ 
+?>
+  </select> سال/رنک 
+  </td>
+ 
+
+</tr>
+<tr>
+<br></br></tr>
+</TABLE>
+
+
+<table border="0" id="myTable"  width="500" cellspacing="0" cellpadding="0" >
+  
+<tr>
+       <TD width="500"   class='tahoma1' height=19 align='right' >بدنه طرح  
+      </TD>
+ 
+</td>
+</tr>
+</TABLE>
+
+<table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+ 
+ <tr>
+    <td width="350" align="right"><input type="text" name="cod_tarh_caution" autofocus size="20" value="" class="edit-user"  ></td>
+    <td width="150" class="tahoma1">کد طرح</td>
+  </tr>
+
+ 
+   <tr>
+    <td width="350" align="right"><input type="text" name="tarh_title_farsi" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1">عنوان طرح</td>
+  </tr>
+
+   <tr>
+    <td width="350" align="right"><input type="text" name="tarh_title_english" size="20" value="" class="edit-user"  ></td>
+    <td width="150" class="tahoma1">عنوان انگليسي طرح</td>
+  </tr>
+ 
+ 
+
+  <tr>
+    <td width="350" align="right"><input type="text" dir=RTL    name="kelidvaje" size="20" value="" class="edit-user" ></td>
+    <td width="150" class="tahoma1" >واژگان كليدي</td>
+  </tr>
+ 
+   
+  <tr>
+  <?
+  
+
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade=$myrow_fetched["cod_daneshkade"];
+
+
+$query="select * from group_daneshkade where  cod_daneshkade ='$cod_daneshkade'";
+  
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade 1");
+//$row_fetched = mysql_fetch_array($result);
+ 
+
+    
+   
+    
+  ?>
+    <td width="350" align="right"><select size="1"   name="cod_group" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($result))
+    {
+         echo "<option value=\"".$row_fetched["cod_group"]."\" class=\"tahoma1\">".$row_fetched["group_name"]."</option>";
+    }
+    ?>
+    </select>
+    
+   
+	</td>
+	
+	 
+    <td width="250" class="tahoma1">گروه</td>
+  </tr>
+ 
+ 
+ 
+ 
+</table>
+<br>
+
+<table border="0" id="myTable"  width="500" cellspacing="0" cellpadding="0" >
+  
+<tr>
+       <TD width="500"   class='tahoma1' height=19 align='right' >مجري اصلي طرح  
+      </TD>
+ 
+</td>
+</tr>
+</TABLE>
+
+<table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+    <tr>
+    <td width="350" align="right"><input type="text" name="name" size="20" value=" " class="edit-user"dir=RTL   ></td>
+    <td width="150" class="tahoma1">  نام مجري</td>
+  </tr>
+
+  <tr>
+  <td width="350" align="right"><input type="text" name="family" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"> نام خانوادگي مجري</td>
+  </tr>
+
+  
+</table>
+
+  
+
+<table border="0" id="myTable"  width="500" cellspacing="0" cellpadding="0" >
+  
+<tr>
+       <TD width="500"   class='tahoma1' height=19 align='right' >مجري و همکاران طرح  
+      </TD>
+ 
+</td>
+</tr>
+</TABLE>
+
+<table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+    <tr>
+    <td width="350" align="right"><input type="text" name="hamkar_name" size="20" value=" " class="edit-user"dir=RTL   ></td>
+    <td width="150" class="tahoma1">  نام</td>
+  </tr>
+
+  <tr>
+  <td width="350" align="right"><input type="text" name="hamkar_family" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"> نام خانوادگي</td>
+  </tr>
+  
+      
+ 
+ 
+</table>
+<br>
+  
+  
+ 
+<!--
+<table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+   <tr>
+  <?
+    $query="select * from karshenasan where 1 order by karshenas_family ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="350" align="right"><select   size="1" name="davar_first" class="edit-user" dir="rtl"    >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if(strcmp($davar_first,$row_fetched["cod_karshenas"])==0)
+    	  $selected=" selected ";
+    	else
+		  $selected="";  
+        echo "<option  $selected value=\"".$row_fetched["cod_karshenas"]."\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."&nbsp;".$row_fetched["karshenas_name"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">داور پيشنهادي اول</td>
+  </tr>
+  
+  <tr>
+  <?
+    $query="select * from karshenasan where  1 order by karshenas_family ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="350" align="right"><select size="1" name="davar_second" class="edit-user" dir=RTL   >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+   	   	if(strcmp($davar_second,$row_fetched["cod_karshenas"])==0)
+    	  $selected=" selected ";
+    	else
+		  $selected="";  
+ 
+         echo "<option  $selected value=\"".$row_fetched["cod_karshenas"]."\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."&nbsp;".$row_fetched["karshenas_name"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">داور پيشنهادي دوم</td>
+  </tr>
+  <tr>
+  <?
+    $query="select * from karshenasan where  1 order by karshenas_family ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="350" align="right"><select size="1" name="davar_third" class="edit-user" dir="rtl"    >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+   	   	if(strcmp($davar_third,$row_fetched["cod_karshenas"])==0)
+    	  $selected=" selected ";
+    	else
+		  $selected="";  
+
+         echo "<option $selected value=\"".$row_fetched["cod_karshenas"]."\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."&nbsp;".$row_fetched["karshenas_name"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">داور پيشنهادي سوم</td>
+  </tr>
+ 
+  
+ <tr>
+  <?
+    $query="select * from karshenasan where karshenas_type='8' order by karshenas_family ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="350" align="right"><select size="1" name="nazer_first" class="edit-user"  dir=RTL   >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+   	   	if(strcmp($nazer_first,$row_fetched["cod_karshenas"])==0)
+    	  $selected=" selected ";
+    	else
+		  $selected="";  
+
+         echo "<option $selected value=\"".$row_fetched["cod_karshenas"]."\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."&nbsp;".$row_fetched["karshenas_name"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">ناظر پيشنهادي اول</td>
+  </tr>
+  
+   <tr>
+  <?
+    $query="select * from karshenasan where karshenas_type='8' order by karshenas_family ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="350" align="right"><select size="1" name="nazer_second" class="edit-user" dir=RTL   >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+   	   	if(strcmp($nazer_second,$row_fetched["cod_karshenas"])==0)
+    	  $selected=" selected ";
+    	else
+		  $selected="";  
+
+         echo "<option $selected value=\"".$row_fetched["cod_karshenas"]."\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."&nbsp;".$row_fetched["karshenas_name"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">ناظر پيشنهادي دوم</td>
+  </tr>
+  
+   <tr>
+  <?
+    $query="select * from karshenasan where karshenas_type='8' order by karshenas_family ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="250" align="right"><select size="1" name="nazer_third" class="edit-user" dir=RTL   >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+   	   	if(strcmp($nazer_third,$row_fetched["cod_karshenas"])==0)
+    	  $selected=" selected ";
+    	else
+		  $selected="";  
+
+         echo "<option $selected value=\"".$row_fetched["cod_karshenas"]."\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."&nbsp;".$row_fetched["karshenas_name"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">ناظر پيشنهادي سوم</td>
+  </tr>
+  
+   
+</table>
+ -->
+
+<br>
+
+<table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="جستجو" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+ 
+<script>
+            var temp=document.sabt_tarh.cod_group            
+            function redirect()
+            {
+            	 
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex
+                myselecteditem--
+                
+                if( myselecteditem<0 )
+                  return
+               
+                for (i=0;i<group[myselecteditem].length;i++)
+                {                	
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }
+            
+
+
+            </script>
+</form>
+ 
+ <?
+  footer_forms ($admin,$seed );
+
+ ?>

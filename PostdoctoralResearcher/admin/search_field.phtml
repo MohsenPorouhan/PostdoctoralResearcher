@@ -1,0 +1,158 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+<?
+echo "<br>";
+
+
+
+?>
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"search_field_result.phtml?action=add&admin=$admin&seed=$seed\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+  
+  <TR>
+  <TD vAlign=bottom align=right class='tahoma1'>
+جستجوي طرح
+  </TD>
+  </TR>
+  
+</TABLE>
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  ?>
+    <tr>
+      <td width="100%">
+        <div align="center">
+          <table border="0" width="100%" bgcolor="F0F0FF" height="100%" cellpadding="3" cellspacing="0">
+             
+  
+            
+ <tr>   
+  <?
+   $Query=mysql_query("select * from vaziat_tarh  ") or die("Error in selecting tarh-type");
+   
+?> 
+    <td width="350"  align="right">
+    <div style="overflow:auto;width:350px;height:75px;border:1px solid #336699;padding-left:5px" class="tahoma1">
+    <?
+    while($row_fetched=mysql_fetch_array($Query))
+  {
+  	echo $row_fetched["vaziat_desc"]."<input type=\"checkbox\" name=\"vaziat_tarh[]\" value=".$row_fetched["vaziat"]."><br>";
+  }
+    ?>
+	  </div>
+
+    </td>
+    <td width="150" class="tahoma1" valign='top'>وضعيت طرح</td>
+  </tr>
+  
+  
+     <tr>   
+  <?
+   $Query=mysql_query("select * from tarhtype ") or die("Error in selecting tarh-type");
+   
+?> 
+    <td width="350"  align="right">
+    <div style="overflow:auto;width:350px;height:75px;border:1px solid #336699;padding-left:5px" class="tahoma1">
+    <?
+    while($row_fetched=mysql_fetch_array($Query))
+  {
+  	echo $row_fetched["tarh_type_desc"]."<input type=\"checkbox\" name=\"tarhtype[]\" value=".$row_fetched["tarh_type"]."><br>";
+  }
+    ?>
+	  </div>
+
+    </td>
+    <td width="150" class="tahoma1" valign='top'>نوع طرح</td>
+  </tr>
+  
+  
+   <tr>   
+  <?
+   $Query=mysql_query("select * from tarhtype_1  ") or die("Error in selecting tarh-type");
+   
+?> 
+    <td width="350"  align="right">
+    <div style="overflow:auto;width:350px;height:75px;border:1px solid #336699;padding-left:5px" class="tahoma1">
+    <?
+    while($row_fetched=mysql_fetch_array($Query))
+  {
+  	echo $row_fetched["tarh_type_desc"]."<input type=\"checkbox\" name=\"tarhtype_1[]\" value=".$row_fetched["tarh_type"]."><br>";
+  }
+    ?>
+	  </div>
+
+    </td>
+    <td width="150" class="tahoma1" valign='top'>نوع مطالعه</td>
+  </tr>
+  
+    <tr>   
+  <?
+   $Query=mysql_query("select * from daneshkade  ") or die("Error in selecting tarh-type");
+   
+?> 
+    <td width="350"  align="right">
+    <div style="overflow:auto;width:350px;height:75px;border:1px solid #336699;padding-left:5px" class="tahoma1">
+    <?
+    while($row_fetched=mysql_fetch_array($Query))
+  {
+  	echo $row_fetched["daneshkade_name"]."<input type=\"checkbox\" name=\"daneshkade[]\" value=".$row_fetched["cod_daneshkade"]."><br>";
+  }
+    ?>
+	  </div>
+
+    </td>
+    <td width="150" class="tahoma1" valign='top'>دانشکده</td>
+  </tr>
+    <tr>
+            
+            
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="جستجو" name="submit_tarh"></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
+<br>
+<? 
+   footer_forms($admin,$seed);
+?>
+
+
+

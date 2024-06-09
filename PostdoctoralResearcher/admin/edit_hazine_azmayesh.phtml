@@ -1,0 +1,149 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_hazine_azmayesh")==0)
+  {
+
+     if(strlen(trim($mozoa_azmayesh)) > 0 && strlen(trim($azmayesh_center)) > 0 && strlen(trim($azmayesh_cnt)) > 0 && strlen(trim($hazine_har_bar)) > 0  )
+     {
+     
+        $query  = "update hazine_azmayesh set mozoa_azmayesh=\"$mozoa_azmayesh\",azmayesh_center=\"$azmayesh_center\" , azmayesh_cnt=\"$azmayesh_cnt\",hazine_har_bar=\"$hazine_har_bar\" where cod_azmayesh ='$cod_azmayesh '";
+      
+	    $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        $action=" ويرايش هزينه آزماِشات  براي طرح با کد ".$cod_tarh."<br> با عنوان ".$mozoa_azmayesh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		?>
+         <script language="javascript">
+           window.location="<? echo "hazine_azmayesh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script>
+        <?
+     
+     }
+     else
+       $status="entry_error";
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_hazine_azmayesh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_azmayesh=$cod_azmayesh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+   <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="hazine_azmayesh.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=middle width="251"  background="image/hazine_azmayesh.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+ $query="select * from hazine_azmayesh where  cod_azmayesh ='$cod_azmayesh'";
+ 
+ $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ $row_f=mysql_fetch_array($result);
+ $mozoa_azmayesh=$row_f["mozoa_azmayesh"];
+ $azmayesh_center=$row_f["azmayesh_center"];
+ $azmayesh_center=$row_f["azmayesh_center"];
+ $azmayesh_cnt=$row_f["azmayesh_cnt"];
+ $hazine_har_bar=$row_f["hazine_har_bar"];
+       
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" <? echo "value='$mozoa_azmayesh'"; ?> name="mozoa_azmayesh" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نوع آزمايش</td>
+  </tr>
+
+ <?
+  if(strcmp($azmayesh_center,"-1")==0)
+    $p1=" selected ";
+  else
+    $p1="";
+    
+  if(strcmp($azmayesh_center,"1")==0)
+    $p2=" selected ";
+  else
+    $p2="";
+    
+    
+ if(strcmp($azmayesh_center,"2")==0)
+    $p3=" selected ";
+  else
+    $p3="";  
+
+if(strcmp($azmayesh_center,"3")==0)
+    $p4=" selected ";
+  else
+    $p4="";  
+		  
+ ?>
+  <tr>
+    <td width="350" align="right"><select size="1"  name="azmayesh_center" class="edit-user" dir="rtl">
+    <option value="-1" <? echo $p1; ?> class="tahoma1">انتخاب کنيد</option>
+    <option value="1"  <? echo $p2; ?> class="tahoma1">خصوصي</option>
+    <option value="2"  <? echo $p3; ?> class="tahoma1">داخل دانشگاه</option>
+    <option value="3"  <? echo $p4; ?> class="tahoma1">دولتي خارج دانشگاه</option>
+	</select></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>محل انجام آزمايش</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" <? echo "value='$azmayesh_cnt'"; ?>  name="azmayesh_cnt" size="20" value="" class="edit-user" ></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>تعداد آزمايش</td>
+  </tr>
+
+  <tr>
+ <td width="350" align="right"><input type="text"  <? echo "value='$hazine_har_bar'"; ?>  name="hazine_har_bar" size="20" value="" class="edit-user" ></td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>هزينه براي هر دفعه</td>
+ </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<?
+ footer_forms($admin,$seed);
+?>
+

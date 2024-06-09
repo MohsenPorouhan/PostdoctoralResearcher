@@ -1,0 +1,276 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 1 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=index.phtml");
+   exit();
+  }
+ }
+ 
+include("include/styles.phtml");
+echo "<META http-equiv=content-type content=text/html;charset=utf-8>";
+//header_forms($admin,$seed);
+echo "<br>";
+
+  
+ if(isset($action) && strcmp($action,"set_note")==0)
+ {
+ 	$query="update   tarh set comment_karshenas_shora='$notes' ,dastoor_shora='$dastoor_shora'   where cod_tarh='$cod_tarh'";
+ 	
+ 	
+	 $result=mysql_query($query) or die ("Error in updating data into user login");
+ }
+
+
+ $query="select * from  tarh where cod_tarh='$cod_tarh'";
+
+   $result=mysql_query($query) or die ("Error in updating data into user login");
+     if(mysql_num_rows($result) > 0)
+  {
+  	$row_fetched=mysql_fetch_array($result);
+  	$notes=$row_fetched["comment_karshenas_shora"];
+  	$dastoor_shora=$row_fetched["dastoor_shora"];
+  
+  	
+  	
+  }
+  else
+  {
+    $notes="";
+   
+  }
+
+
+
+
+?>
+<script>
+targetWidth = screen.availWidth;
+targetHeight = screen.availHeight;
+window.resizeTo(targetWidth, targetHeight);
+window.toolbar="no";
+
+
+</script>
+
+<script>
+function refresh_main()
+{
+	 document.user_login.submit();
+     opener.location.reload(true);
+
+}
+</script>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from shora_pajohesh_daneshgah where cod_tarh='$cod_tarh'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh1222222");
+
+
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+$result21=mysql_query($query) or die("Error in selecting data from tarh1222222");
+$row_fetched21=mysql_fetch_array($result21);
+?>
+<br>
+<center>
+<TABLE cellSpacing=0  width="490" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched21["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+<center>
+<body onclose="refresh_main()">
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="500" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="360" height="19"></td>
+                        <td align="middle" width="140" background="image/notes_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="500" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      
+      while($row_fetched1=mysql_fetch_array($result1))
+      {
+        $dastood_shora=$row_fetched1["dastoor_shora"];
+	    $notes=$row_fetched1["comment_karshenas_shora"];
+  	   
+       ?>
+        <tr>
+        <td align="right" width="400" class="tahoma1"><b>کليه طرحها کارشناسي هزينه خواهد شد</b>
+		<select size="1" name="dastoor_shora" class="tahoma1">
+		<?
+		if(strcmp($dastood_shora,"0")==0)
+		  $selected=" selected ";
+		else
+		  $selected="";    		
+		  echo "<option $selected value=\"0\">مصوب</option>";
+		  
+		  
+		  
+		  if(strcmp($dastood_shora,"1")==0)
+		  $selected=" selected ";
+		else
+		  $selected="";    		
+		  echo "<option $selected value=\"1\">مصوب مشروط</option>";
+		  
+		  
+		  
+		  if(strcmp($dastood_shora,"2")==0)
+		  $selected=" selected ";
+		else
+		  $selected="";    		
+		  echo "<option $selected value=\"2\">غير مصوب</option>";
+		  
+		  
+		  
+		  if(strcmp($dastood_shora,"3")==0)
+		  $selected=" selected ";
+		else
+		  $selected="";    		
+		  echo "<option $selected value=\"3\">بررسي نشده است</option>";
+		
+				
+				
+		  if(strcmp($dastood_shora,"4")==0)
+		  $selected=" selected ";
+		else
+		  $selected="";    		
+		  echo "<option $selected value=\"4\">عودت داده مي شود</option>";
+		  ?>		
+  	    </select>
+		</td>
+        <td class="tahoma1" width="100">دستور شورا</td>
+      </tr>
+      <tr>
+        <td align="right" width="400"><textarea   rows="4" cols="40" name="notes"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="100">شرط شورا در صورت مشروط بودن طرح</td>
+      </tr>
+      
+   
+      <?
+	  }
+	  ?>
+     
+       
+    </tbody>
+  </table>
+</form>
+</body>
+<br>
+
+<?
+
+ $query="select * from karshenas_shora where kar_shora_email='$admin'";
+   //echo $
+   $result=mysql_query($query) or die ("Error in selecting data 1111");
+   $row_fetched=mysql_fetch_array($result);
+   $cod_karshenas=$row_fetched["cod_karshenas"];
+  $query1="select * from  shora_pajohesh_daneshgah  where  cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas' ";
+     $result=mysql_query($query1) or die ("Error in updating data into user login 1455");
+  
+  //footer_forms($admin,$seed);
+?>
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+
+     <td width="25%" bgcolor="#66CCFF" colspan='12'>
+      <p align="center" class="tahoma1"><font color="black">نظرات قبلي</font></td>
+      
+      </tr>
+      
+      
+      
+      
+      
+    <tr>
+ 
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نظريه کارشناس شورا</font></td>
+   <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">دستور شورا</font></td>
+    
+    <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">کد جلسه</font></td>
+        <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+   
+    <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+  </tr>  
+      
+  <?
+   $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+   
+  
+ 
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"> ".$row_fetched["comment_karshenas_shora"]." </td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"> ".$row_fetched["dastoor_shora"]." </td>";
+  echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"> ".$row_fetched["cod_jalase"]." </td>";
+  echo "<td width=\"15%\" bgcolor=$color align=\"right\" class=\"tahoma1\"> ".$row_fetched["insertion_date"]." </td>";
+ 
+  echo "<td width=\"15%\" bgcolor=$color align=\"right\" class=\"tahoma1\"> ".$row_fetched["cod_tarh"]." </td>";
+  echo "</tr>";
+
+ }
+echo "</table>";
+ 
+  
+  ?>    
+  
+ 

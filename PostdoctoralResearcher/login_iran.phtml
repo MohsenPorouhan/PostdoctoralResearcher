@@ -1,0 +1,162 @@
+<?
+
+include("include/styles.phtml");
+include("include/include.phtml");
+header_forms();
+
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+ 
+ 
+ ?>
+
+<SCRIPT LANGUAGE="JavaScript">
+  <!--
+  function ChangeAction(user_type) {
+   // var number = document.myFormName.cgiProgram.selectedIndex;
+    document.user_login.action ="login/midel.phtml?user_type="+user_type;
+    document.user_login.submit();
+  }
+  // -->
+</SCRIPT>
+
+
+
+<script type="text/javascript">
+<!--
+
+function addEvent()
+{
+var ni = document.getElementById('myDiv');
+var numi = document.getElementById('theValue');
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "my"+num+"Div";
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+
+newdiv.innerHTML ="   <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: collapse\" bordercolor=\"#111111\" width=\"100%\" id=\"AutoNumber2\">"+   
+
+
+"<tr>"+
+             "<td colspan='2' align=\"left\" width=\"70%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(1)\" type=\"button\" value=\"مدير\" name=\"B1\"></p>"+   
+
+        "</td>"+
+   
+      "</tr>"+
+ 
+
+"<tr>"+
+         "<td colspan='2' align=\"left\" width=\"70%\" >"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(9)\" type=\"button\" value=\"ادمين گروه\" name=\"B1\"></p>"+
+        "</td>"+
+
+      "</tr>"+
+
+"<tr>"+
+         "<td colspan='2' align=\"left\" width=\"70%\" >"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(2)\" type=\"button\" value=\"ادمين دانشکده / مرکز\" name=\"B1\"></p>"+
+        "</td>"+
+
+      "</tr>"+
+              "<tr>"+
+        "<td  colspan='2' align=\"left\" width=\"30%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(5)\" type=\"button\" value=\"کارشناس / دبير\" name=\"B1\"></p>"+
+        "</td>"+
+    
+      "</tr>"+
+
+   
+        "<tr>"+
+             "<td colspan='2' align=\"left\" width=\"70%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(3)\" type=\"button\" value=\"داور / ناظر\" name=\"B1\"></p>"+   
+
+        "</td>"+
+   
+      "</tr>"+
+
+
+ "<tr>"+
+             "<td colspan='2' align=\"left\" width=\"70%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(7)\" type=\"button\" value=\"ناظر مالي\" name=\"B1\"></p>"+   
+
+        "</td>"+
+   
+      "</tr>"+
+ 
+ "<tr>"+
+             "<td colspan='2' align=\"left\" width=\"70%\">"+
+          "<p align=\"center\"><input class=\"but-login\" onclick= \"javascript: ChangeAction(8)\" type=\"button\" value=\"حسابداري\" name=\"B1\"></p>"+   
+
+        "</td>"+
+   
+      "</tr>"+
+ 
+    
+    
+
+     
+"</table>";
+ni.appendChild(newdiv);
+}
+
+function removeEvent(divNum)
+{
+var d = document.getElementById('myDiv');
+var olddiv = document.getElementById(divNum);
+d.removeChild(olddiv);
+}
+
+//-->
+</script>
+
+
+<?
+
+?>
+  
+  
+
+  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber2">
+      <tr>
+        <td width="100%" class="tahoma1" align="right"><b>
+        <span align="right" class="tahoma1">با سلام خدمت مجريان گرامي</span><br> 
+
+		<span align="right" class="tahoma1" dir='rtl'>به منظور تفکيک اطلاعات طرحهاي تحقيقاتي 2 دانشگاه علوم پزشکي تهران و ايران، سامانه پژوهشيار دانشگاه علوم پزشکي ايران، به آدرس زير راه اندازي شده است واطلاعات طرحهاي دانشگاه علوم پزشکي ايران به اين سامانه منتقل شده است</span><br>
+		<a href="http://research.iums.ac.ir">research.iums.ac.ir</a><br></br>
+		از آن جهت که پيگيري فعاليتهاي تحقيقاتي بايد در سامانه اي که اقدامات اداري را انجام ميدهد صورت گيرد، بنابراين امکان ورود شما براي طرح هاي دانشگاه علوم پزشکي ايران به عنوان کاربر دانشگاه علوم پزشکي ايران وجود ندارد و شما براي پيگيري ديگر اقدامات لازم براي طرح هاي خود در اين سامانه بايد به آدرس ذکر شده مراجعه کرده و با همان نام کاربري و رمز عبوري که در سامانه پژوهشيار دانشگاه علوم پزشکي تهران وارد ميشديد به سامانه پژوهشيار دانشگاه علوم پزشکي ايران وارد شويد و فعاليت هاي خود را ثبت نماييد <br></br>
+		 
+		تذكر: امكان ورود به سامانه دانشگاه علوم پزشكي تهران با استفاده از نام كاربري و رمز عبور قبلي امكان پذير نمي باشد
+		<br></br>چنانچه در هر صورت لازم است به سامانه پژوهشيار دانشگاه علوم پزشکي تهران وارد شويد، ، متن زير را همراه با نام و نام خانوادگي و شماره همراه به ايميل زير  تحت موضوع درخواست ورود ارسال نماييد
+		<br></br>adivanbeigi@farabi.tums.ac.ir<br></br>
+		<br></br>متن:
+		<br></br>
+		موضوع: درخواست ورود به سامانه پژوهشيار دانشگاه علوم پزشكي تهران
+		<br></br>
+		با سلام<br></br>
+		اينجانب ...................................... عضو هيئت علمي/وابسته به دانشگاه علوم پزشكي ايران درخواست اجازه ورود به سامانه پژوهشيار دانشگاه علوم پزشكي تهران جهت پيگيري طرحهاي مرتبط با مراكز وابسته به علوم پزشكي تهران را دارم. ضمنا متعهد مي شوم در محيط كاربري ام در رابطه با طرحهاي موجود قبلي كه مربوط به دانشگاه علوم پزشكي ايران هستند مكاتبه و درخواستي از دانشگاه علوم پزشكي تهران نداشته باشم و طرح جديدي براي مراكز وابسته به ايران در محيط دانشگاه علوم پزشكي تهران ثبت ننمايم و اين طرحها را از سامانه پژوهشيار دانشگاه علوم پزشكي ايران پيگيري نمايم.<br></br>
+		تاريخ<br></br>
+		شماره همراه<br></br>
+	
+		 
+		<span align="right" class="tahoma1">با تشکر</span><br>
+</b>
+
+		
+
+        </td>
+      </tr>
+    </table> 
+</form>
+ 
+ 
+
+
+
+
+ <?
+  footer_forms();
+?>

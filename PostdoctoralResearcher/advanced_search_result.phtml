@@ -1,0 +1,480 @@
+<?
+$title="Search For Result";
+include("include/include.phtml");
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms();
+ message_show("در حال تغيير در پيکر بندي سيستم هستيم","red");
+footer_forms();
+exit();
+?>
+
+<?php
+
+//  hamkaran  ==  1
+//  mojri     ==  2
+//  daneshjo  ==  3
+
+
+
+$table_name="";
+$search_string_1="";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(strlen(trim($field1)) > 0 && $FLD1 != -1)
+{
+  if( $BOOL1 == 0 )
+  {
+    if(strcmp($FLD1,"tarh_title_farsi")==0 )
+	  $search_string_1 = "tarh_title_farsi like \"%$field1%\"";
+    if(strcmp($FLD1,"kelidvajeh")==0 )
+	  $search_string_1 = "kelidvajeh like  \"%$field1%\"";
+    if(strcmp($FLD1,"line")==0 )
+	  $search_string_1 = "line like  \"%$field1%\"";
+    if(strcmp($FLD1,"zarorat")==0 )
+	  $search_string_1 = "zarorat like  \"%$field1%\"";
+    if(strcmp($FLD1,"hadaf_kolli")==0 )
+	  $search_string_1 = "hadaf_kolli like  \"%$field1%\"";
+    if(strcmp($FLD1,"soalat_pajoheshi")==0 )
+	  $search_string_1 = "soalat_pajoheshi like  \"%$field1%\"";
+    if(strcmp($FLD1,"shive_ejra")==0 )
+	  $search_string_1 = "shive_ejra like  \"%$field1%\"";
+    if(strcmp($FLD1,"mojri_name")==0 )
+    {
+      $table_name_1=2;  //table = mojri
+	  $search_string_1 = "(mojri.family like  \"%$field1%\" or mojri.name like \"%$field1%\" ) and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD1,"hamkar_name")==0 )
+    {
+      $table_name_1=1;    // table = hamkar
+	  $search_string_1 = "(hamkaran.family like  \"%$field1%\" or hamkaran.name like \"%$field1%\" ) and hamkaran.hamkar_code=hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD1,"daneshjo_name")==0 )
+    {
+      $table_name_1=3;  //table =daneshjo
+	  $search_string_1 = "(daneshjo.family like  \"%$field1%\" or daneshjo.name like \"%$field1%\" ) and daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=tarh.cod_tarh";
+    }
+  }
+
+
+  if( $BOOL1 == 2 )
+  {
+    if(strcmp($FLD1,"tarh_title_farsi")==0 )
+	  $search_string_1 = "tarh_title_farsi =  \"$field1\"";
+    if(strcmp($FLD1,"kelidvajeh")==0 )
+	  $search_string_1 = "kelidvajeh =  \"$field1\"";
+    if(strcmp($FLD1,"line")==0 )
+	  $search_string_1 = "line =  \"$field1\"";
+    if(strcmp($FLD1,"zarorat")==0 )
+	  $search_string_1 = "zarorat =  \"$field1\"";
+    if(strcmp($FLD1,"hadaf_kolli")==0 )
+	  $search_string_1 = "hadaf_kolli =  \"$field1\"";
+    if(strcmp($FLD1,"soalat_pajoheshi")==0 )
+	  $search_string_1 = "soalat_pajoheshi =  \"$field1\"";
+    if(strcmp($FLD1,"shive_ejra")==0 )
+	  $search_string_1 = "shive_ejra =  \"$field1\"";
+    if(strcmp($FLD1,"mojri_name")==0 )
+    {
+      $table_name_1=2;
+	  $search_string_1 = "(mojri.family =  \"$field1\" or mojri.name = \"$field1\" ) and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD1,"hamkar_name")==0 )
+    {
+      $table_name_1=1;
+	  $search_string_1 = "(hamkaran.family =  \"$field1\" or hamkaran.name = \"$field1\" ) and hamkaran.hamkar_code=hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD1,"daneshjo_name")==0 )
+    {
+      $table_name_1=3;
+	  $search_string_1 = "(daneshjo.family =  \"$field1\" or daneshjo.name = \"$field1\" ) and daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=tarh.cod_tarh";
+    }
+  }
+
+
+}
+
+$search_string_2="";
+if(strlen(trim($field2)) > 0  && $FLD2 != -1)
+{
+
+  if( $BOOL2 == 0 )
+  {
+    if(strcmp($FLD2,"tarh_title_farsi")==0 )
+	  $search_string_2 = "tarh_title_farsi like \"%$field2%\"";
+    if(strcmp($FLD2,"kelidvajeh")==0 )
+	  $search_string_2 = "kelidvajeh like \"%$field2%\"";
+    if(strcmp($FLD2,"line")==0 )
+	  $search_string_2 = "line like \"%$field2%\"";
+    if(strcmp($FLD2,"zarorat")==0 )
+	  $search_string_2 = "zarorat like \"%$field2%\"";
+    if(strcmp($FLD2,"hadaf_kolli")==0 )
+	  $search_string_2 = "hadaf_kolli like \"%$field2%\"";
+    if(strcmp($FLD2,"soalat_pajoheshi")==0 )
+	  $search_string_2 = "soalat_pajoheshi like \"%$field2%\"";
+    if(strcmp($FLD2,"shive_ejra")==0 )
+	  $search_string_2 = "shive_ejra like \"%$field2%\"";
+    if(strcmp($FLD2,"mojri_name")==0 )
+    {
+      $table_name_2=2;
+	  $search_string_2 = "(mojri.family like  \"%$field2\" or mojri.name like \"%$field2%\" ) and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD2,"hamkar_name")==0 )
+    {
+      $table_name_2=1;
+	  $search_string_2 = "(hamkaran.family like  \"%$field2%\" or hamkaran.name like \"%$field2%\" ) and hamkaran.hamkar_code=hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD2,"daneshjo_name")==0 )
+    {
+      $table_name_2=3;
+	  $search_string_2 = "(daneshjo.family like  \"%$field2%\" or daneshjo.name like \"%$field2%\" ) and daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=tarh.cod_tarh";
+    }
+  }
+
+
+  if( $BOOL2 == 2 )
+  {
+    if(strcmp($FLD2,"tarh_title_farsi")==0 )
+	  $search_string_2 = "tarh_title_farsi = \"$field2\"";
+    if(strcmp($FLD2,"kelidvajeh")==0 )
+	  $search_string_2 = "kelidvajeh = \"$field2\"";
+    if(strcmp($FLD2,"line")==0 )
+	  $search_string_2 = "line = \"$field2\"";
+    if(strcmp($FLD2,"zarorat")==0 )
+	  $search_string_2 = "zarorat = \"$field2\"";
+    if(strcmp($FLD2,"hadaf_kolli")==0 )
+	  $search_string_2 = "hadaf_kolli = \"$field2\"";
+    if(strcmp($FLD2,"soalat_pajoheshi")==0 )
+	  $search_string_2 = "soalat_pajoheshi = \"$field2\"";
+    if(strcmp($FLD2,"shive_ejra")==0 )
+	  $search_string_2 = "shive_ejra = \"$field2\"";
+	if(strcmp($FLD2,"mojri_name")==0 )
+    {
+      $table_name_2=2;
+	  $search_string_2 = "(mojri.family =  \"$field2\" or mojri.name = \"$field2\" ) and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD2,"hamkar_name")==0 )
+    {
+      $table_name_2=1;
+	  $search_string_2 = "(hamkaran.family =  \"$field2\" or hamkaran.name = \"$field2\" ) and hamkaran.hamkar_code=hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD2,"daneshjo_name")==0 )
+    {
+      $table_name_2=3;
+	  $search_string_2 = "(daneshjo.family =  \"$field2\" or daneshjo.name = \"$field2\" ) and daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=tarh.cod_tarh";
+    }
+  }
+
+}
+
+$search_string_3 ="";
+if(strlen(trim($field3)) > 0  && $FLD3 != -1)
+{
+
+ if( $BOOL3 == 0 )
+  {
+    if(strcmp($FLD3,"tarh_title_farsi")==0 )
+	  $search_string_3 = "tarh_title_farsi like \"%$field3%\"";
+    if(strcmp($FLD3,"kelidvajeh")==0 )
+	  $search_string_3 = "kelidvajeh like \"%$field3%\"";
+    if(strcmp($FLD3,"line")==0 )
+	  $search_string_3 = "line like \"%$field3%\"";
+    if(strcmp($FLD3,"zarorat")==0 )
+	  $search_string_3 = "zarorat like \"%$field3%\"";
+    if(strcmp($FLD3,"hadaf_kolli")==0 )
+	  $search_string_3 = "hadaf_kolli like \"%$field3%\"";
+    if(strcmp($FLD3,"soalat_pajoheshi")==0 )
+	  $search_string_3 = "soalat_pajoheshi like \"%$field3%\"";
+    if(strcmp($FLD3,"shive_ejra")==0 )
+	  $search_string_3 = "shive_ejra like \"%$field3%\"";
+	if(strcmp($FLD3,"mojri_name")==0 )
+    {
+      $table_name_3=2;
+	  $search_string_3 = "(mojri.family =  \"$field3\" or mojri.name = \"$field3\" ) and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD3,"hamkar_name")==0 )
+    {
+      $table_name_3=1;
+	  $search_string_3 = "(hamkaran.family =  \"$field3\" or hamkaran.name = \"$field3\" ) and hamkaran.hamkar_code=hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD3,"daneshjo_name")==0 )
+    {
+      $table_name_3=3;
+	  $search_string_3 = "(daneshjo.family =  \"$field3\" or daneshjo.name = \"$field3\" ) and daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=tarh.cod_tarh";
+    }
+  }
+
+
+  if( $BOOL3 == 2 )
+  {
+    if(strcmp($FLD3,"tarh_title_farsi")==0 )
+	  $search_string_3 = "tarh_title_farsi = \"$field3\"";
+    if(strcmp($FLD3,"kelidvajeh")==0 )
+	  $search_string_3 = "kelidvajeh = \"$field3\"";
+    if(strcmp($FLD3,"line")==0 )
+	  $search_string_3 = "line = \"$field3\"";
+    if(strcmp($FLD3,"zarorat")==0 )
+	  $search_string_3 = "zarorat = \"$field3\"";
+    if(strcmp($FLD3,"hadaf_kolli")==0 )
+	  $search_string_3 = "hadaf_kolli = \"$field3\"";
+    if(strcmp($FLD3,"soalat_pajoheshi")==0 )
+	  $search_string_3 = "soalat_pajoheshi = \"$field3\"";
+    if(strcmp($FLD3,"shive_ejra")==0 )
+	  $search_string_3 = "shive_ejra = \"$field3\"";
+	if(strcmp($FLD3,"mojri_name")==0 )
+    {
+      $table_name_3=2;
+	  $search_string_3 = "(mojri.family =  \"$field3\" or mojri.name = \"$field3\" ) and mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD3,"hamkar_name")==0 )
+    {
+      $table_name_3=1;
+	  $search_string_3 = "(hamkaran.family =  \"$field3\" or hamkaran.name = \"$field3\" ) and hamkaran.hamkar_code=hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=tarh.cod_tarh";
+    }
+    if(strcmp($FLD3,"daneshjo_name")==0 )
+    {
+      $table_name_3=3;
+	  $search_string_3 = "(daneshjo.family =  \"$field3\" or daneshjo.name = \"$field3\" ) and daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=tarh.cod_tarh";
+    }
+  }
+
+
+}
+
+
+if(strlen(trim($search_string_1)) > 0 && strlen(trim($search_string_2)) == 0 && strlen(trim($search_string_3)) == 0)
+{
+  $search_result_final = $search_string_1;
+}
+
+
+if(strlen(trim($search_string_1)) == 0 && strlen(trim($search_string_2)) > 0 && strlen(trim($search_string_3)) == 0)
+{
+  $search_result_final = $search_string_2;
+}
+
+
+if(strlen(trim($search_string_1)) == 0 && strlen(trim($search_string_2)) == 0 && strlen(trim($search_string_3)) > 0)
+{
+  $search_result_final = $search_string_3;
+}
+
+
+if(strlen(trim($search_string_1)) > 0 && strlen(trim($search_string_2)) > 0 && strlen(trim($search_string_3)) == 0)
+{
+
+   if(strcmp($GRP1,"AND") == 0 )
+     $search_result_final = $search_string_1 ." and ".$search_string_2;
+
+   if(strcmp($GRP1,"OR") == 0 )
+     $search_result_final = $search_string_1 ." or ".$search_string_2;
+
+   if(strcmp($GRP1,"NOT") == 0 )
+     $search_result_final = $search_string_1 ." and ( not ".$search_string_2 ." )";
+
+}
+
+if(strlen(trim($search_string_1)) > 0 && strlen(trim($search_string_2)) == 0 && strlen(trim($search_string_3)) > 0)
+{
+
+   if(strcmp($GRP1,"AND") == 0 )
+     $search_result_final = $search_string_1 ." and ".$search_string_3;
+
+   if(strcmp($GRP1,"OR") == 0 )
+     $search_result_final = $search_string_1 ." or ".$search_string_3;
+
+   if(strcmp($GRP1,"NOT") == 0 )
+     $search_result_final = $search_string_1 ." and ( not ".$search_string_3 ." )";
+
+}
+
+if(strlen(trim($search_string_1)) == 0 && strlen(trim($search_string_2)) > 0 && strlen(trim($search_string_3)) > 0)
+{
+
+   if(strcmp($GRP2,"AND") == 0 )
+     $search_result_final = $search_string_2 ." and ".$search_string_3;
+
+   if(strcmp($GRP2,"OR") == 0 )
+     $search_result_final = $search_string_2 ." or ".$search_string_3;
+
+   if(strcmp($GRP2,"NOT") == 0 )
+     $search_result_final = $search_string_2 ." and ( not ".$search_string_3 ." )";
+
+}
+
+
+if(strlen(trim($search_string_1)) > 0 && strlen(trim($search_string_2)) > 0 && strlen(trim($search_string_3)) > 0)
+{
+
+   if(strcmp($GRP1,"AND") == 0 )
+     $search_result_final_1 = $search_string_1 ." and ".$search_string_2;
+
+   if(strcmp($GRP1,"OR") == 0 )
+     $search_result_final_1 = $search_string_1 ." or ".$search_string_2;
+
+   if(strcmp($GRP1,"NOT") == 0 )
+     $search_result_final_1 = $search_string_1 ." and ( not ".$search_string_2 ." )";
+
+
+
+if(strcmp($GRP2,"AND") == 0 )
+     $search_result_final = $search_result_final_1 ." and ".$search_string_3;
+
+   if(strcmp($GRP2,"OR") == 0 )
+     $search_result_final = $search_result_final_1 ." or ".$search_string_3;
+
+   if(strcmp($GRP2,"NOT") == 0 )
+     $search_result_final = $search_result_final_1 ." and ( not ".$search_string_3 ." )";
+
+}
+
+
+
+
+if(strlen(trim($search_result_final)) == 0 )
+    $search_result_final = 1;
+    
+
+if($table_name_1 == 1 )
+  $my_table_name ="hamkaran,hamkar_tarh";
+
+if($table_name_1 == 2 )
+  $my_table_name ="mojri,mojri_tarh";
+
+if($table_name_1 == 3 )
+  $my_table_name ="daneshjo,daneshjo_tarh";
+
+
+if($table_name_2 != $table_name_1)
+{
+  if($table_name_2 == 1 )
+    $my_table_name =$my_table_name.",hamkaran,hamkar_tarh";
+
+  if($table_name_2 == 2 )
+    $my_table_name =$my_table_name.",mojri,mojri_tarh";
+
+  if($table_name_2 == 3 )
+    $my_table_name =$my_table_name.",daneshjo,daneshjo_tarh";
+
+}
+
+if($table_name_3 != $table_name_1 && $table_name_3 != $table_name_2)
+{
+  if($table_name_3 == 1 )
+    $my_table_name =$my_table_name.",hamkaran,hamkar_tarh";
+
+  if($table_name_3 == 2 )
+    $my_table_name =$my_table_name.",mojri,mojri_tarh";
+
+  if($table_name_3 == 3 )
+    $my_table_name =$my_table_name.",daneshjo,daneshjo_tarh";
+
+}
+if(strlen(trim($my_table_name)) > 0 )
+  $table_name = $my_table_name.",tarh";
+else
+  $table_name = "tarh";
+   
+$query = "select * from $table_name".",vaziat_tarh"." where ".$search_result_final." and ( tarh.vaziat = vaziat_tarh.vaziat and vaziat_tarh.view_or_no = 1)";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+
+$reccount = mysql_num_rows($result);
+$query = "select * from $table_name".",vaziat_tarh"." where ".$search_result_final." and ( tarh.vaziat = vaziat_tarh.vaziat and vaziat_tarh.view_or_no = 1)"."  order by tarh_time desc "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+$result=mysql_query($query) or die("Error in selecting data from tarh 2");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+if($reccount > 0 )
+{
+?>
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="100%" bgcolor="#66CCFF" align="center" class="tahoma1">
+	نتيجه جستجو
+  </td>
+  </tr>
+</table>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+$args = $search_string;
+ pubshowpages("advanced_search_result.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$args,"90%","#66CCFF");
+?>
+
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">وضعيت طرح</font></td>
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    <td width="33%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">عنوان لاتين</font></td>
+    <td width="33%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td width="4%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+  </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ $rowno=0;
+ $row=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $row++;
+  $rowno=(($current-1) * $RecPerPage ) + $row;
+  $cod_tarh=$row_fetched["cod_tarh"];
+
+  echo "<tr>";
+  $mytarh_type = $row_fetched["vaziat"];
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  if($row_fetched["vaziat"]=="0")
+    $mystatus="نامعلوم";
+  else
+  {
+    $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+    $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+    $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+    $mystatus=$row_fetched_tarh["vaziat_desc"];
+  }
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mystatus."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$farsistartdate."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["tarh_title_english"]."</td>";
+  echo "<td width=\"33%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["tarh_title_farsi"]."</td>";
+  echo "<td width=\"4%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($rowno)."</td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms();
+
+
+?>

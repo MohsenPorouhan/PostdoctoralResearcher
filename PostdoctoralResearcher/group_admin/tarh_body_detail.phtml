@@ -1,0 +1,102 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+ $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+echo "<br>";
+   $query="select * from tarh where cod_tarh='$cod_tarh' ";
+
+   $result=mysql_query($query) or die("Error in selecting data from tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+
+<TABLE cellSpacing=0  width="98%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<?
+
+    echo "<table border=\"0\" width=\"98%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["bayan_masale"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">(مقدمه (بيان مساله</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["zarorat_ejra"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">(مقدمه (ضرورت اجرا</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["taarif_vajeh"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تعريف واژه ها</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["hadaf_kolli"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">هدف کلي طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["hadaf_jozii"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">اهداف جزئي طرح</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["hadaf_faree"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">اهداف فرعي</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["hadaf_karbordi"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">هدف کاربردي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["soalat_pajoheshi"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">سوالات پژوهشي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["farziatt"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">فرضيات</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["fehrest_manabea"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">فهرست منابع مورد استفاده در اين طرح</td>";
+    echo "</tr>";
+
+    echo "</table>";
+   }
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

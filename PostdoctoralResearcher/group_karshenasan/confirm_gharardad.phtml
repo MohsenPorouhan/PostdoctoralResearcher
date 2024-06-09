@@ -1,0 +1,816 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+require_once('lib/nusoap.php');
+
+
+echo "<br>";
+
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=confirm_gharardad&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&current=$current\">";
+   
+ 
+  $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ 
+  $result=mysql_query($query) or die("Error10");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$mojri=$row_fetched["mojri_code"];
+ 	$heiat_elmi=$row_fetched["heiat_elmi"];
+ 	$start_time=$row_fetched["start_time"];
+    $start_time_tmp=$start_time;
+ 	$pish_pardakht=$row_fetched["pish_pardakht"];
+ 	$payanname=$row_fetched["payanname"];
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+ 	$time_month=$row_fetched["time_month"];
+ 	$zarib_maliat=$row_fetched["maliat"];
+ 	$melli_code=$row_fetched["melli_cod"];
+ 	$mobile=$row_fetched["mobile"];
+ 	$shaba_cod=$row_fetched["shaba_cod"];
+ 	$hesab=$row_fetched["hesab"];
+ 	$bank_name=$row_fetched["bank_name"];
+    $exists=1; 	
+    
+ } 	
+ else
+ {
+ 	$payanname="0";
+ 	$mojri="0";
+ 	$heiat_elmi="0";
+ 	$start_time="0";
+ 	$pish_pardakht="0";
+ 	$nazerin="0";
+ 	$time_month="0";
+ 	$unnazerin="0";
+    $exists=0;
+ }
+ 
+ //$start_time="1385-02-12";
+// $time_month="15";
+
+ if( $start_time > 0 && $time_month > 0 )
+ {
+   $year=substr($start_time,0,4);
+   $month=substr($start_time,5,2);
+   $day=substr($start_time,8,2);
+   $start_time=$day."/".$month."/".$year;
+  // $month_add=$time_month+$month;
+   $month_add=$time_month;
+  // echo $month_add;
+  // exit();
+   for($i=1; $i<=$month_add;$i++)
+   {
+   	$month=$month+1;
+    if($month >12 )
+    {
+      //$year_add=(int)($month_add/12); 
+      $year_add++;
+ 	  $year=$year+1;	 	 	
+      //$month=$month_add-($year_add*12); 
+	  $month=1;    
+     // if($month==0)
+ 	 //   $month=12;  
+    }
+    //else
+     // $month=$month_add;
+   }
+  
+   $end_time=$day."/".$month."/".$year;
+ }
+ else
+ {
+   $end_time="تعريف نشده";   
+ }
+    
+    
+    $query1="select * from jalase_shora , jalase_shora_tarh where jalase_shora.creator=jalase_shora_tarh.creator and jalase_shora.shomare_jalase=jalase_shora_tarh.shomare_jalase  and jalase_shora_tarh.cod_tarh='$cod_tarh'";
+    $result10=mysql_query($query1) or die("Error11");
+    if(mysql_num_rows($result10) >0)
+    {
+      $rf100=mysql_fetch_array($result10);
+	  $tarikh_jalase=$rf100["tarikh_jalase"];	
+	  $year=substr($tarikh_jalase,0,4);
+      $month=substr($tarikh_jalase,5,2);
+      $day=substr($tarikh_jalase,8,2);
+      $tarikh_jalase=$day."/".$month."/".$year;
+      
+    }
+    else
+      $tarikh_jalase=" نا معلوم ";
+ 
+   
+   
+   $query1="select * from gozaresh_gharardad where cod_tarh='$cod_tarh'";
+   $result500=mysql_query($query1)or die("error12");
+   if(mysql_num_rows($result500) > 0)
+   {
+   	$gozaresh_cnt=mysql_num_rows($result500);
+   }
+   else
+   	$gozaresh_cnt=0;
+
+   
+   
+   $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	
+   $result1=mysql_query($query1) or die("Error14");
+   $query="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+    
+   if(mysql_num_rows($result) > 0 || mysql_num_rows($result1) > 0)
+   {
+   	$i=0;
+  
+	while($row_fetched1=mysql_fetch_array($result1))
+    {
+      
+      $cod_mojri=$row_fetched1["email"];
+      if($exists==1)
+      if(strcmp($cod_mojri,$mojri)==0)
+      {
+   	    $checked="1";
+      }
+      else
+      {
+   	    $checked="";
+      }
+  
+     if(strcmp($checked,"1")==0)
+     { 
+      $name_family=$row_fetched1["name"]." ".$row_fetched1["family"];
+     }
+ 
+   }
+ 
+ 
+ 
+   while($row_fetched=mysql_fetch_array($result))
+   {
+  
+    $cod_mojri=$row_fetched["mojri_code"];
+    
+    if($exists==1)
+      if(strcmp($cod_mojri,$mojri)==0)
+      {
+      	
+   	    $checked1="1";
+      }
+     else
+      {
+   	    $checked1="";
+      }
+   
+ 
+    if(strcmp($checked1,"1")==0)
+    {  
+      
+      $name_family=$row_fetched["name"]." ".$row_fetched["family"];
+  
+    }
+    
+   }
+ }
+else // if reccount of tarh  < =0
+{
+ $name_family="توسط مجري تعيين نشده";
+}
+
+//--------------------------------------------------------------------------
+if(strlen(trim($name_family)) <= 0)
+   $name_family="توسط مجري تعيين نشده";
+
+
+  $query="select * from tarh where cod_tarh=\"$cod_tarh\" and version=\"-1\" ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $eatebare_sazmanha=$row_fetched["eatebare_sazmanha"];
+  $tarh_type= $row_fetched["tarh_type"];
+  $in_doing= $row_fetched["indoing"];
+  
+  
+  
+  $q="select * from tarhtype where tarh_type=\"$tarh_type\"";
+  $tarh_type_desc="";
+  $q_res=mysql_query($q) or die("Error");
+  $rf=mysql_fetch_array($q_res) or die("Error");
+  $tarh_type_desc=trim($rf["tarh_type_english_desc"]);
+  
+  if(strcmp($tarh_type_desc,"HSR")==0)
+    $tarh_type_desc="(اچ اس آر)";
+  else
+  {
+  	$q="select * from tarh,tarhtype_2 where tarh.tarh_type_2=tarhtype_2.tarh_type and cod_tarh=\"$cod_tarh\" and grant_tarh='1'";
+  	$q_res=mysql_query($q) or die("Error");
+  	if(mysql_num_rows($q_res) > 0)
+  	{
+  	  $rf_grant=mysql_fetch_array($q_res);
+	  $tarh_type_desc=$rf_grant["tarh_type_desc"];		
+	}  
+  }
+    
+  $q_payan_name="select * from tarh,darajeelmi  where  payan_name='1' and  cod_tarh=\"$cod_tarh\" and darajeelmi.darajeelmi = tarh.payan_name_daraje_elmi";
+  $q_res=mysql_query($q_payan_name) or die("Error");
+  if(mysql_num_rows($q_res) > 0 )
+  {
+  	$rf_payanname=mysql_fetch_array($q_res);
+  	$maghtaa_payan_name=$rf_payanname["darajeelmi_english_desc"];
+  	$tarh_type_desc=$tarh_type_desc."($maghtaa_payan_name مقطع پايان نامه :)";
+  }
+ 
+  if(strcmp($eatebare_sazmanha,'1')==0)
+   $eatebar_sazmanha="با تامين اعتبار از سازمانهاي ديگر";
+  else
+   $eatebar_sazmanha=""; 
+  
+  //-------------------- قسمت مربوط به عقد قرارداد
+  
+  $mablagh_aghd_gharardad = $row_fetched["mablagh_aghd_gharardad"];
+   if($mablagh_aghd_gharardad  > 0)
+  {
+  	$a=($gozaresh_cnt-1)*100000;
+  	$b=($mablagh_aghd_gharardad*1)/100;
+  	// محاسبه گزارش دوم تا ماه نهايي ضربدر 5000 ريال
+  	$qr="select * from gozaresh_gharardad where cod_tarh='$cod_tarh' and marhale='2'";
+	$resultr=mysql_query($qr) or die("error15");
+	$rft=mysql_fetch_array($resultr);	
+	$second_gozaresh=$rft["date_gozaresh"]; 
+	 
+	$year=substr($second_gozaresh,0,4);
+    $month=substr($second_gozaresh,5,2);
+    $day=substr($second_gozaresh,8,2);
+  //  echo $year.":".$month.":".$day;
+    $month_remain=0;
+  //  echo $end_time."<br>";
+    for($k=1;$k<=$time_month;$k++)
+    {      	
+      $month=$month+1;
+      if($month>12)
+      {
+        $month=1;
+        $year=$year+1;
+      }
+      //$month1=str_replace($month,"0","");
+     // $month1=trim($month1);
+     
+      $my_end_time=substr($end_time,3,7);
+	  //$date_tmp=$day."/".$month."/".$year;
+       $date_tmp=$month."/".$year; 
+      if(strcmp($my_end_time,$date_tmp)==0)
+      {
+        $month_remain=$k;  // mohasebe teadad mahe dovvom ta gozaresh akhar
+        
+      }
+     // echo $date_tmp.":".$my_end_time."<br>";  
+     }
+    // echo $month_remain.":".$date_tmp.":".$my_end_time.":".$second_gozaresh.":".$month_remain.":".$time_month.":".$month.":".$year.":".$end_time.":".$date_tmp.":".$my_end_time.":". $date_tmp.":".$end_time;
+   //  exit();
+  // exit();
+     $c=$month_remain*5000;
+     $c1=$c;
+	 //echo $a."<br>".$b."<br>".$c."<br>".$month_remain;
+	 //exit();
+	 $nezarat_koll=$a+$b+$c; // نظارت بخش اول کار
+
+	 
+	  // محاسبه هزينه پرسنلي و محاسبه ماليات آن
+ 	  $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+      $result00=mysql_query($query) or die("Error in selecting data from hazine personnel");
+      if(mysql_num_rows($result00) > 0)
+      {
+     
+        $mycount=0;
+       while($row_fetched00=mysql_fetch_array($result00))
+       {
+  
+       $my_summary = $row_fetched00["per_hour"]*$row_fetched00["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       }       
+      }
+      $hazine_personnel=$mycount;
+      
+      $darsad_50=$mablagh_aghd_gharardad*50/100;
+      
+      
+      if($hazine_personnel > $darsad_50)
+	  {	    	
+	   //$x=($mablagh_aghd_gharardad*5)/100; 	
+	   $y=($nezarat_koll*100)/(100-$zarib_maliat);
+	   //$maliat_koll=$x+$y;
+	   $aa=($mablagh_aghd_gharardad-$hazine_personnel)*100/(100-$zarib_maliat);
+	   $mablagh_koll=$hazine_personnel+$y+$aa;
+	   $nezarat_maliat=$nezarat_koll*100/(100-$zarib_maliat);
+	  }
+	  else
+	   {
+	   //	$mablagh_aghd_gharardad=($mablagh_aghd_gharardad*100)/95;
+	   	//$maliat_koll=($mablagh_aghd_gharardad+$nezarat_koll)*100/95;
+	   	$mablagh_koll=$mablagh_aghd_gharardad+$nezarat_koll;
+	   	$mablagh_koll=$mablagh_koll*100/(100-$zarib_maliat);
+	   	$nezarat_maliat=$nezarat_koll*100/(100-$zarib_maliat);
+	   }
+	  
+	  /*
+      $x=($hazine_personnel*5)/100;
+     	  
+      $y=($nezarat_koll*5)/100;
+      $maliat_koll=$x+$y;
+	  */
+
+  	 //-------------------marhale 1 ------------------------------------------
+ 
+	  
+	  $query="select * from gozaresh_gharardad where marhale='0' and cod_tarh='$cod_tarh'";
+      $result88=mysql_query($query) or die("Error");
+      if(mysql_num_rows($result88) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result88);
+	    if($hazine_personnel > $darsad_50)
+	    {
+	      $mablagh_marhale_0=$rf66["mablagh"]*$mablagh_koll/100;
+	      $maliat_marhale_0=$mablagh_marhale_0*$zarib_maliat/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0;
+		   $mablagh_khales_mojri_0= $mablagh_khales_mojri_0-$hagh_ol_zahme_karshenasi_0;
+	      
+	  		
+	    }
+	    else
+	    {
+	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	      
+	      $mablagh_marhale_0=($darsad_marhale+($darsad_marhale/100))*100/(100-$zarib_maliat);
+	      $maliat_marhale_0=$mablagh_marhale_0*$zarib_maliat/100;
+	      $hagh_ol_zahme_karshenasi_0=($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+		  $mablagh_khales_mojri_0=$mablagh_marhale_0-$maliat_marhale_0-$hagh_ol_zahme_karshenasi_0;	      	      
+	  		      
+	    }
+	    
+	    
+	  	
+	  }
+	  
+	 
+	//  echo "mohsen <br>".$end_time."<br>".$month_remain."<br>".$mablagh_marhale_0."<br>".$mablagh_aghd_gharardad."<br>".$maliat_1."<br>".$hazine_personnel;
+	  //exit();
+	   //$mablagh_koll_tarh=$maliat_koll+$nezarat_koll+$mablagh_aghd_gharardad;
+	  
+	  //-------------------marhale Nahayee ------------------------------------------
+	  
+	  $a=100000;
+	  $query="select * from gozaresh_gharardad where marhale='100' and cod_tarh='$cod_tarh'";
+      $result=mysql_query($query) or die("Error");
+      $b=0;
+	  if(mysql_num_rows($result) > 0)
+	  {
+	  	$rf66=mysql_fetch_array($result);
+	   if($hazine_personnel > $darsad_50)
+       {
+  	      $mablagh_marhale_end=$rf66["mablagh"]*$mablagh_koll/100;
+  	      
+  	      $nezarat=125000+$mablagh_marhale_end/100;
+      	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	      $maliat_marhale_end=$mablagh_marhale_end*$zarib_maliat/100;
+	      $hagh_ol_zahme_karshenasi_end=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100+$month_remain*5000;
+	  	
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end;
+	      $mablagh_khales_mojri_end=$mablagh_khales_mojri_end-$hagh_ol_zahme_karshenasi_end;
+	      $hagh_ol_zahme_karshenasi_end=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100+$month_remain*5000;
+	  		
+        }
+        else
+        {
+  	      $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+  	      $hagh_ol_zahme_karshenasi_end=100000+($darsad_marhale/100)+$month_remain*5000;    	      
+	      $mablagh_marhale_end=($darsad_marhale+$hagh_ol_zahme_karshenasi_end)*100/(100-$zarib_maliat);
+	      $maliat_marhale_end=$mablagh_marhale_end*$zarib_maliat/100;
+	      $mablagh_khales_mojri_end=$mablagh_marhale_end-$maliat_marhale_end-$hagh_ol_zahme_karshenasi_end;
+		 
+	      //echo $darsad_marhale.":".$hagh_ol_zahme_karshenasi_end.":".$mablagh_marhale_end.":".$month_remain;
+	      ///();
+	     
+	     
+        }
+        
+        
+	 $date=$rf66["date_gozaresh"];
+ $year=substr($date,0,4);
+ $month=substr($date,5,2);
+ $day=substr($date,8,2);
+ $date_end=$day."/".$month."/".$year; 
+	   
+	  } 
+	   
+	 
+  }
+  
+ 
+ 
+//$mablagh=$nezarat_koll+$maliat_koll+$mablagh_aghd_gharardad;
+
+  
+  $emtiaz1=($mablagh_koll/10000000)*2.5;
+  $int_emtiaz=(int)$emtiaz1;
+  $real_emtiaz=$emtiaz1-$int_emtiaz;
+  if($real_emtiaz > .75)
+    $int_emtiaz++;  
+
+    
+  $cod_daneshkade = $row_fetched["cod_daneshkade"];
+  $query="select * from daneshkade where cod_daneshkade='$cod_daneshkade' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $daneshkade_name=$row_fetched["daneshkade_name"];
+   $mostaghel=$row_fetched["mostaghel"];
+  if(strlen(trim($daneshkade_name)) <=0)
+    $daneshkade_name="تعريف نشده";
+  
+if($start_time==0)
+  $start_time="تعريف نشده";
+    
+//if($end_time==0)
+ // $end_time="تعريف نشده";
+  
+if($time_month==0)
+  $time_month="تعريف نشده"; 
+
+$mablagh_koll_tarh=number_format($mablagh_koll_tarh);
+ $year_tarh=substr($cod_tarh,0,2);
+ $rank=substr($cod_tarh,4,1);
+ $query="select * from rank where rank='$rank' and year='$year_tarh'";
+  
+ $res=mysql_query($query) or die("Rank Error");
+ if(mysql_num_rows($res) > 0)
+ {
+ 	$rf_rank=mysql_fetch_array($res);
+ 	$jalase_date=$rf_rank["jalase_date"];
+ }
+ else
+   $jalase_date="تعريف نشده";
+    
+ $tarikh_jalase="6/4/1385";
+ $tarikh_jalase=$jalase_date;
+$y=substr($tarikh_jalase,0,4);
+$m=substr($tarikh_jalase,5,2);
+$d=substr($tarikh_jalase,8,2); 
+$tarikh_jalase="$d / $m / $y";
+    
+; 
+
+$mablagh_koll_tarh=number_format($mablagh_koll_tarh);
+ $tarikh_jalase="6/4/1385";
+?>
+
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<?
+
+     echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+     $color="PALETURQUOISE";
+     $row_fetched=mysql_fetch_array($result);
+      
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>کليه مبالغ به ريال است</b></td>";
+     echo "</tr>";
+     
+     echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>حق الزحمه کارشناسي</b></td>";     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ خالص مرحله</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>ماليات</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ مرحله</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ</b></td>"; 
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مرحله</b></td>";   
+     echo "</tr>";
+     
+    
+     echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($hagh_ol_zahme_karshenasi_0)."</b></td>";     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_khales_mojri_0)."</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($maliat_marhale_0)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_marhale_0)."</b></td>";
+     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b>".$start_time."</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>1</b></td>";
+     echo "</tr>";
+     if(isset($action) && strcmp($action,"confirm_gharardad")==0  )
+     {
+     	//if( strlen(trim($melli_code)) > 1 && strlen(trim($shaba_cod)) > 1 && strlen(trim($hesab)) > 1)
+     	//{
+     	
+       $query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	   $result1=mysql_query($query1) or die("Error");
+	   $query="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+	   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+     while($row_fetched1=mysql_fetch_array($result1))
+	 {
+	  
+	   $cod_mojri=$row_fetched1["email"];
+	   if($exists==1)
+	     if(strcmp($cod_mojri,$mojri)==0)
+	     {
+	   	   $checked="1";
+	     }
+	     else
+	     {
+	   	   $checked="";
+	     }
+	   
+	   
+	  if(strcmp($checked,"1")==0)
+	  { 
+	     $family=$row_fetched1["family"];
+	    $name=$row_fetched1["name"];
+	    $name_family=$name." ".$family;
+	  }
+	 
+	 }
+ 
+ 
+	 while($row_fetched=mysql_fetch_array($result))
+	 {
+	  
+	  $cod_mojri=$row_fetched["mojri_code"];
+	  
+	  if($exists==1)
+	   if(strcmp($cod_mojri,$mojri)==0)
+	   {
+	   	 $checked="1";
+	   }
+	   else
+	   {
+	   	 $checked="";
+	   }
+	   
+	  
+	 
+	  if(strcmp($checked,"1")==0)
+	  { 
+	    $family=$row_fetched["family"];
+	    $name=$row_fetched["name"];
+	    $name_family=$name." ".$family;
+	  }
+	 }
+       $query="delete from tarh_hesabdari where researchno='$cod_tarh'";
+       $result=mysql_query($query)  or die("Error");
+       $now_date=date("Y-m-d");
+       $query="insert into tarh_hesabdari set  startdate='$start_time',enddate='$end_time',amount='$mablagh_koll',researchno='$cod_tarh' , date='$now_date',personname ='$name_family',personnationalcode='$melli_code', researchtitle='$tarh_name',shebano='$shaba_cod',accountno='$hesab',bank='$bank_name',banksection='$banksection',steps='$gozaresh_cnt',time_month='$time_month',old_tarh='$in_doing'";
+       $result=mysql_query($query) or die("Error 201");
+       
+       $query="delete from marhale_gharardad_hesabdari where researchno='$cod_tarh'";
+       $result=mysql_query($query)  or die("Error");
+       
+       
+       $query="insert into marhale_gharardad_hesabdari set  stepno='1',stepamount='$mablagh_marhale_0',tax='$maliat_marhale_0',researchno='$cod_tarh',amount1='$mablagh_khales_mojri_0',amount2='$hagh_ol_zahme_karshenasi_0',paydate='$start_time'";
+       $result=mysql_query($query) or die("Error 202");
+       
+       
+       //$action="ارسال طرح به طرح هاي در حال اجرا "."<br>.".$cod_tarh;
+       //set_log($action,$admin,date("Y-m-d, g:i a"));
+      
+     	//}
+     	//else
+     		// $status="entry_error";
+       
+     }     
+
+$query="select * from gozaresh_gharardad  where cod_tarh='$cod_tarh' and marhale!='0' and marhale!='100' order by marhale asc ";
+$result1=mysql_query($query) or die("Error");
+$cntr=1;
+$mablagh12=0;
+while($rf66=mysql_fetch_array($result1))
+{
+// echo $cntr;
+  if($hazine_personnel > $darsad_50)
+  {
+  	$mablagh_marhale_n=$rf66["mablagh"]*$mablagh_koll/100;
+  	$nezarat=100000+$mablagh_marhale_n/100;
+  	//$mablagh_marhale_n=($mablagh_marhale_n+$nezarat)*100/95;
+  	
+	$maliat_marhale_n=$mablagh_marhale_n*$zarib_maliat/100;
+	$hagh_ol_zahme_karshenasi_n=100000+($rf66["mablagh"]*$mablagh_aghd_gharardad/100)/100;
+	$mablagh_khales_mojri=$mablagh_marhale_n-$maliat_marhale_n;
+	$mablagh_khales_mojri=$mablagh_khales_mojri-$hagh_ol_zahme_karshenasi_n;
+	  		
+  }
+  else
+  {
+  	 $darsad_marhale=$rf66["mablagh"]*$mablagh_aghd_gharardad/100;	
+	 $mablagh_marhale_n=($darsad_marhale+(100000+($darsad_marhale/100)))*100/(100-$zarib_maliat);
+	 $maliat_marhale_n=$mablagh_marhale_n*$zarib_maliat/100;
+	 $hagh_ol_zahme_karshenasi_n=100000+($darsad_marhale/100);
+	 $mablagh_khales_mojri=$mablagh_marhale_n-$maliat_marhale_n-$hagh_ol_zahme_karshenasi_n;
+	 
+  }
+ $cntr++;
+ $date=$rf66["date_gozaresh"];
+ $year=substr($date,0,4);
+ $month=substr($date,5,2);
+ $day=substr($date,8,2);
+ $date=$day."/".$month."/".$year;
+
+ $percent_gozaresh=$rf66["percent_gozaresh"];
+ 
+ $this_time=$rf66["date_gozaresh"];
+ //	$start_time_tmp=$start_time; 
+	$this_time=substr($this_time,0,7);
+	
+//	echo $this_time;
+   // echo $start_time_tmp;
+	$year=substr($start_time_tmp,0,4);
+//	echo $year;
+    $month=substr($start_time_tmp,5,2);
+    $day=substr($start_time_tmp,8,2);
+    
+    for($k=1;$k<=$time_month;$k++)
+    {      	
+      $month=$month+1;
+      if($month>12)
+      {
+        $month=1;
+        $year=$year+1;
+      }
+	  $date_tmp=$year."-".str_pad($month,2,0,STR_PAD_LEFT);
+	 // $date_tmp=substr($date_tmp,0,5);
+       //echo  $year."&".$month."      ";
+      //echo $date_tmp."   ".$this_time;  
+      if(strcmp($this_time,$date_tmp)==0)
+      {
+        $marhale_jadval_zamani=$k;  // mohasebe teadad mahe dovvom ta gozaresh akhar
+        
+      }
+        
+     }
+     
+     if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     {
+       /*$query="delete from tarh_indoing where cod_tarh='$cod_tarh' and marhale='$cntr'";
+        
+       $result=mysql_query($query)  or die("Error");
+       $now_date=date("Y-m-d");
+       $query="insert into tarh_indoing set   comments='$comments',time_month='$time_month',emtiaz='$int_emtiaz',start_time='$start_time',time_marhale='$date',cod_tarh='$cod_tarh' , date='$now_date',marhale='$cntr',mablagh='$mablagh_marhale_n',maliat='$maliat_marhale_n',khales='$mablagh_khales_mojri',karshenasi='$hagh_ol_zahme_karshenasi_n'";
+       
+       $result=mysql_query($query) or die("Error 2");*/
+     	//if( strlen(trim($melli_code)) > 1 && strlen(trim($shaba_cod)) > 1 && strlen(trim($hesab)) > 1)
+     	//{
+       
+       //$query="delete from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='$cntr'";
+      // $result=mysql_query($query)  or die("Error");
+       //echo $query;
+       $query="insert into marhale_gharardad_hesabdari set  stepno='$cntr',stepamount='$mablagh_marhale_n',tax='$maliat_marhale_n',researchno='$cod_tarh',amount1='$mablagh_khales_mojri',amount2='$hagh_ol_zahme_karshenasi_n',paydate='$date'";
+       //echo $query;
+       $result=mysql_query($query) or die("Error 203");
+     	//}
+     	//else
+     		//$status="entry_error";
+       
+       
+     }
+     
+    if($marhale_jadval_zamani==1)
+       $marhale_jadval_zamani=" اول ";
+    
+	if($marhale_jadval_zamani==2)
+       $marhale_jadval_zamani=" دوم ";
+    
+    if($marhale_jadval_zamani==3)
+       $marhale_jadval_zamani=" سوم ";
+
+    if($marhale_jadval_zamani==4)
+       $marhale_jadval_zamani=" چهارم ";
+	
+	if($marhale_jadval_zamani==5)
+       $marhale_jadval_zamani=" پنجم ";
+	
+	 if($marhale_jadval_zamani==6)
+       $marhale_jadval_zamani=" ششم ";   
+	   
+	   
+    echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($hagh_ol_zahme_karshenasi_n)."</b></td>";
+     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_khales_mojri)."</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($maliat_marhale_n)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_marhale_n)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\"  dir='rtl' valign=\"top\"><b>".$date."</b></td>";
+      echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$cntr</b></td>";
+     echo "</tr>";
+} 
+$cntr++;
+
+ if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     {
+     	//if( strlen(trim($melli_code)) > 1 && strlen(trim($shaba_cod)) > 1 && strlen(trim($hesab)) > 1)
+     	//{
+      // $query="delete from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='100'";
+      // $result=mysql_query($query)  or die("Error");
+       
+       $query="insert into marhale_gharardad_hesabdari set  stepno='100',stepamount='$mablagh_marhale_end',tax='$maliat_marhale_end',researchno='$cod_tarh',amount1='$mablagh_khales_mojri_end',amount2='$hagh_ol_zahme_karshenasi_end',paydate='$date_end'";
+       $result=mysql_query($query) or die("Error 204");
+     	//}
+     	//else 
+     		//$status="entry_error";
+     }
+       echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($hagh_ol_zahme_karshenasi_end)."</b></td>";
+     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_khales_mojri_end)."</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($maliat_marhale_end)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_marhale_end)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b>".$date_end."</b></td>";
+      echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$cntr</b></td>";
+     echo "</tr>";
+  //   echo number_format($mablagh_koll); 
+     
+     
+     
+       echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ کل قرارداد :".number_format($mablagh_koll)." </b></td>";
+       echo "</tr>";
+     
+      /* echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>امتياز :".number_format($int_emtiaz)." </b></td>";
+       echo "</tr>";*/
+       
+        
+       
+          echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ شروع :".$start_time." </b></td>";
+       echo "</tr>";
+       
+              echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>زمان قرارداد به ماه :".$time_month." </b></td>";
+       echo "</tr>";
+       
+       
+     /*  echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>در صورت تاييد ، طرح به طرحهاي در حال اجرا مي رود</b></td>";
+      echo "</tr>";
+      
+      
+      echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><textarea   rows=\"7\"  name=\"comments\"  class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></textarea></td>";
+      
+      echo "</tr>";
+     
+     echo "<tr>";
+       
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input   type=\"checkbox\"  name=\"sms\" value=\"ON\" class=\"edit-user\"  dir=RTL  \">ارسال sms</td>";
+      echo "</tr>";
+      
+        
+       echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شرايط خاص مورد نظر خود را اعلام فرماييد</b></td>";
+      echo "</tr>";*/
+        echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"submit\" value=\"تاييد\" name=\"B1\" class=\"but-small\"></td>";
+     echo "</tr>";
+     
+     
+     
+     if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     {
+     if (strcmp($status,"entry_error")==0)
+	  {
+	  	
+	    echo "<tr>";
+	    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">کد ملي طرف قرارداد شماره حساب و شماره شبا را وارد کنيد</td>";
+	    echo "</tr>";
+	  }
+	  else {
+	  	?>
+           <script language="javascript">
+           window.location="<? echo "new_gharardad.phtml?admin=$admin&seed=$seed&current=$current";  ?>";
+           </script>
+           <?
+	  }
+      
+     }
+     
+     
+     
+     
+     
+     echo "</table>";
+  
+  echo "</form>"; 
+   
+footer_forms($admin,$seed);
+?>
+

@@ -1,0 +1,322 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+if(!isset($username))
+  $username="";
+if(!isset($rand))
+  $rand="";
+$print_table_style="style=\"font-family: yagut; font-size: 10pt\"";
+
+
+ $q="select * from tarh where cod_tarh=$cod_tarh";
+ $r=mysql_query($q) or die("<br><br><br><center>Server Error!! 2</center>");
+ $row_fetched_tarh = mysql_fetch_array($r);
+
+/* while ($l=mysql_fetch_array($r))
+  {
+	$abs_username=trim($l["username"]);
+	$ftitle=nl2br($l["ftitle"]);
+	$fbody=nl2br($l["fbody"]);
+	$keywords=nl2br($l["keywords"]);
+	$etitle=nl2br($l["ftitle"]);
+	$ebody=nl2br($l["fbody"]);
+	$senddate=trim($l["senddate"]);
+	$sendtime=trim($l["sendtime"]);
+	$abstractid=trim($l["abstractid"]);
+	$name1=trim($l["name1"]);
+	$family1=trim($l["family1"]);
+	$name2=trim($l["name2"]);
+	$family2=trim($l["family2"]);
+	$name3=trim($l["name3"]);
+	$family3=trim($l["family3"]);
+	$abs_lang=$l["language"];
+  }
+   if($abs_lang==1)
+   {
+	$dir="rtl";
+	$align="right";
+   }
+   if($abs_lang==2)
+   {
+	$dir="ltr";
+	$align="left";
+   }
+ $sendyear=substr($senddate,0,4);
+ $sendmon=substr($senddate,5,2);
+ $sendday=substr($senddate,8,2);
+ $farsisenddate=hijricalender( $sendyear , $sendmon , $sendday );
+
+ $q1="select * from userprofile where username='$abs_username' and confcode=$confcode";
+ $r1=mysql_query($q1) or die("<br><br><br><center>Server Error!! 3</center>");
+ while ($l1=mysql_fetch_array($r1))
+  {
+	$profile_name=trim($l1["name"]);
+	$profile_family=trim($l1["family"]);
+	$profile_title=trim($l1["title"]);
+  }
+
+$q="select * from printset where username='$username' and confcode=$confcode";
+$r=mysql_query($q) or die("Server error");
+if(mysql_num_rows($r)>0)
+{
+ while ($l=mysql_fetch_array($r))
+ {
+  $abstract_english_text_font_size=$l["abstract_english_text_font_size"];
+  $abstract_english_text_font_name=$l["abstract_english_text_font_name"];
+  $abstract_farsi_text_font_size=$l["abstract_farsi_text_font_size"];
+  $abstract_farsi_text_font_name=$l["abstract_farsi_text_font_name"];
+  $abstract_farsi_author_font_size=$l["abstract_farsi_author_font_size"];
+  $abstract_farsi_author_font_name=$l["abstract_farsi_author_font_name"];
+  $abstract_english_title_font_size=$l["abstract_english_title_font_size"];
+  $abstract_english_title_font_name=$l["abstract_english_title_font_name"];
+  $abstract_farsi_title_font_size=$l["abstract_farsi_title_font_size"];
+  $abstract_farsi_title_font_name=$l["abstract_farsi_title_font_name"];
+  $confrence_farsi_address_font_size=$l["confrence_farsi_address_font_size"];
+  $confrence_farsi_address_font_name=$l["confrence_farsi_address_font_name"];
+  $confrence_english_address_font_size=$l["confrence_english_address_font_size"];
+  $confrence_english_address_font_name=$l["confrence_english_address_font_name"];
+  $confrence_english_date_font_size=$l["confrence_english_date_font_size"];
+  $confrence_english_date_font_name=$l["confrence_english_date_font_name"];
+  $confrence_farsi_date_font_size=$l["confrence_farsi_date_font_size"];
+  $confrence_farsi_date_font_name=$l["confrence_farsi_date_font_name"];
+  $confrence_english_title_font_size=$l["confrence_english_title_font_size"];
+  $confrence_english_title_font_name=$l["confrence_english_title_font_name"];
+  $confrence_farsi_title_font_size=$l["confrence_farsi_title_font_size"];
+  $confrence_farsi_title_font_name=$l["confrence_farsi_title_font_name"];
+  $abstract_farsi_lable_font_size=$l["abstract_farsi_lable_font_size"];
+  $abstract_farsi_lable_font_name=$l["abstract_farsi_lable_font_name"];
+  $abstract_farsi_keywords_font_size=$l["$abstract_farsi_keywords_font_size"];
+  $abstract_farsi_keywords_font_name=$l["$abstract_farsi_keywords_font_name"];
+  $is_abstract_text=$l["is_abstract_text"];
+  $is_abstract_author=$l["is_abstract_author"];
+  $is_abstract_keywords=$l["is_abstract_keywords"];
+  $is_abstract_title=$l["is_abstract_title"];
+  $is_abstract_time=$l["is_abstract_time"];
+  $is_country=$l["is_country"];
+  $is_farsi_date=$l["is_farsi_date"];
+  $is_english_date=$l["is_english_date"];
+  $is_conf_english_title=$l["is_conf_english_title"];
+  $is_conf_farsi_title=$l["is_conf_farsi_title"];
+
+ }
+ */
+$abstract_english_text_font_style="style=\"font-family: $abstract_english_text_font_name; font-size: $abstract_english_text_font_size\"";
+$abstract_farsi_text_font_style="style=\"font-family: $abstract_farsi_text_font_name; font-size: $abstract_farsi_text_font_size\"";
+$abstract_farsi_author_font_style="style=\"font-family: $abstract_farsi_author_font_name; font-size: $abstract_farsi_author_font_size\"";
+$abstract_english_title_font_style="style=\"font-family: $abstract_english_title_font_name; font-size: $abstract_english_title_font_size\"";
+$abstract_farsi_title_font_style="style=\"font-family: $abstract_farsi_title_font_name; font-size: $abstract_farsi_title_font_size\"";
+$confrence_farsi_address_font_style="style=\"font-family: $confrence_farsi_address_font_name; font-size: $confrence_farsi_address_font_size\"";
+$confrence_english_address_font_style="style=\"font-family: $confrence_english_address_font_name; font-size: $confrence_english_address_font_size\"";
+$confrence_english_date_font_style="style=\"font-family: $confrence_english_date_font_name; font-size: $confrence_english_date_font_size\"";
+$confrence_farsi_date_font_style="style=\"font-family: $confrence_farsi_date_font_name; font-size: $confrence_farsi_date_font_size\"";
+$confrence_english_title_font_style="style=\"font-family: $confrence_english_title_font_name; font-size: $confrence_english_title_font_size\"";
+$confrence_farsi_title_font_style="style=\"font-family: $confrence_farsi_title_font_name; font-size: $confrence_farsi_title_font_size\"";
+$abstract_farsi_lable_font_style="style=\"font-family: $abstract_farsi_lable_font_name; font-size: $abstract_farsi_lable_font_size\"";
+$abstract_farsi_keywords_font_style="style=\"font-family: $abstract_farsi_keywords_font_name; font-size: $abstract_farsi_keywords_font_size\"";
+
+$besme_font_style="style=\"font-family: zar; font-size: 10pt\"";
+$daneshgah_font_style="style=\"font-family: zar; font-size: 14pt\"";
+$chekide_font_style="style=\"font-family: mitra ; font-size: 14pt\"";
+$envan_font_style="style=\"font-family: mitra; font-size: 14pt\"";
+$text_font_style="style=\"font-family: zar; font-size: 13pt\"";
+$lable_font_style="style=\"font-family: zar; font-size: 12pt\"";
+?>
+<table dir="ltr" border="0" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td width="7%" align="right">&nbsp;</td>
+                      <td width="93%" align="right">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td <? echo "$besme_font_style"; ?> width="100%" colspan="2" align="center" dir="rtl">
+                         <span dir="rtl">
+                         <? echo "بسمه تعالي"; ?></font></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td <? echo "$daneshgah_font_style"; ?> width="100%" colspan="2" align="center" dir="rtl">
+                         <span dir="rtl">
+                         <? echo "معاونت پژوهشي دانشگاه علوم پزشکي و خدمات بهداشتي درماني استان اصفهان"; ?></font></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td <? echo "$confrence_farsi_title_font_style"; ?> width="100%" colspan="2" align="center" dir="rtl">
+                         <span dir="rtl">
+                         <? echo "چکيده اي از طرح تحقيقاتي"; ?></font></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="100%" <? echo "$confrence_english_title_font_style"; ?> colspan="2" align="center" dir="rtl">
+                         <span dir="ltr">
+                         <? echo "$conf_etitle"; ?></font></span>
+                      </td>
+                    </tr>
+</table>
+<table border="0" width="100%" colspan="0" cellspan="0">
+  <tr>
+    <td width="100%" valign="top" align="center">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+			  <span <? echo $text_font_style; ?> dir="rtl">&nbsp;<? echo $row_fetched_tarh["tarh_title_farsi"]; ?></span>
+            </td>
+            <td width="20%" valign="top" align="left">
+              <span <? echo $envan_font_style; ?> dir="rtl"><b>عنوان طرح :<span>
+			</td>
+       </tr>
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+			  &nbsp;
+            </td>
+            <td width="20%" valign="top" align="left">
+	         &nbsp;
+			</td>
+       </tr>
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+			  <span <? echo $text_font_style; ?> dir="rtl">&nbsp;<? echo $row_fetched_tarh["kelidvajeh"];  ?></span>
+            </td>
+            <td width="20%" valign="top" align="left">
+              <span <? echo $lable_font_style; ?> dir="rtl"><b>کليد واژه ها :<span>
+			</td>
+       </tr>
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+			  &nbsp;
+            </td>
+            <td width="20%" valign="top" align="left">
+	         &nbsp;
+			</td>
+       </tr>
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+  <br>
+<?
+   $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<span  $text_font_style; dir=\"rtl\">";
+	?>
+    <table border="1" width="90%" cellpadding="2" cellspacing="1">
+    <tr>
+    <td width="100%"  colspan="5">
+      <p align="center" ><font color="black">مجريان طرح</font></td>
+    </tr>
+	<tr>
+    <td width="3%" >
+      <p align="center" ><font color="black">پست الکترونيکي</font></td>
+    <td width="10%" >
+      <p align="center" ><font color="black">فکس</font></td>
+    <td width="10%" >
+      <p align="center" ><font color="black">تلفن</font></td>
+    <td width="35%" >
+      <p align="center" ><font color="black">نام خانوادگي</font></td>
+    <td width="35%" >
+      <p align="center" ><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+
+  echo "<tr>";
+    echo "<td width=\"20%\"  align=\"center\" >".$row_fetched["email"]."</td>";
+  echo "<td width=\"10%\"  align=\"center\" >".$row_fetched["fax"]."</td>";
+  echo "<td width=\"10%\"  align=\"center\" >".$row_fetched["telno"]."</td>";
+  echo "<td width=\"30%\"  align=\"center\" >".$row_fetched["family"]."</td>";
+  echo "<td width=\"30%\"  align=\"right\" >".$row_fetched["name"]."</td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+echo "</span>";
+}
+            
+ ?>
+            
+            
+            
+			</tr>
+            </td>
+            <td width="20%" valign="top" align="left">
+              <span <? echo $lable_font_style; ?> dir="rtl"><b>نام مجري/مجريان :<span>
+			</td>
+       </tr>
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+			  <span <? echo $text_font_style; ?> dir="rtl">&nbsp;<? echo $row_fetched_tarh["line"]; ?></span>
+            </td>
+            <td width="20%" valign="top" align="left">
+              <span <? echo $lable_font_style; ?> dir="rtl"><b>لاين تحقيقاتي مجري/مجريان :<span>
+			</td>
+       </tr>
+        <tr>
+            <td width="80%" dir="rtl" colspan="3" valign="top" align="justify">
+			  &nbsp;
+            </td>
+            <td width="20%" valign="top" align="left">
+	         &nbsp;
+			</td>
+       </tr>
+        <tr>
+            <td width="100%" valign="top" align="right" colspan="4">
+            <span <? echo $text_font_style; ?> dir="rtl"><b>1- شرح ضرورت اجراي طرح به صورت خلاصه:</b></span></td>
+       </tr>
+        <tr>
+            <td width="100%" dir="rtl" colspan="4" valign="top" align="left">
+             <table border="0" width="90%" cellspacing="0" cellpadding="0">
+              <tr><td valign="top"><p <? echo $text_font_style; ?> dir="rtl" align="justify">&nbsp;<? echo $row_fetched_tarh["zarorat"]; ?></td></tr>
+			  </table>
+            </td>
+       </tr>
+        <tr>
+            <td width="100%" valign="top" align="right" colspan="4">
+            <span <? echo $text_font_style; ?> dir="rtl"><b>2- اهداف کلي و اختصاصي:</b></span></td>
+       </tr>
+        <tr>
+            <td width="100%" dir="rtl" colspan="4" valign="top" align="left">
+             <table border="0" width="90%" cellspacing="0" cellpadding="0">
+              <tr><td valign="top"><p <? echo $text_font_style; ?> dir="rtl" align="justify">&nbsp;<? echo $row_fetched_tarh["hadaf_kolli"]; ?></td></tr>
+			  </table>
+            </td>
+       </tr>
+        <tr>
+            <td width="100%" valign="top" align="right" colspan="4">
+            <span <? echo $lable_font_style; ?> dir="rtl"><b>3- سئوالات پژوهشي يافرضيات:</b></span></td>
+       </tr>
+        <tr>
+            <td width="100%" dir="rtl" colspan="4" valign="top" align="left">
+             <table border="0" width="90%" cellspacing="0" cellpadding="0">
+              <tr><td valign="top"><p <? echo $text_font_style; ?> dir="rtl" align="justify">&nbsp;<? echo $row_fetched_tarh["soalat_pajoheshi"]; ?></td></tr>
+			  </table>
+            </td>
+       </tr>
+        <tr>
+            <td width="100%" valign="top" align="right" colspan="4">
+            <span <? echo $lable_font_style; ?> dir="rtl"><b>4- روش اجرا و شيوه هاي تجزيه و تحليل يافته به صورت خلاصه:</b></span></td>
+       </tr>
+        <tr>
+            <td width="100%" dir="rtl" colspan="4" valign="top" align="left">
+             <table border="0" width="90%" cellspacing="0" cellpadding="0">
+              <tr><td valign="top"><p <? echo $text_font_style; ?> dir="rtl" align="justify">&nbsp;<? echo  $row_fetched_tarh["shive_ejra"];  ?></td></tr>
+			  </table>
+            </td>
+       </tr>
+     </table>
+    </td>
+  </tr>
+</table>
+</td>
+</tr>
+</table>
+

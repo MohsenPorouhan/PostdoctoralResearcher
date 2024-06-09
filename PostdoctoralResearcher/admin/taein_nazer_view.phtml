@@ -1,0 +1,347 @@
+<<script type="text/javascript">
+
+
+function disablefield3()
+{	//alert("hhhhh");
+	var x=document.getElementById("ex_nazer");
+	var y=document.getElementById("modir_comment");
+	
+if ( document.getElementById('confirm_request').checked == true ){
+		
+	x.style.display = 'block';
+	y.style.display = 'none';
+		
+	}
+ if (document.getElementById('decline_request').checked == true ){
+	 
+	 x.style.display = 'none';
+	 y.style.display = 'block';
+	}
+}
+
+//----------------------------------------------
+</script>
+
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+$query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  
+  		  $query="select * from taein_nazer where  cod_tarh ='$cod_tarh'";
+		  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+		  $row_fetched=mysql_fetch_array($result);
+		  
+		 // $modir_confirm=$row_fetched_gharardad["modir_confirm"];
+	     // $modir_comment=$row_fetched_gharardad["modir_comment"];
+		   if(mysql_num_rows($result) > 0)
+		   {
+  
+  if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   	if(isset($modir_confirm)){
+
+   		$year_date = date("Y") - 1921 ;
+  	   $date = $year."-".$month."-".$day; 
+		  
+  	   	  
+       
+		  $query="update taein_nazer  set  modir_confirm='$modir_confirm',modir_comment='$modir_comment',ex_nazer='$ex_nazer',modir_confirm_date='".date("Y-m-d")."' where cod_tarh='$cod_tarh'";
+		echo $query;
+	      $result=mysql_query($query) or die("Error in inserting data into tarh #100");
+	      
+	     //$modir_confirm="";
+	     $modir_comment="";
+	     
+	      
+	      
+          $action="ويرايش تعيين ناظر طرح با کد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+          // savelog("$admin","add","Add a control_gharardad");
+          
+           //message_show("فرم کنترل قرارداد مربوط به اين طرح ويرايش شد","green");
+		          
+           //footer_forms($admin,$seed);
+          // exit();
+        if(strcmp($modir_confirm,'0')==0){
+      
+      $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh'  and group_karshenasan.karshenas_type='1'";
+      //echo $query;
+      $result=mysql_query($query) or die("Error 120000 ff");
+	  $rf=mysql_fetch_array($result);
+	  $sms_box=$rf["sms_box"]; 
+	  //echo $sms_box;
+	  $startdate =$send_date;
+      $startyear = substr($startdate,0,4);
+      $startmon = substr($startdate,5,2);
+      $startday = substr($startdate,8,2);
+      $send_date=hijricalender( $startyear , $startmon , $startday ); 
+	 
+	  $query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text=' darkhaste taein/taghir nazere tarh ba code $cod_tarh rad shode ast.'";
+	  //echo $query;
+	  $result=mysql_query($query) or die("Error 120000 er"); 
+           ?>
+    	 <script language="javascript">
+           window.location="<? echo "taein_nazer_request.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script> 
+           <?
+         }
+         else  if(strcmp($modir_confirm,'1')==0){
+
+		      $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh'  and group_karshenasan.karshenas_type='1'";
+		      $result=mysql_query($query) or die("Error 120000 ff");
+			  $rf=mysql_fetch_array($result);
+			  $sms_box=$rf["sms_box"]; 
+			  //echo $sms_box;
+			  $startdate =$send_date;
+		      $startyear = substr($startdate,0,4);
+		      $startmon = substr($startdate,5,2);
+		      $startday = substr($startdate,8,2);
+		      $send_date=hijricalender( $startyear , $startmon , $startday ); 
+			 
+			  $query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='darkhaste taein/taghir nazere tarh ba code $cod_tarh  taeid shode ast.'";
+			  //echo $query;
+			  $result=mysql_query($query) or die("Error 120000 er"); 
+          ?>
+       <script language="javascript">
+           window.location="<? echo "taein_nazer_request.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script> 	 
+           <?
+        }
+   /*     else{
+        	?>
+        	 <script language="javascript">
+           window.location="<? echo "send_new_gharardad.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script> 
+        <?	
+        }
+*/
+       // }
+       //  else
+       //   $status="duplicate_entry";
+    }
+  else
+     $status="entry_error";
+  }
+
+}
+?>
+
+  <?
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query="select * from taein_nazer where  cod_tarh ='$cod_tarh'";
+  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ 
+   if(mysql_num_rows($result) > 0)
+   {
+   	  
+ $row_f=mysql_fetch_array($result);
+ $id=$row_f["id"];
+ $karshenas=$row_f["karshenas"];
+ $ex_nazer=$row_f["ex_nazer"];
+ $darkhast_type=$row_f["darkhast_type"];
+ $change_reason=$row_f["change_reason"];
+ $karshenas_suggestion=$row_f["karshenas_suggestion"];
+ $date=$row_f["date"];
+ $cod_karshenas=$row_f["cod_karshenas"];
+ $modir_comment=$row_f["modir_comment"];
+ $modir_confirm=$row_f["modir_confirm"];
+ 
+ $send_request_date=$row_f["date"];
+ $startyear1 = substr($send_request_date,0,4);
+ $startmon1 = substr($send_request_date,5,2);
+ $startday1 = substr($send_request_date,8,2);
+ $farsistartdate=hijricalender( $startyear1 , $startmon1 , $startday1 );
+ $date = enum2fnum($farsistartdate);
+   	 
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+    $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+    echo "<br>";
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+       
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$First_mojri_name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام ثبت کننده طرح</td>";
+    echo "</tr>";
+		
+    /*    if(strcmp($vabastegi,"0")==0)
+			$vabastegi_st="هيات علمي";
+		if(strcmp($vabastegi,"1")==0)
+			$vabastegi_st="کارمند: رسمي";
+		if(strcmp($vabastegi,"2")==0)
+			$vabastegi_st="پيماني";
+		if(strcmp($vabastegi,"3")==0)
+			$vabastegi_st="قراردادي";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$vabastegi_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">وضعيت وابستگي</td>";
+    echo "</tr>";
+    */
+		if(strcmp($darkhast_type,"0")==0)
+			$darkhast_type_st="تعيين ناظر";
+		if(strcmp($darkhast_type,"1")==0)
+			$darkhast_type_st="تغيير ناظر";
+		
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$darkhast_type_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نوع درخواست</td>";
+    echo "</tr>";
+
+ $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ $result=mysql_query($query) or die("Error");
+ $exists=0;
+ if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+
+ } 	
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir='rtl'> ناظر طرح باشند :".$nazerin."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"center\" rowspan='2'>پيشنهاد مجري</td>";
+    echo "</tr>";
+
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir='rtl'> ناظر طرح نباشند :".$unnazerin."</td>";
+    echo "</tr>";
+
+    if(strcmp($modir_confirm,'1')!=0){
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$ex_nazer."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">ناظر تعيين شده قبلي</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$change_reason."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">علت تغيير ناظر</td>";
+    echo "</tr>";
+    }
+  
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$karshenas_suggestion."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">پيشنهاد کارشناس</td>";
+    echo "</tr>";
+
+    $query="select * from control_gharardad_karshenas where id='$karshenas' order by id ";
+    //echo $query;
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $row_fetched=mysql_fetch_array($qresult);
+    $name=$row_fetched["karshenas_name"];
+    $family=$row_fetched["karshenas_family"];
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$name." ".$family."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> نام کارشناس طرح</td>";
+    echo "</tr>";
+   
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$date."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> تاريخ ارسال درخواست</td>";
+    echo "</tr>";
+    
+    if(strcmp($modir_confirm,'1')==0){	
+	    echo "<tr>";
+	    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$ex_nazer."</td>";
+	    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> نام ناظر تعيين شده</td>";
+	    echo "</tr>";
+    }
+    
+    echo "</table>";
+   }
+?>
+
+<?
+if(strcmp($modir_confirm,'1')!=0){	      
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&unarch=$unarch\">"; ?>
+
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+ <tr>
+    <td width="50%" align="center" class="tahoma1" >
+	     <input type="radio" value="1" id='confirm_request' name="modir_confirm" onclick="disablefield3();" >تاييد
+    </td>
+     
+    <td width="50%" align="center" class="tahoma1"  >
+	    <input type="radio" value="0" id='decline_request' name="modir_confirm"  onclick="disablefield3();" >  رد
+    </td>
+   
+ </tr>
+
+
+   <tr style="display:none;"  id='ex_nazer'>
+    <td width="60%" align="center" ><input type="text"  name="ex_nazer" size="20"  value='<? echo $ex_nazer;?>' class="edit-user" dir=RTL   ></td>
+    <td width="40%" class="tahoma1" valign="top"> نام ناظر تعيين شده توسط مدير </td>
+  </tr>
+   <tr style="display:none;" id='modir_comment'>
+    <td width="60%" align="center" ><textarea  rows="7"  name="modir_comment"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="40%" class="tahoma1" valign="top">علت رد درخواست</td>
+  </tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+<? }?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table> 
+<?
+}
+else
+message_show("براي اين طرح فرم کنترل قرارداد ثبت نشده است","green");
+footer_forms($admin,$seed);
+?>
+

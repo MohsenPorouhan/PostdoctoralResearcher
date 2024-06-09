@@ -1,0 +1,328 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 3 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+ 
+include("include/styles.phtml");
+echo "<META http-equiv=content-type content=text/html;charset=utf-8>";
+//header_forms($admin,$seed);
+echo "<br>";
+
+
+if( isset($action) )
+ if ( strlen(trim($notes)) > 0 )
+ {
+   $query="select * from karshenasan where username='$admin'";
+   $result=mysql_query($query) or die ("Error in selecting data");
+   $row_fetched=mysql_fetch_array($result);
+   $karshenas_id=$row_fetched["cod_karshenas"];
+   $mydate=date("Y-m-d");
+  $startyear = substr($mydate,0,4);
+  $startmon = substr($mydate,5,2);
+  $startday = substr($mydate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  if(mysql_num_rows($result) > 0)
+     {
+		 
+       while($rf_karshenas=mysql_fetch_array($result))
+	   {
+		   if(strlen(trim($rf_karshenas["comment_karshenas"])) > 0)
+          $notes_int=$rf_karshenas["comment_karshenas"].$notes_int;
+	   }
+     } 
+	 
+	 $notes=$notes_int."<br><hr> $farsistartdate<br>".$notes;
+   $notes=str_replace("'","",$notes);
+   $notes=str_replace("\"","",$notes);
+   $notes=str_replace(";","",$notes);
+	 
+   $query="select max(version) as maxver from karshenasan_tarh where cod_tarh='$cod_tarh'";
+
+   $result=mysql_query($query) or die("Error in selecting data from 1");
+
+   $rf1=mysql_fetch_array($result);
+   $maxver=$rf1["maxver"];
+   if($maxver=='-1')
+      $maxver='1';
+   else
+      $maxver=$maxver+1;
+//   if(isset($refered))    
+  //   $query="update karshenasan_tarh set  gant='$gant',variables='$variables',chekide='$chekide',sabt='$sabt',mojrian='$mojrian',daneshjoyan='$daneshjoyan',raveshejra='$raveshejra',hazineha='$hazineha',akhlaghi='$akhlaghi',zamaem='$zamaem',date_send='$mydate',comment_karshenas='$notes'  where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'  ";
+   //else
+    $query="update karshenasan_tarh set version='$maxver' where cod_tarh='$cod_tarh' and version='-1' ";
+    
+	$result=mysql_query($query) or die ("Error in updating data into user login");
+     
+    $query="insert into karshenasan_tarh set tarh_new='0' , note_date='".date("Y-m-d")."',gant='$gant',variables='$variables',chekide='$chekide',sabt='$sabt',mojrian='$mojrian',daneshjoyan='$daneshjoyan',raveshejra='$raveshejra',hazineha='$hazineha',akhlaghi='$akhlaghi',zamaem='$zamaem',date_send='$mydate',comment_karshenas='$notes' , cod_tarh='$cod_tarh' , cod_karshenas='$karshenas_id',version='-1',send_to_karshenas_date='$startdate'  ";  
+	
+    $result=mysql_query($query) or die ("Error in updating data into user login");
+    $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh' and group_karshenasan.karshenas_type='1'";
+    $result123=mysql_query($query) or die("Error 120000");
+    while($rf=mysql_fetch_array($result123))
+    {
+    	$sms_box=$rf["sms_box"];
+    	$mydate=date("Y-m-d");
+    	$startdate =$mydate;
+    	$startyear = substr($startdate,0,4);
+    	$startmon = substr($startdate,5,2);
+    	$startday = substr($startdate,8,2);
+    	$send_date=hijricalender( $startyear , $startmon , $startday );
+		$sms_text="nazare Davar dar morede tarh ba code $cod_tarh  dar tarikh   $send_date  ersal shod";
+    	
+    	$query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='$sms_text'";
+    	$result=mysql_query($query) or die("Error 120000");
+    }
+   //exit();
+   message_show(".نظريه شما ارسال شد","green");
+   ?>
+   <script>
+    self.close();
+   </script>
+   <?
+  // $action="تغيير کلمه عبور";
+  // set_log($action,$admin,date("Y-d-m"));
+
+   
+ }
+ else
+   $status="entry_error";
+
+
+
+
+    $notes="";
+    $chekide='0';
+  	$sabt='0';
+  	$mojrian='0';
+  	$daneshjoyan='0';
+  	$raveshejra='0';
+  	$hazineha='0';
+  	$akhlaghi='0';
+  	$zamaem='0';
+  	$gant='0';
+  	$variables='0';
+  
+
+
+
+?>
+<script>
+targetWidth = screen.availWidth;
+targetHeight = screen.availHeight;
+window.resizeTo(targetWidth, targetHeight);
+window.toolbar="no";
+
+
+</script>
+
+<script>
+function refresh_main()
+{
+	 document.user_login.submit();
+     opener.location.reload(true);
+
+}
+</script>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched1=mysql_fetch_array($result1);
+
+$query2="select * from karshenasan,karshenasan_tarh where karshenasan.username='$admin' and cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas";
+$result2=mysql_query($query2) or die("Error in selecting data from group_karshenasan_tarh");
+$row_fetched2=mysql_fetch_array($result2);
+$startdate = $row_fetched2["send_to_karshenas_date"];
+
+?>
+<br>
+<center>
+<TABLE cellSpacing=0  width="490" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched1["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+<center>
+<body onclose="refresh_main()">
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&startdate=$startdate"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="500" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="360" height="19"></td>
+                        <td align="middle" width="140" background="image/notes_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="500" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      ?>
+      <tr>
+        <td align="right" width="400"><textarea   rows="8" cols="40" name="notes"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="100">نظر شما در مورد اين طرح</td>
+      </tr>
+      
+      
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="button" onclick="refresh_main()" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<?
+$query="select * from karshenasan_tarh where cod_tarh='$cod_tarh'" ;
+$query="select * from karshenasan,karshenasan_tarh where karshenasan.username='$admin' and cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas";
+						  
+
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="1" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+   
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کاربري</font></td>
+	<td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام </font></td>
+        <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+ 
+ 
+ $string="";
+ $note_submitted=$row_fetched["refered"];
+  
+ 
+ 
+ // if(1) 
+    $comment_note=$row_fetched["comment_karshenas"];
+  //else
+  //	$comment_note="نظر ايشان ثبت نشده"; 
+
+// echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  $startdate = $row_fetched["send_to_karshenas_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+ // echo "salam".$row_fetched["send_to_karshenas_date"];
+  $id=$row_fetched["id"];
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target='_blank' href='your_notes_detail.phtml?admin=$admin&seed=$seed&id=$id&cod_tarh=$cod_tarh'>&nbsp;&nbsp;&nbsp;".$comment_note."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["username"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$farsistartdate."</td>";
+  
+echo "</tr>";
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".نظر ي وجود ندارد","red");
+}
+?>
+
+</body>
+<br>
+
+
+<?
+  //footer_forms($admin,$seed);
+?>

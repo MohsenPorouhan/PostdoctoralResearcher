@@ -1,0 +1,55 @@
+<?php
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+//include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/session.phtml");
+
+if(!isset($admuser) || strlen(trim($admuser)) <= 0 || !isset($admpassword) ||  strlen(trim($admpassword)) <= 0 )
+{
+  header ("Refresh: 0; url=index.phtml?msg=loginerror");
+  exit();
+}
+
+$query = "SELECT * FROM karshenasan where karshenas_email=\"".trim($admuser)."\"";
+
+$result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$admpassword)
+      {
+       header ("Refresh: 0; url=index.phtml?msg=loginerror_user");
+       exit(); 
+      }
+      else
+      {
+        $usertype="rtit";
+      }
+    
+   }
+   
+}
+else
+{
+         header ("Refresh: 0; url=index.phtml?msg=loginerror_user");
+         exit();
+}
+
+
+
+     $seed=randString();
+     startsession($admuser,$seed,4);
+     header ("Refresh: 0; url=index_1.phtml?admin=$admuser&seed=$seed");
+     echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+
+
+?>

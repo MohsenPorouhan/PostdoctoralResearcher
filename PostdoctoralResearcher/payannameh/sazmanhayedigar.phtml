@@ -1,0 +1,151 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"sabt")==0)
+  {
+       $query  = "update tarh set eatebare_sazmanha_value = \"$mablagh\" ,eatebare_sazmanha_pardakht=\"$nahve_pardakht\", eatebare_sazmanha = \"$degree\", eatebare_sazmanha_organ = \"$name_moasese\", eatebare_sazmanha_address  = \"$address_posti\" , eatebare_sazmanha_telno  = \"$telno\" , eatebare_sazmanha_fax  = \"$fax\" where  cod_tarh=\"$cod_tarh\" ";
+	   $result = mysql_query($query) or die("Error in inserting data into hamkaran_tarh 002");
+	   $action="ويرايش سازمانهاي ديگر مربوط به طرح"."<br>".$cod_tarh;
+       set_log($action,$admin,date("Y-m-d, g:i a"));
+     
+       message_show(".تامين اعتبار از سازمانهاي ديگر ثبت شد","green");
+       
+       echo "<table border=\"0\" width=\"500\">";
+       echo "<tr>";
+       echo "<td width=\"50%\" colspan=\"2\" align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"hazineha.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >بازگشت</a></td>";
+       echo "</tr>";
+       echo "</table>";
+         footer_forms($admin,$seed);
+       exit();
+       
+  }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/sazmanhaye_digar.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+  $query  = "select * from tarh  where  cod_tarh=\"$cod_tarh\" ";
+  $result = mysql_query($query) or die("Error in inserting data into hamkaran_tarh 002");
+
+  $row_fetched = mysql_fetch_array($result);
+  $eatebare_sazmanha_value = $row_fetched["eatebare_sazmanha_value"];
+  $eatebare_sazmanha_pardakht = $row_fetched["eatebare_sazmanha_pardakht"];
+  $eatebare_sazmanha_organ = $row_fetched["eatebare_sazmanha_organ"];
+  $eatebare_sazmanha_address = $row_fetched["eatebare_sazmanha_address"];
+  $eatebare_sazmanha_telno = $row_fetched["eatebare_sazmanha_telno"];
+  $eatebare_sazmanha_fax = $row_fetched["eatebare_sazmanha_fax"];
+  
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+ <tr>
+  
+    <td width="100" align="right">
+      <select size="1" name="degree" class="edit-small-1" dir="rtl">
+        <option value="1" class="tahoma1">بلي</option>
+        <option value="0" class="tahoma1">خير</option>
+      </select>
+    </td>
+    <td width="400" class="tahoma1">درخواست اعتبار از سازمانهاي ديگر(بلي / خير)؟</td>
+  </tr>
+
+<tr>
+  <td width="100" align="right"><input type="text" class="edit-small-1" name="name_moasese" size="20" value=<? echo "\"".$eatebare_sazmanha_organ."\""; ?> dir=RTL   ></td>
+    <td width="400" class="tahoma1"><span class="star-message">*</span>نام موسسه</td>
+</tr>
+
+<tr>
+  <td width="100" align="right"><input type="text" class="edit-small-1" name="address_posti" size="20" value=<? echo "\"".$eatebare_sazmanha_value."\""; ?> dir=RTL    ></td>
+    <td width="400" class="tahoma1"><span class="star-message">*</span>آدرس پستي</td>
+</tr>
+
+<tr>
+  <td width="100" align="right"><input type="text" class="edit-small-1" name="telno" size="20" value=<? echo "\"".$eatebare_sazmanha_telno."\""; ?> ></td>
+    <td width="400" class="tahoma1"><span class="star-message">*</span>تلفن</td>
+</tr>
+
+<tr>
+  <td width="100" align="right"><input type="text" class="edit-small-1" name="fax" size="20" value=<? echo "\"".$eatebare_sazmanha_fax."\""; ?> ></td>
+    <td width="400" class="tahoma1"><span class="star-message">*</span>فکس</td>
+</tr>
+
+
+  
+<tr>
+  <td width="100" align="right"><input type="text" class="edit-small-1" name="mablagh" size="20" value=<? echo "\"".$eatebare_sazmanha_value."\""; ?> ></td>
+    <td width="400" class="tahoma1"><span class="star-message">*</span>مبلغ</td>
+</tr>
+  
+<tr>
+  <td width="100" align="right"><input type="text" class="edit-small-1" name="nahve_pardakht" size="20" value=<? echo "\"".$eatebare_sazmanha_pardakht."\""; ?>  dir=RTL   ></td>
+    <td width="400" class="tahoma1"><span class="star-message">*</span>نحوه پرداخت</td>
+</tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+  </tr>
+</table>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

@@ -1,0 +1,155 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+require("include/class.phpmailer.php");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/print.phtml");
+require("include/mailserver-statistics.phtml");
+include("include/vars.inc.phtml");
+
+	  	
+		   
+if(isset($action))
+{
+  if (strcmp($action,"tarh")==0)
+  {
+  	
+		$m=0;
+		 for($j=1;$j<30;$j++)
+		   {
+		   
+		    $cod='checktarh_shora'.$j;
+		   // echo "$j";
+		    if(isset($$cod))
+		    {
+		     $cod_tarh=$$cod;
+		    $codarray[$m]=$cod_tarh;
+		    $m++;
+		    echo $cod_tarh;
+		    // $query="insert into group_karshenasan_tarh set send_to_karshenas_date='$mydate', cod_tarh=\"$cod_tarh\" , cod_karshenas=\"".$$mycodkarshenas."\"";
+	    
+			//$result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh 2");
+			//insert_position($cod_tarh,"7");
+		    }
+		
+		   }
+		 //  echo $codarray[0]."<br>".$codarray[1]."<br>".$codarray[2];
+  }
+}
+
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade_shora=$myrow_fetched["cod_daneshkade"];
+
+echo "<br>";
+echo "<br>";
+echo "<br>";
+if(isset($action))
+{
+	if(strcmp($action,'sabt')==0)
+	{
+	 if(strcmp($view_karshenas,'0')==0)
+	 {	
+	 	//echo "salam";
+		   $query="select * from karshenas_shora where (cod_daneshkade='0)";
+		   $result=mysql_query($query) or die("Error in selecting data from karshenas shora");
+		   if(mysql_num_rows($result) > 0)
+		   {
+		   		while($row_fetched=mysql_fetch_array($result))
+ 				{
+ 					$cod_karshenas=$row_fetched["cod_karshenas"];
+ 					for($j=0;$j<$m;$j++)
+				   { 
+					  $cod_tarh=$codarray[$j];
+					  if(strlen($cod_tarh)>0)
+		    		  {
+	 					  $qq="update karshenas_shora_tarh set view_karshenas='0' where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'";
+	 					  $rs1=mysql_query($qq) or die("error");
+		    		  }
+				   }
+ 					
+ 					
+  				}
+		   }
+	 }	
+	  if(strcmp($view_karshenas,'1')==0)
+	 {	
+	 	//echo "hello";
+	 	$query="select * from karshenas_shora where (cod_daneshkade='0')";
+		   $result=mysql_query($query) or die("Error in selecting data from karshenas shora");
+		 if(mysql_num_rows($result) > 0)
+		   {
+		   		while($row_fetched=mysql_fetch_array($result))
+ 				{
+ 					$cod_karshenas=$row_fetched["cod_karshenas"];
+ 					for($j=0;$j<$m;$j++)
+				   { 
+					    $cod_tarh=$codarray[$j];
+					    if(strlen($cod_tarh)>0)
+		    		  {
+		 					$myq1="select * from karshenas_shora_tarh where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'";
+		 					$rs1=mysql_query($myq1) or die("error");
+		 				    if(mysql_num_rows($rs1) > 0)
+				   			{
+								$qq="update karshenas_shora_tarh set view_karshenas='1' where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'";
+		 						//echo $qq;
+								$rs1=mysql_query($qq) or die("error");
+		 						//echo $cod_karshenas."<br>";
+		 						
+				   			}
+				   			else {
+				   			$qq="insert into karshenas_shora_tarh set cod_karshenas='$cod_karshenas',cod_tarh='$cod_tarh',view_karshenas='1'";
+				   			//echo $qq;
+		 					$rs1=mysql_query($qq) or die("error");
+				   			}
+		    		  }
+				   }
+ 				}
+		   }
+
+	 }	   	
+	}
+}
+					
+ 				  
+  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&codarray=$codarray[$m]&m=$m\">"; ?>
+<table border='1' width='50%' cellspacing="0" cellpadding="0" bordercolor="white" bgcolor='#EEE7F8' dir='rtl'>
+<tr>
+<td colspan='8' align='center' class='tahoma1'><b>
+قابليت دسترسي طرح به اعضاي شورا</b>
+</td>
+</tr>
+<tr>
+<td colspan='8' align='center' class='tahoma1'><b>
+<?php echo $str;?></b>
+</td>
+</tr>
+<?
+ 
+  echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='view_karshenas' value='0' >غير قابل رويت براي اعضاي شورا</td></tr>";
+   echo "<tr><td class='tahoma1' align='right' width='20%'><input type='radio' name='view_karshenas' value='1' >قابل رويت براي اعضاي شورا</td></tr>";
+for($n=0;$n<$m;$n++){
+?>
+
+<input type='hidden' name='codarray[]' value='<?php print_r($codarray[$n]); ?>' />
+<?php 
+ }
+?> <input type='hidden' name='m' value='<?php echo $m; ?>' />
+
+
+ 
+<tr>
+<td colspan='8' align='center' class='tahoma1' >
+<input type="submit" value="ثبت" name="B1" class="but-small">
+</td>
+</tr>
+</table>
+
+
+<?
+
+footer_forms($admin,$seed);
+?>

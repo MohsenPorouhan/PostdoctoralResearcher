@@ -1,0 +1,526 @@
+<?php
+ @session_start();
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+//include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/session_new.phtml");
+include("include/session.phtml");
+if(!isset($username) || strlen(trim($username)) <= 0 || !isset($password) ||  strlen(trim($password)) <= 0 )
+{
+  header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+  exit();
+}
+
+                    
+if(strcmp($user_type,"0")==0)
+{
+  $query = "SELECT * FROM user_login where email=\"".trim($username)."\" ";
+  
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+   
+	if( mysql_num_rows($result) > 0 )
+	{
+		if ($line = mysql_fetch_array($result))
+		   {
+		    if($line["password"]!=$password)
+		      {
+		       header ("Refresh: 0; url=../login_2.phtml?msg=loginError");
+		       exit(); 
+		      }
+		      else
+		      {
+		        	$la=$line["language"];
+		        	$payan_name=$line["payan_name"];
+		           $seed=randString_new();
+		           startsession_new($username,$seed,2,$la,$payan_name);	
+		           if(strcmp($payan_name,"1")!=0)	         
+		           		header ("Refresh: 0; url=../user_new/home.php");
+		           else 
+		           	    header ("Refresh: 0; url=../user_new/payan_name_list.phtml");
+		          
+		           echo '<div style="background-color: #1570a6 !important;width: 100%;height: 100%;"><h1 style="text-align: center;padding-top: 20%;color: #fff;font-family: tahoma;font-size: 16px;font-weight: normal;">درحال بارگذاري...  لطفا شکيبا باشيد</h1></div>';
+		         
+
+		          /*echo"
+		           <script type='text/javascript' src='../assets/swfobject.js'></script>
+		           <script type='text/javascript'>
+		               swfobject.embedSWF('../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf', 'player', '300', '400', '9.0');
+		           </script>";
+		          echo"<div id='player'>hhhhhhhhhh</div>";*/
+		           
+		           
+		      }
+		    
+		   }
+		
+	}
+else
+	 {
+		   header ("Refresh: 0; url=../login_2.phtml?msg=loginError");
+           exit();
+	}
+} 
+
+if(strcmp($user_type,"11")==0)
+{
+  $query = "SELECT * FROM user_login where email=\"".trim($username)."\"";
+  
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+   
+	if( mysql_num_rows($result) > 0 )
+	{
+		if ($line = mysql_fetch_array($result))
+		   {
+		    if($line["password"]!=$password)
+		      {
+		       header ("Refresh: 0; url=../login_2.phtml?msg=loginError");
+		       exit(); 
+		      }
+		      else
+		      {
+		        	
+		           $seed=randString_new();
+		           startsession_new($username,$seed,2);
+		           header ("Refresh: 0; url=../user_new/payan_name_list.phtml?admin=$username&seed=$seed");
+		           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+		          
+		      }
+		    
+		   }
+		
+	}
+else
+	 {
+		   header ("Refresh: 0; url=../login_2.phtml?msg=loginError");
+           exit();
+	}
+}
+         
+if(strcmp($user_type,"1")==0)
+{
+  $query = "SELECT * FROM modir_daneshkade where modir_username=\"".trim($username)."\"";
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+      
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+         if ($line["modir_type"]=="1" || $line["modir_type"]=="4" )
+		 {	
+           $seed=randString();
+           startsession($username,$seed,0);
+           if($username=="student"){
+           	header ("Refresh: 0; url=../admin/gozaresh90.phtml?admin=$username&seed=$seed");
+           }
+           else if($username=="admin_shora"){
+                header ("Refresh: 0; url=../admin/add_shora.phtml?admin=$username&seed=$seed");
+           }
+		 else if($username=="admin_karshenasan"){
+                header ("Refresh: 0; url=../admin/karshenasan_edgham.phtml?admin=$username&seed=$seed");
+           }
+           else
+           	header ("Refresh: 0; url=../admin/tarh_list_new.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+		 }
+		 else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+      }
+    
+   }
+
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+
+}
+//--------------------------------------------------------------------------------
+
+if(strcmp($user_type,"5")==0 )
+{
+  $query = "SELECT * FROM group_karshenasan where username=\"".trim($username)."\"";
+  
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+      
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+      	
+       header ("Refresh: 0; url=../index.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+        	
+           $seed=randString();
+           startsession($username,$seed,5);
+           //echo"sdfsd";
+           header ("Refresh: 0; url=../group_karshenasan/tarh_list_new.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+	
+		 
+      }
+    
+   }
+
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+
+}
+//------------------------------------------------------------------------------
+
+if(strcmp($user_type,"6")==0 )
+{
+  $query = "SELECT * FROM karshenas_shora where kar_shora_email=\"".trim($username)."\" and password=\"$password\" ";
+
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+      
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+      	
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+        	
+           $seed=randString();
+           startsession($username,$seed,6);
+           //echo"sdfsd";
+           header ("Refresh: 0; url=../karshenas_shora/tarh_list.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+	
+		 
+      }
+    
+   }
+
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+
+}
+//---------------------------------------------------------------------------
+
+
+if(strcmp($user_type,"9")==0)
+{
+  $query = "SELECT * FROM modir_daneshkade where modir_username=\"".trim($username)."\"";
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+  if( mysql_num_rows($result) > 0 )
+  {
+   if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+         if ($line["modir_type"]=="0" && $line["moaven_or_daneshjoyee"]=="1")
+		 {	
+           $seed=randString();
+           startsession($username,$seed,9);
+           header ("Refresh: 0; url=../payannameh/tarh_list_new.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";		 
+         }
+		 else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+      }
+    
+   }
+  
+
+}
+
+
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+}
+
+
+//-------------------------------------------------------------------------------
+
+if(strcmp($user_type,"2")==0)
+{
+  $query = "SELECT * FROM modir_daneshkade where modir_username=\"".trim($username)."\"";
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+  if( mysql_num_rows($result) > 0 )
+  {
+   if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+	 
+         if (($line["modir_type"]=="0" || $line["modir_type"]=="5") &&  $line["moaven_or_daneshjoyee"]=="0")
+		 {	
+           $seed=randString();
+           startsession($username,$seed,2);
+           header ("Refresh: 0; url=../sub_admin/tarh_list_new.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";		 
+         }
+		 else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+      }
+    
+   }
+  
+
+}
+
+
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+}
+
+//------------------------------------------
+
+
+if(strcmp($user_type,"7")==0 )
+{
+  $query = "SELECT * FROM nazer_mali where username=\"".trim($username)."\"";
+  //echo $query;
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+      
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+      	
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+        	
+           $seed=randString();
+           startsession($username,$seed,7);
+           //echo"sdfsd";
+           header ("Refresh: 0; url=../nazer_mali/new_gharardad.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+			 
+      }
+    
+   }
+
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+
+}
+
+
+//------------------------------------------
+
+
+
+if(strcmp($user_type,"8")==0 )
+{
+  $query = "SELECT * FROM hesabdari where username=\"".trim($username)."\"";
+  //echo $query;
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+      
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+      	
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+        	
+           $seed=randString();
+           startsession($username,$seed,8);
+           //echo"sdfsd";
+           header ("Refresh: 0; url=../hesabdari/in_doing.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+			 
+      }
+    
+   }
+
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+
+}
+
+
+//-----------------------------------------------------------------------------------------
+
+
+if(strcmp($user_type,"10")==0 )
+{
+  $query = "SELECT * FROM modir_daneshkade where modir_type='10' and  modir_username=\"".trim($username)."\"";
+  //echo $query;
+  $result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+      
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+      	
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+        	
+           $seed=randString();
+           startsession($username,$seed,10);
+           //echo"sdfsd";
+           header ("Refresh: 0; url=../moavenat_amozeshi/tarh_list_new.phtml?admin=$username&seed=$seed");
+           echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+			 
+      }
+    
+   }
+
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+
+}
+
+
+
+//------------------------------------------
+if(strcmp($user_type,"3")==0)
+{
+$query = "SELECT * FROM karshenasan where username=\"".trim($username)."\"";
+
+$result = mysql_query ($query)
+         or die ("Error in selecting data from user data");
+	
+if( mysql_num_rows($result) > 0 )
+{
+if ($line = mysql_fetch_array($result))
+   {
+    if($line["password"]!=$password)
+      {
+       header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+       exit(); 
+      }
+      else
+      {
+      	
+            $seed=randString();
+  			startsession($username,$seed,3);
+  			if(strcmp($line["karshenas_type"],'8')==0)
+  	          header ("Refresh: 0; url=../karshenas/tarh_list_new.phtml?admin=$username&seed=$seed");		
+			else  			
+     		  header ("Refresh: 0; url=../karshenas/tarh_list_new.phtml?admin=$username&seed=$seed");
+     		echo "<br><br><br><br><br><center><font face=system size=5 color=blue>Logging in please wait...</h1></center>";
+		 
+      }
+		 
+  }
+    
+   
+}
+else
+		 {
+		   header ("Refresh: 0; url=../index_2.phtml?msg=loginError");
+           exit();
+		 }
+		 
+
+}
+
+
+?>

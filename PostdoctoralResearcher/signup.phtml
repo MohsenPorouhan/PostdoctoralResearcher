@@ -1,0 +1,497 @@
+ 
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/session.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+if(isset($action))
+{
+  if (strcmp($action,"signup")==0)
+  {
+
+  session_start();
+	if ($_POST['code']==$_SESSION['key']) {
+		$cod_error = 1;
+	} else {
+		$cod_error = 0;
+	}
+	//echo $cod_error;
+	 if(strcmp($cod_error,'1')==0)
+	 {
+	 
+		if(strlen(trim($daneshjo_no)) > 0 && isset($payan_name) && strcmp($payan_name,"1")==0){
+      $query="select * from user_login where  email=\"$email\"  or   melli_code=\"$cod_melli \" or  daneshjo_no=\"$daneshjo_no\"";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+		}else{
+			$query="select * from user_login where  email=\"$email\"  or   melli_code=\"$cod_melli \"";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+			}
+      if ( mysql_num_rows($result) <= 0 )
+      {
+        $password=randstring(6);
+        if(strlen(trim($birth_date)) > 13)
+          $birth_date="";
+		  
+		 if(isset($payan_name) && strcmp($payan_name,"1")==0 )
+		   $payan_name_text=" payan_name='1',daneshjo_no='$daneshjo_no', ";
+		 else
+		   $payan_name_text="";
+		   
+		$jobplace=$cod_daneshkade; 
+        $query  = "insert into user_login set   signup_time='".date("Y-m-d")."', $payan_name_text madrak='$madrak', telno='$telno', jobplace='$jobplace',mobile=\"$mobile\",name=\"$name\" , family=\"$family\", shno = \"$shno\",  birth_date  = \"$birth_date\",  melli_code =\"$cod_melli\", password='$password', email =\"$email\", darajeelmi = $degree , takhasos = \"$takhasos\" ,sex=\"$sex\" , cod_bank=\"$cod_bank\" , bank_name=\"$bank_name\" , shoabe=\"$shoabe\" , hesab=\"$hesab\",cod_daneshkade='$cod_daneshkade'";
+       // $query="insert into user_login set cod_melli='$cod_melli',name='$name' , family='$family', rade_elmi='$rade_elmi',  takhasos  = '$takhasos',  email  ='$email', shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar',password='$password',hesab='$hesab',bank_name='$bank_name',shoabe='$shoabe',cod_bank='$cod_bank'";
+	    $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+
+    	$mail = new PHPMailer();
+
+	    $emailbody="";
+        $emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+        $emailbody=$emailbody."<br>Thanks for your registration at $url_address<br>";
+        $emailbody=$emailbody."<br>For using comprehensive research administration and sending your proposals<br>";
+        $emailbody=$emailbody."<br> using the below username and password<br>";
+        $emailbody=$emailbody."<br>Username: $email<br>Password: $password<br><br>";
+        $emailbody=$emailbody."Login Here : <a href=".$url_address."/login.phtml>Here</a>";
+        $emailbody=$emailbody."<center><font face=Arial size=2 color=green><a href=\"".$url_address."\">".$url_address."</a>";
+        $emailbody=$emailbody."<br>Powered by Peyvandco.com .</font></center>";
+
+
+	$mail->IsSMTP();
+	$mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye." ".$name_e;
+	$mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+	$mail->AddAddress($email, $mailname);
+	$mail->IsHTML(true);                                  // set email format to HTML
+
+	$mail->Subject = "Registration in ".$url_address." (Do not reply this email)";
+	$mail->Body    = $emailbody;
+	$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+	
+      if(!$mail->Send())
+    {
+        $status="mail_err";
+         
+    }
+     //send_email($subject,$emailbody,$email_username,$email,$email_from_name,$email_from,$email_password);
+
+     $message_string=".ضمن تشكر از ثبت نام شما شناسه كاربري و رمز عبور شما به آدرس پست الكترونيكي اعلام شده ارسال گرديد";
+	
+		        $message_string=$message_string."  ضمنا يک پيامک به شماره تلفن همراه شما نيز ارسال شد  ";
+		       
+		        $send_string="Username:$email   Password : $password";
+		        send_sms($mobile,$send_string);
+	/*
+
+         ********************************************************************
+          You shold be set E-mail sending in this place
+         ********************************************************************
+        
+        */
+     
+ }
+      else
+       $status="duplicate_entry";
+
+	  }
+ else 
+    $status="security_error";
+    
+  }
+
+}
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>پژوهشيار - ورود / عضويت</title>
+
+    <!-- Bootstrap -->
+    <link href="new_css/bootstrap.css" rel="stylesheet">
+    <link href="new_css/style-login.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="login-body">
+	<div class="modal fade" id="notify">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">راهنماي ثبت نام</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                   با سلام<br></br>
+به صفحه عضويت در سامانه پژوهشيار دانشگاه علوم پزشکي تهران خوش آمديد.<br>
+شما براي ورود به سامانه پژوهشيار نياز به نام کاربري و رمز عبور داريد که بعد از عضويت در سامانه در اختيار شما قرار خواهد گرفت. خواهشمند است قبل از عضويت در سامانه به نکات زير توجه کنيد:
+<br></br>1)	نام کاربري شما همان آدرس ايميل شما خواهد بود که در هنگام ثبت نام جهت عضويت در سامانه درج کرده ايد. بنابراين دقت کنيد که آدرس را بطور صحيح ثبت کنيد. به عنوان مثال اگر درساختار آدرس ايميل شما از sina,tums ,hyphen ,Dot ,underline ,space  و غيره استفاده شده است هنگام ثبت نام دقت کنيد موارد کم يا زياد و يا جابجا وارد نشود. همچنين از آنجاييکه رمز عبور شما به همين آدرس ايميل ارسال خواهد شد, ضروري است که آدرس ايميل مورد استفاده علاوه بر ثبت صحيح در سامانه, فعال نيز باشد.
+<br></br>2)	چند دقيقه بعد از ثبت نام, رمز عبور در قالب يک ايميل از طرف سامانه پژوهشيار به آدرس ايميل ثبت شده در هنگام عضويت ارسال خواهد شد. اگر ايميل مذکور را در Inbox خود نيافتيد,  فولدرهاي Trash ,Spam  و يا Bulk را بررسي کنيد.
+<br></br>3)	علاوه بر ايميل, يک پيامک که حاوي نام کاربري و رمز عبور شما مي باشد نيز, به شماره موبايل اعلام شده در هنگام ثبت نام ارسال خواهد شد. 
+<br></br>4)	همچنين مي توانيد براي دريافت رمز عبور از آدرس زير استفاده کنيد: http://research.tums.ac.ir/send_pass.phtml
+<br></br>5)	علاوه بر اين با ارسال نام کاربري خود به شماره 30007912, مي توانيد رمز عبور خود را دريافت نمائيد. 
+<br></br>6)	در صورتيکه  از طريق بندهاي 2 - 3 - 4 و 5 موفق به دريافت رمز عبور نشديد, ايميلي با عنوان " درخواست رمز عبور" به همراه اطلاعاتي از متقاضي عضويت در سامانه شامل: نام و نام خانوادگي, آدرس ايميل و شماره موبايل را به آدرس research@tums.ac.ir ارسال کنيد. در ايام اداري و غير تعطيل حداکثر ظرف مدت 24 ساعت به درخواست شما رسيدگي خواهد شد. 
+<br></br>7)	دانشجويان محترم که جهت ثبت پايان نامه اقدام به عضويت در سامانه مي نمايند, ضروري است محل مربوط به ثبت پايان نامه را تيک زده و شماره دانشجويي و دانشکده محل تحصيل خود را درست وارد نمايند. در غير اينصورت محيط کاربري ايجاد شده براي ايشان با محيط مخصوص ارسال پايان نامه متفاوت بوده و ادامه روند رسيدگي با مشکل مواجه خواهد شد.
+<br></br>8)	 قسمت مربوط به ثبت شماره دانشجويي صرفا مربوط به ثبت پايان نامه دانشجويي مي باشد.اگر دانشجوي متقاضي ثبت پايان نامه نيستيد از تکميل اين قسمت اکيدا خودداري کنيد. در غير اينصورت محيط کاربري ايجاد شده براي شما با محيط مخصوص ارسال طرح هاي تحقيقاتي متفاوت خواهد بود.
+<br></br>9)	ثبت نام در صورتي موفقيت آميز است که با پيغام " نام کاربري و رمز عبور به آدرس ايميل شما ارسال شد" مواجه شويد. 
+<br></br>10)	هنگام ورود به سامانه, در قسمت نام کاربري همان آدرس ايميل ثبت شده در هنگام عضويت را بطور کامل و صحيح وارد کنيد. سپس رمز عبور را وارد نموده و بر حسب مورد با عنوان مجري يا متقاضي ثبت پايان نامه وارد سامانه پژوهشيار شويد.
+<br></br>11)	در صورتيکه هنگام ثبت نام, پروفايل خود را بطور کامل تکميل نکرده باشيد, بعد از ورود به محيط کاربري, پروفايل براي شما باز مي شود. در صورت عدم تکميل پروفايل, سيستم اجازه کار با منوهاي موجود را نخواهد داد. ثبت شماره حساب بانک ملت براي مجريان طرح تحقيقاتي ضروري بوده ولي دانشجويان شماره حساب را " صفر" وارد 
+                   
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">تاييد</button>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    
+    <!-- modal -->
+    <div class="modal fade" id="error">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">اطلاع رساني</h4>
+                </div>
+                 <div class="modal-body">
+                    <p>
+                     <?php 
+                      if(isset($status) && strcmp($status,"security_error")==0)
+					   {
+					  
+					    echo "کد امنيتي صحيح وارد نشد."; 
+					  
+					   }
+					   else
+					   if(isset($status) && strcmp($status,"email_error")==0)
+					   {
+					  
+					    echo "چنين کاربري وجود ندارد"; 
+					  
+					   }
+					   else
+					   if(isset($status) && strcmp($status,"mail_err")==0)
+					   {
+					  
+					    echo "خطا در ارسال ايميل. مجددا تلاش نماييد"; 
+					  
+					   }
+						else
+					   if(isset($status) && strcmp($status,"duplicate_entry")==0)
+					   {
+					  
+					    echo "چنين کاربري قبلا تعريف شده"; 
+					  
+					   }
+					   else {
+					   	echo $message_string;
+					   }
+					  
+                     ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">تاييد</button>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!--login-->
+
+    <div class="panel-login-wrapper">
+        <div class="login-border">
+        <img src="img/tums_logo.png" alt="login heading" class="login-heading-logo" />
+            <img src="img/login-heading.png"  alt="login heading" class="login-heading-title" />
+            <img src="img/user.png" class="login-heading-img" alt="کاربر" />
+            <div class="panel panel-login">
+                <div class="panel-heading login-heading" >
+
+
+                    <h3 class="panel-title">عضويت</h3>
+                    <a href="login.phtml" class="pull-left login-notify"><span class="glyphicon glyphicon-info-sign"></span>صفحه ورود</a>
+                    <a href="#" id="myAnchor" class="cssbuttongo" data-toggle="modal" data-target="#error" class="pull-left login-notify">
+                    </a>
+                    <a href="#" data-toggle="modal" data-target="#notify" class="pull-left login-notify">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        راهنماي ثبت نام
+                    </a>
+                    
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                       
+                        <p>
+                           براي ثبت نام دانشجويي علاوه بر موارد زير باکس قرمز رنگ را نيز پر کنيد
+                        </p>
+                       
+                        
+                        <form name="signup" action="signup.phtml?action=signup" class="form-horizontal" method="post">
+                        <div class="col-md-6 pull-right">
+                            
+                             	<div class="form-group">
+	                                <label for="name" class="col-sm-2 control-label">نام <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <input name="name" class="form-control" id="name" placeholder="نام" tabindex="1" required>
+	                                </div>
+	                            </div>
+	                            <div class="form-group">
+	                                <label for="cod_melli" class=" control-label">کد ملي <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <input  name="cod_melli" class="form-control" id="cod_melli" placeholder="کد ملي" tabindex="3" required>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label for="telno" class=" control-label">تلفن ثابت <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <input  name="telno" class="form-control" id="telno" placeholder="تلفن ثابت" tabindex="5" required>
+	                                </div>
+	                            </div>
+	                                               	                            
+	                            
+	                            
+	                            <?
+								    $query="select * from darajeelmi";
+								    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+								
+								?>
+	                            
+	                            <div class="form-group">
+	                                <label for="inputPassword3" class=" control-label"> مدرک تحصيلي <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <select name="degree" class="form-control" tabindex="7" required>
+	                                        <option value="" class="tahoma1">انتخاب کنيد</option>
+										    <?
+										    while($row_fetched=mysql_fetch_array($qresult))
+										    {
+										      echo "<option value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$row_fetched["darajeelmi_desc"]."</option>";
+										    }
+										    ?>	
+	                                    </select>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label for="takhasos" class=" control-label">تخصص</label>
+	                                <div class="col-sm-9">
+	                                    <input  name="takhasos" class="form-control" id="takhasos" placeholder="تخصص" tabindex="9">
+	                                </div>
+	                            </div>
+	                            
+	                         
+							
+                            
+                              
+                                
+                            
+                           
+                           
+                           
+                            </div><!-- end of column right -->
+    
+                        <div class="col-md-6 pull-left">
+	                           
+	                            
+	                            <div class="form-group">
+	                                <label for="family" class=" control-label">نام خانوادگي <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <input name="family" class="form-control" id="family" placeholder="نام خانوادگي" tabindex="2" required >
+	                                </div>
+	                            </div>
+	                            
+	                        
+	                             <?
+								    $query="select * from daneshkade order by daneshkade_name";
+								    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+								    $groupcount = mysql_num_rows($qresult);
+								  ?>
+	                            <div class="form-group">
+	                                <label for="jobplace" class=" control-label"> محل کار <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <select name="jobplace" class="form-control" tabindex="4" required>
+	                                        <option value="">انتخاب کنيد</option>
+	                                        <?
+									    while($row_fetched=mysql_fetch_array($qresult))
+									    {
+									         echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+									    }
+									    ?>
+	                                    </select>
+	                                    <span class="help-block">
+										 <font color=red>منظور"دانشکده محل تحصيل" مي باشد</font>
+										</span>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label for="mobile" class=" control-label">تلفن همراه <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <input  name="mobile" class="form-control" id="mobile" placeholder="تلفن همراه" tabindex="6" required>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label for="inputPassword3" class=" control-label"> مقطع تحصيلي <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <select name="madrak" class="form-control" tabindex="8" required>
+	                                        <option value="" class="tahoma1">انتخاب کنيد</option>
+										    <option value="1" class="tahoma1">زير کارشناسي</option>
+										    <option value="2" class="tahoma1">کارشناسي</option>
+										    <option value="3" class="tahoma1">کارشناسي ارشد</option>
+										    <option value="4" class="tahoma1">دکتراي حرفه اي</option>
+											<option value="5" class="tahoma1">PHD</option>
+											<option value="6" class="tahoma1">تخصص</option>	
+											<option value="7" class="tahoma1">فوق تخصص</option>	
+											<option value="8" class="tahoma1">MPH</option>	
+	                                    </select>
+	                                </div>
+	                            </div>
+	                            
+	                             <div class="form-group">
+	                          
+	                                <label for="email" class=" control-label"> پست الکترونيکي <font color=red>*</font></label>
+	                                <div class="col-sm-9">
+	                                    <input type="email" name="email" class="form-control" id="email" placeholder="پست الکترونيکي" tabindex="10" required>
+	                                </div>
+	                            </div>
+                            </div>
+                            <!-- end of column left -->
+                                                    
+                            <div class="form-group">
+                                
+                                <div class="col-sm-12">
+                                   
+                                </div>
+                           	  </div>
+                           	  		
+	                           <div>
+	                           <div class="panel panel-danger">
+						 <div class="panel-heading">در صورتي که صرفا براي ثبت پايان نامه دانشجويي اقدام مي کنيد گزينه زير را تيک بزنيد</div>
+							<div class="panel-body">
+								 <div class="col-md-2 pull-right">
+		                             <div class="form-group">
+		                                <label for="payan_name" class=" control-label">ثبت پايان نامه</label>
+		                                <div class="col-sm-4">
+		                                    <input  type="checkbox" class="checkbox" name="payan_name"  value='1' tabindex="11">
+		                                </div>
+		                             </div>
+	                            </div>
+	                            <?
+								    $query="select * from daneshkade where is_daneshkade='1'order by daneshkade_name";
+								    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+								    $groupcount = mysql_num_rows($qresult);
+								  ?>
+	                            <div class="col-md-5">
+		                             <div class="form-group">
+		                               <label for="cod_daneshkade" class=" control-label"> محل تحصيل <font color=red></font></label>
+		                                <div class="col-sm-9">
+		                                    <select name="cod_daneshkade" class="form-control" tabindex="13" >
+		                                        <option value="">انتخاب کنيد</option>
+		                                        <?
+										    while($row_fetched=mysql_fetch_array($qresult))
+										    {
+										         echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+										    }
+										    ?>
+		                                    </select>
+		                                </div>
+		                            </div> 
+                            	</div>
+                            	<div class="col-md-5">
+		                             <div class="form-group">
+		                                <label for="daneshjo_no" class=" control-label">شماره دانشجويي </label>
+		                                <div class="col-sm-8">
+		                                    <input  name="daneshjo_no" class="form-control" id="daneshjo_no" placeholder="شماره دانشجويي" tabindex="12" >
+		                                </div>
+		                            </div> 
+                            	</div>
+						  </div>
+						</div>
+	                         
+                            </div>
+                            <div class="col-md-6 pull-left">
+          
+                             <div class="form-group">
+                                <div class="col-md-10">
+                                <? if (!isset($_POST['Submit'])) { ?>
+								<img src="capcha.php">
+								<? } else { ?>
+								&nbsp;
+								<? } ?>
+								</div>
+                            </div>
+                            </div>
+                            <div class="col-md-6 pull-right">
+          
+                            <div class="form-group">
+                                <label for="code" class=" control-label">کد مقابل را وارد کنيد<font color=red>*</font></label>
+                                <div class="col-sm-8">
+                                    <input name="code" class="form-control" id="code" tabindex="14" required>
+                                </div>
+                            </div>
+                            </div>
+                           	  <div style="margin: 0 auto;width: 10%;">
+                                   
+                                    <button type="submit" class="btn btn-info">ثبت نام</button>
+                                </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.login-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    
+
+</body>
+</html>
+<?php 
+if(isset($action))
+{
+  if (strcmp($action,"signup")==0)
+  {
+  	?>
+   
+         <script type="text/javascript">
+         $(document).ready(function() {
+             
+        	 $('.cssbuttongo').trigger('click');
+       	});         
+               	
+		</script> 
+		<?php 
+  }
+}
+  
+?>

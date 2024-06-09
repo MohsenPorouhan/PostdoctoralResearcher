@@ -1,0 +1,198 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"jalase_shora_report_result.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ ?>
+ 
+ 
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR  >
+   
+                <td align="center" width="249" height="19"></td>
+      <TD align=right class='tahoma1' width="251"  background="image/top_bg.gif" height=19><b>گزارش</b></TD>
+
+  
+   </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+ <table border="1" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<tr>
+<?
+$query="select * from daneshkade,modir_daneshkade where daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade group by daneshkade.cod_daneshkade order by  daneshkade_name  desc ";
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+echo "<td  align=\"center\" class=\"tahoma1\"> <select size=\"1\" class='tahoma1' name=\"cod_daneshkade\" onchange=\"JavaScript:document.change_daneshkade.submit();\" dir=\"rtl\">";
+echo "<option value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if($row_fetched["cod_daneshkade"]==$cod_daneshkade)
+   	  $selected="selected";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["modir_username"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+ }
+ $sender=$row_fetched["creator"];
+?> 
+</select><b>دانشکده / مرکز </b>
+</td>
+</tr>
+
+
+	<tr>		<td align="center" valign="top" class="tahoma1"><b>: تاريخ ارسال به معاونت </b><br/><br/>
+			<select class="tahoma1" name="start_day"  style="width:50px;" >
+	  <option class="tahoma1" value="-1">  روز </option>
+	  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+  	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+      <option >10</option>
+  	  <option >11</option>
+   	  <option >12</option>
+      <option >13</option>
+      <option >14</option>
+      <option >15</option>
+      <option >16</option>
+      <option >17</option>
+      <option >18</option>
+      <option >19</option>
+      <option >20</option>
+      <option >21</option>
+      <option >22</option>
+      <option >23</option>
+      <option >24</option>
+      <option >25</option>
+      <option >26</option>
+      <option >27</option>
+      <option >28</option>
+      <option >29</option>
+      <option >30</option>
+      <option >31</option>
+</select>
+<select class="tahoma1" name="start_month"  style="width:50px;" >
+	  <option value="-1">  ماه </option>
+	  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+	  <option >10</option>
+	  <option >11</option>
+	  <option >12</option>
+   </select>
+   <select class="tahoma1" name="start_year"  style="width:50px;" >
+	  <option value="-1">  سال </option>
+	  <option >1380</option>
+	  <option >1381</option>
+	  <option >1382</option>
+	  <option >1383</option>
+	  <option >1384</option>
+	  <option >1385</option>
+	  <option >1386</option>
+	  <option >1387</option>
+	  <option >1388</option>
+	  <option >1389</option>
+	  <option >1390</option>
+	  <option >1391</option>
+	  <option >1392</option>
+   </select>: از تاريخ
+   <br/><br/>
+<select class="tahoma1" name="end_day"  style="width:50px;" >
+  <option value="-1">  روز </option>
+  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+  	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+      <option >10</option>
+  	  <option >11</option>
+   	  <option >12</option>
+      <option >13</option>
+      <option >14</option>
+      <option >15</option>
+      <option >16</option>
+      <option >17</option>
+      <option >18</option>
+      <option >19</option>
+      <option >20</option>
+      <option >21</option>
+      <option >22</option>
+      <option >23</option>
+      <option >24</option>
+      <option >25</option>
+      <option >26</option>
+      <option >27</option>
+      <option >28</option>
+      <option >29</option>
+      <option >30</option>
+      <option >31</option>
+</select>
+<select class="tahoma1" name="end_month"  style="width:50px;" >
+  <option value="-1">  ماه </option>
+  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+	  <option >10</option>
+	  <option >11</option>
+	  <option >12</option>
+   </select>
+   <select class="tahoma1" name="end_year" style="width:50px;" >
+  <option value="-1">  سال </option>
+  <option >1380</option>
+	  <option >1381</option>
+	  <option >1382</option>
+	  <option >1383</option>
+	  <option >1384</option>
+	  <option >1385</option>
+	  <option >1386</option>
+	  <option >1387</option>
+	  <option >1388</option>
+	  <option >1389</option>
+	  <option >1390</option>
+	  <option >1391</option>
+	  <option >1392</option>
+   </select>: تا تاريخ 
+</td>
+</tr>
+<tr>
+			<td colspan="3" align="center" ><input  class="but-tarh-type" type="submit" value="نمايش" ></td>
+</tr>
+
+</table>
+</form>
+<?
+footer_forms($admin,$seed);
+?>

@@ -1,0 +1,223 @@
+<script>
+function checkit()
+{
+	var key
+	key = window.event.keyCode
+	
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	{
+		if(key!=46)
+	      window.event.returnValue= false;
+	    else  
+	    window.event.returnValue= true
+	}
+
+	  
+}
+</script>
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_hazine_personnel")==0)
+  {
+
+     if(strlen(trim($per_hour)) > 0 && strlen(trim($majmoa_saat)) > 0 && strlen(trim($persons)) > 0 && strlen(trim($activity_type)) > 0  )
+     {
+      $query="select * from hazine_personnel where  activity_type=\"$activity_type\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+        $query  = "insert into hazine_personnel set degree=\"$degree\",activity_type=\"$activity_type\" , persons=\"$persons\",majmoa_saat=\"$majmoa_saat\",per_hour=\"$per_hour\",cod_tarh=\"$cod_tarh\"";
+        
+	    $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        $action="ثبت هزِينه پرسنلي با عنوان "."<br>".$activity_type." با کد ".$cod_tarh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));        
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+     else
+       $status="entry_error";
+  }
+
+ if (strcmp($action,"delete_hazine")==0)
+ {
+    $query="delete from hazine_personnel where cod_hazine = \"$delete_id\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_elmi");
+    
+    $action="حذف هزينه پرسنلي براي طرح با کد "." با کد ".$cod_tarh;
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+ }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_hazine_personnel&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=middle width="251"  background="image/hazine_personnel.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="activity_type" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نوع فعاليت</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="persons" size="20" value="" class="edit-user" onkeypress="return checkit()"></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>تعداد افراد</td>
+  </tr>
+
+
+   <tr>
+  <?
+    $query="select * from darajeelmi order by darajeelmi_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi 1");
+
+  ?>
+    <td width="350" align="right"><select size="1" name="degree" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+      echo "<option value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$row_fetched["darajeelmi_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>درجه علمي</td>
+  </tr>
+  
+  
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="majmoa_saat" size="20" value="" class="edit-user"  onkeypress="return checkit()"></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>مجموع ساعات</td>
+  </tr>
+
+  <tr>
+ <td width="350" align="right"><input type="text" name="per_hour" size="20" value="" class="edit-user"  onkeypress="return checkit()"></td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>حق الزحمه در ساعت</td>
+ </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+
+
+
+  <?
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+     echo "<tr>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">جمع</td>";
+     echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">حق الزحمه در ساعت</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">مجموع ساعات</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">درجه تحصيلي</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma1\">تعداد افراد</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نوع فعاليت</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+//       echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_personnel.phtml&admin=$admin&seed=$seed&action=delete_hazine&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_hazine"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $a=$row_fetched["per_hour"];
+       $b=$row_fetched["majmoa_saat"];
+       $my_summary = $a*$b;
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".$my_summary."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$row_fetched["per_hour"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$row_fetched["majmoa_saat"]."</td>";
+
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$degree_result."</td>";
+       
+       
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["persons"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["activity_type"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">".$mycount."</td>";
+      echo "<td align=\"right\" colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+ footer_forms($admin,$seed);
+?>
+

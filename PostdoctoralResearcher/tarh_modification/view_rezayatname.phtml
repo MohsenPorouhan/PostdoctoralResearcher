@@ -1,0 +1,439 @@
+<META http-equiv=content-type content=text/html;charset=utf-8>
+
+
+
+<?php
+
+function check_field_value1($id,$var_val)
+{
+  	
+   
+   $tok = strtok($id,",");
+   while ($tok) {
+    //if(strcmp($tok,$permission)==0)
+	 // return 1;
+	 // echo $tok."<br>";
+	 $var_len=strlen($var_val);
+	 if(strcmp(substr($tok,$var_len,1),"=")==0)
+	 {
+	   
+	   if(strcmp($var_val,substr($tok,0,$var_len))==0)
+	   {
+	   	 $tok_len=strlen($tok);
+	   	 $tok_len=$tok_len-($var_len+1);
+	     $return_var=substr($tok,$var_len+1,$tok_len);
+		 
+		 return $return_var;
+	     
+	     //exit();
+	   } 
+	 }
+      $tok = strtok(",");
+   }
+   
+   
+  
+ return -1;
+}
+  
+if(!isset($username))
+  $username="";
+if(!isset($rand))
+  $rand="";
+  
+  if(!isset($version))
+  $version='-1';
+  ?>
+  
+  <?php 
+  $query="select * from tarh where cod_tarh=\"$cod_tarh\" and version='-1' ";
+  //echo $query;
+  $result=mysql_query($query) or die("Error in updating data into tarh1");
+  $my_row_fetched=mysql_fetch_array($result);
+  $form_rezayatname=$my_row_fetched['form_rezayatname'];
+  $tarh_title_farsi=$my_row_fetched["tarh_title_farsi"];
+  $creator=$my_row_fetched["creator"];
+  $rezayatname_type=$my_row_fetched['rezayatname_taype'];
+ // echo $rezayatname_type;
+  $q="select * from user_login where email='$creator'";
+  $result=mysql_query($q) or die("Error in updating data into tarh1");
+  $my_row_fetched=mysql_fetch_array($result);
+  $family=$my_row_fetched["family"];
+  $name=$my_row_fetched["name"];
+  $name_family=$name." ".$family;
+  
+ // echo "ss".$form_rezayatname;
+ 
+  ?>
+  
+   
+      
+	<?php $m=check_field_value1($form_rezayatname,"a0");
+	
+              		if(strcmp($m,"1")==0){
+              			
+              		if($rezayatname_type=="1" || $rezayatname_type=="3"){
+              ?> 
+  
+  <br></br>
+  <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <tr height="20px">
+     <td height="20px"></td></tr> 
+ <tr><td width="80%" class="tahoma2" align="center" dir='rtl'><b><font size="3pt">رضايت نامه شرکت در طرح <?php echo $tarh_title_farsi;?></b></font></td></tr>
+  <tr height="20px">
+     <td height="20px"></td></tr> 
+ <tr>
+ 	<td width="80%" class="tahoma2" align="center" dir='rtl'>
+ 		 <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 				<tr><td width="80%" class="tahoma2" align="right" dir='rtl'>
+ 					<b>آقاي / خانم</b><br><br>بدين وسيله از شما جهت شرکت در پژوهش فوق الذکر دعوت  به عمل مي آيد. اطلاعات مربوط به اين پژوهش در اين برگه خدمتتان ارائه شده است  و شما براي شرکت يا عدم شرکت در اين پژوهش آزاد هستيد. </br><br>شما مجبور به تصميم گيري فوري نيستيد و براي تصميم گيري در اين باره مي توانيد سوالات خود را از تيم پژوهشي بپرسيد و با هر فردي که مايل باشيد مشورت نماييد. قبل از امضاي اين رضايت نامه مطمئن شويد که متوجه تمامي اطلاعات اين فرم شده ايد و به تمام سوالات شما پاسخ داده است.</br>
+ 				</td></tr>
+ 				<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl'><b>مجري پژوهش:<?php echo " ".$name_family;?></b></td>
+  		</tr>
+ 				  <tr height="20px">
+     <td height="20px"></td></tr> 
+ 		</table>
+ 	</td>
+ </tr>
+   <tr height="20px">
+     <td height="20px"></td></tr> 
+       <tr height="20px">
+     <td height="20px"></td></tr> 
+ <tr height="10px"></tr>
+ <?php $i=check_field_value1($form_rezayatname,"a1");
+              	if($i!="مورد ندارد")
+              	{	
+  ?>
+ 
+ <tr>
+ 	<td width="80%" class="tahoma2" align="right" dir='rtl'>1.من مي دانم که اهداف اين پژوهش عبارتند از:<br><?php echo $i;?></br></td>
+ </tr>
+ <?php }?>
+ <tr height="20px"><td height="20px"></td></tr>
+ 	
+  <tr>	    
+	<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl' style="pading:20px 20px 10px;">2.من مي دانم شرکت من در اين پژوهش کاملا داوطلبانه است و مجبور به شرکت در اين پژوهش نيستم<br>  به من اطمينان داده شد که اگر حاضر به شرکت در اين پژوهش نباشم، از مراقبت هاي معمول تشخيصي و درماني محروم نخواهم شد و رابطه درماني من بامرکز درماني و پرشک معالج دچار اشکال نشود</td>
+  </tr>
+  <tr><td height="20px"></td></tr>
+  
+   <tr>
+	  <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>3.من مي دانم که حتي پس از موافقت با شرکت در پژوهش مي توانم هر وقت که بخواهم، پس از اطلاع به مجري، از پژوهش خارج شوم و خروج من از پژوهش باعث محروميت از دريافت خدمات درماني معمول براي من نخواهد شد.</td>
+   </tr>
+   
+     <tr height="20px">
+     <td height="20px"></td></tr>  
+	<?php $i=check_field_value1($form_rezayatname,"a2");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+   
+   <tr>
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>4.نحوه ي همکاري اينجانب در اين پژوهش به اين صورت است:<br><?php echo $i;?></br></td>
+  </tr>
+   <?php }?>
+     <tr><td height="20px"></td></tr>
+	<?php $i=check_field_value1($form_rezayatname,"a3");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+  
+  <tr> 
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>5.منافع احتمالي شرکت اينجانب در اين پژوهش به شرح زير است:<br><?php echo $i;?></br></td>
+  </tr>
+   <?php }?>
+  <tr><td height="20px"></td></tr>
+      
+	<?php $i=check_field_value1($form_rezayatname,"a4");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+  
+  <tr>  
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>6.آسيب ها و عوارض احتمالي شرکت در اين پژوهش به اين شرح است:<br><?php echo $i;?></br></td>
+  </tr>
+  <tr><td height="20px"></td></tr>
+   <?php }?>
+   <?php $i=check_field_value1($form_rezayatname,"a5");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+  <tr> 
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>7.در صورت عدم تمايل به شرکت در پژوهش خدمات معمول (درماني، تشخيصي و ...) براي من ارائه خواهد شد که منافع و عوارض آن به اين شرح است:<br><?php echo $i;?></br></td>
+  </tr>
+  <?php }?>
+ <tr><td height="20px"></td></tr>
+  <tr>    
+    <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>8.من مي دانم که دست اندرکاران اين پژوهش، کليه اطلاعات مربوط به من را نزد خود به صورت محرمانه نگه داشته و فقط اجازه دارند نتايج کلي و گروهي اين پژوهش را بدون ذکر نام و مشخصات اينجانب منتشر کنند.</td>
+  </tr>
+  <tr><td height="20px"></td></tr>
+  <tr>
+    <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>9.مي دانم که کميته اخلاق در پژوهش با هدف نظارت بر رعايت حقوق اينجانب مي تواند به اطلاعات من دسترسي داشته باشيد</td>
+  </tr>
+  
+ 
+  
+ 
+   <tr><td height="20px"></td></tr> 
+	<?php $i=check_field_value1($form_rezayatname,"a6");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+		
+  <tr> 
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>10.من مي دانم که هيچ يک از هزينه هاي انجام اقدامات پژوهشي به شرح ذيل بر عهده من نخواهد بود.<br><?php echo $i;?></br></td>
+  </tr>
+  <?php }?>
+  <tr><td height="20px"></td></tr>
+  <?php $i=check_field_value1($form_rezayatname,"a7");
+		if($i=="-1")
+              			$i="";
+              		$j=check_field_value1($form_rezayatname,"a8");
+              		if($j=="-1")
+              			$j="";
+              		$f=check_field_value1($form_rezayatname,"a9");
+              		if($f=="-1")
+              			$f="";
+              		$g=check_field_value1($form_rezayatname,"a10");
+              		if($g=="-1")
+              			$g="";
+              		
+              ?>
+  <tr><td height="20px"></td></tr>
+   <tr>
+		    
+		    <td width="80%" class="tahoma2" align="right" dir='rtl'>11.خانم / آقاي <? echo $i; ?> جهت پاسخگويي به اينجانب معرفي شد و به من گفته شد تا هر وقت مشکلي يا سوالي در رابطه با شرکت در پژوهش مذکور پيش آمد با ايشان در ميان بگذارم و راهنمايي بخواهم.<br>آدرس و شماره تلفن ثابت و همراه ايشان به شرح زير به من ارائه شد.:</br>
+		    <br><b>آدرس:    </b> <? echo $j; ?> </br>
+		    <br><b>تلفن ثابت : <? echo $f; ?></b></br>
+		    <br><b>تلفن همراه: <? echo $g; ?></b></br>
+		    </td>
+   </tr>
+   <tr><td height="20px"></td></tr>
+    <tr>
+		<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>12.من مي دانم که اگر در حين و بعد از انجام پژوهش هر مشکلي اعم از جسمي و روحي به علت شرکت در اين پژوهش براي من پيش آمد درمان عوارض آن و غرامت مربوطه بر عهده مجري خواهد بود.</td>
+	</tr>
+	<tr><td height="20px"></td></tr>
+	<tr>
+		<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>13.من مي دانم اگر اشکال يا اعتراضي نسبت به دست اندرکاران يا روند پژوهش دارم ميتوانم با کميته اخلاق در پژوهش دانشگاه علوم پزشکي تهران به آدرس : <b>تهران، تقاطع بلوار کشاورز و خيابان قدس، ساختمان ستاد مرکزي دانشگاه علوم پزشکي تهران، طبقه ششم، اتاق 605</b> تماس گرفته و مشکل خود را به صورت شفاهي يا کتبي مطرح نماييم.</td>
+	</tr>
+	<tr><td height="20px"></td></tr>
+	<tr>
+	   <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>14.اين فرم اطلاعات و رضايت آگاهانه در دو نسخه تهيه شده و پس از امضا يک نسخه در اختيار من و نسخه ديگر در اختيار مجري قرار خواهد گرفت.</td>
+	</tr>
+ 
+  </TABLE>
+  <br></br>
+  <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  		<tr>
+  			<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>اينجانب موارد فوق الذکر را خواندم و فهميدم و بر اساس آن رضايت آگاهانه خود را براي شرکت در اين پژوهش اعلام ميکنم</td>
+  		</tr>
+  		
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl'>امضاي شرکت کننده</td>
+  		</tr>
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl' height="30px"></td>
+  		</tr>
+  </TABLE>
+  <br></br>
+  
+   <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; page-break-after:always">
+  		<tr>
+  			<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>اينجانب <b><?php echo $name_family?></b> خود را ملزم به اجراي تعهدات مربوط به مجري در مفاد فوق دانسته و متعهد ميگردم در تامين حقوق و ايمني شرکت کننده در اين پژوهش تلاش نمايم.</td>
+  		</tr>
+  		
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl'>مهر و امضاي مجري پژوهش</td>
+  		</tr>
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl' height="30px"></td>
+  		</tr>
+  </TABLE>
+
+  
+  <?php   }
+              		 if($rezayatname_type=='2' || $rezayatname_type=='3')
+              		 {
+              		 	?>
+              		 		  <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; page-break-before:always;">
+   <tr height="20px">
+     <td height="20px"></td></tr> 
+ <tr><td width="80%" class="tahoma2" align="center" dir='rtl'><b><font size="3pt">رضايت نامه شرکت در طرح <?php echo $tarh_title_farsi;?></b></font></td></tr>
+  <tr height="20px">
+     <td height="20px"></td></tr> 
+ <tr>
+ 	<td width="80%" class="tahoma2" align="center" dir='rtl'>
+ 		 <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 				<tr><td width="80%" class="tahoma2" align="right" dir='rtl'>
+ 					<b>آقاي / خانم</b><br><br>بدين وسيله از شما جهت شرکت در پژوهش فوق الذکر دعوت  به عمل مي آيد. اطلاعات مربوط به اين پژوهش در اين برگه خدمتتان ارائه شده است  و شما براي شرکت يا عدم شرکت در اين پژوهش آزاد هستيد. </br><br>شما مجبور به تصميم گيري فوري نيستيد و براي تصميم گيري در اين باره مي توانيد سوالات خود را از تيم پژوهشي بپرسيد و با هر فردي که مايل باشيد مشورت نماييد. قبل از امضاي اين رضايت نامه مطمئن شويد که متوجه تمامي اطلاعات اين فرم شده ايد و به تمام سوالات شما پاسخ داده است.</br>
+ 				</td></tr>
+ 				<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl'><b>مجري پژوهش:<?php echo " ".$name_family;?></b></td>
+  		</tr>
+ 				  <tr height="20px">
+     <td height="20px"></td></tr> 
+ 		</table>
+ 	</td>
+ </tr>
+   <tr height="20px">
+     <td height="20px"></td></tr> 
+       <tr height="20px">
+     <td height="20px"></td></tr> 
+ <tr height="10px"></tr>
+ <?php $i=check_field_value1($form_rezayatname,"a1");
+              	if($i!="مورد ندارد")
+              	{	
+  ?>
+ 
+ <tr>
+ 	<td width="80%" class="tahoma2" align="right" dir='rtl'>1.من به عنوان "ولي/وکيل قانوني/قيم" مي دانم که اهداف اين پژوهش عبارتند از:<br><?php echo $i;?></br></td>
+ </tr>
+ <?php }?>
+ <tr height="20px"><td height="20px"></td></tr>
+ 	
+  <tr>	    
+	<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl' style="pading:20px 20px 10px;">2.من به عنوان "ولي/وکيل قانوني/قيم" مي دانم شرکت فرد تحت "قيموميت من"/"موکل من" در اين پژوهش کاملا داوطلبانه است و مجبور به شرکت در اين پژوهش نيست<br>  به من  به عنوان ولي/وکيل قانوني/قيم اطمينان داده شد که اگر فرد تحت قيموميت من/موکل من حاضر به شرکت در اين پژوهش نباشد، از مراقبت هاي معمول تشخيصي و درماني محروم نخواهد شد و رابطه درماني او با مرکز درماني و پرشک معالج دچار اشکال نشود</td>
+  </tr>
+  <tr><td height="20px"></td></tr>
+  
+   <tr>
+	  <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>3.من  به عنوان "ولي/وکيل قانوني/قيم" مي دانم که حتي پس از موافقت با شرکت  فرد تحت "قيموميت من"/"موکل من" در پژوهش، مي توانم هر وقت که بخواهم، پس از اطلاع به مجري،او را از پژوهش خارج کنم و خروج او از پژوهش باعث محروميتش از دريافت خدمات درماني معمول نخواهد شد.</td>
+   </tr>
+   
+     <tr height="20px">
+     <td height="20px"></td></tr>  
+	<?php $i=check_field_value1($form_rezayatname,"a2");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+   
+   <tr>
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>4.نحوه ي همکاري فرد تحت "قيموميت من"/"موکل من" در اين پژوهش به اين صورت است:<br><?php echo $i;?></br></td>
+  </tr>
+   <?php }?>
+     <tr><td height="20px"></td></tr>
+	<?php $i=check_field_value1($form_rezayatname,"a3");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+  
+  <tr> 
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>5.منافع احتمالي شرکت فرد تحت "قيموميت من"/"موکل من" در اين پژوهش به شرح زير است:<br><?php echo $i;?></br></td>
+  </tr>
+   <?php }?>
+  <tr><td height="20px"></td></tr>
+      
+	<?php $i=check_field_value1($form_rezayatname,"a4");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+  
+  <tr>  
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>6.آسيب ها و عوارض احتمالي شرکت در اين پژوهش به اين شرح است:<br><?php echo $i;?></br></td>
+  </tr>
+  <tr><td height="20px"></td></tr>
+   <?php }?>
+   <?php $i=check_field_value1($form_rezayatname,"a5");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+  <tr> 
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>7.در صورت عدم تمايل به شرکت در پژوهش خدمات معمول (درماني، تشخيصي و ...) براي فرد تحت "قيموميت من"/"موکل من" ارائه خواهد شد که منافع و عوارض آن به اين شرح است:<br><?php echo $i;?></br></td>
+  </tr>
+  <?php }?>
+ <tr><td height="20px"></td></tr>
+  <tr>    
+    <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>8.من به عنوان "ولي/وکيل قانوني/قيم" مي دانم که دست اندرکاران اين پژوهش، کليه اطلاعات مربوط به فرد تحت "قيموميت من"/"موکل من" را نزد خود به صورت محرمانه نگه داشته و فقط اجازه دارند نتايج کلي و گروهي اين پژوهش را بدون ذکر نام و مشخصات منتشر کنند.</td>
+  </tr>
+  <tr><td height="20px"></td></tr>
+  <tr>
+    <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>9. من به عنوان "ولي/وکيل قانوني/قيم" مي دانم که کميته اخلاق در پژوهش با هدف نظارت بر رعايت حقوق فرد تحت "قيموميت من"/"موکل من" مي تواند به اطلاعاتش دسترسي داشته باشد </td>
+  </tr>
+  
+ 
+  
+ 
+   <tr><td height="20px"></td></tr> 
+	<?php $i=check_field_value1($form_rezayatname,"a6");
+              		if($i!="مورد ندارد")
+              	{	
+  ?>
+		
+  <tr> 
+    <td width="80%" class="tahoma2" align="right" dir='rtl'>10.من به عنوان "ولي/وکيل قانوني/قيم" مي دانم که هيچ يک از هزينه هاي انجام اقدامات پژوهشي به شرح ذيل بر عهده فرد تحت "قيموميت من"/"موکل من" نخواهد بود.<br><?php echo $i;?></br></td>
+  </tr>
+  <?php }?>
+  <tr><td height="20px"></td></tr>
+  <?php $i=check_field_value1($form_rezayatname,"a7");
+		if($i=="-1")
+              			$i="";
+              		$j=check_field_value1($form_rezayatname,"a8");
+              		if($j=="-1")
+              			$j="";
+              		$f=check_field_value1($form_rezayatname,"a9");
+              		if($f=="-1")
+              			$f="";
+              		$g=check_field_value1($form_rezayatname,"a10");
+              		if($g=="-1")
+              			$g="";
+              		
+              ?>
+  <tr><td height="20px"></td></tr>
+   <tr>
+		    
+		    <td width="80%" class="tahoma2" align="right" dir='rtl'>11.خانم / آقاي <? echo $i; ?> جهت پاسخگويي به اينجانب معرفي شد و به من گفته شد تا هر وقت مشکلي يا سوالي در رابطه با شرکت در پژوهش مذکور پيش آمد با ايشان در ميان بگذارم و راهنمايي بخواهم.<br>آدرس و شماره تلفن ثابت و همراه ايشان به شرح زير به من ارائه شد.:</br>
+		    <br><b>آدرس:    </b> <? echo $j; ?> </br>
+		    <br><b>تلفن ثابت : <? echo $f; ?></b></br>
+		    <br><b>تلفن همراه: <? echo $g; ?></b></br>
+		    </td>
+   </tr>
+   <tr><td height="20px"></td></tr>
+    <tr>
+		<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>12.من به عنوان "ولي/وکيل قانوني/قيم" مي دانم که اگر در حين و بعد از انجام پژوهش هر مشکلي اعم از جسمي و روحي به علت شرکت در اين پژوهش براي فرد تحت "قيموميت من"/"موکل من" پيش آمد درمان عوارض آن و غرامت مربوطه بر عهده مجري خواهد بود.</td>
+	</tr>
+	<tr><td height="20px"></td></tr>
+	<tr>
+		<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>13.من مي دانم اگر اشکال يا اعتراضي نسبت به دست اندرکاران يا روند پژوهش دارم ميتوانم با کميته اخلاق در پژوهش دانشگاه علوم پزشکي تهران به آدرس : <b>تهران، تقاطع بلوار کشاورز و خيابان قدس، ساختمان ستاد مرکزي دانشگاه علوم پزشکي تهران، طبقه ششم، اتاق 605</b> تماس گرفته و مشکل خود را به صورت شفاهي يا کتبي مطرح نماييم.</td>
+	</tr>
+	<tr><td height="20px"></td></tr>
+	<tr>
+	   <td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>14.اين فرم اطلاعات و رضايت آگاهانه در دو نسخه تهيه شده و پس از امضا يک نسخه در اختيار من به عنوان "ولي/وکيل قانوني/قيم" و نسخه ديگر در اختيار مجري قرار خواهد گرفت.</td>
+	</tr>
+ 
+  </TABLE>
+  <br></br>
+  <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  		<tr>
+  			<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>اينجانب به عنوان "ولي/وکيل قانوني/قيم" موارد فوق الذکر را خواندم و فهميدم و بر اساس آن، رضايت آگاهانه خود را براي شرکت فرد تحت "قيموميت من"/"موکل من" در اين پژوهش را اعلام ميکنم</td>
+  		</tr>
+  		
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl'> امضاي ولي/وکيل قانوني/قيم</td>
+  		</tr>
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl' height="30px"></td>
+  		</tr>
+  </TABLE>
+  <br></br>
+  
+   <TABLE cellSpacing=0 width="80%" align="center"cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  		<tr>
+  			<td width="80%"  align=right class="tahoma2" valign="top" dir='rtl'>اينجانب <b><?php echo $name_family?></b> خود را ملزم به اجراي تعهدات مربوط به مجري در مفاد فوق دانسته و متعهد ميگردم در تامين حقوق و ايمني شرکت کننده در اين پژوهش تلاش نمايم.</td>
+  		</tr>
+  		
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl'>مهر و امضاي مجري پژوهش</td>
+  		</tr>
+  		<tr>
+  			<td width="80%"  align=LEFT class="tahoma2" valign="top" dir='rtl' height="30px"></td>
+  		</tr>
+  </TABLE>
+              		 		
+              		 	<?
+              		 		
+              		 }
+           }
+  else  
+  		 message_show("بنا به نظر مجري اين پژوهش احتياجي به فرم رضايت نامه ندارد.","red");
+  
+  ?>

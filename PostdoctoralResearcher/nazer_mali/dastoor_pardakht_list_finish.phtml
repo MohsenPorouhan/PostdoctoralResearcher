@@ -1,0 +1,184 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+
+echo "<br>";
+
+
+if(isset($action))
+{
+	if($action=="delete_karshenas"){
+		$query="delete from dastoor_pardakht where paperno='$delete_id'";
+		$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+		
+		$query="delete from dastoor_pardakht_marhale where paperno='$delete_id'";
+		$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+		
+		$query="update marhale_gharardad_hesabdari set paperno='' where paperno='$delete_id'";
+	   $result=mysql_query($query) or die ("Error in inserting data into jalase_shora1");
+	   
+	   $query="delete from modir_accept_pardakht where paperno='$delete_id'";
+		$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+		
+	}
+}
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade=$myrow_fetched["cod_daneshkade"];
+if(isset($rank_jalase) && strcmp($rank_jalase,"-1")!=0)
+{
+	$year_caution="cod_tarh like \"$rank_jalase".'%'."\"";
+}
+else 
+	$year_caution="1";
+	
+	
+	
+if(isset($cod_jalase) && strcmp($cod_jalase,"-1")!=0)
+{                                     
+	$cod_jalase_caution="shora_pajohesh_daneshgah.cod_jalase = '$cod_jalase'";
+}
+else 
+	$cod_jalase_caution="1";
+		
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    	
+	
+if(isset($name_e))
+{
+  $query="select tarh.*,vaziat_tarh.* from tarh,vaziat_tarh,shora_pajohesh_daneshgah where  tarh.cod_tarh=shora_pajohesh_daneshgah.cod_tarh and tarh.refered_shora='1' and  $cod_jalase_caution and (tarh.cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search)  and vaziat_tarh.vaziat=tarh.vaziat_moaven and send_moavenat ='1' and (vaziat_tarh.vaziat!='12' or vaziat_tarh.vaziat!='13' or vaziat_tarh.vaziat!='14')   group by tarh.cod_tarh order by tarh_time desc" ;
+}
+else
+  $query="select * from dastoor_pardakht where finish='1' order by paperdate desc";
+
+ 
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 100");
+
+$reccount = mysql_num_rows($result);
+//echo $reccount;
+
+ if(isset($name_e))
+{
+  $query="select tarh.*,vaziat_tarh.* from tarh,vaziat_tarh,shora_pajohesh_daneshgah where  tarh.cod_tarh=shora_pajohesh_daneshgah.cod_tarh and   tarh.refered_shora='1' and  $cod_jalase_caution and (tarh.cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search)  and vaziat_tarh.vaziat=tarh.vaziat_moaven and send_moavenat ='1' and (vaziat_tarh.vaziat!='12' or vaziat_tarh.vaziat!='13' or vaziat_tarh.vaziat!='14')   group by tarh.cod_tarh order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query=$query="select * from dastoor_pardakht where finish='1' order by paperdate desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 200");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&action=sabt&paperno=$paperno\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="95%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>تعيين مراحل پرداختي<b><br></td>
+ </tr>
+
+ </table>
+ 
+
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ $myascdescpub=$myascdescpub."paperno=$paperno"; 	
+ pubshowpages("dastoor_pardakht_list_finish.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"70%","#66CCFF");
+?>
+
+<table border="0" width="70%" cellpadding="1" cellspacing="1">
+  <tr>
+           <td width="7%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">پرينت دستور پرداخت</font></td>  
+   <td width="10%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاييدات مديران پژوهشي</font></td>
+    <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ دستور پرداخت</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد دستور پرداخت</font></td>
+  </tr>
+
+<?
+  
+ $row="1";
+ $doctor_in_list=1;
+ $color=$list_color_1;
+ $k=1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ 	
+  $paperno=$row_fetched["paperno"];
+  $paperdate=$row_fetched["paperdate"];
+  $accept_modir=$row_fetched["accept_modir"];
+  $old=$row_fetched["old"];
+ 
+ if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+ $qu="select * from modir_accept_pardakht where paperno='$paperno'";
+   $myres=mysql_query($qu);
+   $count_accept=mysql_num_rows($myres);
+	$modir_accept="";
+	$modir_name_family="";
+   while($myrf=mysql_fetch_array($myres)){
+   	$accept_gharardad=$myrf["accept_pardakht"];
+   	if($accept_gharardad=="1")
+   		$accept="تاييد";
+   	else 
+   		$accept="بازگشت";
+   $modir_name_family.=$myrf["modir_name"]." ".$myrf["modir_family"]." ".$accept."<br>";
+   }
+   
+  echo "<tr>";
+  $row_cnt=($current-1)*$RecPerPage+$row;
+ 
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" href=\"print_dastoor_pardakht.phtml?admin=$admin&seed=$seed&paperno=$paperno\" ><img border=\"0\" src=\"image/print.gif\" width=\"19\" height=\"19\" alt=\"Print\" ></a></td>";
+  echo "<td width=\"10%\"  bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"accept_dastoor_pardakht.phtml?admin=$admin&seed=$seed&paperno=$paperno\" ><b><font color='green'>$modir_name_family</font></b></a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"dastoor_pardakht_view.phtml?admin=$admin&seed=$seed&paperno=$paperno\">$paperdate</a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"dastoor_pardakht_view.phtml?admin=$admin&seed=$seed&paperno=$paperno\">$paperno</a></td>";
+  echo "</tr>";
+  $k++;
+  
+ }
+ 
+ 
+
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+
+footer_forms($admin,$seed);
+
+
+?>
+

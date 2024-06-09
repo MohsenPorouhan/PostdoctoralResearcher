@@ -1,0 +1,168 @@
+<?
+
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 1 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+
+/*
+$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+*/
+ 
+      $RecPerPage=7000;
+      $current=1;
+ 
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+if(isset($name_e))
+{
+  $query="select  distinct  user_login.* from user_login,tarh  where  tarh.payannameh='0' and  tarh.creator=user_login.email and (name like $myname_search  or family like $myname_search or email like $myname_search)   order by family desc";
+}
+else
+  $query="select  distinct  user_login.* from user_login,tarh  where tarh.payannameh='0' and  tarh.creator=user_login.email   order by family desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+
+$reccount = mysql_num_rows($result);
+
+ if(isset($name_e))
+{
+  $query="select  distinct  user_login.* from user_login,tarh where tarh.payannameh='0' and  tarh.creator=user_login.email and (name like $myname_search  or family like $myname_search or email like $myname_search)   order by family desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select distinct  user_login.* from user_login,tarh where tarh.payannameh='0' and  tarh.creator=user_login.email   order by family desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+//echo $query;
+ //header("Content-type: application/x-msexcel; charset=utf-8");
+echo "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+  
+if(mysql_num_rows($result) > 0 )
+{
+  if(isset($name_e))	
+      $myascdescpub=$myascdescpub."&name_e=$name_e";
+ // pubshowpages("doers.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+</head>
+<body>
+<table >
+ 
+
+    
+   
+    <td  >
+     ظ¾ط³طھ ط§ظ„ع©طھط±ظˆظ†ظٹع©ظٹ </td>
+    <td  >
+    ط¬ظ†ط³غŒطھ </td>
+     <td  >
+    ط¯ط±ط¬ظ‡ ط¹ظ„ظ…غŒ </td>
+   
+     <td >
+     ع©ط¯ ظ…ظ„غŒ </td>
+    <td  >
+     ظ†ط§ظ… ط®ط§ظ†ظˆط§ط¯ع¯ظٹ </td>
+    <td >
+      ظ†ط§ظ… </td>
+  </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $from_letter=$row_fetched["from_letter"];
+  $id=$row_fetched["id"];
+  $email=$row_fetched["email"];
+  $q_user="select * from tarh where creator='$email' and version='-1'";
+  $q_result=mysql_query($q_user);
+  $tarh_cnt=mysql_num_rows($q_result);
+  
+  $sex=$row_fetched["sex"];
+  $darajeelmi=$row_fetched["darajeelmi"];
+  $q11="select * from darajeelmi where darajeelmi ='$darajeelmi'";
+  $rs_d=mysql_query($q11)or die($q11);
+  if(mysql_num_rows($rs_d)>0)
+  {
+	  $rf_daraje=mysql_fetch_array($rs_d);
+	  $daraje_elmi_desc=$rf_daraje["darajeelmi_desc"];
+  }
+  else
+   $daraje_elmi_desc="";
+							   
+  if(strcmp($sex,"1")==0)
+    $sex_desc="ظ…ط±ط¯";
+  else
+	$sex_desc="ط²ظ†";
+  
+ // echo "<td  > ".iconv("windows-1256","utf-8",$row_fetched["home_addr"])."</td>";
+  echo "<td  > ".$row_fetched["email"]."</td>";
+    echo "<td  > ".$sex_desc."</td>";
+  echo "<td  > ".$daraje_elmi_desc."</td>";
+
+ // echo "<td > ".$row_fetched["mobile"]."</td>";
+    echo "<td > ".$row_fetched["melli_code"]."</td>";
+
+  echo "<td  > ".$row_fetched["family"]."</td>";
+  echo "<td  > ".$row_fetched["name"]."</td>";
+  echo "</tr>";
+
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show("Not Found","red");
+}
+echo "</form>";
+//footer_forms($admin,$seed);
+
+
+?>
+</body>
+</html>

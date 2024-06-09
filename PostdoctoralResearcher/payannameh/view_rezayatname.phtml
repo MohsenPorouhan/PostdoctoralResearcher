@@ -1,0 +1,43 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+
+  if( $type != 0 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+  
+include("include/print.phtml");
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+
+
+  
+    include("../tarh_modification/view_rezayatname.phtml");
+
+?>
+
+
+
+ 

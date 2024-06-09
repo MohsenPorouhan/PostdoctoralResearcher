@@ -1,0 +1,271 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+<?
+echo "<br>";
+
+
+if (strcmp($action,"add")==0)
+{
+  if(strlen(trim($tarh_name)) > 0 && strlen(trim($index_point)) > 0 && strlen(trim($zarib_if)) > 0)
+  {
+    $query="select * from maghale_indexing  where  indexing_desc=\"$tarh_name\" ";
+
+    $result=mysql_query($query) or die("Error in query data from tarh-type");
+    if(mysql_num_rows($result) <= 0)
+    {
+      $query="insert into maghale_indexing set  indexing_desc='$tarh_name',index_point='$index_point',zarib_if='$zarib_if',zarib_maghale_type='$zarib_maghale_type'";
+	  //echo $query;
+      mysql_query($query) or die ("Error in inserting data in tarh-type");
+    }
+     else
+      $status="duplicate_entry";
+  }
+  else
+   $status="entry_error";
+}
+
+if (strcmp($action,"edit_second")==0)
+{ 
+  if(strlen(trim($edit_id)) > 0 )
+  {
+    $query="select * from maghale_indexing where  index_id=\"$edit_id\"";
+
+    $result=mysql_query($query) or die("Error in query data from tarh-type");
+  
+    if(mysql_num_rows($result) > 0)
+    {
+       $query="update  maghale_indexing set indexing_desc='$tarh_name',index_point='$index_point',zarib_if='$zarib_if',zarib_maghale_type='$zarib_maghale_type' where index_id='$edit_id'";
+
+        mysql_query($query) or die ("Error in inserting data in tarh-type1");
+    }
+
+  }
+}
+
+if (strcmp($action,"delete")==0)
+{ 
+  if(strlen(trim($delete_id)) > 0 )
+  {
+    $query="select * from maghale_indexing where  index_id=\"$delete_id\"";
+
+    $result=mysql_query($query) or die("Error in query data from tarh-type");
+  
+    if(mysql_num_rows($result) > 0)
+    {
+      $query="select * from maghale  where  indexing =\"$delete_id\"";
+
+      $result=mysql_query($query) or die("Error in query data from tarh-type");	
+      
+      if(mysql_num_rows($result) <=0 )
+      {
+      
+      		 
+        $query="delete from maghale_indexing where index_id='$delete_id'";
+
+        mysql_query($query) or die ("Error in inserting data in tarh-type1");
+      }
+       else
+       $status='delete_error';
+    }
+
+  }
+}
+if (strcmp($action,"edit")==0)
+{ 
+  if(strlen(trim($edit_id)) > 0 )
+  {
+    $query="select * from maghale_indexing where  index_id=\"$edit_id\"";
+
+    $result=mysql_query($query) or die("Error in query data from tarh-type");
+    $myrf=mysql_fetch_array($result);
+  	$maghale_type_desc=$myrf["indexing_desc"];
+	$index_point=$myrf["index_point"];
+    $zarib_if=$myrf["zarib_if"];
+	$zarib_maghale_type=$myrf["zarib_maghale_type"];
+   
+
+  }
+}
+else {
+		$maghale_type_desc="";
+}
+
+
+
+?>
+
+
+
+<?
+if (strcmp($action,"edit")==0)
+{
+	echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=edit_second&admin=$admin&seed=$seed&edit_id=$edit_id\">"; 
+}
+else {
+	echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=add&admin=$admin&seed=$seed\">";
+}?>
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="149"   height=19>
+      </TD>
+      <TD align=middle width="251"   height=19>
+      
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0"  width="400" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"delete_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">بدليل استفاده از اين نوع ايندکس مقاله ، اين مورد قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  ?>
+    <tr>
+      <td width="100%">
+        <div align="center">
+          <table border="0" width="100%" bgcolor="F0F0FF" height="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="tarh_name" size="48" class="edit-tarh-type" value="<?php echo $maghale_type_desc;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>نوع ايندکس مقاله</td>
+            </tr>
+			<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="index_point" size="48" class="edit-tarh-type" value="<?php echo $index_point;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>امتياز ايندکس</td>
+            </tr>
+			<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="zarib_if" size="48" class="edit-tarh-type" value="<?php echo $zarib_if;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>ضريت IF</td>
+            </tr>
+			<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="zarib_maghale_type" size="48" class="edit-tarh-type" value="<?php echo $zarib_maghale_type;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>ضريت نوع مقاله براي اين ايندکس</td>
+            </tr>
+            
+              
+            <tr>
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="اضافه" name="submit_tarh"></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
+<br>
+
+<?
+ 
+if(DBreccount("tarhtype") > 0)
+{
+    echo "<table border=\"0\" width=\"450\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\">";
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/top-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">حذف</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">ويرايش</td>";
+	echo "<td width=\"50\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">ضريب نوع مقاله</td>";
+	echo "<td width=\"50\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">ضريب IF</td>";
+	echo "<td width=\"50\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">امتياز  ايندکس</td>";
+    echo "<td width=\"174\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نوع ايندکس مقاله</td>";
+    echo "<td width=\"16\"  background=\"image/top-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+  $Query=mysql_query("select * from maghale_indexing order by indexing_desc desc") or die("Error in selecting maghale-type");
+  while($row_fetched=mysql_fetch_array($Query))
+  {
+   if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+   else
+     $color="#E2E0E0";
+  echo "<tr bgcolor=\"$color\">";
+  echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\"></td>";
+  echo "<td width=\"47\">";
+  echo "<p align=\"center\"><a  href=\"maghale_index_type.phtml?admin=$admin&seed=$seed&action=delete&delete_id=".$row_fetched["index_id"]."\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+  echo "<td width=\"47\">";
+  echo "<p align=\"center\"><a  href=\"maghale_index_type.phtml?admin=$admin&seed=$seed&action=edit&edit_id=".$row_fetched["index_id"]."\"> <img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\"></a></td>";
+   echo "<td width=\"50\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["zarib_maghale_type"],0,200)."</td>";
+   echo "<td width=\"50\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["zarib_if"],0,200)."</td>";
+   echo "<td width=\"50\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["index_point"],0,200)."</td>";
+  echo "<td width=\"174\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".substr($row_fetched["indexing_desc"],0,200)."</td>";
+  echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"></td>";
+  echo "</tr>";
+
+  }
+  echo "<tr>";
+  echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"></td>";
+  echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  echo "<td width=\"50\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  echo "<td width=\"50\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  echo "<td width=\"50\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  echo "<td width=\"174\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\"></td>";
+  echo "</tr>";
+  echo "</table>";
+}
+else
+{
+
+  echo "<p align=\"center\"  class=\"tahoma1\">با کليک روي کليد اضافه ميتوانيد يک نوع ايندکس مقاله اضافه کنيد";
+
+}
+
+   footer_forms($admin,$seed);
+?>
+
+
+

@@ -1,0 +1,210 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+//include("include/session.phtml");
+?>
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+
+<?
+echo "<br>";
+
+
+if(isset($action))
+{
+  if (strcmp($action,"signup")==0)
+  {
+
+    if(  strlen(trim($melli_code)) > 0      && strlen(trim($hesab)) > 0 && strcmp($bank_name,"-1")!=0 )
+//	if( strlen(trim($melli_code)) > 0 && strlen(trim($mobile)) > 0 && strlen(trim($name)) > 0 &&strlen(trim($family)) > 0  )
+    {
+      $query="select * from karshenasan where  username=\"$admin\"";
+      //echo $query;
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+      
+      if ( mysql_num_rows($result) > 0 )
+      {
+   
+ 	  
+        $query = "update karshenasan  set   mobile=\"$mobile\"   , melli_code =\"$melli_code\"  , bank_name=\"$bank_name\"   , hesab=\"$hesab\" where username='$admin'"; 
+    // echo $query;
+    // exit();
+	  //        $query="update user_login set cod_melli='$cod_melli',name='$name' , family='$family', rade_elmi='$rade_elmi',  takhasos  = '$takhasos',  email  ='$email', shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar',hesab='$hesab',bank_name='$bank_name',shoabe='$shoabe',cod_bank='$cod_bank' where email='$admin'";
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="تغيير در پروفايل -". $action_more;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show("پروفايل شما با موفقيت ثبت شد","green");
+		footer_forms($admin,$seed);
+		exit();
+      }
+      else
+       $status="duplicate_entry";
+
+    }
+    else
+      $status="entry_error";
+  }
+
+}
+
+      $query="select * from karshenasan where  username =\"$admin\"";
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+
+      if ( mysql_num_rows($result) > 0 )
+      {
+		$row_fetched = mysql_fetch_array($result);
+	 			
+        $hesab=$row_fetched["hesab"];
+	         $bank_name=$row_fetched["bank_name"];
+
+		$mobile=$row_fetched["mobile"];
+ 		$melli_code =$row_fetched["melli_code"];
+      }
+      else
+      {
+         $hesab="";
+	 $mobile="";
+ 		$melli_code ="";
+		 $bank_name="";
+
+       }
+
+?>
+
+
+<? echo "<form name=\"signup\" method=\"post\"  action=\"$PHP_SELF?&admin=$admin&seed=$seed&action=signup\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/profile.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="550" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+ 	echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\"><b>  لطفا جهت تسهيل در پرداخت حق الزحمه داوري/ نظارت نسبت به تکميل پروفايل خود از نظر شماره حساب و کد ملي اقدام کنيد </b></td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">در صورت هر گونه تغيير در اطلاعات شخصي در پروفايل زير اين تغييرات را ثبت نماييد</td>";
+    echo "</tr>";
+  
+
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">چنين کاربري وجود ندارد</td>";
+    echo "</tr>";
+  }
+
+  if (strcmp($status,"mail_err")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">خطا در ارسال ايميل</td>";
+    echo "</tr>";
+  }
+
+?>
+ 
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="mobile" size="20" class="edit-sugnup" dir=RTL    value='<? echo $mobile; ?>'></td>
+    <td width="200" class="tahoma1"><span class="star-message">*</span>شماره موبايل</td>
+  </tr>
+
+
+    
+   <tr>
+    <td width="350" align="right"><input type="text" name="melli_code" size="20" class="edit-sugnup" value='<? echo $melli_code; ?>'></td>
+    <td width="200" class="tahoma1"><span class="star-message">*</span>(کد ملي (بدون فاصله وارد شود</td>
+  </tr>
+
+   
+  <tr>
+      <?
+    $query="select * from hesab_type order by hesab_type_desc";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+    <td width="350" align="right"><select size="1"   name="bank_name" class="edit-sugnup"  dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+        if(strcmp($bank_name,$row_fetched["hesab_type"])==0)
+          $selected= " selected ";
+        else
+		  $selected="";  
+         echo "<option $selected value=\"".$row_fetched["hesab_type"]."\" class=\"tahoma1\">".$row_fetched["hesab_type_desc"]."</option>";
+    }
+    ?>
+</select>
+    </td>
+    <td width="200" class="tahoma1"><span class="star-message">*(نوع حساب (صرفا جام بانک ملت</span></td>
+  </tr>
+
+ 
+    <tr>
+    <td width="350" align="right"><input type="text" name="hesab" size="20" value=<?echo "\"".$hesab."\""; ?> class="edit-sugnup" ></td>
+    <td width="200" class="tahoma1"><span class="star-message">* شماره حساب سراسري</span></td>
+   </tr>
+
+    
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

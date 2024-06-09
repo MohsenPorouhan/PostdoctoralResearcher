@@ -1,0 +1,543 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+ $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+echo "<br>";
+   $query="select * from tarh where cod_tarh='$cod_tarh' ";
+
+   $result=mysql_query($query) or die("Error in selecting data from tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+
+<TABLE cellSpacing=0  width="98%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<?
+   $color="PALETURQUOISE";
+   $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh' ";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+//   	$row_fetched=mysql_fetch_array($result);
+    echo "<br>";
+    echo "<table width=\"98%\"  cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \" >";
+    echo "<tr>";
+    echo "<table width=\"98%\"  cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \"  >";
+    echo "<tr>";
+    echo "<td  bgcolor=$color colspan=\"6\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\"><b>تامين اعتبار از ساير سازمانها<b></p></td>";
+     echo "</tr>";
+
+    echo "<tr>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نحوه پرداخت</p></td>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">مبلغ</p></td>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">فکس</p></td>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">شماره تلفن</p></td>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">آدرس پستي</p></td>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نام موسسه</p></td>";
+    echo "</tr>";
+  $color="PALETURQUOISE";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    echo "<tr bgcolor=\"$color\">";
+    
+    $mojri_code = $myrow_fetched["mojri_code"];
+   	$eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+   	$eatebare_sazmanha_pardakht = $myrow_fetched["eatebare_sazmanha_pardakht"];
+   	$eatebare_sazmanha_fax = $myrow_fetched["eatebare_sazmanha_fax"];
+   	$eatebare_sazmanha_telno= $myrow_fetched["eatebare_sazmanha_telno"];
+   	$eatebare_sazmanha_organ = $myrow_fetched["eatebare_sazmanha_organ"];
+    $eatebare_sazmanha_address = $myrow_fetched["eatebare_sazmanha_address"];
+    $id_pardakht= $myrow_fetched["id"];
+  
+    //echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_value</td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_value</td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_fax</td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_telno</td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_address</td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_organ</td>";
+    echo "</tr>";
+   }
+   echo "</table>";
+
+  }
+?>
+
+
+<?
+  $color="PALETURQUOISE";
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\" order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     echo "<br>";
+     echo "<table width=\"98%\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" bgcolor=$color colspan=\"9\" align=\"center\" class=\"tahoma1\"><b>هزينه پرسنلي</b></td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">جمع</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">حق الزحمه در ساعت</td>";
+     echo "<td width=\"5%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">مجموع ساعات</td>";
+     echo "<td width=\"26%\"  bgcolor=$color align=\"center\"  class=\"tahoma1\">درجه تحصيلي</td>";
+     echo "<td width=\"14%\"  bgcolor=$color align=\"center\"  class=\"tahoma1\">تعداد افراد</td>";
+     echo "<td width=\"20%\" bgcolor=$color  align=\"center\"  class=\"tahoma1\">نوع فعاليت</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+//       echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+  //   echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_personnel.phtml&admin=$admin&seed=$seed&action=delete_hazine&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_hazine"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$my_summary."</td>";
+       echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\" >".$row_fetched["per_hour"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\" >".$row_fetched["majmoa_saat"]."</td>";
+
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+       echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\">".$degree_result."</td>";
+
+
+       echo "<td align=\"center\"  bgcolor=$color class=\"tahoma1\">".$row_fetched["persons"]."</td>";
+       echo "<td align=\"center\"  bgcolor=$color class=\"tahoma1\">".$row_fetched["activity_type"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+     // echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  bgcolor=$color class=\"tahoma1\">".$mycount."</td>";
+      echo "<td align=\"right\" bgcolor=$color colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+
+   }
+
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\" order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     echo "<br>";
+     echo "<table width=\"60%\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" bgcolor=$color colspan=\"9\" align=\"center\" class=\"tahoma1\"><b>هزينه آزمايشات و خدمات تخصصي</b></td>";
+     echo "</tr>";
+
+     echo "<tr>";
+    // echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">جمع</td>";
+     echo "<td width=\"5%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">هزينه هر دفعه</td>";
+     echo "<td width=\"26%\"  bgcolor=$color align=\"center\"  class=\"tahoma1\">تعداد آزمايش</td>";
+     echo "<td width=\"14%\"  bgcolor=$color align=\"center\"  class=\"tahoma1\">محل انجام</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">نوع آزمايش</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"5%\" bgcolor=$color  align=\"center\" class=\"tahoma1\">".$my_summary."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\" >".$row_fetched["hazine_har_bar"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\" >".$row_fetched["azmayesh_cnt"]."</td>";
+
+       if (strcmp($row_fetched["azmayesh_center"],'1')==0)
+        $mahall_azmayesh="خصوصي";
+       if (strcmp($row_fetched["azmayesh_center"],'2')==0)
+        $mahall_azmayesh="داخل دانشگاه";
+	   if (strcmp($row_fetched["azmayesh_center"],'3')==0)
+        $mahall_azmayesh="دولتي خارج دانشگاه"; 
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$mahall_azmayesh."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["mozoa_azmayesh"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      //echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$mycount."</td>";
+      echo "<td align=\"right\" bgcolor=$color colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+
+ $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\" order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+     echo "<br>";
+
+     echo "<table width=\"98%\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" bgcolor=$color colspan=\"9\" align=\"center\" class=\"tahoma1\"><b>فهرست وسايل و مواردي که بايد خريداري شود</b></td>";
+     echo "</tr>";
+     //echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">قيمت کل</td>";
+     echo "<td width=\"20%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">تعداد يا مقدار</td>";
+     echo "<td width=\"5%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">مصرفي يا غير مصرفي</td>";
+     echo "<td width=\"26%\" bgcolor=$color  align=\"center\"  class=\"tahoma1\">کشور</td>";
+     echo "<td width=\"14%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">شرکت سازنده</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">نام دستگاه</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       //echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=fehrest_kharid.phtml&admin=$admin&seed=$seed&action=delete_fehrest_kharid&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_kharid"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $mycount=$mycount+$row_fetched["count"];
+       $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+       echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["price"]*$row_fetched["count"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\" >".$row_fetched["count"]."</td>";
+       if( $row_fetched["usage_unusage"] == "0" )
+         echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\" >مصرفي</td>";
+       else
+         echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\" >غير مصرفي</td>";
+
+       echo "<td align=\"center\" bgcolor=$color  class=\"tahoma1\">".$row_fetched["country"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["company"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["name_dastgah"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+     // echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$mycount1."</td>";
+      echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$mycount."</td>";
+      $summary_of_vasayel_kharid = $mycount1;
+      echo "<td align=\"right\"  bgcolor=$color colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+
+
+ $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\" order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+     echo "<br>";
+     echo "<table width=\"98%\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" bgcolor=$color colspan=\"9\" align=\"center\" class=\"tahoma1\"><b>هزينه مسافرت</b></td>";
+     echo "</tr>";
+     //echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">هزينه  به ريال</td>";
+     echo "<td width=\"5%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">تعداد افراد</td>";
+     echo "<td width=\"26%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">نوع وسيله</td>";
+     echo "<td width=\"14%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">دفعات مسافرت</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">منظور از مسافرت</td>";
+     echo "<td width=\"20%\" bgcolor=$color align=\"center\"  class=\"tahoma1\">مقصد</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+//       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_mosaferat.phtml&admin=$admin&seed=$seed&action=delete_hazine_mosaferat&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_hazine_safar"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+       echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["hazine"]."</td>";
+       //echo "<td align=\"center\"  class=\"tahoma1\" >".$row_fetched["hazine"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\" >".$row_fetched["persons_cnt"]."</td>";
+
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["vasile"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["dafe_safar"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["manzoor_mosaferat"]."</td>";
+       echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$row_fetched["target"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      //echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$mycount."</td>";
+      echo "<td align=\"center\" bgcolor=$color class=\"tahoma1\">".$mycount1."</td>";
+      echo "<td align=\"right\" bgcolor=$color colspan=\"4\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+?>
+
+
+<?
+
+
+   $color="PALETURQUOISE";
+   $query  = "select * from sayer_hazine where cod_tarh=\"$cod_tarh\"";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+   
+//   	$row_fetched=mysql_fetch_array($result);
+    echo "<br>";
+    echo "<table width=\"98%\"  cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \" >";
+    echo "<tr>";
+    echo "<table width=\"98%\"  cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \"  >";
+    echo "<tr>";
+    echo "<td  bgcolor=$color colspan=\"6\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\"><b>تامين اعتبار از ساير سازمانها<b></p></td>";
+     echo "</tr>";
+
+    echo "<tr>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">ساير هزينه ها</p></td>";
+    echo "<td  bgcolor=$color  height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">هزينه تکثير اوراق</p></td>";
+    
+    echo "</tr>";
+  $color="PALETURQUOISE";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    echo "<tr bgcolor=\"$color\">";
+    
+    $sayer_hazine  = $myrow_fetched["sayer_hazine"];
+    $hazine_taksir = $myrow_fetched["hazine_taksir"];
+    $id= $myrow_fetched["id"];
+  
+    //echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$sayer_hazine</td>";
+    echo "<td bgcolor=$color  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$hazine_taksir</td>";
+    echo "</tr>";
+   }
+   echo "</table>";
+
+  }
+?>
+
+
+
+<?
+ $query  = "select * from sayer_hazine where cod_tarh=\"$cod_tarh\"";
+  $result = mysql_query($query) or die("Error in inserting data into  sayer hazineha");
+  if(mysql_num_rows($result) > 0 )
+  {
+    $hazine_taksir="";
+    $sayer_hazine="";
+    $my_row_fetch_ok = mysql_fetch_array($result);
+    $hazine_taksir = $my_row_fetch_ok["hazine_taksir"];
+    $sayer_hazine = $my_row_fetch_ok["sayer_hazine"];
+    $add_sayer_hazine=$hazine_taksir+$sayer_hazine;
+  }
+
+
+    echo "<br>";
+    echo "<table border=\"0\" width=\"98%\"  cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \" >";
+
+    echo "<tr>";
+    echo "<td align=\"center\" colspan=\"2\" width=\"100%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>ساير هزينه ها</b></td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$hazine_taksir."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">هزينه تکثير اوراق</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$sayer_hazine."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">ساير هزينه ها</td>";
+    echo "</tr>";
+
+    echo "</table>";
+
+
+
+
+
+
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\" order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+     }
+      $personnel_sum=$mycount;
+   }
+
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\" order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\" order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\" order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+ if(mysql_num_rows($result) > 0 )
+ {
+    $hazine_row_fetched = mysql_fetch_array($result);
+    $hazine_taksir = $hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_row_fetched["sayer_hazine"];
+ }
+?>
+<br>
+<table border="0" width="98%" colspan="0" cellspan="0" align="center">
+
+<tr>
+   <td width="100%" colspan="4" valign="top" align="center">
+   <span <? echo $text_font_style; ?>>
+ <?
+	 $sum_sayer=$hazine_digar+$hazine_taksir;
+     echo "<table width=\"100%\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color  align=\"center\" class=\"tahoma1\"><b>(مجموع(ريال<b></td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\"><b>هزينه<b></td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\">$personnel_sum</td>";
+     echo "<td width=\"80%\" bgcolor=$color  align=\"center\"  class=\"tahoma1\">جمع هزينه پرسنلي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\">$lab_sum</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزينه هاي آزمايشات وخدمات تخصصي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\"  bgcolor=$color  align=\"center\" class=\"tahoma1\">$trip_sum</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزينه هاي مسافرت</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\">$vasile_sum</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزِينه هاي وسايل</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"20%\"  bgcolor=$color  align=\"center\" class=\"tahoma1\">$sum_sayer</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">جمع هزينه هاي ديگر</td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"20%\"  bgcolor=$color  align=\"center\" class=\"tahoma1\">$sazmanhaye_digar</td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\"  class=\"tahoma1\">اعتبار از سازمانهاي ديگر</td>";
+     echo "</tr>";
+
+	 echo "<tr>";
+	 $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum+$sazmanhaye_digar;
+     echo "<td width=\"20%\" bgcolor=$color   align=\"center\" class=\"tahoma1\"><b>$sum_of_all</b></td>";
+     echo "<td width=\"80%\" bgcolor=$color   align=\"center\" class=\"tahoma1\"><b>جمع کل</b></td>";
+
+     echo "</tr>";
+
+
+     echo "</table>";
+
+
+?>
+</td>
+</tr>
+
+</table>
+
+
+<table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

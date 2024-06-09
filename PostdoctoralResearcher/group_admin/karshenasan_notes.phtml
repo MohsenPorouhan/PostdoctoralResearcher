@@ -1,0 +1,78 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+
+
+echo "<br>";
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+   $query = "select  * from tarh where  tarh.cod_tarh = \"$cod_tarh\"";
+ 
+   $result=mysql_query($query) or die("Error in selecting data from First mojri 2");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+  $myquery_mojri = "SELECT  * FROM karshenasan_tarh,karshenasan WHERE karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and karshenasan_tarh.cod_tarh = '$cod_tarh'";
+
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+
+    echo "<br>";$color="PALETURQUOISE";
+    if(mysql_num_rows($myresult_mojri))
+    {
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$title_color align=\"center\" class=\"tahoma1\">نظريه</td>";
+    echo "<td width=\"40%\" bgcolor=$title_color align=\"center\" class=\"tahoma1\" valign=\"top\">نام کارشناس</td>";
+    echo "</tr>";
+    $color="PALETURQUOISE";
+    
+    while($row_fetched=mysql_fetch_array($myresult_mojri))
+    {
+      $karshenas_name=$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["karshenas_family"];	
+      
+      echo "<tr>";
+      if(strlen(trim($row_fetched["comment_karshenas"])) > 0)  
+         echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["comment_karshenas"]."</td>";
+      else
+	     echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">نظريه اي از اين کارشناس ارسال نشده</td>";   
+      echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">$karshenas_name</td>";
+      echo "</tr>";
+    }
+  
+
+    echo "</table>";
+   }
+   }
+   
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

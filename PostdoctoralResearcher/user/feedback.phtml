@@ -1,0 +1,188 @@
+<?
+$title="Feedback";
+include("include/include.phtml");
+include("include/styles.phtml");
+header_forms();
+?>
+ 
+<script>
+function IsEmail(sFieldValue)
+{
+	var checkEmail = "@.";
+	var checkStr = sFieldValue;
+	var EmailValid = false;
+	var EmailAt = false;
+	var EmailPeriod = false;
+
+	for (i = 0;  i < checkStr.length;  i++)
+	{
+		ch = checkStr.charAt(i);
+		for (j = 0;  j < checkEmail.length;  j++)
+		{
+			if (ch == checkEmail.charAt(j) && ch == "@")
+				EmailAt = true;
+			if (ch == checkEmail.charAt(j) && ch == ".")
+				EmailPeriod = true;
+			if (EmailAt && EmailPeriod)
+				break;
+			if (j == checkEmail.length)
+				break;
+		}
+		// if both the @ and . were in the string
+		if (EmailAt && EmailPeriod)
+		{
+			EmailValid = true
+			break;
+		}
+	}
+
+	return(EmailValid);
+}
+
+function check(in1)
+{
+ var a=in1,isb=0,k=0;
+  for (k =0; k < a.length; k++)
+    {
+     if(a.substring(k,k+1)!=' ')
+       {
+        isb=1;
+        break;
+       }
+    }
+
+   if(isb==0)
+      return true;
+   else
+      return false;
+
+}
+function checkallfield()
+{
+  var emailok=1,allok=1,outstr="";
+  if(check(document.myform.name.value))
+   allok=0;
+
+  if(check(document.myform.body.value))
+   allok=0;
+
+  if(check(document.myform.email.value))
+	allok=0;
+  else
+   if(!IsEmail(document.myform.email.value))
+     emailok=0;
+     
+  if((allok!=0) & (emailok!=0))
+    document.myform.submit();
+  else
+   {
+	if(allok==0)
+     newwin=window.open('emptywarn.phtml','Alert','toolbar=no,status=no,width=250,height=150');
+	if(emailok==0)
+     newwin=window.open('emailwarn.phtml','Alert','toolbar=no,status=no,width=250,height=150');
+   }
+-->
+}
+</script>
+</head>
+
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<form name="myform" action="contact_submit.phtml" method="post">
+  <table cellSpacing="0" cellPadding="0" width="500" border="0">
+    <tbody>
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="360" height="19"></td>
+                        <td align="middle" width="140" background="image/feedback_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="500" bgColor="#eee7f8" border="0">
+    <tbody>
+     <tr>
+            <td width="360" height="25" align="right"><input type="text" name="name" size="46" class="edit-feedback"></td>
+            <td width="140" align="left" height="25" class="tahoma1">&nbsp;&nbsp;<font color="red">*</font>نام</td>
+          </tr>
+          <tr>
+            <td width="360" height="25" align="right"><input type="text" name="email" size="46" class="edit-feedback"></td>
+            <td width="140" align="left" height="25" class="tahoma1">&nbsp;&nbsp;<font color="red">*</font>پست الکترونيک</td>
+          </tr>
+          <tr>
+            <td width="360" height="108" valign="top" align="right"><textarea rows="7" name="body" cols="40" class="edit-feedback"></textarea></td>
+            <td width="140" align="left" height="108" valign="top" class="tahoma1">&nbsp;&nbsp;<font color="red">*</font>متن</td>
+          </tr>
+          
+            <tr>
+      
+      <td colspan='2' align='center'>
+<? if (!isset($_POST['Submit'])) { ?>
+<img src="capcha.php">
+<? } else { ?>
+&nbsp;
+<? } ?>
+</td>
+    </tr>
+    <tr>
+      
+      <td align="right"><input name="code" type="text" id="code"  class="edit-user" ></td>
+      <td class='tahoma1'>کد فوق را وارد کنيد</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>
+			<? if (isset($_POST['Submit'])) { ?>
+			<?= $msg?>
+			<? } ?>
+			</td>
+    </tr>
+    <tr>
+    
+    </tbody>
+  </table>
+  <table border="0" width="500" cellspacing="4" cellpadding="0">
+                <tr>
+                  <td width="45%"><p align="right"><input style="font-family: Tahoma; font-size: 8pt; font-weight: bold; border-style: solid; border-width: 1; width=65" type="button" value="ارسال" name="B1" onclick="checkallfield()"></td>
+                  <td width="55%"><input style="font-family: Tahoma; font-size: 8pt; font-weight: bold; border-style: solid; border-width: 1; width=65" type="reset" value="پاک" name="B2"></td>
+                </tr>
+              </table>
+
+
+</form>
+<br>
+
+
+
+
+
+
+
+
+
+
+<?
+  footer_forms();
+?>

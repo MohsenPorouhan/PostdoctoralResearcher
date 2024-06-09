@@ -1,0 +1,87 @@
+<html>
+<?
+
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+?>
+<head>
+<title>ويرايش نوع فايل</title>
+<script language="javascript" src="js/farsi.js"></script>
+
+<script language="javascript">
+function refreshmain()
+{
+   opener.location="<? echo "file_type.phtml?admin=$admin&seed=$seed";  ?>";
+
+   self.close();
+}
+
+</script>
+
+
+</head>
+<body>
+
+<?
+
+
+ if(strlen($edit_id) > 0)
+ {
+   $query="select * from file_type where cod_file_type=$edit_id";
+   $result=mysql_query($query) or die("error in selecting data from tarhtype");
+   $row_fetched_val=mysql_fetch_array($result);
+ }
+
+if (strcmp($action,"save")==0)
+{
+  if(strlen($edit_id) > 0 &&   strlen(trim($tarh_edit)) > 0  &&  strlen(trim($tarh_edit_english)) > 0  )
+  {
+    $query="update file_type set file_type='$tarh_edit',file_type_en='$tarh_edit_english' where cod_file_type=$edit_id";
+    $result=mysql_query($query) or die("Error in updating data in edittarh");
+    ?>
+    <script language="javascript">
+    refreshmain();
+    </script>
+    <?
+
+  }
+  else
+  {
+   ?>
+    <script language="javascript">
+      self.close();
+    </script>
+   
+   <?
+  }
+
+}
+
+?>
+
+
+
+
+
+<form method="POST" action="<? echo "edit_file_type.phtml?admin=$admin&seed=$seed&action=save&edit_id=$edit_id"; ?>">
+
+<table border="0" width="100%" height="100%" align="center" cellpading="0" cellspacing="0">
+    <tr>
+      <td width="50%" align="right"><input type="text" name="tarh_edit" class="edit-tarh-type"  dir=RTL    value="<? echo $row_fetched_val["file_type"]; ?>"></td>
+      <td width="50%"><p class="tahoma1">نوع فايل</p></td>
+    </tr>
+    <tr>
+      <td width="50%" align="right"><input type="text" name="tarh_edit_english" class="edit-tarh-type" value="<? echo $row_fetched_val["file_type_en"]; ?>"></td>
+      <td width="50%"><p class="tahoma1">(نوع فايل (انگليسي</p></td>
+    </tr>
+
+    <tr>
+    <td align="center" colspan="2">
+      <input type="button" value="بستن" name="close" class="but-small"  onclick="javascript: window.close()">&nbsp;<input type="submit" value="ثبت" name="submit" class="but-small">
+    </td>
+    </tr>
+  </table>
+  
+ </form>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($action))
+ {
+ if(strcmp($action,"del")==0)
+  {
+    
+     $query="delete from jalase_shora where shomare_jalase=\"$delete_id\" and creator='$admin'";
+     $res=mysql_query($query) or die("Error in deleting data from jalase_shora");
+     $query="delete from jalase_shora_tarh where shomare_jalase=\"$delete_id\" and creator='$admin'";
+     $res=mysql_query($query) or die("Error in deleting data from jalase_shora_tarh");
+     $query="delete from jalase_shora_karshenas_shora where shomare_jalase=\"$delete_id\" and creator='$admin'";
+     $res=mysql_query($query) or die("Error in deleting data from jalase_shora_karshenas_shora");
+     
+     
+  }
+ }
+ 
+  $query="select * from jalase_shora where creator='$admin' order by shomare_jalase desc";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+
+$reccount = mysql_num_rows($result);
+
+
+
+  $query="select * from jalase_shora where creator='$admin' order by shomare_jalase desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+ <td align="right">
+
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ </table>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ pubshowpages("jalase_shora_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">حذف</font></td>
+    
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ويرايش</font></td>
+   <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ارسال</font></td>
+ 
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ جلسه</font></td>
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد جلسه </font></td>
+  </tr>
+  <?
+
+$color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  $shomare_jalase = $row_fetched["shomare_jalase"];
+  $jalase_id= $row_fetched["jalase_id"];
+  echo "<tr>";
+  if(strcmp($row_fetched["send_moavenat"],'0')==0)
+    echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=jalase_shora_list.phtml&admin=$admin&seed=$seed&action=delete_jalase&delete_id=".$row_fetched["shomare_jalase"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a</td>";
+  else
+    echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">ارسال شده</td>";  
+  
+      
+  if(strcmp($row_fetched["send_moavenat"],'0')==0)
+    echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"jalase_shora_list_edit.phtml?admin=$admin&seed=$seed&jalase_id=$jalase_id\" ><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\Edit Session\"></a></td>";
+  else
+    echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">ارسال شده</td>";  
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"send_jalase_moavenat.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase\" ><img border=\"0\" src=\"images/ed_redo.gif\"  alt=\"Send Moavenat\"></a></td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase\" >".enum2fnum($row_fetched["tarikh_jalase"])."</a></td>";
+  echo "<td width=\"50%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase\" >".$row_fetched["shomare_jalase"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>
+

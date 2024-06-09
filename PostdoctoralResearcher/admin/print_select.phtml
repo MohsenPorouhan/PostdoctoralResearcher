@@ -1,0 +1,164 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+//require("include/class.phpmailer.php");
+//require("include/mailserver-statistics.phtml");
+
+echo "<br>";
+
+?>
+
+<style type="text/css">
+table.hovertable {
+	font-family:tahoma;
+	font-size:14px;
+	color:#333333;
+	border-width: 0px;
+	border-color: #999999;
+	border-collapse: collapse;
+   -moz-border-radius:10px;
+   -webkit-border-radius:10px;
+   border-radius:10px
+}
+table.hovertable th {
+	background-color:#69C;
+	border-width: 1px;
+	padding: 8px;
+	border-color: #a9c6c9;
+}
+table.hovertable tr {
+	background-color:#d4e3e5;
+}
+table.hovertable td {
+	border-width: 1px;
+	padding: 8px;
+	border-color: #a9c6c9;
+}
+</style>
+
+<script type="text/javascript">
+checked=false;
+function checkedAll (frm1) {
+	var aa= document.getElementById('frm1');
+	 if (checked == false)
+          {
+           checked = true;
+          }
+        else
+          {
+          checked = false;
+          }
+	for (var i =0; i < aa.elements.length; i++) 
+	{
+	 aa.elements[i].checked = checked;
+	}
+      }
+</script>
+
+
+
+<body>
+
+<?php echo "<form id=\"frm1\" method=\"post\" action=\"print_tarh_new.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"> ";?>
+
+
+
+<table class="hovertable" cellSpacing=2 width="750px" align=center dir="rtl" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 2; ">
+<tr>
+	<th align="center" width="750px" colspan="3"> <input type="checkbox" name='checkall' value='1' onclick='checkedAll(frm1);'/>انتخاب همه</th>
+</tr>
+
+<tr>
+			<td align="right" width="250px"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_chekide">چکيده</td>
+			<td align="right" width="250px"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_sabt">ثبت</td>
+			<td align="right" width="250px"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_mojrian">مجريان همكاران و دانشجويان</td>
+</tr>
+<tr >
+			<td align="right"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_ravesh_ejra">روش اجراي مطالعه </td>
+			<td align="right" onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_variables">جدول متغيرها </td>
+			<td align="right" onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_timetable">جدول زمانبندي مراحل اجرا  </td>
+			
+</tr>
+<tr >
+			<td align="right" onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_hazine_personeli">هزينه پرسنلي</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_hazine_azmayesh">هزينه آزمايشات و خدمات تخصصي</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_aghlam_kharid">فهرست مواد و وسايلي که بايد خريداري شوند</td>
+</tr>
+<tr>
+			<td align="right"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_hazine_safar">هزينه مسافرت</td>
+			<td align="right"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_sayer_hazineha">ساير هزينه ها</td>
+			<td align="right"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_tamin_etebar">تامين اعتبار از ساير سازمانها</td>
+</tr>
+<tr >
+			<td align="right"  onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_akhlagh" >ملاحظات اخلاقي</td>
+			<td align="right" colspan="2" onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" value="1" name="chk_sum_cost" >هزينه</td>
+			
+</tr>
+<!--  <tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">روش اجرا</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_ravesh_ejra"></td>
+</tr>
+
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">ملاحظات اخلاقي </td>
+			<td align="center"><input type="checkbox" value="1" name="chk_akhlagh"></td>
+</tr>
+
+
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">جدول متغير ها</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_variables"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">جدول زماني مراحل اجرا و پيشرفت کار </td>
+			<td align="center"><input type="checkbox" value="1" name="chk_timetable"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">هزينه پرسنلي </td>
+			<td align="center"><input type="checkbox" value="1" name="chk_hazine_personeli"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">هزينه آزمايشات و خدمات تخصصي </td>
+			<td align="center"><input type="checkbox" value="1" name="chk_hazine_azmayesh"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">فهرست مواد و وسايلي که بايد خريداري شوند </td>
+			<td align="center"><input type="checkbox" value="1" name="chk_aghlam_kharid"></td>
+</tr>
+
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">هزينه مسافرت</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_hazine_safar"></td>
+</tr>
+
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">ساير هزينه ها</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_sayer_hazineha"></td>
+</tr>
+
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">تامين اعتبار از ساير سازمانها</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_tamin_etebar"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">داوران پيشنهادي مجري</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_davar"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">ناظران پيشنهادي مجري</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_nazer"></td>
+</tr>
+<tr onmouseover="this.style.backgroundColor='#fc0';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+			<td align="center">زمان ارسال گزارشات</td>
+			<td align="center"><input type="checkbox" value="1" name="chk_report_sendtime"></td>
+</tr>-->
+<tr>
+			<td colspan="3" align="center"><input type="submit" value="پرينت" class="but-small" ></td>
+</tr>
+</table>
+</form>
+<br/><br/>
+<? footer_forms($admin,$seed); ?>

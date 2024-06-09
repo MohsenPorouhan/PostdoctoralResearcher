@@ -1,0 +1,68 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+//require("include/class.phpmailer.php");
+//require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+ 
+
+ 
+ $query="select * from message_to_admin where message_to!='admin' group by id desc";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	echo "<tr>";
+	
+	 
+  	echo "<td colspan=\"5\" width=\"20%\" align='center' class=\"tahoma1\">نامه هاي دريافتي شما</td>";
+	  echo "</tr>";
+	echo "<tr>";
+	
+	echo "<td width=\"2%\" align='center' class=\"tahoma1\">پاسخ</td>";
+	echo "<td width=\"50%\" align='center' class=\"tahoma1\">متن نامه</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">عنوان نامه</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">گيرنده</td>";
+  	echo "<td width=\"20%\" align='center' class=\"tahoma1\">فرستنده</td>";
+  		echo "<td width=\"10%\" align='center' class=\"tahoma1\">تاريخ ارسال</td>";
+	  echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	$id=$row_fetched["id"];	
+ 	$q="update message_to_admin set readed='1' where id='$id'";
+ 	$res=mysql_query($q) or die("Error");
+ 	 echo "<tr>";
+     $startdate = $row_fetched["send_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $send_date=hijricalender( $startyear , $startmon , $startday );
+ 
+	 
+	 echo "<td width=\"2%\" align='center' class=\"tahoma1\">پاسخ</td>"; 	   	 
+  	 echo "<td width=\"50%\" align='right' class=\"tahoma1\" dir=\"rtl\">".$row_fetched["body"]."</td>";
+ 	 echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["subject"]."</td>";
+ 	 echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["message_to"]."</td>";
+     echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["sender"]."</td>";
+     echo "<td width=\"10%\" align='right' class=\"tahoma1\"  dir=\"ltr\">".$send_date."</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ ?>
+        
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

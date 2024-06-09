@@ -1,0 +1,740 @@
+<script type="text/javascript">
+function val(form)
+{
+	  var txt1 = document.getElementById("txt1");
+	  var txt2 = document.getElementById("txt2");
+	  var txt3 = document.getElementById("txt3");
+	  var combo3 = document.getElementById("combo3");
+	  var combo4 = document.getElementById("combo4");
+	  var combo5 = document.getElementById("combo5");
+
+	  var errormessage=document.getElementById("errormessage");
+
+
+	  if (txt1.value == '')
+  {
+	  txt1.style.background = "#FFF000";
+	  errormessage.style.display='';
+  }else
+	  txt1.style.background="#FFFFFF";
+
+
+	  if (txt2.value == '')
+  {
+	  txt2.style.background = "#FFF000";
+	  errormessage.style.display='';
+  }else
+	  txt2.style.background="#FFFFFF";
+
+	  
+	  if (txt3.value == '')
+  {
+	  txt3.style.background = "#FFF000";
+	  errormessage.style.display='';
+  }else
+	  txt3.style.background="#FFFFFF";
+
+  
+	 
+	  if (combo3.value == '-1')
+	  {
+		  combo3.style.background = "#FFF000";
+		  errormessage.style.display='';
+		  //return false;
+	  }else
+		  combo3.style.background="#FFFFFF";
+
+
+	  if (combo4.value == '-1')
+	  {
+		  combo4.style.background = "#FFF000";
+		  errormessage.style.display='';
+		  //return false;
+	  }else
+		  combo4.style.background="#FFFFFF";
+
+
+	  if (combo5.value == '-1')
+	  {
+		  combo5.style.background = "#FFF000";
+		  errormessage.style.display='';
+		  //return false;
+	  }else
+		  combo5.style.background="#FFFFFF";
+		  
+  
+if(txt1.value != ''
+&& txt2.value != ''
+&& txt3.value != ''
+&& combo3.value != '-1'
+&& combo4.value != '-1'
+&& combo5.value != '-1'){
+	  
+  document.sabt_tarh.submit();
+} 
+} 
+</script>
+
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+$year_date = date("Y") - 1921 ;
+$today=str_replace("/","-",today());
+
+ 
+echo "<br>";
+
+	$query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+  	$result=mysql_query($query) or die("Error");
+  	$row_fetched=mysql_fetch_array($result);
+ 	$edit_able=$row_fetched["edit_able"];
+ 	
+ 	if($edit_able=='0'){
+ 	 message_show("اين قسمت از در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+ 	}
+  	
+if(isset($action))
+{
+	if(strlen($melli_cod)>1 && strlen($shaba_cod)>1 && strlen($hesab)>1){
+		  if (strcmp($action,"add_user_answer")==0)
+		  {
+		  	$query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+		  	$result=mysql_query($query) or die("Error");
+		  	if(mysql_num_rows($result) <=0 && strcmp($year,"-1")!=0 && strcmp($month,"-1")!=0 && strcmp($day,"-1")!=0 )
+		  	{
+		  	   $start_time=$year."-".$month."-".$day;	
+		  	   $query="insert into answer_mojri_gharardad set  mobile='$mobile',hesab='$hesab',bank_name='$bank_name', submit_date='".date("Y-m-d")."', unnazerin='$unnazerin',nazerin='$nazerin',payanname='$payanname',pish_pardakht='$pish_pardakht',cod_tarh='$cod_tarh',mojri_code='$mojri_name',heiat_elmi='$heiat_elmi',start_time='$start_time',melli_cod='$melli_cod',shaba_cod='$shaba_cod'";
+		  	   $result=mysql_query($query) or die("Error");
+		  	    ?>
+		          <script language="javascript">
+		           window.location="<? echo "answer_questions1.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+		          </script>
+		          <?
+		  	}
+		  	else
+		  	{
+		  	   $start_time=$year."-".$month."-".$day;	
+		  	   $query="update answer_mojri_gharardad set    mobile='$mobile',hesab='$hesab',bank_name='$bank_name',unnazerin='$unnazerin',nazerin='$nazerin',payanname='$payanname',pish_pardakht='$pish_pardakht',mojri_code='$mojri_name',heiat_elmi='$heiat_elmi',start_time='$start_time',melli_cod='$melli_cod',shaba_cod='$shaba_cod' where cod_tarh='$cod_tarh'";
+		  	 // echo $query;
+				//exit();
+				$result=mysql_query($query) or die("Error");
+		  	    ?>
+		          <script language="javascript">
+		           window.location="<? echo "answer_questions1.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+		          </script>
+		          <?
+		  	}
+		  }
+	}
+	else {
+		$status="entry_error";
+	}
+
+}
+
+
+ $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+ 
+ $result=mysql_query($query) or die("Error");
+ $exists=0;
+ if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$mojri=$row_fetched["mojri_code"];
+ 	$heiat_elmi=$row_fetched["heiat_elmi"];
+ 	$start_time=$row_fetched["start_time"];
+ 	$pish_pardakht=$row_fetched["pish_pardakht"];
+ 	$payanname=$row_fetched["payanname"];
+ 	$nazerin=$row_fetched["nazerin"];
+ 	$unnazerin=$row_fetched["unnazerin"];
+	  $hesab=$row_fetched["hesab"];
+     $mobile=$row_fetched["mobile"];
+$bank_name=$row_fetched["bank_name"];
+$melli_cod=$row_fetched["melli_cod"];
+$shaba_cod=$row_fetched["shaba_cod"];
+    $exists=1; 	
+ } 	
+ else
+ {
+ $bank_name="";
+ 	$unnazerin="";
+ 	$payanname="";
+ 	$mojri="";
+ 	$heiat_elmi="";
+ 	$start_time="";
+ 	$pish_pardakht="";
+ 	$nazerin="";
+	  $hesab='';
+     $mobile='';
+
+ 
+ }
+ $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_user_answer&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1" dir="rtl" height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+
+
+
+
+ <TABLE cellSpacing=0 cellPadding=0 border=0 width="100%">
+  <TBODY>
+    <TR>
+    <TD align=middle width="100%"   height=19 class="tahoma1" align="right">
+    (پاسخ به سوالات کارشناسان (مرحله اول 
+	</TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+echo "<tr style='display:none' id='errormessage'>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" id='error-message' class=\"tahoma1\" colspan=\"2\">.مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+echo "</tr>";
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.طرحي با اين عنوان وجود دارد</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td colspan="2"  width="100%" align="center" class="tahoma1">انتخاب مجري طرف قرارداد</td>
+    </tr>
+   
+    <tr>
+    <td colspan="2" width="100%" colspan="2" class="tahoma1"><span class="star-message">
+	
+	
+	
+	
+	
+<?	
+
+
+	$query1="select distinct user_login.* from user_login,tarh where user_login.email=tarh.creator and tarh.cod_tarh='$cod_tarh'";
+	
+	$result1=mysql_query($query1) or die("Error");
+   $query2="select distinct mojri.* from mojri_tarh , tarh,mojri  where mojri.mojri_code=mojri_tarh.mojri_code and mojri_tarh.cod_tarh = tarh.cod_tarh  and tarh.cod_tarh=\"$cod_tarh\" and mojri_tarh.mojri_or_hamkar='0'  ";
+   $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+   if(mysql_num_rows($result2) > 0 || mysql_num_rows($result1) > 0)
+   {
+   	$i=0;
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+    ?>
+    <table border="0" width="100%" cellpadding="1" cellspacing="1">
+     <tr>
+    <td width="100%"  colspan="3">
+
+      <p align="center" class="verdana1"><font color="black">انتخاب مجري طرف قرارداد</font></td>
+    </tr>
+    <tr>
+       <td width="15%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">انتخاب </font></td>
+  
+   
+      <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+      
+      <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">سمت</font></td>
+      
+    </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ 
+ while($row_fetched1=mysql_fetch_array($result1))
+ {
+  //$cod_tarh=$row_fetched1["cod_tarh"];
+  $cod_mojri=$row_fetched1["email"];
+ 
+   	 $checked="checked='checked'";
+  
+   
+   $name_family_main_mojri=$row_fetched1["name"]."&nbsp;".$row_fetched1["family"];
+   
+   
+  echo "<tr>";
+
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input   type=\"radio\" value=\"$cod_mojri\"  $checked name=\"mojri_name\"></td>";
+  
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched1["family"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched1["name"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">ثبت کننده طرح</td>";
+
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+ while($row_fetched2=mysql_fetch_array($result2))
+ {
+  //$cod_tarh=$row_fetched["cod_tarh"];
+  //$cod_mojri=$row_fetched1["mojri_code"];
+  
+  $cod_mojri=$row_fetched2["mojri_code"];
+  
+  if($exists==1)
+   if(strcmp($cod_mojri,$mojri)==0)
+   {
+   	 $checked="checked='checked'";
+   }
+   else
+   {
+   	 $checked="";
+   }
+   
+   echo "<tr>";
+
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"radio\" value=\"$cod_mojri\" $checked  name=\"mojri_name\"></td>";  
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched2["family"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched2["name"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">مجري ثبت شده دراين طرح</td>";
+  echo "</tr>";
+ 
+ }
+ 
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+ ?>
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</td>
+  </tr>
+  <?
+  $no_heiat_selected="";
+  $heiat_selected="";
+  if(strcmp($heiat_elmi,"1")==0)
+    $heiat_selected=" selected ";
+  else
+    $no_heiat_selected=" selected ";  
+  ?>
+  
+  <tr>
+    <td colspan='2'  width="500" align="right" dir='rtl' class="tahoma1">با توجه به ارسال الکترونيکي پرداخت هاي مراحل قرارداد به حسابداري و بانک مربوطه،لازم است موارد کد ملي،شماره حساب و شماره شبا طرف قرارداد به صورت صحيح در فيلدهاي زير برگردد.</td>
+   </tr>
+     <tr>
+    <td colspan='2'  width="500" align="right" dir='rtl' class="tahoma1">در صورت ثبت نادرست اطلاعات،پرداخت بامشکل مواجه شده و منجر به عدم پرداخت خواهد شد</td>
+   </tr>
+    <tr>
+    <td colspan='2'  width="500" align="right" dir='rtl'class="tahoma1">چنانچه کد ملي با صفر شروع ميشود حتما آنرا به طور کامل وارد کنيد</td>
+   </tr>
+    <tr>
+    <td width="350" align="right"><input type="text" id="txt1" class="edit-user"    name="melli_cod" size="20" <? echo "value='$melli_cod'"; ?>  ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>شماره ملي طرف قرارداد</td>
+  </tr>
+ 
+    <tr>
+      <?
+    $query="select * from hesab_type order by hesab_type_desc";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+    <td width="350" align="right"><select size="1"   name="bank_name" class="edit-sugnup"  dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+        if(strcmp($bank_name,$row_fetched["hesab_type"])==0)
+          $selected= " selected ";
+        else
+		  $selected="";  
+         echo "<option $selected value=\"".$row_fetched["hesab_type"]."\" class=\"tahoma1\">".$row_fetched["hesab_type_desc"]."</option>";
+    }
+    ?>
+</select>
+    </td>
+    <td width="150" class="tahoma1">نوع حساب طرف قرارداد</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" id="txt2" class="edit-user"    name="hesab" size="20" <? echo "value='$hesab'"; ?>  ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>شماره حساب طرف قرارداد</td>
+  </tr>
+ 
+  <tr>
+    <td width="350" align="right"><input type="text" id="txt3" class="edit-user"    name="shaba_cod" size="20" <? echo "value='$shaba_cod'"; ?>  ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>شماره شبا طرف قرارداد</td>
+  </tr>
+ 
+   <tr>
+    <td width="350" align="right"><input type="text"  class="edit-user"  name="mobile" size="20" <? echo "value='$mobile'"; ?>  ></td>
+    <td width="150" class="tahoma1">شماره موبايل طرف قرارداد</td>
+  </tr>
+
+   <tr>
+    <td width="350" align="right"><select  size="1" name="heiat_elmi">
+    <option <? echo $heiat_selected ; ?> value="1">بلي</option>
+    <option <? echo $no_heiat_selected ; ?> value="0">خير</option>
+  </select></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>آيا فرد در استخدام دانشگاه است ؟</td>
+  </tr>
+<?
+if($exists==1)
+{
+  $year=substr($start_time,0,4);
+  $month=substr($start_time,5,2);
+  $day=substr($start_time,8,2);
+  
+  for($cntr_list=1;$cntr_list < 31;$cntr_list++)
+  {
+  	$id_cntr='c'.$cntr_list;
+  	$$id_cntr='';
+  }
+  if(strcmp($year,"1381")==0)
+    $c1=" selected ";
+  if(strcmp($year,"1382")==0)
+    $c2=" selected ";
+  if(strcmp($year,"1383")==0)
+    $c3=" selected ";	  
+  if(strcmp($year,"1384")==0)
+    $c4=" selected ";
+  if(strcmp($year,"1385")==0)
+    $c5=" selected ";	    
+  if(strcmp($year,"1386")==0)
+    $c6=" selected ";
+  if(strcmp($year,"1387")==0)
+    $c7=" selected ";
+  if(strcmp($year,"1388")==0)
+    $c8=" selected ";
+  if(strcmp($year,"1389")==0)
+    $c9=" selected ";
+  if(strcmp($year,"1390")==0)
+    $c10=" selected ";
+ if(strcmp($year,"1391")==0)
+    $c11=" selected ";	
+	
+ if(strcmp($year,"1392")==0)
+    $c12=" selected ";	
+ if(strcmp($year,"1393")==0)
+    $c13=" selected ";	
+
+ if(strcmp($year,"1394")==0)
+    $c14=" selected ";	
+	
+	 if(strcmp($year,"1395")==0)
+    $c15=" selected ";
+}
+?>
+
+
+
+ <?
+
+  $no_payanname_selected="";
+  $payanname_selected="";
+  if(strcmp($payanname,"1")==0)
+    $payanname_selected=" selected ";
+  else
+    $no_payanname_selected=" selected ";  
+  ?>
+   <tr>
+    <td width="350" align="right"><select size="1" name="payanname">
+    <option <? echo $payanname_selected ; ?> value="1">بلي</option>
+    <option <? echo $no_payanname_selected ; ?> value="0">خير</option>
+  </select></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>آيا طرح ماحصل پايان نامه است ؟</td>
+  </tr>
+<tr>
+    <td width="350" align="right"><input type="text"  class="edit-user"  dir=RTL    name="nazerin" size="20" <? echo "value='$nazerin'"; ?>  ></td>
+    <td width="150" class="tahoma1">ناظرين پيشنهادي شما</td>
+  </tr>
+
+<tr>
+    <td width="350" align="right"><input type="text"  class="edit-user"  dir=RTL    name="unnazerin" size="20" <? echo "value='$unnazerin'"; ?>  ></td>
+    <td width="150" class="tahoma1">افرادي که نمي خواهيد ناظر شما باشند</td>
+  </tr>
+
+
+
+
+  
+<tr>
+    <td width="350" align="right">
+	
+	
+  
+    	   <select size="1" dir="rtl" id="combo3" name="year" class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option <? echo $c1;  ?> value="1381">1381</option>
+          <option <? echo $c2;  ?> value="1382">1382</option>
+          <option <? echo $c3;  ?> value="1383">1383</option>
+          <option <? echo $c4;  ?> value="1384">1384</option>
+          <option <? echo $c5;  ?> value="1385">1385</option>
+	  	  <option <? echo $c6;  ?> value="1386">1386</option>
+	      <option <? echo $c7;  ?> value="1387">1387</option>
+	      <option <? echo $c8;  ?> value="1388">1388</option>
+	      <option <? echo $c9;  ?> value="1389">1389</option>
+	      <option <? echo $c10;  ?> value="1390">1390</option>
+<option <? echo $c11;  ?> value="1391">1391</option>
+<option <? echo $c12;  ?> value="1392">1392</option>
+<option <? echo $c13;  ?> value="1393">1393</option>
+<option <? echo $c14;  ?> value="1394">1394</option>
+<option <? echo $c15;  ?> value="1395">1395</option>
+        </select>
+        
+        <?
+        for($cntr_list=1;$cntr_list < 31;$cntr_list++)
+ 	    {
+  			$id_cntr='c'.$cntr_list;
+ 		 	$$id_cntr='';
+	    } 
+	    
+        if($exists==1)
+        {
+ 
+		 if(strcmp($month,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($month,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($month,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($month,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($month,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($month,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($month,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($month,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($month,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($month,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($month,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($month,"12")==0)		 
+		    $c12=" selected ";
+		 }	
+		 //echo $c2; 
+		?>
+        <select size="1" dir="rtl"  name="month" id="combo4"  class="combo-date">
+         <option selected value="-1">انتخاب</option>
+          <option <? echo $c1; ?> value="01">فروردين</option>
+          <option <? echo $c2; ?> value="02">ارديبهشت</option>
+          <option <? echo $c3; ?> value="03">خرداد</option>
+          <option <? echo $c4; ?> value="04">تير</option>
+          <option <? echo $c5; ?> value="05">مرداد</option>
+          <option <? echo $c6; ?> value="06">شهريور</option>
+          <option <? echo $c7; ?> value="07">مهر</option>
+          <option <? echo $c8; ?> value="08">آبان</option>
+          <option <? echo $c9; ?> value="09">آذر</option>
+          <option <? echo $c10; ?> value="10">دي</option>
+          <option <? echo $c11; ?> value="11">بهمن</option>
+          <option <? echo $c12; ?> value="12">اسفند</option>
+        </select>
+<?
+for($cntr_list=1;$cntr_list < 31;$cntr_list++)
+  {
+  	$id_cntr='c'.$cntr_list;
+  	$$id_cntr='';
+  }
+     if($exists==1)
+        {
+ 
+
+		 if(strcmp($day,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($day,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($day,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($day,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($day,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($day,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($day,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($day,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($day,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($day,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($day,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($day,"12")==0)		 
+		    $c12=" selected ";
+		 if(strcmp($day,"13")==0)		 
+		    $c13=" selected ";
+  		 if(strcmp($day,"14")==0)		 
+		    $c14=" selected ";
+		 if(strcmp($day,"15")==0)		 
+		    $c15=" selected ";
+		 if(strcmp($day,"16")==0)		 
+		    $c16=" selected ";
+		 if(strcmp($day,"17")==0)		 
+		    $c17=" selected ";
+		 if(strcmp($day,"18")==0)		 
+		    $c18=" selected ";
+		 if(strcmp($day,"19")==0)		 
+		    $c19=" selected ";
+		 if(strcmp($day,"20")==0)		 
+		    $c20=" selected ";
+		 if(strcmp($day,"21")==0)		 
+		    $c21=" selected ";
+		 if(strcmp($day,"22")==0)		 
+		    $c22=" selected ";
+		 if(strcmp($day,"23")==0)		 
+		    $c23=" selected ";
+		 if(strcmp($day,"24")==0)		 
+		    $c24=" selected ";
+		 if(strcmp($day,"25")==0)		 
+		    $c25=" selected ";
+		 if(strcmp($day,"26")==0)		 
+		    $c26=" selected ";
+		 if(strcmp($day,"27")==0)		 
+		    $c27=" selected ";
+		 if(strcmp($day,"28")==0)		 
+		    $c28=" selected ";
+		 if(strcmp($day,"29")==0)		 
+		    $c29=" selected ";
+		 if(strcmp($day,"30")==0)		 
+		    $c30=" selected ";
+		 if(strcmp($day,"31")==0)		 
+		    $c31=" selected ";
+		 
+        }
+
+?>
+        <select size="1" dir="rtl"  name="day" id="combo5" class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option <? echo $c1; ?> value="01">1</option>
+          <option <? echo $c2; ?> value="02">2</option>
+          <option <? echo $c3; ?> value="03">3</option>
+          <option <? echo $c4; ?> value="04">4</option>
+          <option <? echo $c5; ?> value="05">5</option>
+          <option <? echo $c6; ?> value="06">6</option>
+          <option <? echo $c7; ?> value="07">7</option>
+          <option <? echo $c8; ?> value="08">8</option>
+          <option <? echo $c9; ?> value="09">9</option>
+          <option <? echo $c10; ?> value="10">10</option>
+          <option <? echo $c11; ?> value="11">11</option>
+          <option <? echo $c12; ?> value="12">12</option>
+          <option <? echo $c13; ?> value="13">13</option>
+          <option <? echo $c14; ?> value="14">14</option>
+          <option <? echo $c15; ?> value="15">15</option>
+          <option <? echo $c16; ?> value="16">16</option>
+          <option <? echo $c17; ?> value="17">17</option>
+          <option <? echo $c18; ?> value="18">18</option>
+          <option <? echo $c19; ?> value="19">19</option>
+          <option <? echo $c20; ?> value="20">20</option>
+          <option <? echo $c21; ?> value="21">21</option>
+		  <option <? echo $c22; ?> value="22">22</option>
+		  <option <? echo $c23; ?> value="23">23</option>
+		  <option <? echo $c24; ?> value="24">24</option>
+		  <option <? echo $c25; ?> value="25">25</option>
+		  <option <? echo $c26; ?> value="26">26</option>
+		  <option <? echo $c27; ?> value="27">27</option>
+		  <option <? echo $c28; ?> value="28">28</option>
+		  <option <? echo $c29; ?> value="29">29</option>
+		  <option <? echo $c30; ?> value="30">30</option>
+		  <option <? echo $c31; ?> value="31">31</option>
+        </select>
+ 
+	
+	
+	
+	
+	
+	</td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>زمان دقيق شروع قرارداد</td>
+  </tr>
+  
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="button" onclick="val(this);" value="مرحله بعد" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>

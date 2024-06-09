@@ -1,0 +1,114 @@
+
+<?
+include("include/styles.phtml");
+include("include/include.phtml");
+header_forms();
+
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+ 
+ 
+ 
+ if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(!isset($ascdesc))
+  $ascdesc="desc";
+
+ ?>
+ 
+  <?
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+if(isset($name_e) && strlen($name_e) > 0)
+{
+  $query="select * from tarh_old where (tarh_title_farsi like $myname_search ) and 1 order by  cod_tarh  desc";
+}
+else
+  $query="select * from tarh_old where 1  order by  cod_tarh  desc";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$reccount = mysql_num_rows($result);
+ 
+
+ if(isset($name_e))
+{
+  $query="select * from tarh_old left join vaziat_tarh on tarh_old.vaziat=vaziat_tarh.vaziat where (tarh_title_farsi like $myname_search  ) and 1 order by  cod_tarh  desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select * from tarh_old left join vaziat_tarh on tarh_old.vaziat=vaziat_tarh.vaziat where 1  order by  cod_tarh  desc "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 12");
+    if(isset($name_e) && strlen(trim($name_e)) > 0)
+	 $myascdescpub="&name_e=$name_e";
+
+
+ 
+
+ pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$myascdescpub,"80%",'#ffffff');
+   
+   if(mysql_num_rows($result) > 0)
+   {
+
+          echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"  width=\"80%\" >";
+
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF \">";
+ ?>
+ <tr>
+ <td align="right">
+
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ </form>
+ <?
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+		      echo "<tr>";
+
+         $cod_daneshkade =$row_fetched["cod_daneshkade"];
+		 $q="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+		 $rs=mysql_query($q) or die("error");
+		 $rf_daneshkade=mysql_fetch_array($rs);
+		 $daneshkade=$rf_daneshkade["daneshkade_name"];
+	     
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+        echo "<td width=\"5%\"  align=\"right\" class=\"tahoma1\" dir='rtl'>&nbsp;<img border='0' src='images\\marker_img.gif'><font color='green'>".$row_fetched["cod_tarh"]." ( $daneshkade )&nbsp;  </font> </td> ";
+	 echo "</tr>";
+	echo "<tr>"; 
+	  echo "<td width=\"26%\"  align=\"right\"  class=\"tahoma1\" dir='rtl'><br>". $row_fetched["tarh_title_farsi"]."<hr><br></td>" ;
+       
+      
+     echo "</tr>";
+	  
+	   
+	   
+	   
+ 
+     
+     }
+      echo "</table>";
+    
+
+   }
+ 
+  ?>
+
+ 
+ <?
+ footer_forms();
+?>

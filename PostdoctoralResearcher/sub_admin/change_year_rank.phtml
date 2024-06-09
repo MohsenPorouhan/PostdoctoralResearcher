@@ -1,0 +1,297 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+if(strcmp($action,"change_year_rank")==0)
+  {
+    
+     if(strcmp($rank_num,"0")!=0 && strcmp($year_tarh,"0")!=0 )
+     {
+     	
+    // $cod_tarh_trunk=substr($cod_tarh,5);
+		
+    // $cod_tarh_new=$year_tarh."-".$rank_num.$cod_tarh_trunk;
+	 if(strcmp($rank_num,"0")!=0 && strcmp($year_tarh,"0")!=0  )
+	       $rank=$rank_num;
+	   
+ 		 $tok = strtok($cod_tarh, "-");
+		 $rank = strtok("-");
+		
+		 $cod_daneshkade = strtok("-");
+		
+		 $max_cod_tarh = strtok("-");
+		  
+          $cod_tarh_new=$year_tarh."-".$rank_num."-".$cod_daneshkade."-".$max_cod_tarh;
+         
+          $max_cod=$cod_tarh_new;
+		   
+		
+		 
+		
+		///////////////////////////////////////////////////////
+		
+		
+		
+
+$query="select * from  tarh where cod_tarh='$cod_tarh' ";
+ 
+   $result=mysql_query($query) or die ("Error in updating data into modir daneshkade");
+   if(mysql_num_rows($result) > 0)
+   {
+   	  $query="select * from  tarh where cod_tarh='$cod_tarh_new' ";
+ 
+      $result=mysql_query($query) or die ("Error in updating data into modir daneshkade");
+      if(mysql_num_rows($result) <= 0)
+      {
+        rename_directory($cod_tarh,$cod_tarh_new);
+      $query="update activities set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+      $result=mysql_query($query) or die("Error in updating data into tarh1");
+     	
+     $query="update tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+     $result=mysql_query($query) or die("Error in updating data into tarh1");
+     $query="update  shora_tarh_vaziat set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     
+	 $result=mysql_query($query) or die("Error in updating data into tarh2");
+     $query="update  sayer_hazine set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+	 $result=mysql_query($query) or die("Error in updating data into tarh3");
+     $query="update  ravesh_ejra set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+     $result=mysql_query($query) or die("Error in updating data into tarh4");
+     $query="update  mojri_tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+	 $result=mysql_query($query) or die("Error in updating data into tarh5");
+     $query="update  letter_to_mojri set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+	 $result=mysql_query($query) or die("Error in updating data into tarh6");
+     $query="update  karshenasan_tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+	 $result=mysql_query($query) or die("Error in updating data into tarh7");
+     $query="update  jadval_zarayeb set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+	 $result=mysql_query($query) or die("Error in updating data into tarh8");
+     $query="update  hazine_safar set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+   
+     $result=mysql_query($query) or die("Error in updating data into tarh9");
+     $query="update  hazine_personnel set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+
+     $result=mysql_query($query) or die("Error in updating data into tarh10");
+     $query="update  hazine_azmayesh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+    
+	 
+	 $result=mysql_query($query) or die("Error in updating data into tarh11");
+     $query="update  hamkar_tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh12");
+     $query="update  fhrest_vasayel_kharid set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh13");
+     $query="update  daneshjo_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh14");
+     $query="update  eatebar_sazmanha  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  tarh_send_moavenat  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  return_daneshkade  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  jalase_shora_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  group_karshenasan_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+	  $query="update  group_karshenasan_tarh_note  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  gozaresh_gharardad  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update   factor_gharardad  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  answer_mojri_gharardad  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+    
+	
+	 $query="update  tarh_position  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+    
+     $query="update  tarh_indoing  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  shora_pajohesh_daneshgah  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  marhale_report  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+ 	 $query="update  daneshkade_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     
+     
+     
+  //   $action="تغيير کد طرح از کد $cod_tarh به $cod_tarh_new";
+    //       set_log($action,$admin,date("Y-m-d, g:i a"));
+     
+    
+      	
+      }
+       else
+        $status="invalid_new";
+         
+  
+   }
+   else
+     $status="invalid_old";
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		   
+		/////////////////////////////////////////////////////////////////   
+	
+	
+	/*	  	   
+     $query="update tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+   
+     $result=mysql_query($query) or die("Error in updating data into tarh1");
+     $query="update  shora_tarh_vaziat set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh2");
+     $query="update  sayer_hazine set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh3");
+     $query="update  ravesh_ejra set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh4");
+     $query="update  mojri_tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh5");
+     $query="update  letter_to_mojri set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh6");
+     $query="update  karshenasan_tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh7");
+     $query="update  jadval_zarayeb set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh8");
+     $query="update  hazine_safar set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh9");
+     $query="update  hazine_personnel set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh10");
+     $query="update  hazine_azmayesh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh11");
+     $query="update  hamkar_tarh set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh12");
+     $query="update  fhrest_vasayel_kharid set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh13");
+     $query="update  daneshjo_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh14");
+     $query="update  eatebar_sazmanha  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  tarh_send_moavenat  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  return_daneshkade  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  jalase_shora_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  group_karshenasan_tarh  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  gozaresh_gharardad  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update   factor_gharardad  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+     $query="update  answer_mojri_gharardad  set cod_tarh='$cod_tarh_new' where cod_tarh=\"$cod_tarh\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh16");
+    */
+	 ?>
+           <script language="javascript">
+           window.location="<? echo "tarh_list_new.phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+	 
+     message_show(".سال و رنک مورد نظر تغيير يافت","red");
+     footer_forms($admin,$seed);
+    
+     }
+     
+  }
+ }
+
+
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched=mysql_fetch_array($result);
+
+?>
+<center>
+<TABLE cellSpacing=0  width="490" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=change_year_rank&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+<?
+        if (strcmp($status,"invalid_new")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"100%\" class=\"tahoma1\" colspan=\"22\">کد جديد وجود دارد</td>";
+        echo "</tr>";
+      }
+       if (strcmp($status,"invalid_old")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"100%\" class=\"tahoma1\" colspan=\"22\">کد قديمي وجود ندارد</td>";
+        echo "</tr>";
+      }
+  ?>  
+<tr>
+    <td width="350" align="right"><select size="1" name="year_tarh" class="edit-user" dir="rtl">
+    <option value="0">انتخاب کنيد</option>
+    <option value="83">83</option>
+    <option value="84">84</option>
+    <option value="85">85</option>
+    <option value="86">86</option>
+    <option value="87">87</option>
+    <option value="88">88</option>
+    <option value="89">89</option>
+    <option value="90">90</option>
+    <option value="91">91</option>
+	<option value="92">92</option>
+	<option value="93">93</option>
+	<option value="94">94</option>
+	<option value="95">95</option>
+  </select></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>سال طرح</td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><select size="1" name="rank_num" class="edit-user" dir="rtl">
+    <option value="0">انتخاب کنيد</option>
+    <option value="01">1</option>
+    <option value="02">2</option>
+    <option value="03">3</option>
+    <option value="04">4</option>
+    
+  </select></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>شماره رنک مربوط به طرح</td>
+  </tr>
+ <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+  </table>
+</form>
+<?
+  footer_forms($admin,$seed);
+?>
+

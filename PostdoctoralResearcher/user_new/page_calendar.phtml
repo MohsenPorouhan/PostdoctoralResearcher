@@ -1,0 +1,334 @@
+<?
+include ("include/database-connect.phtml");
+include ("include/include.phtml");
+include ("include/vars.inc.phtml");
+
+header_forms ();
+?>
+<!-- BEGIN PAGE LEVEL STYLES -->
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+<link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+
+<link id="DT_bootstrap" rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css" />
+
+<link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+<link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+<link href="../assets/plugins/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" />
+<!-- END PAGE LEVEL STYLES -->
+
+<!--First of test with previous css  -->
+<!-- <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" /> -->
+
+<!-- End of test with previous css -->
+<!-- END PAGE LEVEL STYLES -->
+<?php
+include ("include/new_menu.php");
+?>
+
+<!-- BEGIN CONTENT -->
+<div class="page-content-wrapper">
+<div class="page-content"><!-- BEGIN PAGE HEADER-->
+<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                               در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+<div class="row">
+<div class="col-md-12"><!-- BEGIN PAGE TITLE & BREADCRUMB-->
+<h4 id="page_title" class="page-title"><i class="fa fa-calendar"></i> تقويم من </h4>
+<ul class="page-breadcrumb breadcrumb">
+
+	<li id="breadcrumb1"><i class="fa fa-home"></i> <a href="home.php"> خانه </a> <i class="fa fa-angle-left"></i></li>
+	<li id="breadcrumb2"><a href="#"><i class="fa fa-calendar"></i> تقويم من </a> <i class="fa fa-angle-left"></i></li>
+
+</ul>
+<!-- END PAGE TITLE & BREADCRUMB--></div>
+</div>
+<!-- END PAGE HEADER--> <!-- BEGIN PAGE CONTENT-->
+<div class="row">
+<div class="col-md-12"><!-- BEGIN DATA TABLE PORTLET-->
+<div class="portlet box blue calendar">
+<div class="portlet-title">
+<div id="portlet_caption" class="caption"><i class="fa fa-reorder"></i>تقويم</div>
+<div class="tools">
+<a href="javascript:;" class="collapse">
+</a>
+<a href="#portlet-config" data-toggle="modal"
+class="fa fa-info-circle" title="راهنما"
+style="color: white">
+	</a>
+</div>
+</div>
+<div class="portlet-body light-grey">
+<div class="row">
+<div class="col-md-9 col-sm-12">
+<div id="calendar" class="has-toolbar"></div>
+</div>
+<div class="col-md-3 col-sm-12">
+<div class="portlet box blue">
+<div class="portlet-title">
+<div id="portlet_caption2" class="caption"><i class="fa fa-calendar"></i>راهنماي رنگها</div>
+
+</div>
+<div class="portlet-body">
+<div class="list-group"> 
+ <a id="badge_danger" href="#" class="list-group-item"> زمان قانوني اتمام کار داوري <span class="badge badge-danger">  </span> </a> 
+ <a id="badge_info" href="#" class="list-group-item"> زمان ارسال گزارشات <span class="badge badge-info"> </span> </a>
+ <a id="badge_default" href="#" class="list-group-item"> زمان پاسخ به سوالات قرارداد <span class="badge badge-default">  </span> </a> 
+ <a id="badge_warning" href="#" class="list-group-item"> زمان پاسخ به مکاتبات <span class="badge badge-warning">  </span> </a></div>
+</div>
+</div>
+
+
+</div>
+
+</div>
+<!-- END CALENDAR PORTLET--></div>
+</div>
+<!-- END DATA TABLE PORTLET--></div>
+</div>
+<!-- END PAGE CONTENT--></div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en"){																										    
+debugger;
+document.getElementById("page_title").innerHTML="<i class='fa fa-calendar'></i> My Calendar";
+document.getElementById("breadcrumb1").innerHTML="<i class='fa fa-home'></i> <a href='index.html'> Home </a> <i class='fa fa-angle-right'></i>";
+document.getElementById("breadcrumb2").innerHTML="<a href='#'><i class='fa fa-calendar'></i> My Calendar </a> <i class='fa fa-angle-right'></i>";
+document.getElementById("portlet_caption").innerHTML="<i class='fa fa-reorder'></i> Calendar";
+document.getElementById("portlet_caption2").innerHTML="<i class='fa fa-calendar'></i> Colors Guide";
+//document.getElementById("portlet_config").setAttribute("title","Information");
+document.getElementById("badge_danger").innerHTML="The completion of judgment law time <span class='badge badge-danger'>  </span>";
+document.getElementById("badge_info").innerHTML="Send of time reports <span class='badge badge-info'> </span>";
+document.getElementById("badge_default").innerHTML="Response time to questions of contract <span class='badge badge-default'>  </span>";
+document.getElementById("badge_warning").innerHTML="Time to respond to correspondence <span class='badge badge-warning'> </span>";
+
+document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+}
+</script>
+
+<?php
+include ("../include/primary_js.phtml");
+?>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../assets/plugins/data-tables/DT_bootstrap.js"></script>
+<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+<script src="../assets/plugins/fullcalendar/fullcalendar/fullcalendar1.js"></script>
+<script src="../assets/plugins/fullcalendar/fullcalendar/jalali.js"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+
+
+
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<!--<script src="../assets/scripts/core/app.js"></script>-->
+<!--<script src="../assets/scripts/custom/table-advanced.js"></script>-->
+<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+        jQuery(document).ready(function () {
+            // initiate layout and plugins
+        	//Calendar.init();
+         //   TableAdvanced.init();
+        });
+    </script>
+<script>
+
+    $(document).ready(function() {
+    	
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			start: '2014-01-01',
+			end: '2014-12-29',
+			defaultDate: '2014-09-12',
+			editable: true,
+			eventLimit: true, // allow "more" link when too many events
+			events: {
+				url: 'calendar_serverSide/get-events.php',
+				error: function() {
+					$('#script-warning').show();
+				}
+			},
+			loading: function(bool) {
+				$('#loading').toggle(bool);
+			}
+		});
+		
+	});
+
+
+    
+//    var Calendar = function () {
+//
+//
+//        return {
+//            //main function to initiate the module
+//            init: function () {
+//                Calendar.initCalendar();
+//            },
+//
+//            initCalendar: function () {
+//
+//                if (!jQuery().fullCalendar) {
+//    			
+//                    return;
+//                }
+//
+//                var date = new Date();
+//                var d = date.getDate();
+//                var m = date.getMonth();
+//                var y = date.getFullYear();
+//    			debugger;
+//                var h = {};
+//
+//                if (App.isRTL()) {
+//                     if ($('#calendar').parents(".portlet").width() <= 720) {
+//                        $('#calendar').addClass("mobile");
+//                        h = {
+//                            right: 'title, prev, next',
+//                            center: '',
+//                            right: 'agendaDay, agendaWeek, month, today'
+//                        };
+//                    } else {
+//                        $('#calendar').removeClass("mobile");
+//                        h = {
+//                            right: 'title',
+//                            center: '',
+//                            left: 'agendaDay, agendaWeek, month, today, prev,next'
+//                        };
+//                    }                
+//                } else {
+//                     if ($('#calendar').parents(".portlet").width() <= 720) {
+//                        $('#calendar').addClass("mobile");
+//                        h = {
+//                            left: 'title, prev, next',
+//                            center: '',
+//                            right: 'today,month,agendaWeek,agendaDay'
+//                        };
+//                    } else {
+//                        $('#calendar').removeClass("mobile");
+//                        h = {
+//                            left: 'title',
+//                            center: '',
+//                            right: 'prev,next,today,month,agendaWeek,agendaDay'
+//                        };
+//                    }
+//                }
+//               
+//
+//                var initDrag = function (el) {
+//                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+//                    // it doesn't need to have a start or end
+//                    var eventObject = {
+//                        title: $.trim(el.text()) // use the element's text as the event title
+//                    };
+//                    // store the Event Object in the DOM element so we can get to it later
+//                    el.data('eventObject', eventObject);
+//                    // make the event draggable using jQuery UI
+//                    el.draggable({
+//                        zIndex: 999,
+//                        revert: true, // will cause the event to go back to its
+//                        revertDuration: 0 //  original position after the drag
+//                    });
+//                }
+//
+//                var addEvent = function (title) {
+//                    title = title.length == 0 ? "Untitled Event" : title;
+//                    var html = $('<div class="external-event label label-default">' + title + '</div>');
+//                    jQuery('#event_box').append(html);
+//                    initDrag(html);
+//                }
+//
+//                $('#external-events div.external-event').each(function () {
+//                    initDrag($(this))
+//                });
+//
+//                $('#event_add').unbind('click').click(function () {
+//                    var title = $('#event_title').val();
+//                    addEvent(title);
+//                });
+//
+//                //predefined events
+//                $('#event_box').html("");
+//                addEvent("My Event 1");
+//                addEvent("My Event 2");
+//                addEvent("My Event 3");
+//                addEvent("My Event 4");
+//                addEvent("My Event 5");
+//                addEvent("My Event 6");
+//
+//                $('#calendar').fullCalendar('destroy'); // destroy the calendar
+//                $('#calendar').fullCalendar({ //re-initialize the calendar
+//    				
+//                    header: h,
+//                    slotMinutes: 15,
+//                    editable: true,
+//                    droppable: true, // this allows things to be dropped onto the calendar !!!
+//                    drop: function (date, allDay) { // this function is called when something is dropped
+//
+//                        // retrieve the dropped element's stored Event Object
+//                        var originalEventObject = $(this).data('eventObject');
+//                        // we need to copy it, so that multiple events don't have a reference to the same object
+//                        var copiedEventObject = $.extend({}, originalEventObject);
+//
+//                        // assign it the date that was reported
+//                        copiedEventObject.start = date;
+//                        copiedEventObject.allDay = allDay;
+//                        copiedEventObject.className = $(this).attr("data-class");
+//
+//                        // render the event on the calendar
+//                        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+//                        $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+//    						alert(m);
+//                        // is the "remove after drop" checkbox checked?
+//                        if ($('#drop-remove').is(':checked')) {
+//                            // if so, remove the element from the "Draggable Events" list
+//                            $(this).remove();
+//                        }
+//                    },
+//                    events: {
+//        				url: 'calendar_serverSide/get-events.php',
+//        				error: function() {
+//        					$('#script-warning').show();
+//        				}
+//        			}
+//                });
+//
+//            }
+//
+//        };
+//
+//    }();
+    
+    </script>
+
+
+<?php
+footer_forms ( $admin, $seed );
+?>
+
+

@@ -1,0 +1,274 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+?>
+<script>
+function change_target()
+{
+ <?
+
+ echo "window.location=\"jalase_finalize.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase\";";
+ 
+ ?>
+}
+</script>
+
+<?
+echo "<br>";
+
+
+if (strcmp($action,"sabt")==0)
+{
+  
+     for($i=1;$i<=$RecPerPage;$i++)
+     {
+       $cod_tarh_address="c".$i;
+       if(isset($$cod_tarh_address))
+       {
+         $cod_tarh_ok=$$cod_tarh_address;
+         $rotbe_address="d".$i;
+         $rotbe=$$$rotbe_address;
+         
+         $mosavab_address="e".$i;
+         $mosavab=$$$mosavab_address;
+         
+         $mosavab=str_replace(",","",$mosavab);
+		 $vaziat_address="f".$i;
+         $vaziat=$$$vaziat_address;
+         
+         $band_address="g".$i;
+         $band_azad=$$$band_address;
+         //echo $cod_tarh_ok."<br>".$rotbe."<br>".$mosavab."<br>".$vaziat;
+         $query="select * from jalase_shora_tarh where cod_tarh='$cod_tarh_ok' and shomare_jalase='$shomare_jalase'";
+        //  echo $query;
+         $result=mysql_query($query) or die("Error in selecting data from jalase_shora_tarh");
+         if(mysql_num_rows($result) >0 )
+         {
+         
+		   {	           	
+		     $query="update jalase_shora_tarh set  band_azad='$band_azad',rotbe_tarh='$rotbe',budjeh='$mosavab' where shomare_jalase='$shomare_jalase' and cod_tarh='$cod_tarh_ok'";
+		 
+		 
+			 $result=mysql_query($query) or die("Error in inserting data into jalase_shora_tarh1");
+			 
+			 //echo mysql_affected_rows($result);
+		     $query="update tarh set   rotbe_tarh='$rotbe' where cod_tarh='$cod_tarh_ok'";		      
+             $result=mysql_query($query) or die("Error in updating data into tarh");
+            // insert_position($cod_tarh_ok,"3",$admin);
+		   }
+		 }
+		 
+		 
+         
+         
+       }
+
+     }
+  
+}
+
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade=$myrow_fetched["cod_daneshkade"];
+$query2="select * from jalase_shora where jalase_id='$jalase_id'";
+$res2=mysql_query($query2) or die("Error");
+$rf2=mysql_fetch_array($res2);
+$shomare_jalase=$rf2["shomare_jalase"];
+
+if(isset($name_e))
+{
+  $query="select tarh.*,jalase_shora.* from tarh,jalase_shora where  (tarh.cod_tarh like $myname_search or  tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and tarh.cod_tarh=jalase_shora.cod_tarh and jalase_shora.jalase_id='$jalase_id'  and cod_daneshkade='$cod_daneshkade'  group by tarh.cod_tarh order by tarh_time desc" ;
+}
+else
+  $query="select tarh.*,jalase_shora.* from tarh,jalase_shora,jalase_shora_tarh where jalase_shora.shomare_jalase=jalase_shora_tarh.shomare_jalase and jalase_shora.creator=jalase_shora_tarh.creator and tarh.cod_tarh=jalase_shora_tarh.cod_tarh and jalase_shora.jalase_id='$jalase_id'  and cod_daneshkade='$cod_daneshkade'   group by tarh.cod_tarh order by tarh_time desc" ;
+
+
+ 
+$result=mysql_query($query) or die("Error in selecting data from tarh 100");
+
+$reccount = mysql_num_rows($result);
+//echo $reccount;
+
+ if(isset($name_e))
+{
+  $query="select tarh.*,jalase_shora.* from tarh,jalase_shora,jalase_shora_tarh where  (tarh.cod_tarh like $myname_search or  tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and tarh.cod_tarh=jalase_shora.cod_tarh and jalase_shora.jalase_id='$jalase_id'  and cod_daneshkade='$cod_daneshkade'  group by tarh.cod_tarh order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select tarh.*,jalase_shora.* from tarh,jalase_shora,jalase_shora_tarh where jalase_shora.shomare_jalase=jalase_shora_tarh.shomare_jalase and jalase_shora.creator=jalase_shora_tarh.creator and tarh.cod_tarh=jalase_shora_tarh.cod_tarh and jalase_shora.jalase_id='$jalase_id'  and cod_daneshkade='$cod_daneshkade'   group by tarh.cod_tarh order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+
+
+
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 200");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&action=sabt&jalase_id=$jalase_id&shomare_jalase=$shomare_jalase\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>تعيين وضعيت طرحهاي مطرح شده در اين جلسه<b><br></td>
+ </tr>
+ <tr>
+ <td align="center" class="star-message" width="60%" ><b>همکاران محترم</b><br><b>   صرفا وضعيت طرحهايي که در اين جلسه مورد بررسي قرار مي گيرد را مشخص کنيد <b><br></td>
+ </tr>
+ </table>
+ 
+<!-- <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="right">
+
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ </table> -->
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ $myascdescpub=$myascdescpub."jalase_id=$jalase_id"; 	
+ pubshowpages("edit_jalase_shora_tarhs.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%","#66CCFF");
+?>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">بند آزاد</font></td>  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">بودجه مصوب</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رتبه طرح</font></td>
+     <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رتبه در رنک و سال مربوطه</font></td> 
+	<td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري اول</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+  </tr>
+
+<?
+  
+ $row="1";
+ $doctor_in_list=1;
+ $color=$list_color_1;
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+ if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+  $row_cnt=($current-1)*$RecPerPage+$row;
+  $id=$cod_tarh;
+  $rotbe_tarh=$row_fetched["rotbe_tarh"];
+  $query_budjeh="select * from jalase_shora_tarh where cod_tarh='$cod_tarh'";
+  $budjeh_result=mysql_query($query_budjeh) or die("Error in selecting data from budjeh_tarh");
+  $budjeh_row_fetched=mysql_fetch_array($budjeh_result);
+  $budjeh_tarh=$budjeh_row_fetched["budjeh"];
+  $band_azad=$budjeh_row_fetched["band_azad"];
+  
+  echo "<input type=\"hidden\" name=\"c".$doctor_in_list."\" value=\"".$id."\">";
+  
+  echo "<input type=\"hidden\" name=\"g".$doctor_in_list."\" value=\"band".$id."\">";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input name=\"band".$id."\" type=\"text\" value=\"".$band_azad."\" class=\"edit-small-1\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>";
+  
+  echo "<input type=\"hidden\" name=\"e".$doctor_in_list."\" value=\"mosavab".$id."\">";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input name=\"mosavab".$id."\"  onkeypress=\"return checkit()\"  onkeyup=\"MakingMoneyForm(this)\" type=\"edit\" value=\"".$budjeh_tarh."\" class=\"edit-small-1\"></td>";
+  echo "<input type=\"hidden\" name=\"d".$doctor_in_list."\" value=\"rotbe".$id."\">";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input name=\"rotbe".$id."\" type=\"edit\" value=\"".$rotbe_tarh."\" class=\"edit-small-1\"></td>";
+    
+  $vaziat_tarh=$row_fetched["vaziat"];
+  
+   echo "<input type=\"hidden\" name=\"f".$doctor_in_list."\" value=\"vaziat".$id."\">"; 
+ 
+  $year_tarh=substr($cod_tarh,0,2);
+  $rank_tarh=substr($cod_tarh,3,2);
+
+
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"  >".$year_tarh.":سال"."<br>".$rank_tarh.":رنک"."<br>".$rotbe_tarh.":رتبه"."</td>";	  
+   
+  $doctor_in_list++;
+
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = \"$cod_tarh\"";
+  
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+ 
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array($myresult_mojri);
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+    $First_mojri_name = "اطلاعات موجود نيست";
+    
+  
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$farsistartdate."</a></td>";
+  echo "<td width=\"3%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri_name."</td>";
+  
+ 
+  echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$row_fetched["tarh_title_farsi"]."</a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$row_fetched["cod_tarh"]."</a></td>";
+  echo "</tr>";
+  
+ }
+ 
+ 
+
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+
+echo "<table border=\"0\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">";
+echo "<tr>";
+//echo "<tr>";
+ echo "<td width=\"30%\" align=\"center\" colspan=\"9\" class=\"tahoma1\">";
+ 
+ if(($endw==$current and $current > 0 ) || $reccount<=$RecPerPage || $reccount==0)
+    echo "<input type=\"button\" class=\"but-small\" value=\"خاتمه و ارسال \" name=\"finish\"  onclick=\"change_target()\">";
+ echo "<input type=\"submit\" value=\"ثبت\" name=\"submit\" class=\"but-small\"></td>";
+// echo "</tr>";
+echo "</tr>";
+echo "</table>";
+
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>
+

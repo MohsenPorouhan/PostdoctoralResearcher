@@ -1,0 +1,80 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+$query=" select daneshkade_name , sum(mablagh) as mablagh_sum from tarh , tarh_indoing,daneshkade where tarh.version='-1' and tarh_indoing.submitted=1 and tarh.cod_tarh=tarh_indoing.cod_tarh and tarh.cod_daneshkade =daneshkade.cod_daneshkade   group by daneshkade.cod_daneshkade";
+ 
+$result=mysql_query($query) or die("Error");
+
+echo "<table border=\"1\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">";
+echo "<tr>";
+  echo "<td colspan='2'>";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">طرح هاي جديد</font></td>";  
+echo "</tr>";
+
+echo "<tr>";
+ echo "<td  >";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">مبلغ</font></td>";  
+ 
+ echo "<td>";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">دانشكده</font></td>";  
+echo "</tr>";
+  
+   
+while($row_fetched=mysql_fetch_array($result))
+{
+ echo "<tr>";
+ echo "<td  >";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">".number_format($row_fetched["mablagh_sum"])."</font></td>";  
+ 
+ echo "<td>";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">".$row_fetched["daneshkade_name"]."</font></td>";  
+echo "</tr>";	
+}
+
+echo "</table>";
+
+
+
+
+
+
+$query=" select daneshkade_name , sum(mablagh) as mablagh_sum from tarh_old , tarh_old_pardakht,daneshkade where tarh_old_pardakht.tayeed_pardakht='1' and tarh_old.cod_tarh=tarh_old_pardakht.cod_tarh and tarh_old.cod_daneshkade =daneshkade.cod_daneshkade and  tarh_old_pardakht.date_pardakht like '%1385%'  group by daneshkade.cod_daneshkade";
+$result=mysql_query($query) or die("Error");
+
+echo "<br><br><table border=\"1\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">";
+echo "<tr>";
+echo "<td colspan='2'>";
+echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">طرح هاي قديمي</font></td>";  
+echo "</tr>";
+
+echo "<tr>";
+echo "<td  >";
+echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">مبلغ</font></td>";  
+ 
+echo "<td>";
+echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">دانشكده</font></td>";  
+echo "</tr>";
+  
+   
+while($row_fetched=mysql_fetch_array($result))
+{
+ echo "<tr>";
+ echo "<td  >";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">".number_format($row_fetched["mablagh_sum"])."</font></td>";  
+ 
+ echo "<td>";
+ echo "<p align=\"center\" class=\"tahoma1\"><font color=\"black\">".$row_fetched["daneshkade_name"]."</font></td>";  
+echo "</tr>";	
+}
+
+echo "</table>";
+footer_forms($admin,$seed);
+
+
+?>

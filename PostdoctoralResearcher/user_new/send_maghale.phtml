@@ -1,0 +1,1519 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+
+header_forms();
+?>
+<link id="select2" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+<link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+<link id="DT_bootstrap" rel="stylesheet"href="../assets/plugins/data-tables/DT_bootstrap_rtl.css" />
+<link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+<link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+<!-- <link href="../assets/plugins/persian-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" /> -->
+<link rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+<style>
+/* highlight results */
+.ui-autocomplete-input {
+  border: none; 
+  font-size: 14px;
+
+  border: 1px solid #DDD !important;
+  
+  z-index: 1511;
+  position: relative;
+}
+.ui-menu .ui-menu-item a {
+  font-size: 12px;
+}
+.ui-autocomplete-loading {
+  background: white url("../assets/img/ui-anim_basic_16x16.gif") left center no-repeat;
+}
+.ui-autocomplete {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 15100000 !important;
+  float: left;
+  display: none;
+  min-width: 160px;
+  width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  
+   max-height: 200px;
+   overflow-y: auto;
+   /* prevent horizontal scrollbar */
+   overflow-x: hidden;
+   /* add padding to account for vertical scrollbar */
+   padding-right: 20px;
+   cursor: default;
+}
+.ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+    text-decoration: none;
+}
+.ui-state-hover, .ui-state-active {
+      color: blue;
+      text-decoration: none;
+      background-color: #0088cc;
+      border-radius: 0px;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      background-image: none;
+}
+</style>
+<?php
+include("include/new_menu.php");
+
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h3 class="page-title" id="page-title">
+                            <small>عنوان طرح : <? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="navigator-home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="send-edit"  href="tarh_list.phtml?position=3">
+                            	    طرح هاي خاتمه يافته	  
+                                </a>
+                                <i id="fa-angle2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="send-maghale" href="send_maghale.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                     مقالات منتج از اين طرح
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                            <div class="portlet-body">
+                                <div class="row">
+                                		<div class="col-md-12 col-sm-12 col-xs-12">
+                                       <div class="portlet box blue">
+											<div class="portlet-title">
+												<div class="caption" id="caption-title">
+													<i class="fa fa-reorder">مقالات منتج از اين طرح</i> 
+												</div>
+												<div class="tools">
+												<a href="javascript:;" class="collapse">
+												</a>
+											    <a href="#portlet-config" data-toggle="modal"
+												class="fa fa-info-circle" title="راهنما"
+												style="color: white"> </a>
+										        </div>
+											</div>
+											<div class="portlet-body form-horizontl">
+												<!-- BEGIN FORM-->
+												
+													<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog ">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+							                                        <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                          <h4 id="modal_title" class="modal-title">
+							                                            <i  class="fa fa-file-o"></i>
+							                                            ثبت مقاله
+							                                        </h4>
+							                                     </div>
+							                                    <div class="modal-body">
+							                                    
+																		   <!-- BEGIN FORM-->
+																   <form name="send_maghale" id="send_maghale" method="post" action="send_maghale_sabt.php?action=add_tarh" class="form-horizontal">
+																		
+																		   <input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control" value="<?php echo $cod_tarh;?>"> 
+																		   <input id="admin" name="admin" type="hidden" class="form-control" value="<?php echo $admin;?>">
+																		   <input id="maghale_id" name="maghale_id" type="hidden" class="form-control"> 
+																		   <div class="form-body">
+																					<div id="alert_danger" class="alert alert-danger display-hide">
+																						<button class="close" data-close="alert"></button>
+																					    پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																				    </div>
+																				    <div id="row_title1" class="row">
+																						<h4>مشخصات مجله
+																						</h4>
+																					</div>
+																					<div class="row">
+																					
+																					<div class="col-md-6">
+																							<div class="form-group">
+																								<label id="label1" class="control-label col-md-5">ISSN
+																										<span class="required"> 
+																											 * 
+	 																									</span>
+																								</label>
+																								<div class="col-md-7">
+																									<div class="input-icon right">
+																									    <i class="fa"></i>
+																											<input id="issn" class="form-control addresspicker ui-autocomplete-input input-sm input-small" type="text"></input>
+																											<input id="issn_input" name="issn_input"  type="hidden"></input>
+																											
+																									</div>
+																								</div>
+																							</div>
+																				    </div>
+																				    <div class="col-md-6">
+																								<div class="form-group">
+																									<label id="label2" class="control-label col-md-5">indexing
+																											<span class="required"> 
+																												 * 
+ 																											</span>
+																									</label>
+																									<div class="col-md-7">
+																										<div class="input-icon right">
+																											<i class="fa"></i>
+																											<?
+																											    $query="select * from maghale_indexing order by indexing_desc  ";
+																											    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+																											    $groupcount = mysql_num_rows($qresult);
+																											?>
+																											<select disabled id="indexing" name="indexing" class="form-control input-sm input-small" data-placeholder="" tabindex="1">
+ 																												<option id="indexing_choose" value="">انتخاب کنيد</option> 
+																											<?
+																											    while($row_fetched=mysql_fetch_array($qresult))
+																											    {
+																											    	//if(strcmp($indexing,$row_fetched["index_id"])==0)
+																											    		//$selected="selected";
+																											    	//else
+																											    	//	$selected="";
+																											         echo "<option value=\"".$row_fetched["index_id"]."\">".$row_fetched["indexing_desc"]."</option>";
+																											    }
+																											 ?>																							        
+																											</select>
+																										</div>
+																									</div>
+																								</div>
+																							</div>											
+																					</div>		
+																					<div class="row">
+																					  	<div class="col-md-6">
+																								<div class="form-group">
+																									<label id="label3" class="control-label col-md-5">نام مجله
+																											<span class="required"> 
+																												 * 
+			 																								</span>
+																									</label>
+																									<div class="col-md-7">
+																										<div class="input-icon right">
+																										    <i class="fa"></i> 
+																											<input id="journal_name" name="journal_name" type="text" class="form-control input-sm input-small" readonly>
+																										</div>
+																									</div>
+																								</div>
+																						</div>	
+																						<div class="col-md-6" id="div_if">
+																							<div class="form-group">
+																								<label class="control-label col-md-5"> Impact Factor
+																										<span class="required"> 
+																											 * 
+	 																									</span>
+																								</label>
+																								<div class="col-md-7">
+																									<div id="if" class="input-icon right text-right">
+																									    <i class="fa"></i>
+																											<input id="impact_factor" name="impact_factor" type="text" class="form-control input-sm input-small" readonly>																											
+																									</div>
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																					<div id="row_title2" class="row">
+																						<h4>مشخصات مقاله
+																						</h4>
+																					</div>
+																					<div class="row">
+																							<div class="col-md-6">
+																								<div class="form-group">
+																									<label id="label4" class="control-label col-md-5">عنوان مقاله
+																											<span class="required"> 
+																												 * 
+			 																								</span>
+																									</label>
+																									<div class="col-md-7">
+																										<div class="input-icon right">
+																											<i class="fa"></i> 
+																											<input id="maghale_title" name="maghale_title" type="text" class="form-control input-sm input-small">
+																										</div>
+																									</div>
+																								</div>
+																							</div>	
+																					    	<div class="col-md-6">
+																								<div class="form-group">
+																									<label id="label5" class="control-label col-md-5">نوع مقاله
+																										<span class="required"> 
+																											 * 
+	 																									</span>
+																									</label>
+																									<div class="col-md-7">
+																										<div class="input-icon right">
+																										    <i class="fa"></i>
+																										        <?
+																											    $query="select * from maghale_type order by maghale_type_desc  ";
+																											    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+																											    //$groupcount = mysql_num_rows($qresult);
+																											    ?>
+																											<select id="maghale_type" name="maghale_type" class="form-control input-sm input-small" data-placeholder="" tabindex="1">
+																												<option value="">انتخاب کنيد</option>
+																											    <?
+																											    while($row_fetched=mysql_fetch_array($qresult))
+																											    {
+																											    	//if(strcmp($maghale_type,$row_fetched["maghale_type_id"])==0)
+																											    		//$selected="selected";
+																											    	//else
+																											    		//$selected="";
+																											         echo "<option value=\"".$row_fetched["maghale_type_id"]."\">".$row_fetched["maghale_type_desc"]."</option>";
+																											    }
+																											    ?>																        
+																											</select>
+																										</div>
+																									</div>
+																								</div>
+																							</div>						
+																					</div>	
+																					<div class="row">
+																						<div class="col-md-6">
+																							<div class="form-group">
+																								<label id="label6" class="control-label col-md-5">جايگاه نويسنده
+																										<span class="required"> 
+																											 * 
+	 																									</span>
+																								</label>
+																								<div class="col-md-7">
+																									 <div class="input-icon right">
+																										 <div class="radio-list">
+																										   	
+																											    <i class="fa"></i>
+															                                                    <label id="first_label">
+															                                                           <input type="radio" id="outer_level" name="outer_level" value="0" data-title="اول  " >اول
+															                                                    </label>
+															                                                    <label id="answerable_label">
+															                                                           <input type="radio" id="outer_level2" name="outer_level" value="1"  data-title="مسئول" >  مسئول
+															                                                    </label>	
+															                                                    <label id="both_label">
+															                                                           <input type="radio" id="outer_level3" name="outer_level" value="2"  data-title="هر  دو" >  هر دو
+															                                                    </label>
+															                                                    <label id="other_label">
+															                                                           <input type="radio" id="outer_level4" name="outer_level" value="3"  data-title="ساير" >  ساير
+															                                                    </label>										                                                    
+														                                               		</div>
+													                                                </div>
+																								</div>
+																							</div>
+																						</div>
+																						
+																						<div class="col-md-6">
+																									<div class="form-group">
+																										<label class="control-label col-md-5">وضعيت مقاله از نظر وابستگي به دانشگاه علوم پزشکي تهران
+																												<span class="required"> 
+																													 * 
+ 																												</span>
+																										</label>
+																										<div class="col-md-6">
+																											<div class="input-icon right">
+																											 <i class="fa"></i>
+																											 <div class="radio-list">
+																											 
+															                                                    <label id="have_label">
+															                                                        <input type="radio" id="affiliation" name="affiliation" value="1" data-title="دارد" ></input> دارد
+															                                                    </label>
+															                                                
+															                                                    <label id="dont_have_label">
+															                                                        <input type="radio" id="affiliation2" name="affiliation" value="0"  data-title="ندارد" > </input> ندارد
+															                                                    </label>											                                                    
+															                                                </div>
+															                                                </div>
+																										</div>
+																									</div>
+																						</div>									
+																						</div>	
+																						
+																					<div class="row">		
+																						<div class="col-md-6">
+																							<div class="form-group">
+																								<label class="control-label col-md-5">سال ميلادي انتشار
+																								    <span class="required"> 
+																											 * 
+	 																								</span>
+																								</label>
+																								<div class="col-md-7">
+																									<div class="input-icon right">
+																										<i class="fa"></i>
+																									<input id="year_publish_milady" name="year_publish_milady" type="text" class="form-control input-sm input-small" placeholder="">
+																									</div>
+																								</div>
+																							</div>
+																					    </div>
+																					   <div class="col-md-6">
+																						<div class="form-group">
+																							<label class="control-label col-md-5">سال شمسي انتشار
+																									<span class="required"> 
+																											 * 
+	 																								</span>
+																							</label>
+																							<div class="col-md-7">
+																								<div class="input-icon right">
+																										<i class="fa"></i>
+																										<input id="year_publish_shamsi" name="year_publish_shamsi" type="text" class="form-control input-sm input-small" placeholder="">
+																								</div>
+																							</div>
+																						</div>
+																						
+																					</div>		
+																									
+																						</div>
+																						
+																						<div class="row">		
+																						<div class="col-md-6">
+																							<div class="form-group">
+																								<label class="control-label col-md-5">لينک مقاله
+																								    <span class="required"> 
+																											 
+	 																								</span>
+																								</label>
+																								<div class="col-md-7">
+																									<div class="input-icon right">
+																										<i class="fa"></i>
+																									<textarea id="journal_link" name="journal_link" rows="2" class="form-control"></textarea>
+																									</div>
+																								</div>
+																							</div>
+																					    </div>	
+																																
+																						</div>
+																						<div class="row">
+																								<div class="col-md-12">
+																									<div class="form-group">
+																										<label class="control-label col-md-12"><p class="text-justify">پژوهشگر محترم، بر اساس نامه شماره ......... مورخ ........ شما موظف بوده ايد در قسمت تقدير و تشکر مقاله خود ( Acknowledgment )، شماره گرنت مربوطه را درج نماييد. خواهشمند است متن ارائه شده در قسمت مربوطه در مقاله را عينا در کادر زير وارد نماييد.اگر قادر به درج ان در کادر نيستيد قسمت مربوطه را اپلود نمائيد.</p>
+																												<span class="required"> 
+																													 
+ 																												</span>
+																										</label>
+																										<div class="col-lg-push-3 col-md-7">
+																											<div class="input-icon right">
+																											 <i class="fa"></i>
+																											 <textarea id="Acknowledgment" name="Acknowledgment" rows="2" class="form-control"></textarea>
+															                                                </div>
+																										</div>
+																									</div>
+																								</div>								
+																						</div>
+																		  	 </div>
+																	<!-- END FORM-->
+							                                      </div>
+							                                      <div class="modal-footer">
+								                                       <button type="submit"  class="btn green input-sm  input-small">ذخيره</button>
+																	   <button type="button" class="btn red input-sm  input-small" data-dismiss="modal"> <i class="fa fa-times"></i>انصراف</button>							                            
+															      </div>
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							                      <div class="modal fade " id="delete" tabindex="-1" role="basic" aria-hidden="true">
+											
+												<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal"
+															aria-hidden="true"></button>
+														<h4 class="modal-title">
+															<i class="fa fa-file-o"></i>
+
+														</h4>
+													</div>
+													<div class="modal-body">
+														<!-- BEGIN FORM-->
+
+														<div class="form-body">
+															<h4 id="delete_article" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+														</div>
+														<div class="form-actions fluid">
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="col-md-offset-3 col-md-9">
+																		<button id="yes_article" type="submit" class="btn green">بلي</button>
+																		<button id="no_article" type="button" class="btn red"
+																			data-dismiss="modal">
+																			<i class="fa fa-times"></i>خير
+																		</button>
+																	</div>
+																</div>
+																<div class="col-md-6"></div>
+															</div>
+														</div>
+
+														<!-- END FORM-->
+													</div>
+
+												</div>
+												<!-- /.modal-content -->
+											</div>
+											<!-- /.modal-dialog -->
+										</div>
+										
+										</form>
+										
+										<!-- BEGIN ARTICLE FILE MODAL FORM-->
+               								<div class="modal fade" id="article_file_modal" data-backdrop="static" tabindex="-1" role="basic"
+											aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div id="modal_header_article" class="modal-header bg-blue">
+													فایل مقاله
+														<button type="button" id="modal-close" class="close"
+															data-dismiss="modal" aria-hidden="true"></button>
+													</div>
+													<div class="modal-body">
+
+														
+																<!-- BEGIN FORM-->
+																<!-- <form name="mojri_tarh" id="mojri_tarh_sabt" action="mojri_tarh.php?action=add_mojri&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code" method="POST" class="form-horizontal">-->	
+																 
+																<form id="upload_file" method="post" enctype="multipart/form-data" action="send_maghale_sabt.php?action=article_upload">
+															     
+																<input id="cod_tarh2" name="cod_tarh" type="hidden" class="form-control" value="<?php echo $cod_tarh;?>">
+																<input id="admin2" name="admin" type="hidden" class="form-control" value="<?php echo $admin;?>">
+																<input id="maghale_file_id" name="maghale_file_id" type="hidden">
+																<input id="delete_id" name="delete_id" type="hidden">
+																<div class="form-body">
+																	<div class="form-horizontal">
+																		<div class="form-group">
+																			<p id="help_block1" class="help-block text-center">
+																		    	تعداد فايلهاي ارسالي حداکثر 12 عدد مي باشد
+																		    </p>
+																		    <p id="help_block2" class="help-block text-center">
+																				حداکثر حجم فايل 8 مگابايت مي باشد. نام فايل را انگليسي و بدون فاصله وارد کنيدفايل ارسالي بايد به فرمت Word يا PDF باشد.صرفا از فونت زر استفاده کنيد 
+																		    </p>
+																		    <p id="help_block3" class="help-block text-center">
+																		    فايلهاي ضميمه با نام انگليسي معتبر هستند 
+																		    </p>
+																			<div class="col-md-12 col-md-push-5">
+																			    <label id="article_file_label" for="photo" class="control-label">فايل ضميمه:</label>
+																				<input type="file" id="fupload" name="fupload" accept="application/msword,application/pdf,.docx">
+																			</div>
+																	    </div>
+																
+																	</div>
+																	<!--/row-->
+																</div>
+
+																<!-- END FORM-->
+														
+																</div>
+																	<div class="modal-footer">
+																	<button id="upload_file_btn" type="submit" class="btn green btn-primary" data-loading-text="در حال بارگذاري...">ذخيره</button>
+																	<button id="btn2" type="button" class="btn red"
+																		data-dismiss="modal">
+																		<i class="fa fa-times"></i>انصراف
+																	</button>
+																	</div>
+																</div>
+																<!-- /.modal-content -->
+															</div>
+															<!-- /.modal-dialog -->
+														</div>
+														
+														<div class="modal fade " id="delete_article_file" tabindex="-1" role="basic" aria-hidden="true">
+											
+												<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal"
+															aria-hidden="true"></button>
+														<h4 class="modal-title">
+															<i class="fa fa-file-o"></i>
+
+														</h4>
+													</div>
+													<div class="modal-body">
+														<!-- BEGIN FORM-->
+
+														<div class="form-body">
+															<h4 id="delete_q" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+														</div>
+														<div class="form-actions fluid">
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="col-md-offset-3 col-md-9">
+																		<button id="delete_yes" type="submit" class="btn green">بلي</button>
+																		<button id="delete_no" type="button" class="btn red"
+																			data-dismiss="modal">
+																			<i class="fa fa-times"></i>خير
+																		</button>
+																	</div>
+																</div>
+																<div class="col-md-6"></div>
+															</div>
+														</div>
+
+														<!-- END FORM-->
+													</div>
+
+												</div>
+												<!-- /.modal-content -->
+											</div>
+											<!-- /.modal-dialog -->
+										</div>
+														</form>
+               									 <!-- END SAMPLE ARTICLE FILE MODAL FORM-->  
+               									  
+						                        <a id="title_basic" class="btn blue btn-sm pull-left" data-toggle="modal" href="#basic">
+						                            ثبت مقاله
+						                        </a>
+												
+						                    <!-- <div></div> -->   
+												<!-- END FORM-->
+												
+												<div class="table-responsive">
+												<table class="table table-striped table-bordered table-hover" id="sample_1">
+				                                    <thead>
+				                                        <tr>
+ 				                                           <th class="hidden"> 
+				                                                حذف 
+				                                            </th> 
+				                                            <th class="" id="th1">
+				                                                عنوان مقاله
+				                                            </th>
+				                                            <th class="" id="th2">
+				                                                نام مجله
+				                                            </th>
+				                                            <th class="" id="th3">
+				                                                 Impact Factor
+				                                            </th>
+				                                            <th class="" id="th4">
+				                                                issn
+				                                            </th>
+				                                            <th class="" id="th5">
+				                                                جايگاه
+				                                            </th>
+				                                             <th class="" id="th6">
+				                                                 وابستگي
+				                                            </th>
+				                                             <th class="" id="th7">
+				                                                 سال شمسي انتشار
+				                                            </th>
+				                                             <th class="" id="th8">
+				                                                 سال ميلادي انتشار
+   				                                            </th>
+   				                                            <th class="" id="th9">
+				                                                 indexing
+   				                                            </th>
+   				                                            <th class="" id="th10">
+				                                                 نوع مقاله
+   				                                            </th>
+   				                                            <th class="" id="th11">
+				                                                 امتياز کسب شده
+   				                                            </th>
+   				                                            <th class="" id="th12">
+				                                                 ضمائم
+   				                                            </th>
+				                                            <th class="" id="th13">
+				                                                ويرايش
+				                                            </th>
+				                                            <th class="" id="th14">
+				                                                حذف
+				                                            </th>
+				                                            <th class="" id="th15">
+				                                                فايل هاي مقاله
+				                                            </th>
+				                                        </tr>
+				                                    </thead>
+				                                   
+			                                	</table>
+			                                	</div>
+											</div>
+										</div>
+                                     </div>    
+                                    
+
+                                </div>
+                            </div>
+                            
+                        
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script type="text/javascript">
+																											    
+if(language=="en")
+{ 
+	document.getElementById("page-title").textContent="Research Title :";
+	document.getElementById("navigator-home").textContent="Home";
+	document.getElementById("send-edit").textContent="Send / Edit Research";
+	document.getElementById("send-maghale").textContent="Article Resulted From This Project";
+	document.getElementById("caption-title").textContent="Article Resulted From This Project";
+	document.getElementById("title_basic").textContent="Article Registration";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("fa-angle2").className="fa fa-angle-right";
+// 	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-magic'></i> Wizard";
+	document.getElementById("modal_title").innerHTML="<i class='fa fa-file-o'></i>Article Registration";
+	document.getElementById("delete_q").textContent="Are you sure to delete?";
+	document.getElementById("delete_yes").textContent="Yes";
+	document.getElementById("delete_no").textContent="No";
+	document.getElementById("delete_article").textContent="Are you sure to delete?";
+	document.getElementById("yes_article").textContent="Yes";
+	document.getElementById("no_article").textContent="No";
+	document.getElementById("alert_danger").innerHTML="<button class='close' data-close='alert'></button> Fill required fields";
+	document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+	document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+	document.getElementById("select2").href="../assets/plugins/select2/select2.css";
+
+	document.getElementById("row_title1").innerHTML="<h4>Journal Specifications</h4>";
+	document.getElementById("indexing_choose").textContent="Choose";
+	document.getElementById("row_title2").innerHTML="<h4>Article Specifications</h4>";
+	document.getElementById("label1").innerHTML="ISSN <span class='required'>*</span>";
+	document.getElementById("label2").innerHTML="Indexing <span class='required'>*</span>";
+ 	document.getElementById("label3").textContent="Journal";
+ 	document.getElementById("label4").innerHTML="Article Title <span class='required'>*</span>";
+ 	document.getElementById("label5").innerHTML="Article Type <span class='required'>*</span>";
+ 	document.getElementById("first_label").innerHTML="<input type='radio' id='outer_level' name='outer_level' value='0' data-title='First'>First";
+ 	document.getElementById("answerable_label").innerHTML="<input type='radio' id='outer_level2' name='outer_level' value='1'  data-title='Answerable'>Answerable";
+ 	document.getElementById("both_label").innerHTML="<input type='radio' id='outer_level3' name='outer_level' value='2'  data-title='Both of Them' >Both of Theme";
+ 	document.getElementById("other_label").innerHTML="<input type='radio' id='outer_level4' name='outer_level' value='3' data-title='Others' >Others";
+ 	
+    document.getElementById("have_label").innerHTML="<input type='radio' id='affiliation' name='affiliation' value='1' data-title='Have' ></input>Have";
+    document.getElementById("dont_have_label").innerHTML="<input type='radio' id='affiliation2' name='affiliation' value='0' data-title='Don`t Have' > </input>Don`t Have";
+	
+	document.getElementById("upload_file_btn").textContent="Save";
+	document.getElementById("upload_file_btn").setAttribute("data-loading-text","Loading...");
+	document.getElementById("btn2").textContent="Cancel";
+	document.getElementById("help_block1").textContent="Maximum number of attachments is 12";
+	document.getElementById("help_block2").textContent="The maximum file size is 8MB.The file names must be english,whitout apace,The file format must be in Word or PDF.Only use ZAR font inside your file";
+	document.getElementById("help_block3").textContent="Attached file names in english are valid";
+	document.getElementById("modal_header_article").innerHTML="Article File<button type='button' id='modal-close' class='close' data-dismiss='modal' aria-hidden='true'></button>";
+	document.getElementById("article_file_label").textContent="Article File";
+	document.getElementById("th1").textContent="Article Title";
+	document.getElementById("th2").textContent="Journal";
+	document.getElementById("th3").textContent="Impact Factor";
+	document.getElementById("th4").textContent="ISSN";
+	document.getElementById("th5").textContent="Position in this project";
+	document.getElementById("th6").textContent="Affiliation";
+	document.getElementById("th7").textContent="Publication Year (Shamsi)";
+	document.getElementById("th8").textContent="Publication Year (Gregorian)";
+	document.getElementById("th9").textContent="Indexing";
+	document.getElementById("th10").textContent="Article Type";
+	document.getElementById("th11").textContent="Gained point";
+	document.getElementById("th12").textContent="Attachment";
+	document.getElementById("th13").textContent="Edit";
+	document.getElementById("th14").textContent="Delete";
+	document.getElementById("th15").textContent="Article Files";
+
+	
+}
+
+</script>
+<?php 
+include("../include/primary_js.phtml");
+?>
+	
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript"src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"src="../assets/plugins/data-tables/DT_bootstrap.js"></script>
+    <script type="text/javascript" language="javascript"src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+    <script type="text/javascript" language="javascript"src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+<!-- 	<script id="persian-datepicker" src="../assets/persian-datepicker/jquery.ui.datepicker-cc.all.min.js" type="text/javascript"></script> -->
+	<script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+	
+<!-- 	<script type="text/javascript" src="../assets/plugins/bootstrapValidator.js"></script> -->
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	
+	<!-- END PAGE LEVEL SCRIPTS -->
+	
+	<script>
+
+                   $( "#issn" ).autocomplete({
+                	   type: "POST",
+                	   source: function( request, response ) {
+                	        $.ajax({
+                	            url: "search.php",
+                	            dataType: "json",
+                	            data: {
+                	              q: request.term
+                	            },
+                	            success: function( data ) {
+	                	            debugger;
+									if($('#issn').val().length==4)
+										$('#issn').val($('#issn').val()+"-");
+                	              response( data );
+                	            },
+                	            error: function (result) {
+		                	        debugger;
+	                                alert(result);
+	                            }
+                	          });
+                	        },
+                	        
+                	      minLength: 4,
+//                 	      scroll:true,
+//                 	      max:10,
+                	      select: function( event, ui ) {
+	  	                	      debugger;
+		  	                	    $('#issn').val(ui.item.label);
+			  	                	$("#issn_input")[0].value = ui.item.id;
+			  	                	$("#journal_name")[0].value=ui.item.journal_title;
+			  	                	$("#impact_factor")[0].value=ui.item.impact_factor;
+			  	                	$('#indexing option[value='+ui.item.top_index+']').attr("selected", "selected");
+			  	                	
+			  	                	//$("#div_if").css("display", "");
+			  	                	//$("#if").html(ui.item.journal_title+'<br>'+ui.item.impact_factor);
+                	      },
+                     messages: {
+                         noResults: '',
+                         results: function() {}
+                     }
+                   });
+
+//	               $('#basic').modal('show');
+//	               $( "#test4" ).autocomplete( "option", "appendTo", ".eventInsForm" );
+//	$("#issn_input").keyup(function(){ 
+//		debugger;
+//		if($(this).val().length > 2)
+//		{
+//			 $.ajax({
+//			        url: "issn_list.php",
+//			        type: "POST",
+//			        data: { search_val: $(this).val() },
+//			        success: function(result) {
+//				        debugger;
+//			            $("#issn").html(result);
+//			            $("#issn").css("display", "");
+//			            $("#issn").focus();
+//			            var selector = $("#issn");
+//			            selector.show();
+////			            var element = $(selector)[0], worked = false;
+////			            if (document.createEvent) { // all browsers
+////			                var e = document.createEvent("MouseEvents");
+////			                e.initMouseEvent("mousedown", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+////			                worked = element.dispatchEvent(e);
+////			            } else if (element.fireEvent) { // ie
+////			                worked = element.fireEvent("onmousedown");
+////			            }
+////			            if (!worked) { // unknown browser / error
+////			                alert("It didn't worked in your browser.");
+////			            }   
+//			           $("#issn_input").focus();
+//			        }
+//			    });
+//		}
+//	});
+	</script>
+	<!-- END JAVASCRIPTS -->
+
+	
+	<script>
+	function fixControlPosition(){
+		//ja be jayi btn haye table tools (print,copy,....)
+							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+		}
+
+	function format(d) {
+	    var r;
+	    $.ajax({
+	        url: "article_details.php",
+	        type: "POST",
+	        data: { maghale_file_id: d.maghale_id },
+	        async: false,
+	        dataType: "html",
+	        success: function(result) {
+	            r = result;
+
+	        }
+	    });
+	    return r;
+	}
+	
+	$("#send_maghale").submit(function(e){
+		        // for more info visit the official plugin documentation: 
+		            // http://docs.jquery.com/Plugins/Validation
+debugger;
+		            var form2 = $('#send_maghale');
+		            var error2 = $('.alert-danger', form2);
+		            var success2 = $('.alert-success', form2);
+
+		            form2.validate({
+		                errorElement: 'span', //default input error message container
+		                errorClass: 'help-block', // default input error message class
+		                focusInvalid: false, // do not focus the last invalid input
+		                ignore: "",
+		                rules:{
+		                	maghale_title:{
+			  	                  required:true
+			  	                  },
+				  	        journal_name:{
+			  	                  required:true
+			  			          },
+				  			     	issn:{
+			  		                  required:true
+			  				      },
+				  			 outer_level:{
+					  				  required:true
+			  				      },
+				  			 affiliation:{
+						  			   required:true
+				  				      },
+					  		 year_publish_shamsi:{
+					  			       required:true,
+					  			         number:true,
+						  			     rangelength: [4, 4]
+			  				          },
+				  			 year_publish_milady:{
+				  			           required:true,
+					  			         number:true,
+						  			     rangelength: [4, 4]
+		  				              },
+			  				            indexing:{
+			  			               required:true
+	  				                  },
+		  				            maghale_type:{
+					  			       required:true
+			  				          }
+				  			   },
+				  	            messages:{
+				  	            maghale_title:{
+					  	                  required:"پر کردن اين فيلد الزامي مي باشد"
+					  	            	  } ,
+					  			 journal_name:{
+						  				  required:"پر کردن اين فيلد الزامي مي باشد"
+						  			 	  },
+							  			 issn:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد"
+					  			 	 	  },
+						  		  outer_level:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد"
+					  			 	      },
+						  		  affiliation:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد"
+					  			 	      },
+						  year_publish_shamsi:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد",
+					  				        number:"عدد وارد نماييد",
+						  				rangelength:"سال را به طور کامل وارد نماييد"
+							  			  },	
+						  year_publish_milady:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد",
+						  				    number:"عدد وارد نماييد",
+							  		   rangelength:"سال را به طور کامل وارد نماييد"
+					  			 	      },
+						  			 indexing:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد"
+					  			 	      },
+						  		 maghale_type:{
+					  				      required:"پر کردن اين فيلد الزامي مي باشد"
+					  			 	      }
+					  	                  },
+			  	              
+
+		                invalidHandler: function (event, validator) { //display error alert on form submit              
+			                    success2.hide();
+			                    error2.show();
+			                    App.scrollTo(error2, -200);
+		                },
+
+		                errorPlacement: function (error, element) { // render error placement for each input type
+		                    var icon = $(element).parent('.input-icon').children('i');
+		                    icon.removeClass('fa-check').addClass("fa-warning");  
+		                    icon.attr("data-original-title", error.text()).tooltip();
+		                },
+
+		                highlight: function (element) { // hightlight error inputs
+		                    $(element)
+		                        .closest('.form-group').addClass('has-error'); // set error class to the control group   
+		                },
+
+		                unhighlight: function (element) { // revert the change done by hightlight
+		                    
+		                },
+
+		                success: function (label, element) {
+		                    var icon = $(element).parent('.input-icon').children('i');
+		                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+		                    icon.removeClass("fa-warning").addClass("fa-check");
+		                },
+
+		                submitHandler: function (form) {
+		                    success2.show();
+		                    error2.hide();
+		                }
+		            });
+
+		    var formURL;
+			
+			
+			var disabled = $('#indexing').removeAttr('disabled');
+			var postData = $(this).serializeArray();
+			disabled.attr('disabled','disabled');
+			if(jadvZar_IsNew=="insert")		
+				 formURL = $(this).attr("action");
+			else if(jadvZar_IsNew=="edit")		
+				formURL="send_maghale_sabt.php?action=edit";
+			else if(jadvZar_IsNew=="delete")	
+				formURL="send_maghale_sabt.php?action=delete";
+			 
+// 		        $.each(postData, function(i, field){
+// 		            alert(field.name + ":" + field.value + " ");
+// 		        });
+		        
+			if($("#send_maghale").valid() || (jadvZar_IsNew=="delete"))
+			{
+			    $(".green").attr("disabled","disabled");
+				$.ajax(
+				{
+					url : formURL,
+					type: "POST",
+					data : postData,
+					success:function(data, textStatus, jqXHR) 
+					{
+						if(jadvZar_IsNew=="insert" || jadvZar_IsNew=="edit"){
+							toastr.options.timeOut="30000";
+					        toastr.options.positionClass="toast-top-full-width";
+							toastr.warning(' در صورتيکه در حال حاضر به فايل مقاله اي که اطلاعات آن ثبت گرديد ، دسترسي نداريد لطفا به محض دسترسي به فايل مقاله ، با کليک بر روي لينک "فايل مقاله"  در ستون ضمائم آنرا آپلود نماييد تا بررسي شود.','پژوهشگر محترم  :');
+						}
+						if(data=="exist"){
+							$("#mojri_tarh_i").switchClass( "fa-times", "fa-check", 1000, "easeInOutQuad" );
+							}
+						else if(data=="notexist"){
+							
+							$("#mojri_tarh_i").switchClass( "fa-check", "fa-times", 1000, "easeInOutQuad" );
+							}
+					
+							jadvZar_IsNew="insert";
+							$("#basic").modal('hide');
+							$("#delete").modal('hide');
+							$("#send_maghale")[0].reset();
+							dt.ajax.url("send_maghale_sabt.php?action=list&admin=<?php echo $admin;?>&seed=<?php echo $seed;?>&cod_tarh=<?php echo $cod_tarh;?>");
+				            dt.ajax.reload();
+// 				           $("#sample_1").DataTable().destroy();
+// 				           show_dataTable(); 
+				           $(".green").removeAttr("disabled","disabled");
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+					}
+				});
+         
+				}
+			    e.preventDefault();	//STOP default action
+			});
+
+	function delete_element(id,id2) {
+        
+        $('#delete_id')[0].value = id;
+        $('#maghale_file_id')[0].value=id2;
+        jadvZar_IsNew="delete_article_file";
+    };
+				
+	$("#upload_file").submit(function(e)
+			{
+		//dicision for edit or add
+		debugger;
+				var formURL;
+				//var postData = $(this).serializeArray();
+				//if(jadvZar_IsNew=="insert")
+				if(jadvZar_IsNew=="article_upload")		
+					 formURL = $(this).attr("action");
+				//else if(jadvZar_IsNew=="edit")		
+					//formURL="upload_file_sabt.php?action=edit";
+				else if(jadvZar_IsNew=="delete_article_file")		
+					formURL="send_maghale_sabt.php?action=delete_article_file";
+				 var btn = $("#upload_file_btn");
+				 btn.button('loading');
+				$.ajax(
+				{
+					url : formURL,
+					data : new FormData(this),
+					cache: false,
+				    contentType: false,
+				    processData: false,
+				    type: "POST",
+				    
+					success:function(data, textStatus, jqXHR) 
+					{
+						//alert(data);
+						//$("#attachments_tb").html(data);
+// 						if(data=="ضميمه حذف شد")
+// 						{
+// 								toastr.options.timeOut="5000";
+// 						        toastr.options.positionClass="toast-top-right";
+// 								toastr.success('ضميمه حذف شد');
+// 						}
+// 						if(data=="true")
+// 						{
+// 								toastr.options.timeOut="5000";
+// 						        toastr.options.positionClass="toast-top-right";
+// 								toastr.success('ضميمه با موفقيت ثبت شد');
+// 						}
+// 						else if(data=="-5")
+// 						{ 
+// 								toastr.options.timeOut="5000";
+// 								toastr.options.positionClass="toast-top-right";
+// 								toastr.error('چنين فايلي قبلا بارگذاري شده','خطا');
+								
+// 							}
+// 						else if(data=="-2")
+// 						{
+// 								toastr.options.timeOut="5000";
+// 								toastr.options.positionClass="toast-top-right";
+// 					    		toastr.error('حجم فابل ارسالي بيش از 8 مگابايت مي باشد يا پسوند فايل صحيح نمي باشد.','خطا');
+// 						}
+// 						else if(data=="false")
+// 						{
+// 								toastr.options.timeOut="5000";
+// 								toastr.options.positionClass="toast-top-right";
+// 			      			    toastr.error('تعداد فايلهاي ارسالي حداکثر 12 عدد مي باشد','خطا');
+// 						}
+					
+					jadvZar_IsNew="insert";
+					$("#article_file_modal").modal('hide');
+					$("#delete_article_file").modal('hide');
+					$("#basic").modal('hide');
+					$("#delete").modal('hide');
+					$("#upload_file")[0].reset();
+				    	//debugger;
+		            var uniSelect = $("#uniSelect");
+		            var temp = $("#temp");
+		            uniSelect.appendTo(temp);
+		            dt.ajax.url("send_maghale_sabt.php?action=list&admin=<?php echo $admin;?>&seed=<?php echo $seed;?>&cod_tarh=<?php echo $cod_tarh;?>");
+		            dt.ajax.reload();
+		            // $("#sample_1").DataTable().destroy();
+				    //show_dataTable();
+				        
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+						alert(textStatus);
+					}
+				}).always(function () { 
+					 btn.button('reset');
+			    });
+			    e.preventDefault();	//STOP default action
+			});
+	
+	 </script>
+	 <script>
+
+	 var buttonText;
+	 var sButtonText;
+	 var info;
+	 if(language=="en"){
+			buttonText="Visibel Columns";
+			sButtonText="Print";
+			sButtonText2="Save";
+			info="view _START_ to _END_ from _TOTAL_ items";
+			sLengthMenu="View Content _MENU_";
+			sZeroRecords="Not Found";
+			sInfoEmpty="Empty";
+			sInfoFiltered="(Filtered From _MAX_ Items)";
+			sSearch="Search";
+			sFirst="First";
+			sPrevious="Previous";
+			sNext="Next";
+			sLast="Last";
+			
+			
+		}
+		else
+		{
+			buttonText="ستون هاي قابل نمايش";
+			sButtonText="چاپ";
+			sButtonText2="ذخيره";
+			info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+			sLengthMenu="نمايش محتويات _MENU_";
+			sZeroRecords="موردي يافت نشد";
+			sInfoEmpty="تهي";
+			sInfoFiltered="(فيلتر شده از مجموع _MAX_ مورد)";
+			sSearch="جستجو";
+			sFirst="ابتدا";
+			sPrevious="قبلي";
+			sNext="بعدي";
+			sLast="انتها";
+			
+		}
+
+	 
+	$(document).ready(function() {
+		    var detailRows = [];
+		    var dt;
+		    show_dataTable();
+		
+	 });
+	function show_dataTable(){
+	    dt = $('#sample_1').DataTable({
+			 "dom": 'CT<"clearfix">lfrtip',
+		        "tableTools": {
+		            "sRowSelect": "os",
+					 "aButtons": [
+		                 
+						{
+		                    "sExtends": "print",
+		                    "sButtonText": sButtonText
+		                },
+		                
+		                {
+		                    "sExtends":    "collection",
+		                    "sButtonText": sButtonText2,
+		                    "aButtons":    [ 
+												"csv", 
+												"xls"
+											]
+		                }
+		            ],
+		            
+					"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+		        },
+		        "fnInitComplete": function(oSettings, json) {
+					
+					fixControlPosition();
+					$(".dataTable > thead > tr > th.sorting, .dataTable > thead > tr > th.sorting_asc, .dataTable > thead > tr > th.sorting_desc").css("padding-right","0px");
+	                },
+		        "fnDrawCallback": function(oSettings) {
+		            var trs = $("#sample_1 tr");
+		            for (var i = 1; i < trs.length; i++) {
+
+		                var rowId = ($(trs[i]).attr('id'));
+		                $("#" + rowId + " td:last-child").trigger('click');
+
+		            }
+		            $('.edit_btn').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                //var idx = $.inArray(tr.attr('id'), detailRows);
+		                
+		                $('#maghale_id')[0].value = row.data().maghale_id;	
+		                		     
+		                $('#maghale_title')[0].value = row.data().maghale_title;
+		                $('#journal_name')[0].value = row.data().journal_name; 
+		                $('#impact_factor')[0].value = row.data().impact_factor;           
+					    $('#issn')[0].value = row.data().issn;
+
+		                $('#year_publish_shamsi')[0].value = row.data().year_publish_shamsi;
+		                $('#year_publish_milady')[0].value = row.data().year_publish_milady;
+		                <?
+		                        $query="select * from maghale_type order by maghale_type_desc";
+							    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+							    $groupcount = mysql_num_rows($qresult);
+							    while($row_fetched=mysql_fetch_array($qresult))
+							    {
+                        ?>
+                                     
+                                      if(row.data().maghale_type=="<?php echo $row_fetched['maghale_type_desc'] ?>"){
+                                      $('#maghale_type option[value="<?php echo $row_fetched['maghale_type_id'] ?>"]').attr("selected", "selected");
+                                      }
+                             <?php
+						        }
+							 ?>
+                           //------------------------------
+							 <?
+							    $query="select * from maghale_indexing order by indexing_desc  ";
+							    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+							    $groupcount = mysql_num_rows($qresult);
+							    while($row_fetched=mysql_fetch_array($qresult))
+							    {
+							 ?>	 
+							    if(row.data().indexing=="<?php echo $row_fetched['indexing_desc'] ?>"){
+                                    $('#indexing option[value="<?php echo $row_fetched['index_id'] ?>"]').attr("selected", "selected");
+                                    }
+                              <?php
+						        }
+							  ?>
+							  //---------------------------
+
+							  if(language=="en")
+							  {
+								  if(row.data().outer_level=="First"){
+									  $("#uniform-outer_level span").addClass("checked","checked");
+									  $( "#outer_level" ).prop( "checked", true );
+	                                  }
+								  else if(row.data().outer_level=="Answerable"){
+									  $("#uniform-outer_level2 span").addClass("checked","checked");
+									  $( "#outer_level2" ).prop( "checked", true );
+	                              }
+								  else if(row.data().outer_level=="Both of Them"){
+									  $("#uniform-outer_level3 span").addClass("checked","checked");
+									  $( "#outer_level3" ).prop( "checked", true );
+	                              }
+								  else if(row.data().outer_level=="Others"){
+									  $("#uniform-outer_level4 span").addClass("checked","checked");
+									  $( "#outer_level4" ).prop( "checked", true );
+	                              }
+                              
+							  }else{
+								  if(row.data().outer_level=="اول"){
+									  $("#uniform-outer_level span").addClass("checked","checked");
+									  $( "#outer_level" ).prop( "checked", true );
+	                                  }
+								  else if(row.data().outer_level=="مسئول"){
+									  $("#uniform-outer_level2 span").addClass("checked","checked");
+									  $( "#outer_level2" ).prop( "checked", true );
+	                              }
+								  else if(row.data().outer_level=="هر دو"){
+									  $("#uniform-outer_level3 span").addClass("checked","checked");
+									  $( "#outer_level3" ).prop( "checked", true );
+	                              }
+								  else if(row.data().outer_level=="ساير"){
+									  $("#uniform-outer_level4 span").addClass("checked","checked");
+									  $( "#outer_level4" ).prop( "checked", true );
+								  }
+							  }
+                              //------------------
+                              if(language=="en")
+                              {
+								  if(row.data().affiliation=="Have"){
+									  
+									  $("#uniform-affiliation span").addClass("checked","checked");
+									  $( "#affiliation" ).prop( "checked", true );
+	                                  }
+								  else if(row.data().affiliation=="Don`t Have"){
+									  $("#uniform-affiliation2 span").addClass("checked","checked");
+									  $( "#affiliation2" ).prop( "checked", true );
+	                              	  }
+		         		      }else{
+			         		    	 if(row.data().affiliation=="دارد"){
+										  
+										  $("#uniform-affiliation span").addClass("checked","checked");
+										  $( "#affiliation" ).prop( "checked", true );
+		                                  }
+									  else if(row.data().affiliation=="ندارد"){
+										  $("#uniform-affiliation2 span").addClass("checked","checked");
+										  $( "#affiliation2" ).prop( "checked", true );
+		                              }
+			         		      }
+							
+		                //$('#mobile')[0].value = row.data().mobile;
+        				///////////////
+                        //$('#issn').autocomplete("search");
+                        //$("li.ui-menu-item>a.ui-corner-all").trigger("click");
+                        ///////////////
+                        
+		                jadvZar_IsNew="edit";
+		                $("#basic").modal('show');
+		            });
+		            $('.row-details').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                //var idx = $.inArray(tr.attr('id'), detailRows);
+
+		                if (row.child.isShown()) {
+		                	$("#"+tr.attr('id')+" td:last").removeClass('row-details-open');
+		                	$("#"+tr.attr('id')+" td:last").addClass('row-details-close');
+		                
+		                    row.child.hide();
+
+		                    // Remove from the 'open' array
+		                    //detailRows.splice(idx, 1);
+		                } else {
+		                	$("#"+tr.attr('id')+" td:last").removeClass('row-details-close');
+		                	$("#"+tr.attr('id')+" td:last").addClass('row-details-open');
+		                    
+		                
+		                    row.child(format(row.data())).show();
+
+		                    // Add to the 'open' array
+		                    //if (idx === -1) {
+		                    //    detailRows.push(tr.attr('id'));
+		                    //}
+		                }
+		            });
+		            $('.delete_btn').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                $('#maghale_id')[0].value = row.data().maghale_id;
+		                
+		                jadvZar_IsNew="delete";
+		                $("#delete").modal('show');
+	                
+		            });
+		            $('.article_file_btn').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                $('#maghale_file_id')[0].value = row.data().maghale_id;
+		                
+		                jadvZar_IsNew="article_upload";
+		                $("#article_file_modal").modal('show');
+	                
+		            });
+		        },
+		        "colVis": {
+			           "buttonText": buttonText,
+			           exclude:[0]
+			       },
+		        
+              "paging": true,
+              'bPaginate': true,
+              "pagingType": "full_numbers",
+              "processing": true,
+              "serverSide": true,
+              "bDestroy": true,
+              "bAutoWidth": false,
+              "language": {
+           		
+                  "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+                  "sLengthMenu": sLengthMenu,
+                  "sZeroRecords": sZeroRecords,
+                  "info": info,
+                  "sInfoEmpty": sInfoEmpty,
+                  "sInfoFiltered": sInfoFiltered,
+                  "sInfoPostFix": "",
+                  "sSearch": sSearch,
+                  "sUrl": "",
+                  "oPaginate" : {
+                      "sFirst": sFirst,
+                      "sPrevious": sPrevious,
+                      "sNext": sNext,
+                      "sLast": sLast
+                  }
+              },
+		        "sAjaxSource": "send_maghale_sabt.php?admin=<?php echo $admin;?>&seed=<?php echo $seed;?>&cod_tarh=<?php echo $cod_tarh;?>&action=list",
+		        "aoColumns": [   
+                    { "data": "maghale_id","sClass": "hidden"  },     
+		            { "data": "maghale_title" },
+		            { "data": "journal_name" },
+		            { "data": "impact_factor" },
+		            { "data": "issn" },
+		            { "data": "outer_level" },
+		            { "data": "affiliation" },
+		            { "data": "year_publish_shamsi" },
+		            { "data": "year_publish_milady" },
+		            { "data": "indexing" },
+		            { "data": "maghale_type" },
+		            { "data": "emtiaz" },
+		            { "data": "article_file" },
+		            { "data": "edit", "bSortable": false },
+		            { "data": "delete", "bSortable": false},
+		            { "data": "ss", "sClass": "row-details row-details-close", "bSortable": false }
+		        ]
+
+		    });
+		}
+	var jadvZar_IsNew="insert";
+
+	$('#basic').on('hidden.bs.modal', function () {
+	   // debugger;
+	    jadvZar_IsNew="insert";
+	    //Begin of reset form validation 
+	    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+	    $(".input-icon .fa-check").switchClass("fa-check","fa");
+	    $(".alert-danger").hide();
+	    $('.form-group').removeClass('has-error');
+	    $('.form-group').removeClass('has-success');
+	    //End of reset form validation
+	    //Begin of reset form
+	    $("#send_maghale")[0].reset();
+	    $("#uniform-outer_level span").removeClass("checked","checked");
+	    $("#uniform-outer_level2 span").removeClass("checked","checked");
+	    $("#uniform-outer_level3 span").removeClass("checked","checked");
+	    $("#uniform-outer_level4 span").removeClass("checked","checked");
+	    $("#uniform-affiliation span").removeClass("checked","checked");
+	    $("#uniform-affiliation2 span").removeClass("checked","checked");
+	    $('#indexing').prop('selectedIndex',"");
+	    $('#maghale_type').prop('selectedIndex',"");
+	    //$("#div_if").css("display", "none");
+	    //End of reset form
+	});
+	$('#delete').on('hidden.bs.modal', function () {
+		    debugger;
+		    jadvZar_IsNew="insert";
+			//Begin of reset form validation 
+		    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+		    $(".input-icon .fa-check").switchClass("fa-check","fa");
+		    $(".alert-danger").hide();
+		    $('.form-group').removeClass('has-error');
+		    $('.form-group').removeClass('has-success');
+		    //End of reset form validation
+		    //Begin of reset form
+		    $("#send_maghale")[0].reset();
+		    $('#indexing').prop('selectedIndex',"");
+		    $('#maghale_type').prop('selectedIndex',"");
+		    $("#uniform-outer_level span").removeClass("checked","checked");
+		    $("#uniform-outer_level2 span").removeClass("checked","checked");
+		    $("#uniform-outer_level3 span").removeClass("checked","checked");
+		    $("#uniform-outer_level4 span").removeClass("checked","checked");
+		    $("#uniform-affiliation span").removeClass("checked","checked");
+		    $("#uniform-affiliation2 span").removeClass("checked","checked");
+			//End of reset form
+		});	 
+	 </script>
+	
+<?php
+footer_forms($admin,$seed);
+?>
+

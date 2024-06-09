@@ -1,0 +1,203 @@
+table{
+	direction:rtl;
+}
+@font-face {
+    font-family: 'saeed';
+    src: url('../print/fonts/BKoodakBold.eot?#') format('eot'), /* IE6–8 */
+    url('../print/fonts/BKoodakBold.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+    url('../print/fonts/BKoodakBold.ttf') format('truetype'); /* Saf3—5, Chrome4+, FF3.5, Opera 10+ */
+}
+.myform {
+    text-align: left;
+    direction: ltr
+}
+.text-center {
+    text-align: center;
+}
+
+.panel-info,.panel-success > .panel-heading {
+    text-align: left;
+}
+
+.panel-body > h4 {
+    text-align: left;
+}
+
+.panel-body > p {
+    text-align: left;
+    direction: ltr;
+}
+
+.refrences li {
+    float: left;
+    text-align: left;
+    direction: ltr;
+}
+th,td {
+    text-align: center
+}
+.alert-dismissable .close {
+    float: right!important;
+    left: 0px!important;
+}
+.alert{text-align: left}
+/*font section*/
+
+
+
+@font-face {
+  font-family: 'BKoodakBold';
+  src: url('fonts/BKoodakBold.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BKoodakBold.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BKoodakBold.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BNazanin';
+  src: url('fonts/BNazanin.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BNazanin.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BNazanin.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+@font-face {
+  font-family: 'BTitrBold';
+  src: url('fonts/BTitrBold.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BTitrBold.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BTitrBold.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BTraffic';
+  src: url('fonts/BTraffic.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BTraffic.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BTraffic.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BYagut';
+  src: url('fonts/BYagut.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BYagut.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BYagut.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('fonts/BYekan.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BYekan.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BYekan.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+@font-face {
+  font-family: 'BZar';
+  src: url('fonts/BZar.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BZar.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BZar.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+.BKoodakBold {
+	font-family: BKoodakBold, Arial, Helvetica, sans-serif;
+}
+
+
+.BNazanin {
+	font-family: BNazanin, Arial, Helvetica, sans-serif;
+}
+
+
+.BTitrBold {
+	font-family: BTitrBold, Arial, Helvetica, sans-serif;
+}
+
+.BTitrTGEBold {
+	font-family: BTitrTGEBold, Arial, Helvetica, sans-serif;
+}
+
+.BTraffic {
+	font-family: BTraffic, Arial, Helvetica, sans-serif;
+}
+
+
+
+.BYagut {
+	font-family: BYagut, Arial, Helvetica, sans-serif;
+}
+
+
+
+.BYekan {
+	font-family: BYekan, Arial, Helvetica, sans-serif;
+}
+
+.BZar {
+	font-family: BZar, Arial, Helvetica, sans-serif;
+}
+
+
+
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+    
+    float: left;
+margin-left: 0;
+}
+.rotated {
+    -webkit-transform: rotate(45deg);  /* Chrome, Safari 3.1+ */
+    -moz-transform: rotate(45deg);  /* Firefox 3.5-15 */
+    -ms-transform: rotate(45deg);  /* IE 9 */
+    -o-transform: rotate(45deg);  /* Opera 10.50-12.00 */
+    transform: rotate(45deg);  /* Firefox 16+, IE 10+, Opera 12.10+ */
+}
+#jadvalOverflow {
+    -moz-transform: rotateZ(270deg);
+    -ms-transform: rotateZ(270deg);
+    -o-transform: rotateZ(270deg);
+    -webkit-transform: rotateZ(270deg);
+    transform: rotateZ(270deg);
+    left: 75px;
+    position: relative;
+        page-break-before: always
+
+}
+#jadvalOverflow table {
+    float: left;
+}
+#jadval {
+    position: relative;
+}
+.media > .pull-left {
+	margin-right: 10px;
+}
+.pull-left {
+  float: right !important;
+}
+.blockquote-reverse,
+blockquote.pull-right {
+  padding-left: 15px;
+  padding-right: 0;
+  text-align: left;
+  border-left: 5px solid #eee;
+  border-right: 0;
+}
+.dropdown-menu.pull-right {
+  left: 0;
+  rigth: auto;
+}
+.pull-right > .dropdown-menu {
+  left: 0;
+  right: auto;
+}
+.media > .pull-right {
+  margin-right: 10px;
+}
+.pull-right {
+  float: left !important;
+}

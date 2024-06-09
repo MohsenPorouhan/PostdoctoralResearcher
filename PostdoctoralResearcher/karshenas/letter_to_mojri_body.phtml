@@ -1,0 +1,63 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+ require("include/class.phpmailer.php");
+ require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+ 
+ $query="select * from letter_to_mojri where cod_tarh='$cod_tarh'";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	echo "<tr>";
+	
+	 
+ 	echo "<td colspan='6' width=\"100%\" align='center' class=\"tahoma1\">مکاتبات</td>";
+ 	echo "</tr>";
+	echo "<tr>";
+	
+	echo "<td width=\"50%\" align='center' class=\"tahoma1\">نوع نامه</td>";
+	echo "<td width=\"50%\" align='center' class=\"tahoma1\">متن نامه</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">عنوان نامه</td>";
+ 	echo "<td width=\"10%\" align='center' class=\"tahoma1\">شماره</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">تاريخ</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	 echo "<tr>";
+     $atf_to=$row_fetched["atf_to_letter"];
+	 if(strlen(trim($atf_to)) > 0)	  
+	    $letter_type="پاسخ مجري";	  
+	  else
+	    $letter_type="نامه به مجري";
+	  
+	 
+		   	 
+ 	 //echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=letter_to_mojri_body.phtml&admin=$admin&seed=$seed&action=delete_tarh&cod_tarh=$cod_tarh&delete_id=".$row_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 echo "<td width=\"50%\" align='right' class=\"tahoma1\" dir=\"rtl\">".$letter_type."</td>";
+ 	 echo "<td width=\"50%\" align='right' class=\"tahoma1\" dir=\"rtl\">".$row_fetched["letter_body"]."</td>";
+ 	 echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["letter_subject"]."</td>";
+ 	 echo "<td width=\"10%\" align='right' class=\"tahoma1\">".$row_fetched["letter_no"]."</td>";
+ 	 echo "<td width=\"20%\" align='center' class=\"tahoma1\">".$row_fetched["letter_date"]."</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ ?>
+  
+
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

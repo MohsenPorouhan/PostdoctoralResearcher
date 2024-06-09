@@ -1,0 +1,222 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 3 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=index.phtml");
+   exit();
+  }
+ }
+ 
+ 
+$query="select * from karshenasan_tarh where id='$id'";
+$result=mysql_query($query) or die("Error"); 
+$rf=mysql_fetch_array($result);
+
+$ravesh_motalee= $rf["ravesh_motalee"];
+$comment_ravesh_motalee= $rf["comment_ravesh_motalee"];
+$zamanbandi= $rf["zamanbandi"]; 
+$comment_pishraft=  $rf["comment_pishraft"];
+$form_pardakht= $rf["form_pardakht"];
+$notes= $rf["comment_karshenas"];
+
+include("include/styles.phtml");
+echo "<META http-equiv=content-type content=text/html;charset=utf-8>";
+  
+?>
+<script>
+targetWidth = screen.availWidth;
+targetHeight = screen.availHeight;
+window.resizeTo(targetWidth, targetHeight);
+window.toolbar="no";
+
+
+</script>
+
+<script>
+function refresh_main()
+{
+	 document.user_login.submit();
+     opener.location.reload(true);
+
+}
+</script>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched1=mysql_fetch_array($result1);
+
+?>
+
+<center>
+<TABLE cellSpacing=0  width="600" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched1["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+ <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo "<br>"."كد طرح  : ".$row_fetched1["cod_tarh"];
+      ?>
+      </TD>
+  </TR>
+<TR>
+
+      <TD   align=center  class="tahoma1"  height=19  >
+      <?
+       $startdate = $row_fetched1["tarh_time"];
+       $startyear = substr($startdate,0,4);
+       $startmon = substr($startdate,5,2);
+       $startday = substr($startdate,8,2);
+       $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+      // $farsistartdate = enum2fnum($farsistartdate);
+	   echo "<br>"."تاريخ شروع  : ".$farsistartdate;
+      ?>
+      </TD>
+  </TR>
+</table>
+</center>
+<center>
+<body onclose="refresh_main()">
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="600" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="460" height="19"></td>
+                        <td align="middle" width="140" background="image/notes_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="600" height="80" bgColor="#eee7f8" border="1">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      ?>
+      
+      
+        <tr>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 <?
+		  if($ravesh_motalee==0)
+		   echo "بوده است";
+		  if($ravesh_motalee==1)
+		   echo "تا حدي بوده است";
+		 if($ravesh_motalee==2)
+		   echo "نبوده است";   
+		 ?>
+		 
+	 
+		
+		</td>
+        <td class="tahoma1" width="500" valign='top' align='left'>با توجه به گزارش ارائه شده روش مطالعه انجام شده مطابق با روش مطالعه پيش بيني شده در پروپوزال </td>
+      </tr>
+      
+      <tr>
+        <td align="right" width="100" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td class="tahoma1" width="500" valign='top'>توضيح</td>
+      </tr>
+        
+            <tr>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($zamanbandi==0)
+		   echo "انجام شده است";
+		  if($zamanbandi==1)
+		   echo "تا حدي مطابق پيش بيني بوده است";
+		 if($zamanbandi==2)
+		   echo "مطابق پيش بيني نبوده است";   
+		 ?>
+		</td>
+        <td class="tahoma1" width="500" valign='top' align='left'>  با توجه به گزارش ارائه شده توسط مجري ،پيشرفت اجرايي و زمانبندي طرح مطابق پيش بيني جدول گانت انجام شده است ؟</td>
+      </tr>
+        
+      <tr>
+        <td align="right" width="100" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td class="tahoma1" width="500" valign='top' align='left'>توضيح</td>
+      </tr>
+      
+       <tr>
+        <td align="right" width="100" valign='top' class="tahoma1">
+	 
+		 <?
+		  if($form_pardakht==0)
+		   echo "گزارش در اين مرحله مورد تاييد است";
+		  if($form_pardakht==1)
+		   echo "گزارش با انحام اصلاحاتي در همين گزارش مورد تاييد است";
+		 if($form_pardakht==2)
+		   echo "گزارش مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود";  
+		  if($form_pardakht==3)
+		   echo "اين گزارش به دلايل فوق مورد تاييد نمي باشد";    
+		 ?>
+		</td>
+        <td class="tahoma1" width="500" valign='top' align='left'>بر اساس بندهاي فوق اين گزارش </td>
+      </tr>
+      
+      <tr>
+        <td align="right" width="100" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td class="tahoma1" width="500" valign='top' align='left'>نظر شما در مورد اين طرح</td>
+      </tr>
+      
+     
+       
+    </tbody>
+  </table>
+</form>
+</body>
+<br>
+<?
+  //footer_forms($admin,$seed);
+?>

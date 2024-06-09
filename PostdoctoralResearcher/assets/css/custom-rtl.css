@@ -1,0 +1,22 @@
+/* here you can put your own css to customize and override the theme */
+.modal-footer{
+	margin-top: 10px!important;
+}
+.modal-body {
+	padding: 6px!important;
+}
+
+/* .custom-margin-i{
+margin: 8px 0px 5px 20px!important;
+font-size:14px;
+} */
+/* .input-icon.right i {
+right: 84px;
+float: right;
+} */
+table.DTTT_selectable tbody tr a{
+cursor: pointer!important;
+}
+table.DTTT_selectable tbody tr {
+cursor: default!important;
+}

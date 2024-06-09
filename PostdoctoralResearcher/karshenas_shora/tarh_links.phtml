@@ -1,0 +1,50 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+if(!isset($version))
+  $version='-1';
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'   and version='$version' ";
+  
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+   	 $row_fetched=mysql_fetch_array($result);
+     $tarh_name = $row_fetched["tarh_title_farsi"];
+
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="98%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo "عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<table border="1" width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="100%" class="tahoma1">
+      <? echo "<p align=\"center\"><a href='chekide_tarh_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh'>چکيده طرح</a>"; ?></td>
+  </tr>
+  <tr>
+    <td width="100%" class="tahoma1">
+      <? echo "<p align=\"center\"><a href='hazineha_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh'>هزينه هاي طرح</a>"; ?></td>
+  </tr>
+</table>
+<?
+   }
+  else
+      message_show("موردي يافت نشد","red");
+?>
+<?
+footer_forms($admin,$seed);
+?>

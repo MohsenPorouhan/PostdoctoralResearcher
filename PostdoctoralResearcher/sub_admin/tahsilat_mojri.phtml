@@ -1,0 +1,84 @@
+<html>
+ <?
+   include("include/database-connect.phtml");
+   include("include/styles.phtml");
+   include("include/include.phtml");
+ ?>
+<head>
+<meta http-equiv="Content-Language" content="fa">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="javascript" src="js/farsi.js"></script>
+<title>درجه تحصيلي</title>
+</head>
+<?
+   if(isset($action))
+     if($action="sabttahsil")
+     {
+       if( ($daraje_tahsili > 0 ) && strlen(trim($reshte)) > 0 && strlen(trim($daneshgah)) >0 )
+       {
+          $query="INSERT INTO mojri_tahsilat set mojri_code=\"$user_id\",daraje_tahsili=\"$daraje_tahsili\",reshte=\"$reshte\",daneshgah=\"$daneshgah\",keshvar=\"$keshvar\",sal_daryaft=\"$tarikh_daryaft\";";
+          $result=mysql_query($query) or die ("error in inserting data into mojri tahsilat");
+          ?>
+            <script language="javascript">
+               opener.location="<? echo "signup-user.phtml?admin=$admin&seed=$seed&email=$email&action=tahsilat";  ?>";
+            </script>
+          
+          <?
+          
+       }
+
+     }
+?>
+
+
+<body>
+<form method="post" action="tahsilat_mojri.phtml?<? echo "admin=$admin&seed=$seed&action=sabttahsil&email=$email&user_id=$user_id"; ?>">
+<table border="0" width="380">
+  <tr>
+  <?
+     $query="select * from darajeelmi order by  darajeelmi_desc asc";
+     $result=mysql_query($query) or die("Error in selecting data from daraje-elmi");
+
+  ?>
+    <td width="270">
+      <select  name="daraje_tahsili" class="edit-tarh-type">
+      <option value="-1">انتخاب کنيد</option>
+      <?
+      while($row_fetched=mysql_fetch_array($result))
+      {
+         echo "<option value=".$row_fetched["darajeelmi"].">".$row_fetched["darajeelmi_desc"]."</option>";
+      }
+      ?>
+      </select>
+    </td>
+    <td width="214" class="tahoma1">*درجه تحصيلي</td>
+  </tr>
+  <tr>
+    <td width="270"><input type="text" name="reshte" size="52" class="edit-tarh-type"  dir=RTL    ></td>
+    <td width="214" class="tahoma1">*رشته</td>
+  </tr>
+  <tr>
+    <td width="270"><input type="text" name="daneshgah" size="52" class="edit-tarh-type"  dir=RTL    ></td>
+    <td width="214" class="tahoma1">*دانشگاه</td>
+  </tr>
+  <tr>
+    <td width="270"><input type="text" name="keshvar" size="52" class="edit-tarh-type"   dir=RTL    ></td>
+    <td width="214" class="tahoma1">کشور</td>
+  </tr>
+  <tr>
+    <td width="270"><input type="text" name="tarikh_daryaft" size="52" class="edit-tarh-type"></td>
+    <td width="214" class="tahoma1">سال دريافت</td>
+  </tr>
+  <tr>
+    <td width="380" colspan="2">
+    <br>
+      <p align="center"><input type="button" value="بستن" name="B1" class="but-small" onclick="javascript:self.close()" >&nbsp;<input type="submit" value="ثبت" name="B1" class="but-small" ></td>
+  </tr>
+</table>
+
+</body>
+
+</html>
+

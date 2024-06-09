@@ -1,0 +1,22 @@
+<?
+echo $style;
+?>
+<html>
+<head>
+<META http-equiv=content-type content=text/html;charset=utf-8>
+       <title>Warning</title>
+</head>
+<script>
+function gotodel()
+{
+window.opener.location="admconlist.<? echo "$ext?username=$username&rand=$rand&st=5&current=$current&startw=$startw&endw=$endw&ascdesc=$ascdesc&delconfcode=$delconfcode"; ?>";
+window.close();
+}
+</script>
+ <body background='images/warn1.gif' style='background-repeat: no-repeat; background-position: center center' bgproperties='fixed'>
+ <form name="delform" action="#">
+ <br><center><font face='tahoma' size='2' color='red'><b>براي فيلدهايي که با <font color="red">*</font> مشخص شده اند مقدار وارد کنيد</b></font><font face='tahoma' size='2' color='red'><b>؟؟</b></font></center>
+ <center><br><input type="button" value="تاييد" onclick="javascript: window.close()" name="cancel"class="in3"></center>
+ </form>
+ </body>
+</html>

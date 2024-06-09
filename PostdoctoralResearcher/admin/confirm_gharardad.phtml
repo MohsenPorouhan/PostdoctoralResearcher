@@ -1,0 +1,368 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+require_once('lib/nusoap.php');
+
+$query="select * from modir_daneshkade where accept_gharardad='on'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$modir_count=mysql_num_rows($result);
+
+$query="select * from modir_daneshkade where modir_username='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+$dastresi=$row_fetched["dastresi"];
+$modir_name=$row_fetched["modir_name"];
+$modir_family=$row_fetched["modir_family"];
+$modir_email=$row_fetched["modir_email"];
+$modir_cod=$row_fetched["cod_modir"];
+
+ if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     { 
+     $query="select * from modir_accept_gharardad where cod_tarh=\"$cod_tarh\" and modir_username='$admin' ";
+    $result=mysql_query($query) or die("Error in updating data into tarh");
+    if(mysql_num_rows($result) > 0)
+    {    
+    	$row_fetched=mysql_fetch_array($result);
+    	$modir_comment=$row_fetched["modir_comment"];
+    	  $startdate=date("Y-m-d");
+    	  $startyear = substr($startdate,0,4);
+		  $startmon = substr($startdate,5,2);
+		  $startday = substr($startdate,8,2);
+		  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+    	  $modir_comment=$modir_comment."<br>".$modir_comment1." "."$farsistartdate";
+    	
+      $query="update modir_accept_gharardad set accept_gharardad='$accept_gharardad',modir_comment='$modir_comment', date='".date("Y-m-d")."'  where cod_tarh=\"$cod_tarh\" and modir_username='$admin' ";
+      mysql_query($query) or die("Error in updating data into tarh");
+      $query="select * from modir_accept_gharardad where cod_tarh=\"$cod_tarh\" and accept_gharardad='1' ";
+	    $result=mysql_query($query) or die("Error in updating data into tarh");
+	    $accept_count=mysql_num_rows($result);
+	    if($accept_count==$modir_count)
+	    {
+	    	$query="select * from max_gharardad_cod";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    	$row_fetched=mysql_fetch_array($result);
+	    	$max_gharardad_cod=$row_fetched["max_gharardad_cod"];
+	    	$max_gharardad_cod_new=$max_gharardad_cod+1;
+	    	$query="update max_gharardad_cod set max_gharardad_cod='$max_gharardad_cod_new' where max_gharardad_cod='$max_gharardad_cod'";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    	$query="update tarh_hesabdari set accept_cod='$max_gharardad_cod' where researchno='$cod_tarh'";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    	
+	    	
+	    	$query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh'  and group_karshenasan.karshenas_type='1'";
+		    //echo $query;
+		    $result=mysql_query($query) or die("Error 120000 ff");
+			$rf=mysql_fetch_array($result);
+			$sms_box=$rf["sms_box"]; 
+			//echo $sms_box;
+			$startdate =$send_date;
+		    $startyear = substr($startdate,0,4);
+		    $startmon = substr($startdate,5,2);
+		    $startday = substr($startdate,8,2);
+		    $send_date=hijricalender( $startyear , $startmon , $startday ); 
+			 
+			$query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='tarh ba code $cod_tarh dar mohit amade be gharardad code taeide modiran ra daryaft kard.'";
+			  echo $query;
+			$result=mysql_query($query) or die("Error 120000 er");
+	    }
+	    
+    }
+    else{
+    	  $startdate=date("Y-m-d");
+    	  $startyear = substr($startdate,0,4);
+		  $startmon = substr($startdate,5,2);
+		  $startday = substr($startdate,8,2);
+		  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+    	  $modir_comment=$modir_comment1." "."$farsistartdate";
+    	
+    	
+    	$query="insert into modir_accept_gharardad set accept_gharardad='$accept_gharardad',modir_comment='$modir_comment',modir_name='$modir_name',modir_family='$modir_family',modir_email='$modir_email',modir_username='$admin',modir_cod='$modir_cod',cod_tarh='$cod_tarh', date='".date("Y-m-d")."'";
+		echo $query;
+    	mysql_query($query) or die("Error in updating data into tarh");
+    	$query="select * from modir_accept_gharardad where cod_tarh=\"$cod_tarh\" and accept_gharardad='1' ";
+	    $result=mysql_query($query) or die("Error in updating data into tarh");
+	    $accept_count=mysql_num_rows($result);
+	    if($accept_count==$modir_count)
+	    {
+	    	$query="select * from max_gharardad_cod";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    	$row_fetched=mysql_fetch_array($result);
+	    	$max_gharardad_cod=$row_fetched["max_gharardad_cod"];
+	    	$max_gharardad_cod_new=$max_gharardad_cod+1;
+	    	$query="update max_gharardad_cod set max_gharardad_cod='$max_gharardad_cod_new' where max_gharardad_cod='$max_gharardad_cod'";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    	$query="update tarh_hesabdari set accept_cod='$max_gharardad_cod' where researchno='$cod_tarh'";
+	    	$result=mysql_query($query) or die("Error in updating data into tarh");
+	    	
+	    	$query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh'  and group_karshenasan.karshenas_type='1'";
+		    //echo $query;
+		    $result=mysql_query($query) or die("Error 120000 ff");
+			$rf=mysql_fetch_array($result);
+			$sms_box=$rf["sms_box"]; 
+			//echo $sms_box;
+			$startdate =$send_date;
+		    $startyear = substr($startdate,0,4);
+		    $startmon = substr($startdate,5,2);
+		    $startday = substr($startdate,8,2);
+		    $send_date=hijricalender( $startyear , $startmon , $startday ); 
+			 
+			$query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='tarh ba code $cod_tarh dar mohit amade be gharardad code taeide modiran ra daryaft kard.'";
+			  echo $query;
+			$result=mysql_query($query) or die("Error 120000 er");
+	    }
+	    
+	
+    }
+    if(strcmp($accept_gharardad,'-1')==0){
+        $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh'  and group_karshenasan.karshenas_type='1'";
+      $result=mysql_query($query) or die("Error 120000 ff");
+	  $rf=mysql_fetch_array($result);
+	  
+	  $query="update group_karshenasan_tarh  set  bazbini_req='' where cod_tarh='$cod_tarh'";
+	 // echo $query;
+	  $result=mysql_query($query) or die("Error in inserting data into tarh #100");
+	  
+	  $sms_box=$rf["sms_box"]; 
+	  //echo $sms_box;
+	  $startdate =$send_date;
+      $startyear = substr($startdate,0,4);
+      $startmon = substr($startdate,5,2);
+      $startday = substr($startdate,8,2);
+      $send_date=hijricalender( $startyear , $startmon , $startday ); 
+	 
+	  $query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='etelaate gharardade sabt shode dar system marboot be tarh ba code $cod_tarh rad shode ast'";
+	  echo $query;
+	  $result=mysql_query($query) or die("Error 120000 er");
+     	
+    }  
+             //$action="ارسال طرح به طرح هاي در حال اجرا "."<br>.".$cod_tarh;
+       //set_log($action,$admin,date("Y-m-d, g:i a"));
+      
+        ?>
+         <script language="javascript">
+           window.location="<? echo "tarh_list_confirm_gharardad.phtml?admin=$admin&seed=$seed&current=$current";  ?>";
+           </script>
+           <?
+
+       
+     }     
+echo "<br>";
+
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=confirm_gharardad&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&current=$current\">";
+   
+ $query="select * from tarh_hesabdari where researchno='$cod_tarh'";
+ $result=mysql_query($query) or die("Error100");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$tarh_title_farsi=$row_fetched["researchtitle"];
+ 	$mablagh_aghd_gharardad=$row_fetched["amount"];
+ 	$start_date1=$row_fetched["startdate"];
+    $end_date=$row_fetched["enddate"];
+ 	$mojri_name=$row_fetched["personname"];
+ 	//$mojri_cod_melli=$row_fetched["mojri_cod_melli"];
+ 	$time_month=$row_fetched["time_month"];
+ 	//$zarib_maliat=$row_fetched["maliat"];
+    $exists=1; 	
+    
+ } 	
+ $query="select * from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='1'";
+ //echo $query;
+ $result=mysql_query($query) or die("Error101");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$marhale=$row_fetched["stepno"];
+ 	$mablagh_marhale_0=$row_fetched["stepamount"];
+ 	$maliat_marhale_0=$row_fetched["tax"];
+    $mablagh_khales_mojri_0=$row_fetched["amount1"];
+ 	$hagh_ol_zahme_karshenasi_0=$row_fetched["amount2"];
+ 	$start_date=$row_fetched["paydate"];
+    $exists=1; 	
+    
+ } 	
+  ?>
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_title_farsi ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<?
+
+     echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+     $color="PALETURQUOISE";
+     $row_fetched=mysql_fetch_array($result);
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>کليه مبالغ به ريال است</b></td>";
+     echo "</tr>";
+     
+     echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>حق الزحمه کارشناسي</b></td>";     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ خالص مرحله</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>ماليات</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ مرحله</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ</b></td>"; 
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مرحله</b></td>";   
+     echo "</tr>";
+     
+    
+     echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($hagh_ol_zahme_karshenasi_0)."</b></td>";     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_khales_mojri_0)."</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($maliat_marhale_0)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_marhale_0)."</b></td>";
+     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b>".$start_date."</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>1</b></td>";
+     echo "</tr>";
+    
+
+$query="select * from marhale_gharardad_hesabdari  where researchno='$cod_tarh' and stepno!='1' and stepno!='100' order by stepno asc ";
+$result1=mysql_query($query) or die("Error");
+$cntr=1;
+$mablagh12=0;
+while($rf66=mysql_fetch_array($result1))
+{
+// echo $cntr;
+  	//$row_fetched=mysql_fetch_array($result1);
+ 	$marhale=$rf66["stepno"];
+ 	$mablagh_marhale_n=$rf66["stepamount"];
+ 	$maliat_marhale_n=$rf66["tax"];
+    $mablagh_khales_mojri_n=$rf66["amount1"];
+ 	$hagh_ol_zahme_karshenasi_n=$rf66["amount2"];
+ 	$start_date=$rf66["paydate"];
+    
+       
+	$cntr++;   
+    echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($hagh_ol_zahme_karshenasi_n)."</b></td>";
+     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_khales_mojri_n)."</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($maliat_marhale_n)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_marhale_n)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\"  dir='rtl' valign=\"top\"><b>".$start_date."</b></td>";
+      echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$cntr</b></td>";
+     echo "</tr>";
+} 
+
+$query="select * from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='100'";
+ //echo $query;
+ $result=mysql_query($query) or die("Error101");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$marhale=$row_fetched["stepno"];
+ 	$mablagh_marhale_end=$row_fetched["stepamount"];
+ 	$maliat_marhale_end=$row_fetched["tax"];
+    $mablagh_khales_mojri_end=$row_fetched["amount1"];
+ 	$hagh_ol_zahme_karshenasi_end=$row_fetched["amount2"];
+ 	$start_date=$row_fetched["paydate"];
+    $exists=1; 	
+    
+ } 	
+
+       echo "<tr>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($hagh_ol_zahme_karshenasi_end)."</b></td>";
+     
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_khales_mojri_end)."</b></td>";
+     echo "<td align=\"center\"  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($maliat_marhale_end)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>".number_format($mablagh_marhale_end)."</b></td>";
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b>".$start_date."</b></td>";
+      echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>نهايي</b></td>";
+     echo "</tr>";
+  //   echo number_format($mablagh_koll); 
+     
+     
+     
+       echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ کل قرارداد :".number_format($mablagh_aghd_gharardad)." </b></td>";
+       echo "</tr>";
+     
+      /* echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>امتياز :".number_format($int_emtiaz)." </b></td>";
+       echo "</tr>";*/
+       
+        
+       
+          echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ شروع :".$start_date1." </b></td>";
+       echo "</tr>";
+ echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ پايان :".$start_date." </b></td>";
+       echo "</tr>";
+       
+       echo "<tr>";
+       	echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>زمان قرارداد به ماه :".$time_month." </b></td>";
+       echo "</tr>";
+       
+       
+     /*  echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>در صورت تاييد ، طرح به طرحهاي در حال اجرا مي رود</b></td>";
+      echo "</tr>";
+      
+      
+      echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><textarea   rows=\"7\"  name=\"comments\"  class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></textarea></td>";
+      
+      echo "</tr>";
+     
+     echo "<tr>";
+       
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input   type=\"checkbox\"  name=\"sms\" value=\"ON\" class=\"edit-user\"  dir=RTL  \">ارسال sms</td>";
+      echo "</tr>";
+      
+        
+       echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شرايط خاص مورد نظر خود را اعلام فرماييد</b></td>";
+      echo "</tr>";*/
+       
+       
+     echo "<tr>";
+	     echo "<td align=\"center\" colspan='2'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><textarea  row=\"3\"  name=\"modir_comment1\" class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></textarea></td>";
+	     echo "<td align=\"center\" colspan='2'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"radio\" value=\"1\" name=\"accept_gharardad\" >بازگشت <input type=\"radio\" value=\"-1\" name=\"accept_gharardad\" >تاييد</td>";
+	     echo "<td align=\"center\" colspan='2'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">در صورت عدم تاييد قرارداد را به کارشناس مربوطه بازگردانيد</td>";
+     echo "</tr>";
+   
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"submit\" value=\"اعمال\" name=\"B1\" class=\"but-small\"></td>";
+     echo "</tr>";
+     
+     
+     
+     if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     {
+       /*$now_date=date('M-y-d');
+       insert_position($cod_tarh,'10',$admin);
+        $query="update tarh set indoing ='1' where cod_tarh='$cod_tarh' and version='-1'";
+        
+       $result=mysql_query($query)  or die("Error");*/
+       ?>
+           <script language="javascript">
+           window.location="<? echo "new_gharardad.phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+     }
+     
+     
+     
+     
+     
+     echo "</table>";
+  
+  echo "</form>"; 
+   
+footer_forms($admin,$seed);
+?>
+

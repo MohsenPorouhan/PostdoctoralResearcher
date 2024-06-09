@@ -1,0 +1,128 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+
+echo "<br>";
+
+$query="select * from tarh where  tarh.cod_tarh=\"$cod_tarh\" ";
+
+$result = mysql_query($query) or die("Error in selecting data from tarh , mojri_tarh");
+if(mysql_num_rows($result) <= 0 )
+{
+    echo "<table border=\"0\"  height=\"100%\" width=\"400\"    cellspacing=\"0\" cellpadding=\"2\"  >";
+
+    echo "<tr>";
+    echo "<td align=\"center\"   width=\"25%\" class=\"error-message\" colspan=\"2\">.چنين طرحي وجود ندارد</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+     footer_forms($admin,$seed);
+     exit();
+    
+}
+
+$row_fetched=mysql_fetch_array($result);
+$tarh_name=$row_fetched["tarh_title_farsi"];
+
+
+
+?>
+
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"letter_to_mojri_body.phtml?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/letter_to_mojri.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+   <?
+  if (strcmp($status,"mobile_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">شماره تلفن همراه موجود در پروفايل مجري صحيح نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  
+
+
+ $query="select * from letter_to_mojri where cod_tarh='$cod_tarh' order by id desc";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+	echo "<tr>";
+	echo "<td width=\"5%\" align='center' class=\"tahoma1\">نوع نامه</td>";
+	echo "<td width=\"70%\" align='center' class=\"tahoma1\">متن نامه</td>";
+ 	echo "<td width=\"10%\" align='center' class=\"tahoma1\">عنوان نامه</td>";
+ 	echo "<td width=\"10%\" align='center' class=\"tahoma1\">شماره</td>";
+ 	echo "<td width=\"5%\" align='center' class=\"tahoma1\">تاريخ</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	 echo "<tr>";
+     $atf_to=$row_fetched["atf_to_letter"];
+	 if(strlen(trim($atf_to)) > 0)	  
+	    $letter_type="پاسخ مجري";	  
+	  else
+	    $letter_type="نامه به مجري";
+	  
+	 
+		   	 
+ 	 echo "<td width=\"5%\" align='right' class=\"tahoma1\" dir=\"rtl\">".$letter_type."</td>";
+ 	 echo "<td width=\"70%\" align='right' class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["letter_body"])."</td>";
+ 	 echo "<td width=\"10%\" align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["letter_subject"]."</td>";
+ 	 echo "<td width=\"10%\" align='right' class=\"tahoma1\">".$row_fetched["letter_no"]."</td>";
+ 	 echo "<td width=\"5%\" align='center' class=\"tahoma1\">".$row_fetched["letter_date"]."</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+
+   footer_forms($admin,$seed);
+?>
+
+
+

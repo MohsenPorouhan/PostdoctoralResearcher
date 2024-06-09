@@ -1,0 +1,155 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+
+
+if(isset($action) )
+{
+  if (strcmp($action,"add_tarh")==0)
+  {
+		$query = "select * from ravesh_ejra where cod_tarh = \"$cod_tarh\"";
+        $result=mysql_query($query) or die ("Error in selecting data from ravesh_ejra");
+		if(mysql_num_rows($result) > 0 )
+		{
+		  $query="update ravesh_ejra  set ravesh_ejra=\"$ravesh_ejra\",moshakhasat_abzar=\"$moshakhasat_abzar\", ravesh_mohasebe=\"$ravesh_mohasebe\" ,molahezat_akhlaghi =\"$molahezat_akhlaghi\",mahdoudiat_ejra=\"$mahdoudiat_ejra\" where creator  =\"$admin\" and cod_tarh=\"$cod_tarh\"";
+
+          $result=mysql_query($query) or die("Error in updating data into ravesh_ejra");
+          $action="ويرايش روش اجرا با عنوان"."<br>".$tarh_name;
+          set_log($action,$admin,date("Y-m-d, g:i a"));
+
+          ?>
+          <script language="javascript">
+          window.location="<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+          <?
+		}
+		else
+		{
+		  $query="insert into ravesh_ejra  set ravesh_ejra=\"$ravesh_ejra\",moshakhasat_abzar=\"$moshakhasat_abzar\", ravesh_mohasebe=\"$ravesh_mohasebe\" ,molahezat_akhlaghi =\"$molahezat_akhlaghi\",mahdoudiat_ejra=\"$mahdoudiat_ejra\" , creator  =\"$admin\" , cod_tarh=\"$cod_tarh\"";
+
+          $result=mysql_query($query) or die("Error in inserting data into tarh");
+          $action="اضافه کردن روش اجرا با عنوان"."<br>".$tarh_name;
+          set_log($action,$admin,date("Y-m-d, g:i a"));
+
+          ?>
+          <script language="javascript">
+          window.location="<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+          <?
+
+		}
+
+
+  }
+ }
+
+
+  $query="select * from ravesh_ejra where cod_tarh='$cod_tarh'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+
+  $ravesh_ejra = $row_fetched["ravesh_ejra"];
+  $moshakhasat_abzar = $row_fetched["moshakhasat_abzar"];
+  $ravesh_mohasebe = $row_fetched["ravesh_mohasebe"];
+  $molahezat_akhlaghi = $row_fetched["molahezat_akhlaghi"];
+  $mahdoudiat_ejra=$row_fetched["mahdoudiat_ejra"];
+  
+?>
+
+<center>
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_tarh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/ravesh_ejra.gif"  height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+
+
+<table border="0" bgcolor="#EEE7F8" width="500"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+ <tr>
+    <td width="350" align="right"><input type="text" name="ravesh_ejra" size="20" value="<? echo $ravesh_ejra; ?>" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1" valign="top">روش اجرا</td>
+  </tr>
+   <tr>
+    <td width="350" align="right"><textarea   rows="3"  name="moshakhasat_abzar" class="edit-user"  dir=RTL   ><? echo $moshakhasat_abzar ; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"  valign="top">مشخصات ابزار جمع آوري اطلاعات و نحوه جمع آوري</td>
+  </tr>
+
+<tr>
+    <td width="350" align="right"><textarea   rows="3"  name="ravesh_mohasebe" class="edit-user"  dir=RTL   ><? echo $ravesh_mohasebe ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">روش محاسبه حجم نمونه و تعداد آن</td>
+  </tr>
+  
+ <tr>
+    <td width="350" align="right"><textarea   rows="3"  name="molahezat_akhlaghi" class="edit-user"  dir=RTL   ><? echo $molahezat_akhlaghi ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">ملاحظات اخلاقي</td>
+  </tr>
+   <tr>
+    <td width="350" align="right"><textarea   rows="3"  name="mahdoudiat_ejra" class="edit-user"  dir=RTL   ><? echo $mahdoudiat_ejra ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">محدوديتهاي اجرايي طرح و روش کاهش آنها</td>
+  </tr>
+<tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+<br>
+ <table border="0" bgcolor="#EEE7F8" width="500"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <tr>
+    <td colspan="2" width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "jadval_zarayeb.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">جدول متغيرها</a></td>
+  </tr>
+
+ <tr>
+    <td colspan="2" width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "add_activity.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>" target="_BLANK" >جدول زمانبندي مراحل اجراي طرح</a></td>
+  </tr>
+
+
+</table>
+
+</div>
+</td>
+</tr>
+</table>
+</center>
+ <br>
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+  </tr>
+  
+  
+  
+</table>
+</form>
+
+<?
+ footer_forms($admin,$seed);
+?>
+
+
+
+

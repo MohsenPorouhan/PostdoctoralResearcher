@@ -1,0 +1,529 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+echo "<br>";
+
+?>
+
+
+<? echo "<form name=\"signup\" method=\"post\"  action=\"control_gharardad_report.phtml?admin=$admin&seed=$seed\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+ <TR>
+    <TD align=right width="100%" class="tahoma1"  height=19>
+     گزارش آماده به قرارداد
+      </TD>
+  </TR>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+$query="select * from group_karshenasan where is_karshenas='1' ";
+$result=mysql_query($query) or die("Error");
+
+?> 
+ <tr>
+              <td width="66%" align="right">
+                <p align="right"><select size="1" name="karshenas" class="edit-user" dir=rtl>
+                <?
+                echo "<option value=\"-1\">همه</option>";
+				  while($rf=mysql_fetch_array($result))
+				  {
+				  	echo "<option value=\"".$rf["cod_karshenas"]."\">".$rf["karshenas_family"]."&nbsp;".$rf["karshenas_name"]."</option>";
+				  }
+				?>
+    							
+ 								 </select>
+								  </td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">کارشناس</td>
+ </tr>
+       
+
+
+<tr>
+              <td width="66%" align="right" class="tahoma1">
+                <p align="right">
+
+ <?
+ //   $start_date=$row_fetched["start_date"];
+	 
+	 
+     $c1="";
+	 $c2="";
+	 $c3="";
+	 $c4="";
+	 $c5="";
+	 $c6="";
+	 $c7="";
+	 $c8="";
+	 $c9="";
+	 $c10="";
+	 $c11="";
+	 $c12="";
+	 $c13="";
+	 
+	 if(strcmp($startyear,"1392")==0)
+	    $c1=" selected ";
+	  if(strcmp($startyear,"1393")==0)
+	    $c2=" selected ";
+	  if(strcmp($startyear,"1394")==0)
+	    $c3=" selected ";	  
+	  if(strcmp($startyear,"1395")==0)
+	    $c4=" selected ";
+	 ?>
+
+       	   <select size="1" dir="rtl"  name="startyear" class="combo2">
+          <option selected value="-1">سال</option>
+          <option <? echo $c1;  ?> value="1392">1392</option>
+          <option <? echo $c2;  ?> value="1393">1393</option>
+          <option <? echo $c3;  ?> value="1394">1394</option>
+          <option <? echo $c4;  ?> value="1395">1395</option>
+
+        </select>
+ <?
+     $c1="";
+	 $c2="";
+	 $c3="";
+	 $c4="";
+	 $c5="";
+	 $c6="";
+	 $c7="";
+	 $c8="";
+	 $c9="";
+	 $c10="";
+	 $c11="";
+	 $c12="";
+	 $c13="";
+	 if(strcmp($startmon,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($startmon,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($startmon,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($startmon,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($startmon,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($startmon,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($startmon,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($startmon,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($startmon,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($startmon,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($startmon,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($startmon,"12")==0)		 
+		    $c12=" selected ";
+?>
+             <select size="1" dir="rtl"  name="startmon"  class="combo2">
+         <option selected value="-1">ماه</option>
+          <option <? echo $c1; ?> value="01">فروردين</option>
+          <option <? echo $c2; ?> value="02">ارديبهشت</option>
+          <option <? echo $c3; ?> value="03">خرداد</option>
+          <option <? echo $c4; ?> value="04">تير</option>
+          <option <? echo $c5; ?> value="05">مرداد</option>
+          <option <? echo $c6; ?> value="06">شهريور</option>
+          <option <? echo $c7; ?> value="07">مهر</option>
+          <option <? echo $c8; ?> value="08">آبان</option>
+          <option <? echo $c9; ?> value="09">آذر</option>
+          <option <? echo $c10; ?> value="10">دي</option>
+          <option <? echo $c11; ?> value="11">بهمن</option>
+          <option <? echo $c12; ?> value="12">اسفند</option>
+        </select>
+
+   <? $c1="";
+ $c2="";
+ $c3="";
+ $c4="";
+ $c5="";
+ $c6="";
+ $c7="";
+ $c8="";
+ $c9="";
+ $c10="";
+ $c11="";
+ $c12="";
+ $c13="";
+ $c14="";
+ $c15="";
+ $c16="";
+ $c17="";
+ $c18="";
+ $c19="";
+ $c20="";
+ $c21="";
+ $c22="";
+ $c23="";
+ $c24="";
+ $c25="";
+ $c26="";
+ $c27="";
+ $c28="";
+ $c29="";
+ $c30="";
+ $c31="";
+  if(strcmp($startday,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($startday,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($startday,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($startday,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($startday,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($startday,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($startday,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($startday,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($startday,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($startday,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($startday,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($startday,"12")==0)		 
+		    $c12=" selected ";
+		 if(strcmp($startday,"13")==0)		 
+		    $c13=" selected ";
+  		 if(strcmp($startday,"14")==0)		 
+		    $c14=" selected ";
+		 if(strcmp($startday,"15")==0)		 
+		    $c15=" selected ";
+		 if(strcmp($startday,"16")==0)		 
+		    $c16=" selected ";
+		 if(strcmp($startday,"17")==0)		 
+		    $c17=" selected ";
+		 if(strcmp($startday,"18")==0)		 
+		    $c18=" selected ";
+		 if(strcmp($startday,"19")==0)		 
+		    $c19=" selected ";
+		 if(strcmp($startday,"20")==0)		 
+		    $c20=" selected ";
+		 if(strcmp($startday,"21")==0)		 
+		    $c21=" selected ";
+		 if(strcmp($startday,"22")==0)		 
+		    $c22=" selected ";
+		 if(strcmp($startday,"23")==0)		 
+		    $c23=" selected ";
+		 if(strcmp($startday,"24")==0)		 
+		    $c24=" selected ";
+		 if(strcmp($startday,"25")==0)		 
+		    $c25=" selected ";
+		 if(strcmp($startday,"26")==0)		 
+		    $c26=" selected ";
+		 if(strcmp($startday,"27")==0)		 
+		    $c27=" selected ";
+		 if(strcmp($startday,"28")==0)		 
+		    $c28=" selected ";
+		 if(strcmp($startday,"29")==0)		 
+		    $c29=" selected ";
+		 if(strcmp($startday,"30")==0)		 
+		    $c30=" selected ";
+		 if(strcmp($startday,"31")==0)		 
+		    $c31=" selected ";
+		    
+?>
+   <select size="1" dir="rtl"  name="startday"  class="combo2">
+          <option selected value="-1">روز</option>
+          <option <? echo $c1; ?> value="01">1</option>
+          <option <? echo $c2; ?> value="02">2</option>
+          <option <? echo $c3; ?> value="03">3</option>
+          <option <? echo $c4; ?> value="04">4</option>
+          <option <? echo $c5; ?> value="05">5</option>
+          <option <? echo $c6; ?> value="06">6</option>
+          <option <? echo $c7; ?> value="07">7</option>
+          <option <? echo $c8; ?> value="08">8</option>
+          <option <? echo $c9; ?> value="09">9</option>
+          <option <? echo $c10; ?> value="10">10</option>
+          <option <? echo $c11; ?> value="11">11</option>
+          <option <? echo $c12; ?> value="12">12</option>
+          <option <? echo $c13; ?> value="13">13</option>
+          <option <? echo $c14; ?> value="14">14</option>
+          <option <? echo $c15; ?> value="15">15</option>
+          <option <? echo $c16; ?> value="16">16</option>
+          <option <? echo $c17; ?> value="17">17</option>
+          <option <? echo $c18; ?> value="18">18</option>
+          <option <? echo $c19; ?> value="19">19</option>
+          <option <? echo $c20; ?> value="20">20</option>
+          <option <? echo $c21; ?> value="21">21</option>
+		  <option <? echo $c22; ?> value="22">22</option>
+		  <option <? echo $c23; ?> value="23">23</option>
+		  <option <? echo $c24; ?> value="24">24</option>
+		  <option <? echo $c25; ?> value="25">25</option>
+		  <option <? echo $c26; ?> value="26">26</option>
+		  <option <? echo $c27; ?> value="27">27</option>
+		  <option <? echo $c28; ?> value="28">28</option>
+		  <option <? echo $c29; ?> value="29">29</option>
+		  <option <? echo $c30; ?> value="30">30</option>
+		  <option <? echo $c31; ?> value="31">31</option>
+        </select>
+
+	</td>
+
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">از تاريخ </td>
+            </tr>
+
+
+<tr>
+              <td width="66%" align="right">
+                <p align="right">
+
+ <?
+ //   $start_date=$row_fetched["start_date"];
+	 
+	 
+     $c1="";
+	 $c2="";
+	 $c3="";
+	 $c4="";
+	 $c5="";
+	 $c6="";
+	 $c7="";
+	 $c8="";
+	 $c9="";
+	 $c10="";
+	 $c11="";
+	 $c12="";
+	 $c13="";
+	 
+	 if(strcmp($startyear,"1392")==0)
+	    $c1=" selected ";
+	  if(strcmp($startyear,"1393")==0)
+	    $c2=" selected ";
+	  if(strcmp($startyear,"1394")==0)
+	    $c3=" selected ";	  
+	  if(strcmp($startyear,"1395")==0)
+	    $c4=" selected ";
+	 ?>
+
+       	   <select size="1" dir="rtl"  name="endyear" class="combo2">
+          <option selected value="-1">سال</option>
+          <option <? echo $c1;  ?> value="1392">1392</option>
+          <option <? echo $c2;  ?> value="1393">1393</option>
+          <option <? echo $c3;  ?> value="1394">1394</option>
+          <option <? echo $c4;  ?> value="1395">1395</option>
+
+        </select>
+ <?
+     $c1="";
+	 $c2="";
+	 $c3="";
+	 $c4="";
+	 $c5="";
+	 $c6="";
+	 $c7="";
+	 $c8="";
+	 $c9="";
+	 $c10="";
+	 $c11="";
+	 $c12="";
+	 $c13="";
+	 if(strcmp($startmon,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($startmon,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($startmon,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($startmon,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($startmon,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($startmon,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($startmon,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($startmon,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($startmon,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($startmon,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($startmon,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($startmon,"12")==0)		 
+		    $c12=" selected ";
+?>
+             <select size="1" dir="rtl"  name="endmon"  class="combo2">
+         <option selected value="-1">ماه</option>
+          <option <? echo $c1; ?> value="01">فروردين</option>
+          <option <? echo $c2; ?> value="02">ارديبهشت</option>
+          <option <? echo $c3; ?> value="03">خرداد</option>
+          <option <? echo $c4; ?> value="04">تير</option>
+          <option <? echo $c5; ?> value="05">مرداد</option>
+          <option <? echo $c6; ?> value="06">شهريور</option>
+          <option <? echo $c7; ?> value="07">مهر</option>
+          <option <? echo $c8; ?> value="08">آبان</option>
+          <option <? echo $c9; ?> value="09">آذر</option>
+          <option <? echo $c10; ?> value="10">دي</option>
+          <option <? echo $c11; ?> value="11">بهمن</option>
+          <option <? echo $c12; ?> value="12">اسفند</option>
+        </select>
+
+   <? $c1="";
+ $c2="";
+ $c3="";
+ $c4="";
+ $c5="";
+ $c6="";
+ $c7="";
+ $c8="";
+ $c9="";
+ $c10="";
+ $c11="";
+ $c12="";
+ $c13="";
+ $c14="";
+ $c15="";
+ $c16="";
+ $c17="";
+ $c18="";
+ $c19="";
+ $c20="";
+ $c21="";
+ $c22="";
+ $c23="";
+ $c24="";
+ $c25="";
+ $c26="";
+ $c27="";
+ $c28="";
+ $c29="";
+ $c30="";
+ $c31="";
+  if(strcmp($startday,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($startday,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($startday,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($startday,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($startday,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($startday,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($startday,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($startday,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($startday,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($startday,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($startday,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($startday,"12")==0)		 
+		    $c12=" selected ";
+		 if(strcmp($startday,"13")==0)		 
+		    $c13=" selected ";
+  		 if(strcmp($startday,"14")==0)		 
+		    $c14=" selected ";
+		 if(strcmp($startday,"15")==0)		 
+		    $c15=" selected ";
+		 if(strcmp($startday,"16")==0)		 
+		    $c16=" selected ";
+		 if(strcmp($startday,"17")==0)		 
+		    $c17=" selected ";
+		 if(strcmp($startday,"18")==0)		 
+		    $c18=" selected ";
+		 if(strcmp($startday,"19")==0)		 
+		    $c19=" selected ";
+		 if(strcmp($startday,"20")==0)		 
+		    $c20=" selected ";
+		 if(strcmp($startday,"21")==0)		 
+		    $c21=" selected ";
+		 if(strcmp($startday,"22")==0)		 
+		    $c22=" selected ";
+		 if(strcmp($startday,"23")==0)		 
+		    $c23=" selected ";
+		 if(strcmp($startday,"24")==0)		 
+		    $c24=" selected ";
+		 if(strcmp($startday,"25")==0)		 
+		    $c25=" selected ";
+		 if(strcmp($startday,"26")==0)		 
+		    $c26=" selected ";
+		 if(strcmp($startday,"27")==0)		 
+		    $c27=" selected ";
+		 if(strcmp($startday,"28")==0)		 
+		    $c28=" selected ";
+		 if(strcmp($startday,"29")==0)		 
+		    $c29=" selected ";
+		 if(strcmp($startday,"30")==0)		 
+		    $c30=" selected ";
+		 if(strcmp($startday,"31")==0)		 
+		    $c31=" selected ";
+		    
+?>
+   <select size="1" dir="rtl"  name="endday"  class="combo2">
+          <option selected value="-1">روز</option>
+          <option <? echo $c1; ?> value="01">1</option>
+          <option <? echo $c2; ?> value="02">2</option>
+          <option <? echo $c3; ?> value="03">3</option>
+          <option <? echo $c4; ?> value="04">4</option>
+          <option <? echo $c5; ?> value="05">5</option>
+          <option <? echo $c6; ?> value="06">6</option>
+          <option <? echo $c7; ?> value="07">7</option>
+          <option <? echo $c8; ?> value="08">8</option>
+          <option <? echo $c9; ?> value="09">9</option>
+          <option <? echo $c10; ?> value="10">10</option>
+          <option <? echo $c11; ?> value="11">11</option>
+          <option <? echo $c12; ?> value="12">12</option>
+          <option <? echo $c13; ?> value="13">13</option>
+          <option <? echo $c14; ?> value="14">14</option>
+          <option <? echo $c15; ?> value="15">15</option>
+          <option <? echo $c16; ?> value="16">16</option>
+          <option <? echo $c17; ?> value="17">17</option>
+          <option <? echo $c18; ?> value="18">18</option>
+          <option <? echo $c19; ?> value="19">19</option>
+          <option <? echo $c20; ?> value="20">20</option>
+          <option <? echo $c21; ?> value="21">21</option>
+		  <option <? echo $c22; ?> value="22">22</option>
+		  <option <? echo $c23; ?> value="23">23</option>
+		  <option <? echo $c24; ?> value="24">24</option>
+		  <option <? echo $c25; ?> value="25">25</option>
+		  <option <? echo $c26; ?> value="26">26</option>
+		  <option <? echo $c27; ?> value="27">27</option>
+		  <option <? echo $c28; ?> value="28">28</option>
+		  <option <? echo $c29; ?> value="29">29</option>
+		  <option <? echo $c30; ?> value="30">30</option>
+		  <option <? echo $c31; ?> value="31">31</option>
+        </select>
+
+	</td>
+
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">تا تاريخ </td>
+            </tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+    
+
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

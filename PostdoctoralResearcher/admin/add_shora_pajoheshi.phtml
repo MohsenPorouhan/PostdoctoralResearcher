@@ -1,0 +1,320 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+
+
+
+if(isset($action))
+{
+  if (strcmp($action,"add_karshenas")==0)
+  {
+
+     if( strlen(trim($kar_name)) > 0 && strlen(trim($kar_family)) > 0  &&  strlen(trim($kar_email)) > 0 &&  strstr($kar_email, '@') &&  strlen(trim($kar_pass)) > 0 && strcmp(trim($kar_pass),trim($kar_re_pass))==0 )
+    {
+      $query="select * from karshenas_shora where  kar_shora_email=\"$kar_email\"";
+     // echo $query;
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+
+      if ( mysql_num_rows($result)> 0 )
+      {
+	  $repeated_record ="repeated_record =1,";
+          }
+		  else
+		  $repeated_record="";
+        $query="insert into karshenas_shora set  $repeated_record  mobile='$mobile',kar_shora_name='$kar_name' ,kar_shora_name_e='$kar_name_e', kar_shora_family='$kar_family', kar_shora_family_e = '$kar_family_e',  kar_shora_rade_elmi='$kar_rade_elmi',  kar_shora_takhasos  = '$kar_takhasos', kar_shora_takhasos_e  = '$kar_takhasos_e',  kar_shora_email  ='$kar_email', cod_daneshkade='$daneshkade' , shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar', fath_name_e='$nampedar_e', creator='$admin', password='$kar_pass',melli_code='$cod_melli',cod_shora='$cod_shora'";
+	//	echo $query;
+	//	exit(); 
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+     /* }
+      else
+       $status="duplicate_entry";*/
+    }
+    else
+      $status="entry_error";
+  }
+
+ if (strcmp($action,"delete_shora")==0)
+ {
+    $query="delete from karshenas_shora where cod_karshenas = \"$delete_id\"";
+    
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_shora");
+ }
+
+
+  if (strcmp($action,"edit_karshenas_second")==0)
+  {
+     
+     if(   strlen(trim($kar_name)) > 0 && strlen(trim($kar_family)) > 0   )
+    {
+	  if(strlen(trim($saltavalod)) > 5)
+		 $saltavalod="";
+      $query="select * from karshenas_shora where cod_karshenas=\"$cod_karshenas\"";
+      $result=mysql_query($query) or die("Error in selecting data from kar_shora elmi 12");
+
+      if ( mysql_num_rows($result) > 0 )
+      {
+
+        $query="update  karshenas_shora set mobile='$mobile' ,kar_shora_name='$kar_name' ,kar_shora_name_e='$kar_name_e', kar_shora_family='$kar_family', kar_shora_family_e = '$kar_family_e',  kar_shora_rade_elmi='$kar_rade_elmi',  kar_shora_takhasos  = '$kar_takhasos', kar_shora_takhasos_e  = '$kar_takhasos_e',   cod_daneshkade='$daneshkade' , shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar', fath_name_e='$nampedar_e',melli_code='$cod_melli' where cod_karshenas='$cod_karshenas'";
+      
+        $result=mysql_query($query) or die("Error in inserting data into kar_shora elmi");
+        $action="";
+      }
+      else
+       $status="duplicate_entry";
+    }
+    else
+    {
+      $status="entry_error";
+      $action="edit_karshenas";
+    }
+  }
+ 
+ 
+  if (strcmp($action,"edit_karshenas")==0) 
+ {
+ 	$query="select * from karshenas_shora where cod_karshenas='$cod_karshenas'";
+ 	$result=mysql_query($query) or die("Error in selecting data from kar_shoraan"); 	
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$kar_shora_name=$row_fetched["kar_shora_name"];
+ 	$kar_shora_family=$row_fetched["kar_shora_family"];
+ 	$shenasname=$row_fetched["shenasname"];
+ 	$sal_tavalod=$row_fetched["sal_tavalod"];
+ 	$fath_name=$row_fetched["fath_name"];
+ 	$melli_code=$row_fetched["melli_code"];
+ 	$kar_shora_type=$row_fetched["kar_shora_type"];
+ 	$kar_shora_email=$row_fetched["kar_shora_email"];
+ 	$kar_shora_rade_elmi=$row_fetched["kar_shora_rade_elmi"];
+ 	$kar_shora_takhasos=$row_fetched["kar_shora_takhasos"];
+	$mobile=$row_fetched["mobile"];  	
+ }
+ else
+ {
+ 	$kar_shora_name="";
+ 	$kar_shora_family="";
+ 	$shenasname="";
+ 	$sal_tavalod="";
+ 	$fath_name="";
+ 	$melli_code="";
+ 	$kar_shora_type="";
+ 	$kar_shora_email="";
+ 	$kar_shora_rade_elmi="";
+ 	$kar_shora_takhasos="";
+ 	$mobile="";
+ }
+
+
+
+ 
+}
+
+?>
+ 
+
+<?
+
+if(strcmp($action,"edit_karshenas")==0)
+ echo "<form name=\"add_karshenas\" method=\"post\"  action=\"$PHP_SELF?action=edit_karshenas_second&admin=$admin&seed=$seed&cod_karshenas=$cod_karshenas&cod_shora=$cod_shora\">"; 
+else 
+ echo "<form name=\"add_karshenas\" method=\"post\"  action=\"$PHP_SELF?action=add_karshenas&admin=$admin&seed=$seed&cod_shora=$cod_shora\">"; 
+ 
+
+// echo "<form name=\"add_karshenas\" method=\"post\"  action=\"$PHP_SELF?action=add_shora&admin=$admin&seed=$seed&cod_shora=$cod_shora\">"; ?>
+
+<table border="0"  width="600" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    
+    <TR>
+    <TD align=middle width="349"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/karshenas_shora.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$kar_shora_name'"; ?> name="kar_name" size="20" class="edit-user"dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span> نام</td>
+  </tr>
+    
+
+  <tr>
+    <td width="350" align="right"><input type="text" <? echo "value='$kar_shora_family'"; ?>  name="kar_family" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نام خانوادگي</td>
+  </tr>
+   
+    
+ 
+   <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$melli_code'"; ?>  name="cod_melli" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1">کد ملي</td>
+  </tr>
+  <?
+  if (strcmp($action,"edit_karshenas")!=0) 
+ {
+  ?>
+  <tr>
+    <td width="350" align="right"><input type="text"  name="kar_email" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>پست الکترونيکي</td>
+  </tr>
+  <?
+ }
+  ?>
+   <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$mobile'"; ?>  name="mobile" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>تلفن همراه</td>
+  </tr>
+   <tr>
+  <?
+    $query="select * from darajeelmi order by darajeelmi_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+  ?>
+    <td width="350" align="right"><select size="1" name="kar_rade_elmi" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+      echo "<option value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$row_fetched["darajeelmi_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">درجه علمي</td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$kar_shora_takhasos'"; ?>  name="kar_takhasos" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1">تخصص</td>
+  </tr>
+ 
+    <?
+  if (strcmp($action,"edit_karshenas")!=0) 
+ {
+  ?>
+   <tr>
+    <td width="350" align="right"><input type="password" name="kar_pass" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>کلمه عبور</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="password" name="kar_re_pass" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>تکرار کلمه عبور</td>
+  </tr>
+
+    <?
+ }
+  ?>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+ <?
+
+   $query="select * from karshenas_shora  where cod_shora=\"$cod_shora\"  order by  kar_shora_name";
+   $query="select * from karshenas_shora,modir_daneshkade  where  cod_shora=\"$cod_shora\"  and modir_daneshkade.modir_username =karshenas_shora.creator and ( modir_daneshkade.modir_type='1' or  modir_daneshkade.modir_type='4')";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+    echo "<table border=\"1\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+     echo "<tr>";
+    echo "<td colspan='45' width=\"16\"   height=\"20\" align='left'><a href='shora_pajohesh_excel.phtml?admin=$admin&seed=$seed&cod_shora=$cod_shora '><img src='image/excell.jpg' border='0'></img></a></td>";
+    echo "</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/top-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"80\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">کلمه عبور</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">حذف</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">ويرايش</td>";
+    echo "<td width=\"150\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام خانوادگي</td>";
+    echo "<td width=\"164\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام</td>";
+     echo "<td width=\"164\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">کد</td>";
+    echo "<td width=\"16\"  background=\"image/top-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+   $color="#E2E0E0";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    $mycod_karshenas = $myrow_fetched["cod_karshenas"];
+    echo "<tr bgcolor=\"$color\">";
+    echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"80\"><p align=\"center\"><a href=\"change_users_password.phtml?admin=$admin&seed=$seed&db=karshenas_shora&username=".$myrow_fetched["cod_karshenas"]."&user_field=cod_karshenas\" ><img border=\"0\" src=\"image/password.gif\" width=\"11\" height=\"13\" alt=\"Change Password\" ></a></td>";
+    echo "<td width=\"27\"><p align=\"center\"><a href=\"#\" onclick='window.open(\"del_shora_pajoheshi.phtml?cod_shora=$cod_shora&mainwindow=add_shora_pajoheshi.phtml&admin=$admin&seed=$seed&action=delete_shora&delete_id=".$myrow_fetched["cod_karshenas"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+//    echo "<td width=\"27\"><p align=\"center\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href='$PHP_SELF?admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas&action=edit_karshenas&cod_shora=$cod_shora'><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+    $mycod_karshenas = $myrow_fetched["cod_karshenas"];
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["kar_shora_family"],0,18)."</a></p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["kar_shora_name"],0,18)."</a></p></td>";
+     echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["cod_karshenas"],0,18)."</a></p></td>";
+    echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+   }
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"27\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"27\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"133\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"134\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+        echo "<td width=\"134\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\"></td>";
+    echo "</tr>";
+
+   echo "</table>";
+
+  }
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

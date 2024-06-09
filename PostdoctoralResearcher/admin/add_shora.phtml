@@ -1,0 +1,1266 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+
+
+if(isset($action))
+{
+  if (strcmp($action,"add_karshenas")==0)
+  {
+
+     if( strlen(trim($kar_name)) > 0 && strlen(trim($kar_family)) > 0  &&  strlen(trim($kar_email)) > 0 &&  strstr($kar_email, '@') &&  strlen(trim($kar_pass)) > 0 && strcmp(trim($kar_pass),trim($kar_re_pass))==0 )
+    {
+      $query="select * from karshenas_shora where  kar_shora_email=\"$kar_email\"";
+     // echo $query;
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+
+      if ( mysql_num_rows($result)> 0 )
+      {
+	  $repeated_record ="repeated_record =1,";
+          }
+		  else
+		  $repeated_record="";
+		  
+		  $start_date_first_daneshkade = $startyear_first_daneshkade."/". $startmonth_first_daneshkade."/". $startday_first_daneshkade;
+		  $end_date_first_daneshkade = $endyear_first_daneshkade."/". $endmonth_first_daneshkade."/". $endday_first_daneshkade;
+		  
+		  $start_date_second_daneshkade = $startyear_second_daneshkade."/". $startmonth_second_daneshkade."/". $startday_second_daneshkade;
+		  $end_date_second_daneshkade = $endyear_second_daneshkade."/". $endmonth_second_daneshkade."/". $endday_second_daneshkade;
+		  
+		  $start_date_third_daneshkade = $startyear_third_daneshkade."/". $startmonth_third_daneshkade."/". $startday_third_daneshkade;
+		  $end_date_third_daneshkade = $endyear_third_daneshkade."/". $endmonth_third_daneshkade."/". $endday_third_daneshkade;
+
+		  if($cod_daneshkade=="0")
+		  	$cod_shora='4';
+		  	else 
+		  	$cod_shora='-3';
+		  
+        $query="insert into karshenas_shora set  $repeated_record start_date_first_daneshkade='$start_date_first_daneshkade',end_date_first_daneshkade='$end_date_first_daneshkade',start_date_second_daneshkade='$start_date_second_daneshkade',end_date_second_daneshkade='$end_date_second_daneshkade',start_date_third_daneshkade='$start_date_third_daneshkade',end_date_third_daneshkade='$end_date_third_daneshkade', mobile='$mobile',kar_shora_name='$kar_name' ,kar_shora_name_e='$kar_name_e', kar_shora_family='$kar_family', kar_shora_family_e = '$kar_family_e',  kar_shora_rade_elmi='$kar_rade_elmi',  kar_shora_takhasos  = '$kar_takhasos', kar_shora_takhasos_e  = '$kar_takhasos_e',  kar_shora_email  ='$kar_email',cod_daneshkade='$cod_daneshkade',cod_daneshkade_second='$cod_daneshkade_second',cod_daneshkade_third='$cod_daneshkade_third',cod_daneshkade_4='$cod_daneshkade_4',cod_daneshkade_5='$cod_daneshkade_5',cod_daneshkade_6='$cod_daneshkade_6',cod_daneshkade_7='$cod_daneshkade_7',cod_daneshkade_8='$cod_daneshkade_8',cod_daneshkade_9='$cod_daneshkade_9',cod_daneshkade_10='$cod_daneshkade_10', shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar', fath_name_e='$nampedar_e', creator='$admin', password='$kar_pass',melli_code='$cod_melli',cod_shora='$cod_shora', new_insert='1',cod_daneshgah='$cod_daneshgah'";
+		echo $query;
+	//	exit(); 
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+     /* }
+      else
+       $status="duplicate_entry";*/
+    }
+    else
+      $status="entry_error";
+  }
+
+ if (strcmp($action,"delete_shora")==0)
+ {
+    $query="delete from karshenas_shora where cod_karshenas = \"$delete_id\"";   
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_shora");
+ }
+
+
+  if (strcmp($action,"edit_karshenas_second")==0)
+  {
+     
+     if(   strlen(trim($kar_name)) > 0 && strlen(trim($kar_family)) > 0   )
+    {
+	  if(strlen(trim($saltavalod)) > 5)
+		 $saltavalod="";
+      $query="select * from karshenas_shora where cod_karshenas=\"$cod_karshenas\"";
+      $result=mysql_query($query) or die("Error in selecting data from kar_shora elmi 12");
+
+      if ( mysql_num_rows($result) > 0 )
+      {
+		 $start_date_first_daneshkade = $startyear_first_daneshkade."/". $startmonth_first_daneshkade."/". $startday_first_daneshkade;
+		  $end_date_first_daneshkade = $endyear_first_daneshkade."/". $endmonth_first_daneshkade."/". $endday_first_daneshkade;
+		  
+		  $start_date_second_daneshkade = $startyear_second_daneshkade."/". $startmonth_second_daneshkade."/". $startday_second_daneshkade;
+		  $end_date_second_daneshkade = $endyear_second_daneshkade."/". $endmonth_second_daneshkade."/". $endday_second_daneshkade;
+		  
+		  $start_date_third_daneshkade = $startyear_third_daneshkade."/". $startmonth_third_daneshkade."/". $startday_third_daneshkade;
+		  $end_date_third_daneshkade = $endyear_third_daneshkade."/". $endmonth_third_daneshkade."/". $endday_third_daneshkade;
+	
+      	
+        $query="update  karshenas_shora set start_date_first_daneshkade='$start_date_first_daneshkade',end_date_first_daneshkade='$end_date_first_daneshkade',start_date_second_daneshkade='$start_date_second_daneshkade',end_date_second_daneshkade='$end_date_second_daneshkade',start_date_third_daneshkade='$start_date_third_daneshkade',end_date_third_daneshkade='$end_date_third_daneshkade', mobile='$mobile' ,kar_shora_name='$kar_name' ,kar_shora_name_e='$kar_name_e', kar_shora_family='$kar_family', kar_shora_family_e = '$kar_family_e',  kar_shora_rade_elmi='$kar_rade_elmi',  kar_shora_takhasos  = '$kar_takhasos', kar_shora_takhasos_e  = '$kar_takhasos_e',   cod_daneshkade='$cod_daneshkade',cod_daneshkade_second='$cod_daneshkade_second',cod_daneshkade_third='$cod_daneshkade_third' ,cod_daneshkade_4='$cod_daneshkade_4',cod_daneshkade_5='$cod_daneshkade_5',cod_daneshkade_6='$cod_daneshkade_6',cod_daneshkade_7='$cod_daneshkade_7',cod_daneshkade_8='$cod_daneshkade_8',cod_daneshkade_9='$cod_daneshkade_9',cod_daneshkade_10='$cod_daneshkade_10', shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar', fath_name_e='$nampedar_e',melli_code='$cod_melli',new_insert='1',cod_daneshgah='$cod_daneshgah' where cod_karshenas='$cod_karshenas'";
+     // echo $query;
+        $result=mysql_query($query) or die("Error in inserting data into kar_shora elmi");
+        $action="";
+      }
+      else
+       $status="duplicate_entry";
+    }
+    else
+    {
+      $status="entry_error";
+      $action="edit_karshenas";
+    }
+  }
+ 
+ 
+  if (strcmp($action,"edit_karshenas")==0) 
+ {
+ 	$query="select * from karshenas_shora where cod_karshenas='$cod_karshenas'";
+ 	$result=mysql_query($query) or die("Error in selecting data from kar_shoraan"); 	
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$kar_shora_name=$row_fetched["kar_shora_name"];
+ 	$cod_daneshgah1=$row_fetched["cod_daneshgah"];
+ 	$kar_shora_family=$row_fetched["kar_shora_family"];
+ 	$shenasname=$row_fetched["shenasname"];
+ 	$sal_tavalod=$row_fetched["sal_tavalod"];
+ 	$fath_name=$row_fetched["fath_name"];
+ 	$melli_code=$row_fetched["melli_code"];
+ 	$kar_shora_type=$row_fetched["kar_shora_type"];
+ 	$kar_shora_email=$row_fetched["kar_shora_email"];
+ 	$kar_shora_rade_elmi=$row_fetched["kar_shora_rade_elmi"];
+ 	$kar_shora_takhasos=$row_fetched["kar_shora_takhasos"];
+	$mobile=$row_fetched["mobile"];
+	$cod_daneshkade=$row_fetched["cod_daneshkade"]; 
+	$cod_daneshkade_second=$row_fetched["cod_daneshkade_second"]; 
+	$cod_daneshkade_third=$row_fetched["cod_daneshkade_third"];
+	$cod_daneshkade_4=$row_fetched["cod_daneshkade_4"];
+	$cod_daneshkade_5=$row_fetched["cod_daneshkade_5"];
+	$cod_daneshkade_6=$row_fetched["cod_daneshkade_6"];
+	$cod_daneshkade_7=$row_fetched["cod_daneshkade_7"];
+	$cod_daneshkade_8=$row_fetched["cod_daneshkade_8"];
+	$cod_daneshkade_9=$row_fetched["cod_daneshkade_9"];
+	$cod_daneshkade_10=$row_fetched["cod_daneshkade_10"];
+	   
+
+	  $startdate = $row_fetched["start_date_first_daneshkade"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y1_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m1_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d1_".$startday;
+	  $$var_tmp2=" selected ";
+	  
+	   $startdate = $row_fetched["end_date_first_daneshkade"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y2_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m2_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d2_".$startday;
+	  $$var_tmp2=" selected ";
+	  
+	   $startdate = $row_fetched["start_date_second_daneshkade"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y3_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m3_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d3_".$startday;
+	  $$var_tmp2=" selected ";
+	  
+	   $startdate = $row_fetched["end_date_second_daneshkade"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y4_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m4_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d4_".$startday;
+	  $$var_tmp2=" selected ";
+	  
+	   $startdate = $row_fetched["start_date_third_daneshkade"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y5_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m5_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d5_".$startday;
+	  $$var_tmp2=" selected ";
+	  
+	   $startdate = $row_fetched["end_date_third_daneshkade"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y6_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m6_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d6_".$startday;
+	  $$var_tmp2=" selected ";
+ }
+ else
+ {
+ 	$kar_shora_name="";
+ 	$kar_shora_family="";
+ 	$shenasname="";
+ 	$sal_tavalod="";
+ 	$fath_name="";
+ 	$melli_code="";
+ 	$kar_shora_type="";
+ 	$kar_shora_email="";
+ 	$kar_shora_rade_elmi="";
+ 	$kar_shora_takhasos="";
+ 	$mobile="";
+ }
+}
+
+?>
+ 
+
+<?
+
+if(strcmp($action,"edit_karshenas")==0)
+ 	echo "<form name=\"add_karshenas\" method=\"post\"  action=\"$PHP_SELF?action=edit_karshenas_second&admin=$admin&seed=$seed&cod_karshenas=$cod_karshenas&cod_shora=$cod_shora\">"; 
+else 
+ 	echo "<form name=\"add_karshenas\" method=\"post\"  action=\"$PHP_SELF?action=add_karshenas&admin=$admin&seed=$seed&cod_shora=$cod_shora\">"; 
+ 
+
+// echo "<form name=\"add_karshenas\" method=\"post\"  action=\"$PHP_SELF?action=add_shora&admin=$admin&seed=$seed&cod_shora=$cod_shora\">"; ?>
+
+<table border="0"  width="600" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    
+    <TR>
+    <TD align=middle width="349"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/karshenas_shora.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+  <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$kar_shora_name'"; ?> name="kar_name" size="20" class="edit-user"dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span> نام</td>
+  </tr>
+    
+
+  <tr>
+    <td width="350" align="right"><input type="text" <? echo "value='$kar_shora_family'"; ?>  name="kar_family" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نام خانوادگي</td>
+  </tr>
+  
+  <tr><td width="350" align="right"><select size="1"   name="cod_daneshgah" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+     <?
+     	if($cod_daneshgah1=='0')
+    		$selected="selected";
+    	else 
+    		$selected="";
+     ?>
+     <option <? echo $selected;?> value="0" class="tahoma1">دانشگاه علوم پزشکي تهران</option>
+     <?
+     	if($cod_daneshgah1=='1')
+    		$selected="selected";
+    	else 
+    		$selected="";
+     ?>
+     <option <? echo $selected;?> value="1" class="tahoma1">دانشگاه علوم پزشکي ايران</option>
+  
+	</td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>:دانشگاه</td> 
+ </tr>
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+     <?
+     	if($cod_daneshkade=='0')
+    		$selected="selected";
+    	else 
+    		$selected="";
+     ?>
+     <option <? echo $selected;?> value="0" class="tahoma1" style="background-color:blue">شوراي پژوهشي دانشگاه</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>دانشکده اول</td> 
+ </tr>
+ 
+ 
+  <tr>
+                 <td width="350" align="right" ><select class="in3" dir="rtl" size="1" name="startyear_first_daneshkade">
+           <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $y1_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y1_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y1_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y1_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y1_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y1_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y1_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y1_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y1_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y1_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>	
+          <option <? echo $y1_1391;  ?> value="1390">&#1777;&#1779;&#1785;&#1777;</option>
+          <option <? echo $y1_1392;  ?> value="1390">&#1777;&#1779;&#1785;&#1778;</option>
+          <option <? echo $y1_1393;  ?> value="1390">&#1777;&#1779;&#1785;&#1779;</option>
+          <option <? echo $y1_1394;  ?> value="1390">&#1777;&#1779;&#1785;&#1780;</option>
+          <option <? echo $y1_1395;  ?> value="1390">&#1777;&#1779;&#1785;&#1781;</option>
+          <option <? echo $y1_1396;  ?> value="1390">&#1777;&#1779;&#1785;&#1782;</option>
+          <option <? echo $y1_1397;  ?> value="1390">&#1777;&#1779;&#1785;&#1783;</option>
+          <option <? echo $y1_1398;  ?> value="1390">&#1777;&#1779;&#1785;&#1784;</option>
+          <option <? echo $y1_1399;  ?> value="1390">&#1777;&#1779;&#1785;&#1785;</option>	  
+
+        </select>
+      <select class="in3" dir="rtl" size="1" name="startmonth_first_daneshkade">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m1_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m1_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m1_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m1_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m1_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m1_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m1_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m1_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m1_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m1_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m1_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m1_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="startday_first_daneshkade">
+           <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option <? echo $d1_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d1_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d1_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d1_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d1_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d1_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d1_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d1_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d1_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d1_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d1_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d1_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d1_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d1_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d1_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d1_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d1_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d1_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d1_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d1_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d1_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d1_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d1_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d1_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d1_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d1_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d1_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d1_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d1_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d1_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d1_31;  ?> value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>تاريخ شروع حکم</td>
+            </tr>
+ 
+   <tr>
+                 <td width="350" align="right" ><select class="in3" dir="rtl" size="1" name="endyear_first_daneshkade">
+                  <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $y2_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y2_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y2_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y2_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y2_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y2_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y2_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y2_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y2_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y2_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>		  	
+          <option <? echo $y1_1391;  ?> value="1390">&#1777;&#1779;&#1785;&#1777;</option>
+          <option <? echo $y1_1392;  ?> value="1390">&#1777;&#1779;&#1785;&#1778;</option>
+          <option <? echo $y1_1393;  ?> value="1390">&#1777;&#1779;&#1785;&#1779;</option>
+          <option <? echo $y1_1394;  ?> value="1390">&#1777;&#1779;&#1785;&#1780;</option>
+          <option <? echo $y1_1395;  ?> value="1390">&#1777;&#1779;&#1785;&#1781;</option>
+          <option <? echo $y1_1396;  ?> value="1390">&#1777;&#1779;&#1785;&#1782;</option>
+          <option <? echo $y1_1397;  ?> value="1390">&#1777;&#1779;&#1785;&#1783;</option>
+          <option <? echo $y1_1398;  ?> value="1390">&#1777;&#1779;&#1785;&#1784;</option>
+          <option <? echo $y1_1399;  ?> value="1390">&#1777;&#1779;&#1785;&#1785;</option>
+   
+   
+        </select>
+      <select class="in3" dir="rtl" size="1" name="endtmonth_first_daneshkade">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m2_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m2_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m2_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m2_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m2_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m2_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m2_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m2_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m2_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m2_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m2_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m2_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="endday_first_daneshkade">
+           <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option <? echo $d2_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d2_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d2_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d2_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d2_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d2_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d2_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d2_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d2_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d2_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d2_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d2_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d2_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d2_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d2_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d2_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d2_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d2_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d2_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d2_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d2_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d2_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d2_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d2_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d2_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d2_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d2_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d2_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d2_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d2_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d2_31;  ?> value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="150" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>تاريخ پايان حکم</td>
+            </tr>
+ 
+ 
+ 
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_second" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_second==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده دوم</td> 
+ </tr>
+ 
+   <tr>
+                 <td width="350" align="right" ><select class="in3" dir="rtl" size="1" name="startyear_second_daneshkade">
+                  <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $y3_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y3_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y3_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y3_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y3_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y3_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y3_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y3_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y3_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y1_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>	
+          <option <? echo $y1_1391;  ?> value="1390">&#1777;&#1779;&#1785;&#1777;</option>
+          <option <? echo $y1_1392;  ?> value="1390">&#1777;&#1779;&#1785;&#1778;</option>
+          <option <? echo $y1_1393;  ?> value="1390">&#1777;&#1779;&#1785;&#1779;</option>
+          <option <? echo $y1_1394;  ?> value="1390">&#1777;&#1779;&#1785;&#1780;</option>
+          <option <? echo $y1_1395;  ?> value="1390">&#1777;&#1779;&#1785;&#1781;</option>
+          <option <? echo $y1_1396;  ?> value="1390">&#1777;&#1779;&#1785;&#1782;</option>
+          <option <? echo $y1_1397;  ?> value="1390">&#1777;&#1779;&#1785;&#1783;</option>
+          <option <? echo $y1_1398;  ?> value="1390">&#1777;&#1779;&#1785;&#1784;</option>
+          <option <? echo $y1_1399;  ?> value="1390">&#1777;&#1779;&#1785;&#1785;</option>
+        </select>
+      <select class="in3" dir="rtl" size="1" name="startmonth_second_daneshkade">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m3_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m3_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m3_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m3_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m3_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m3_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m3_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m3_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m3_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m3_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m3_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m3_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+         </select>
+       <select class="in3" dir="rtl" size="1" name="startday_second_daneshkade">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option <? echo $d3_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d3_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d3_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d3_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d3_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d3_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d3_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d3_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d3_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d3_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d3_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d3_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d3_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d3_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d3_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d3_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d3_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d3_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d3_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d3_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d3_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d3_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d3_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d3_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d3_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d3_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d3_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d3_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d3_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d3_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d3_31;  ?> value="31">&#1779;&#1777;</option>
+            </select></td>
+
+              <td width="150" align="left">
+                <p align="left" class="tahoma1">تاريخ شروع حکم</td>
+            </tr>
+ 
+   <tr>
+                 <td width="350" align="right" ><select class="in3" dir="rtl" size="1" name="endyear_second_daneshkade">
+                  <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+           <option <? echo $y4_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y4_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y4_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y4_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y4_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y4_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y4_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y4_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y4_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y1_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>	
+          <option <? echo $y1_1391;  ?> value="1390">&#1777;&#1779;&#1785;&#1777;</option>
+          <option <? echo $y1_1392;  ?> value="1390">&#1777;&#1779;&#1785;&#1778;</option>
+          <option <? echo $y1_1393;  ?> value="1390">&#1777;&#1779;&#1785;&#1779;</option>
+          <option <? echo $y1_1394;  ?> value="1390">&#1777;&#1779;&#1785;&#1780;</option>
+          <option <? echo $y1_1395;  ?> value="1390">&#1777;&#1779;&#1785;&#1781;</option>
+          <option <? echo $y1_1396;  ?> value="1390">&#1777;&#1779;&#1785;&#1782;</option>
+          <option <? echo $y1_1397;  ?> value="1390">&#1777;&#1779;&#1785;&#1783;</option>
+          <option <? echo $y1_1398;  ?> value="1390">&#1777;&#1779;&#1785;&#1784;</option>
+          <option <? echo $y1_1399;  ?> value="1390">&#1777;&#1779;&#1785;&#1785;</option>
+   
+        </select>
+      <select class="in3" dir="rtl" size="1" name="endtmonth_second_daneshkade">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m4_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m4_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m4_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m4_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m4_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m4_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m4_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m4_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m4_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m4_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m4_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m4_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="endday_second_daneshkade">
+        <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+         <option <? echo $d4_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d4_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d4_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d4_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d4_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d4_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d4_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d4_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d4_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d4_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d4_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d4_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d4_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d4_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d4_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d4_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d4_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d4_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d4_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d4_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d4_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d4_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d4_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d4_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d4_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d4_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d4_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d4_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d4_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d4_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d4_31;  ?> value="31">&#1779;&#1777;</option>
+              </select></td>
+
+              <td width="150" align="left">
+                <p align="left" class="tahoma1">تاريخ پايان حکم</td>
+            </tr>
+ 
+ 
+ 
+  <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_third" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_third==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده سوم</td> 
+ </tr>
+ <tr>
+                 <td width="350" align="right" ><select class="in3" dir="rtl" size="1" name="startyear_third_daneshkade">
+                  <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $y5_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y5_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y5_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y5_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y5_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y5_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y5_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y5_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y5_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y1_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>	
+          <option <? echo $y1_1391;  ?> value="1390">&#1777;&#1779;&#1785;&#1777;</option>
+          <option <? echo $y1_1392;  ?> value="1390">&#1777;&#1779;&#1785;&#1778;</option>
+          <option <? echo $y1_1393;  ?> value="1390">&#1777;&#1779;&#1785;&#1779;</option>
+          <option <? echo $y1_1394;  ?> value="1390">&#1777;&#1779;&#1785;&#1780;</option>
+          <option <? echo $y1_1395;  ?> value="1390">&#1777;&#1779;&#1785;&#1781;</option>
+		  <option <? echo $y1_1396;  ?> value="1390">&#1777;&#1779;&#1785;&#1782;</option>
+          <option <? echo $y1_1397;  ?> value="1390">&#1777;&#1779;&#1785;&#1783;</option>
+          <option <? echo $y1_1398;  ?> value="1390">&#1777;&#1779;&#1785;&#1784;</option>
+          <option <? echo $y1_1399;  ?> value="1390">&#1777;&#1779;&#1785;&#1785;</option>
+        </select>
+      <select class="in3" dir="rtl" size="1" name="startmonth_third_daneshkade">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m5_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m5_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m5_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m5_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m5_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m5_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m5_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m5_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m5_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m5_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m5_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m5_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+          </select>
+       <select class="in3" dir="rtl" size="1" name="startday_third_daneshkade">
+        <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $d5_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d5_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d5_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d5_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d5_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d5_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d5_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d5_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d5_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d5_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d5_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d5_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d5_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d5_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d5_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d5_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d5_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d5_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d5_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d5_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d5_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d5_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d5_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d5_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d5_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d5_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d5_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d5_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d5_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d5_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d5_31;  ?> value="31">&#1779;&#1777;</option>
+           </select></td>
+
+              <td width="150" align="left">
+                <p align="left" class="tahoma1">تاريخ شروع حکم</td>
+            </tr>
+ 
+   <tr>
+                 <td width="350" align="right" ><select class="in3" dir="rtl" size="1" name="endyear_third_daneshkade">
+                  <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $y6_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y6_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y6_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y6_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y6_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y6_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y6_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y6_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y6_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y1_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>	
+          <option <? echo $y1_1391;  ?> value="1390">&#1777;&#1779;&#1785;&#1777;</option>
+          <option <? echo $y1_1392;  ?> value="1390">&#1777;&#1779;&#1785;&#1778;</option>
+          <option <? echo $y1_1393;  ?> value="1390">&#1777;&#1779;&#1785;&#1779;</option>
+          <option <? echo $y1_1394;  ?> value="1390">&#1777;&#1779;&#1785;&#1780;</option>
+          <option <? echo $y1_1395;  ?> value="1390">&#1777;&#1779;&#1785;&#1781;</option>
+          <option <? echo $y1_1396;  ?> value="1390">&#1777;&#1779;&#1785;&#1782;</option>
+          <option <? echo $y1_1397;  ?> value="1390">&#1777;&#1779;&#1785;&#1783;</option>
+          <option <? echo $y1_1398;  ?> value="1390">&#1777;&#1779;&#1785;&#1784;</option>
+          <option <? echo $y1_1399;  ?> value="1390">&#1777;&#1779;&#1785;&#1785;</option>
+   
+        </select>
+      <select class="in3" dir="rtl" size="1" name="endtmonth_third_daneshkade">
+           <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m6_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m6_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m6_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m6_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m6_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m6_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m6_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m6_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m6_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m6_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m6_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m6_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="endday_third_daneshkade">
+        <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+         <option <? echo $d6_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d6_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d6_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d6_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d6_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d6_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d6_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d6_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d6_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d6_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d6_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d6_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d6_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d6_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d6_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d6_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d6_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d6_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d6_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d6_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d6_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d6_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d6_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d6_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d6_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d6_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d6_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d6_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d6_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d6_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d6_31;  ?> value="31">&#1779;&#1777;</option>
+              </select></td>
+
+              <td width="150" align="left">
+                <p align="left" class="tahoma1">تاريخ پايان حکم</td>
+            </tr>
+            
+            <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_4" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_4==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده چهارم</td> 
+ </tr>
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_5" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_5==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده پنجم</td> 
+ </tr>
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_6" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_6==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده ششم</td> 
+ </tr>
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_7" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_7==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده هفتم</td> 
+ </tr>
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_8" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_8==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده هشتم</td> 
+ </tr>
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_9" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_9==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده نهم</td> 
+ </tr>
+ 
+ <tr>
+  <?
+	
+    $query="select * from daneshkade order by daneshkade_name  ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+   
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="cod_daneshkade_10" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if($cod_daneshkade_10==$row_fetched["cod_daneshkade"])
+    		$selected="selected";
+    	else 
+    		$selected="";
+    		
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+  
+	</td>
+    <td width="150" class="tahoma1">دانشکده دهم</td> 
+ </tr>
+ 
+ 
+   <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$melli_code'"; ?>  name="cod_melli" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1">کد ملي</td>
+  </tr>
+  <?
+  if (strcmp($action,"edit_karshenas")!=0) 
+ {
+  ?>
+  <tr>
+    <td width="350" align="right"><input type="text"  name="kar_email" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>پست الکترونيکي</td>
+  </tr>
+  <?
+ }
+  ?>
+   <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$mobile'"; ?>  name="mobile" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>تلفن همراه</td>
+  </tr>
+   <tr>
+  <?
+    $query="select * from darajeelmi order by darajeelmi_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+  ?>
+    <td width="350" align="right"><select size="1" name="kar_rade_elmi" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+      echo "<option value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$row_fetched["darajeelmi_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">درجه علمي</td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><input type="text"  <? echo "value='$kar_shora_takhasos'"; ?>  name="kar_takhasos" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1">تخصص</td>
+  </tr>
+ 
+    <?
+  if (strcmp($action,"edit_karshenas")!=0) 
+ {
+  ?>
+   <tr>
+    <td width="350" align="right"><input type="password" name="kar_pass" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>کلمه عبور</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="password" name="kar_re_pass" size="20" class="edit-user" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>تکرار کلمه عبور</td>
+  </tr>
+
+    <?
+ }
+  ?>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+ <?
+ if ( ! isset($cod_daneshkade1))
+    $cod_daneshkade1 = '-1';
+
+if(strcmp($cod_daneshkade1,'-1')!=0 )
+{
+	$daneshkade_caution="cod_daneshkade = '$cod_daneshkade1' or cod_daneshkade_second = '$cod_daneshkade1' or cod_daneshkade_third = '$cod_daneshkade1'";
+}
+else
+   $daneshkade_caution=1;
+
+  
+   $query="select * from karshenas_shora,modir_daneshkade  where  cod_shora=\"$cod_shora\"  and modir_daneshkade.modir_username =karshenas_shora.creator and ( modir_daneshkade.modir_type='1' or  modir_daneshkade.modir_type='4')";
+    $query="select * from karshenas_shora  where (cod_shora=\"-3\" or cod_shora='4') and $daneshkade_caution  order by  kar_shora_family";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+    
+  
+echo "<form name=\"change_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type\">";
+?>
+
+ <table  cellSpacing="0" cellPadding="0" width="20%" bgColor="white" border="0">
+
+ <tr>
+<?    
+
+
+
+$query="select * from daneshkade order by  daneshkade_name  desc";
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td  align=\"left\" class=\"tahoma1\"><select size=\"1\" class='tahoma1' name=\"cod_daneshkade1\" onchange=\"JavaScript:document.change_daneshkade.submit();\" dir=\"rtl\">";
+echo "<option value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if(strcmp($row_fetched["cod_daneshkade"],$cod_daneshkade)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+ }
+ 
+?>
+
+</select> دانشکده / مرکز 
+</td>
+  
+
+<?
+echo "</form>";
+    
+    echo "<table border=\"1\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+     echo "<tr>";
+    echo "<td colspan='45' width=\"16\"   height=\"20\" align='left'><a href='shora_pajohesh_excel.phtml?admin=$admin&seed=$seed&cod_shora=$cod_shora '><img src='image/excell.jpg' border='0'></img></a></td>";
+    echo "</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/top-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"80\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">کلمه عبور</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">حذف</td>";
+    echo "<td width=\"47\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">ويرايش</td>";
+     echo "<td width=\"150\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">مرکز اول</td>";
+   
+    echo "<td width=\"150\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام خانوادگي</td>";
+    echo "<td width=\"164\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">نام</td>";
+     echo "<td width=\"164\" background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\">کد</td>";
+    echo "<td width=\"16\"  background=\"image/top-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+   $color="#E2E0E0";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   	$new_insert=$myrow_fetched["new_insert"];
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+      
+      if($new_insert=="1")
+      	$color="green";
+      	
+      $color1="white";	
+    $cod_daneshkade = $myrow_fetched["cod_daneshkade"];
+     $cod_shora = $myrow_fetched["cod_shora"];
+    if($cod_daneshkade=="0" and $cod_shora=='4')
+      	$color="yellow";
+      	 if($cod_daneshkade=="0" and $new_insert=='1' and  $cod_shora=='4')
+      	$color1="red";
+ 
+    $myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq);
+  $myrf=mysql_fetch_array($myres);
+  $daneshkade=$myrf["daneshkade_name"];
+  
+    $mycod_karshenas = $myrow_fetched["cod_karshenas"];
+    echo "<tr bgcolor=\"$color\">";
+    echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\"></td>";
+    echo "<td width=\"80\"><p align=\"center\"><a href=\"change_users_password.phtml?admin=$admin&seed=$seed&db=karshenas_shora&username=".$myrow_fetched["cod_karshenas"]."&user_field=cod_karshenas\" ><img border=\"0\" src=\"image/password.gif\" width=\"11\" height=\"13\" alt=\"Change Password\" ></a></td>";
+    echo "<td width=\"27\"><p align=\"center\"><a href=\"#\" onclick='window.open(\"del_shora_pajoheshi.phtml?cod_shora=$cod_shora&mainwindow=add_shora.phtml&admin=$admin&seed=$seed&action=delete_shora&delete_id=".$myrow_fetched["cod_karshenas"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+//    echo "<td width=\"27\"><p align=\"center\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href='$PHP_SELF?admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas&action=edit_karshenas&cod_shora=$cod_shora'><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+    $mycod_karshenas = $myrow_fetched["cod_karshenas"];
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".$daneshkade."</a></p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["kar_shora_family"],0,18)."</a></p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["kar_shora_name"],0,18)."</a></p></td>";
+     echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none;background-color:$color1\" href=\"karshenas_shora_detail.phtml?cod_shora=$cod_shora&admin=$admin&seed=$seed&cod_karshenas=$mycod_karshenas\">".substr($myrow_fetched["cod_karshenas"],0,18)."</a></p></td>";
+    echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"></td>";
+    echo "</tr>";
+   }
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"27\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"27\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"133\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"134\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+        echo "<td width=\"134\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\"></td>";
+    echo "</tr>";
+
+   echo "</table>";
+
+  }
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

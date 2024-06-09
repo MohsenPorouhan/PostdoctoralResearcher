@@ -1,0 +1,575 @@
+<?
+ 
+
+$myq="select * from user_login where email='$admin'";
+					    $res_user=mysql_query($myq) or die("Error");
+					    $rf_user=mysql_fetch_array($res_user);
+
+					    $payan_name =$rf_user["payan_name"] ;
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $servicing = $row_fetched["servicing"];
+  
+
+echo "<br>";
+function checkaddslashes($str){
+    $str2 = str_replace("\'", "*****", $str);
+    if(strpos($str2,"'")!== false)
+        return str_replace('*****', "\'", addslashes($str2));
+    else
+        return $str;
+}
+
+
+if(isset($action) )
+{
+  if (strcmp($action,"add_tarh")==0)
+  {
+
+     echo $tarh_select;
+    if(strlen(trim($tarh_name)) > 0 &&( strlen(trim($tarh_name_e)) > 0 || $servicing=="1") && (strlen(trim($kelid_vaje)) > 0  || $servicing=="1") &&   strlen(trim($zarorat)) > 0  && (strlen(trim($ahdaf)) > 0 || $servicing=="1")  &&  (strlen(trim($soalat)) > 0 || $servicing=="1") &&  strlen(trim($raveshejra)) > 0 && ($tarh_type!='-1' || $tarh_select==9 ) )
+    {
+
+        $kelid_vaje=checkaddslashes($kelid_vaje);
+        //$kelid_vaje=str_replace("'","\'",$kelid_vaje);
+	   // $kelid_vaje=str_replace("\"","\'",$kelid_vaje);
+	    //$kelid_vaje=str_replace(";","\;",$kelid_vaje);
+	    
+		$line_tahgig=checkaddslashes($line_tahgig);
+	    //$line_tahgig=str_replace("'","\'",$line_tahgig);
+	   // $line_tahgig=str_replace("\"","\'",$line_tahgig);
+	   // $line_tahgig=str_replace(";","\;",$line_tahgig);
+	    
+		$zarorat=checkaddslashes($zarorat);
+	    //$zarorat=str_replace("'","\'",$zarorat);
+	    //$zarorat=str_replace("\"","\'",$zarorat);
+	    //$zarorat=str_replace(";","\;",$zarorat);
+	    //
+		$ahdaf=checkaddslashes($ahdaf);
+	    //$ahdaf=str_replace("'","\'",$ahdaf);
+	    //$ahdaf=str_replace("\"","\'",$ahdaf);
+	    //$ahdaf=str_replace(";","\;",$ahdaf);
+	    
+		$soalat=checkaddslashes($soalat);
+	    //$soalat=str_replace("'","\'",$soalat);
+	   // $soalat=str_replace("\"","\'",$soalat);
+	   // $soalat=str_replace(";","\;",$soalat);
+	  
+		$raveshejra=checkaddslashes($raveshejra);
+	   //// $raveshejra=str_replace("'","\'",$raveshejra);
+	   // $raveshejra=str_replace("\"","\'",$raveshejra);
+	   // $raveshejra=str_replace(";","\;",$raveshejra);
+         
+		$tarh_name=checkaddslashes($tarh_name);
+		     
+       // $tarh_name=str_replace("'","\'",$tarh_name);
+	   // $tarh_name=str_replace("\"","\'",$tarh_name);
+	   // $tarh_name=str_replace(";","\;",$tarh_name);
+	    
+		$tarh_name_e=checkaddslashes($tarh_name_e);
+		//$tarh_name_e=str_replace("'","\'",$tarh_name_e);
+	   // $tarh_name_e=str_replace("\"","\'",$tarh_name_e);
+	   // $tarh_name_e=str_replace(";","\;",$tarh_name_e);
+	    
+      
+            
+        $query="update tarh  set payan_name='$payan_name',payan_name_daraje_elmi='$payan_name_daraje_elmi',tarh_title_farsi='$tarh_name' ,tarh_title_english='$tarh_name_e',  kelidvajeh ='$kelid_vaje', line ='$line_tahgig', zarorat ='$zarorat', ahdaf ='$ahdaf', soalat ='$soalat', shive_ejra  ='$raveshejra', tarh_type ='$tarh_type' ,tarh_type_1='$tarh_type_1',tarh_type_2='$tarh_type_2',payan_name1='$payan_name1'  where cod_tarh='$cod_tarh'  and version='-1'"; 
+        $result=mysql_query($query) or die($query);
+        $action="ويرايش چکيده طرح با عنوان"."<br>".$tarh_name;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+
+         $query="update modir_daneshkade_tarh set cod_modir='$modir_payanname' where cod_tarh='$cod_tarh' and version='-1' ";
+         $result=mysql_query($query) or die("Error in inserting data into tarh #1");
+        ?>
+        <script language="javascript">
+        window.location="<? echo "sabt_tarh_second.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+        </script>
+        <?
+
+    }
+    else
+      $status="entry_error";
+  }
+
+}
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name=$row_fetched["tarh_title_farsi"];
+  $tarh_name_e=$row_fetched["tarh_title_english"];
+  $tarh_type=$row_fetched["tarh_type"];
+  $kelid_vaje=$row_fetched["kelidvajeh"];
+  $kelid_vaje_e=$row_fetched["kelidvajeh_eng"];
+  $line_tahgig=$row_fetched["line"];
+  $line_tahgig_e=$row_fetched["line_en"];
+  $zarorat=$row_fetched["zarorat"];
+  $ahdaf=$row_fetched["ahdaf"];
+  $soalat=$row_fetched["soalat"];
+  $ahdaf=$row_fetched["ahdaf"];
+  $raveshejra=$row_fetched["shive_ejra"];
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  $tarh_type_1_code = $row_fetched["tarh_type_1"];
+  $tarh_type_2_code = $row_fetched["tarh_type_2"];
+  $daneshkadeh_code_asli = $row_fetched["cod_daneshkade"];
+  $group_code_asli = $row_fetched["cod_group"];
+  $payan_name1 = $row_fetched["payan_name1"];
+  $payan_name_daraje_elmi = $row_fetched["payan_name_daraje_elmi"];
+  $first_ostad = $row_fetched["first_ostad"];
+  $second_ostad = $row_fetched["second_ostad"];
+  $third_ostad = $row_fetched["third_ostad"];
+  $forth_ostad = $row_fetched["forth_ostad"];
+  $finished=$row_fetched["finished"];
+  $first_ostad_moshaver = $row_fetched["first_ostad_moshaver"];
+   $second_ostad_moshaver = $row_fetched["second_ostad_moshaver"];
+   $third_ostad_moshaver = $row_fetched["third_ostad_moshaver"];
+  $forth_ostad_moshaver = $row_fetched["forth_ostad_moshaver"];
+  $first_ostad_degree = $row_fetched["first_ostad_degree"];
+  $servicing = $row_fetched["servicing"];
+  
+  $query="select * from modir_daneshkade_tarh where cod_tarh='$cod_tarh'";
+ // echo $query;
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $cod_modir= $row_fetched["cod_modir"];
+ //echo $cod_modir;
+   $admin_edit=0;
+
+   
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+   
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='1'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}
+
+  
+  //payan_name='$payan_name',payan_name_daraje_elmi='$payan_name_daraje_elmi'
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_tarh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+ <TABLE cellSpacing=0 width="600"  cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+     
+      <TD align=right width="100%" class='tahoma1' dir='rtl'  height=19>چکيده
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+<? 
+
+$myq="select * from user_login where email='$admin'";
+					    $res_user=mysql_query($myq) or die("Error");
+					    $rf_user=mysql_fetch_array($res_user);
+
+					    $payan_name =$rf_user["payan_name"] ;
+					    $cod_daneshkade_danshjoo =$rf_user["cod_daneshkade"] ;
+						
+if(strcasecmp($servicing,"1")==0)
+  {
+  	$title_caption=" طرح خدماتي ";
+  }
+  else if(strcmp(trim($payan_name),'0')==0)
+  $title_caption=" طرح ";
+else
+  $title_caption=" پايان نامه ";
+?>
+
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="tarh_name" size="20" value="<? echo $tarh_name; ?>" class="edit-user" dir=RTL   ></td>
+    <td width="250" class="tahoma1"><span class="star-message">*</span>عنوان <? echo $title_caption; ?></td>
+  </tr>
+   <? if(strcmp(trim($servicing),'1')!=0){?>
+   <tr>
+    <td width="350" align="right"><input type="text" name="tarh_name_e"  value="<? echo $tarh_name_e; ?>" size="20" class="edit-user" ></td>
+    <td width="250" class="tahoma1"><span class="star-message">*</span>(عنوان <? echo $title_caption; ?> (انگليسي</td>
+  </tr>
+
+ <tr>
+    <td width="350" align="right"><input type="text" name="kelid_vaje" size="20"  value="<? echo $kelid_vaje; ?>" class="edit-user" dir=RTL   ></td>
+    <td width="250" class="tahoma1"><span class="star-message">*</span>کليد واژه ها</td>
+  </tr>
+  <!-- <tr>
+    <td width="350" align="right"><input type="text" name="kelid_vaje_e"  value="<? echo $kelid_vaje_e; ?>" size="20" class="edit-user" ></td>
+    <td width="250" class="tahoma1"><span class="star-message">*</span>(کليد واژه ها (انگليسي</td>
+  </tr> -->
+
+
+
+    <tr>
+    <td width="350" align="right"><input type="text" name="line_tahgig"  value="<? echo $line_tahgig; ?>" size="20" class="edit-user"  dir=RTL   ></td>
+    <td width="250" class="tahoma1">لاين تحقيقاتي</td>
+  </tr>
+  
+ <?}
+if(strcmp(trim($payan_name),'0')==0)
+{
+?> 
+   <tr>
+  <?
+
+    $query="select * from tarhtype where servicing='$servicing' order by tarh_type_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td width="350" align="right"><select size="1" name="tarh_type" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	
+    	if(strcmp($row_fetched["tarh_type"],$tarh_type)==0)
+    	   $checked=" selected ";
+    	else
+		   $checked="";
+         echo "<option $checked value=\"".$row_fetched["tarh_type"]."\" class=\"tahoma1\">".$row_fetched["tarh_type_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="250" class="tahoma1"><span class="star-message">*</span>نوع <? echo $title_caption; ?></td>
+  </tr>
+<?
+}
+else{
+?>
+<!--<tr>
+     <td width="500" align="center" colspan='2'><span class="star-message"><b>لطفا محل ارجاع پايان نامه را حتما درست انتخاب کنيد</b></span></td>
+     
+  </tr>
+  	<?
+   		echo "<input  type=\"hidden\" name=\"cod_daneshkade\"  value='$cod_daneshkade_danshjoo' >";
+   		$q1="select * from modir_daneshkade where cod_daneshkade='$cod_daneshkade_danshjoo' and moaven_or_daneshjoyee='1'";
+   		$qresult1=mysql_query($q1) or die("Error in selecting data from daraje elmi");
+    	//$row_modir_daneshkade = mysql_num_rows($qresult);
+    	 ?>
+     	 <tr>
+    <td width="350" align="right"><select size="1"  onChange="redirect()" name="modir_payanname" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+   while($row_modir_daneshkade=mysql_fetch_array($qresult1))
+    {
+    		if(strcmp($row_modir_daneshkade["cod_modir"],$cod_modir)==0)
+    	   $checked=" selected ";
+    	else
+		   $checked="";
+         echo "<option $checked value=\"".$row_modir_daneshkade["cod_modir"]."\" class=\"tahoma1\">".$row_modir_daneshkade["modir_payanname_name"]."</option>";
+    }?>
+   	</td>
+    <td width="150" class="tahoma1">: ارجاع پايان نامه به</td>
+  </tr>	 -->
+<? } ?>
+</table>
+
+<?
+   $query_savabet_system="select * from savabetsystem";
+   $savabet_system=mysql_query($query_savabet_system) or die("Error in selectiong data from query_savabet_system");
+   if(mysql_num_rows($savabet_system) > 0 )
+   {
+     $tarhtype_second = mysql_fetch_array($savabet_system);
+     $tarh_type_1 = $tarhtype_second["tarh_type_1"];
+     $tarh_type_2 = $tarhtype_second["tarh_type_2"];
+   }
+   else
+   {
+     $tarh_type_1 = "";
+     $tarh_type_2 = "";
+   }
+    if(strcmp(trim($servicing),'1')!=0){
+?>
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  
+
+<?
+
+//------------------------------------------------------
+
+
+
+
+    echo "<tr>";
+    $query="select * from tarhtype_1 order by tarh_type_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+    echo "<td width=\"350\" align=\"right\"><select size=\"1\" name=\"tarh_type_1\" class=\"edit-user\" dir=\"rtl\">";
+    echo "<option value=\"-1\" class=\"tahoma1\">انتخاب کنيد</option>";
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if(strcmp($row_fetched["tarh_type"],$tarh_type_1_code)==0)
+    	   $checked=" selected ";
+    	else
+		   $checked="";
+         echo "<option  $checked value=\"".$row_fetched["tarh_type"]."\" class=\"tahoma1\">".$row_fetched["tarh_type_desc"]."</option>";
+    }
+
+   echo "</select></td>";
+   
+     echo "<td width=\"150\" class=\"tahoma1\" >نوع مطالعه</td>";
+     ?>
+  </tr>
+
+
+</table>
+
+<?}
+if(strcmp(trim($payan_name),'0')==0)
+{
+?>
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <?
+    echo "<tr>";
+    $query="select * from tarhtype_2 order by tarh_type_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+    echo "<td width=\"350\" align=\"right\"><select size=\"1\" name=\"tarh_type_2\" class=\"edit-user\" dir=\"rtl\">";
+    echo "<option value=\"-1\" class=\"tahoma1\">انتخاب کنيد</option>";
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	if(strcmp($row_fetched["tarh_type"],$tarh_type_2_code)==0)
+    	   $checked=" selected ";
+    	else
+		   $checked="";
+         echo "<option  $checked value=\"".$row_fetched["tarh_type"]."\" class=\"tahoma1\">".$row_fetched["tarh_type_desc"]."</option>";
+    }
+
+   echo "</select></td>";
+   if($mycntr==0)
+     echo "<td width=\"250\" class=\"tahoma1\" >$tarh_type_1</td>";
+    else
+     echo "<td width=\"250\" class=\"tahoma1\" ></td>";
+     ?>
+  </tr>
+
+
+</table>
+<?
+}
+?>
+
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+   <?
+   if(strcmp($payan_name1,'0')==0)
+     $select_0=" selected ";
+   else
+     $select_0="";
+
+   if(strcmp($payan_name1,'1')==0)
+     $select_1=" selected ";
+   else
+     $select_1="";  
+
+   if(strcmp($payan_name1,'2')==0)
+     $select_2=" selected ";
+   else
+     $select_2="";  
+	   
+   ?>
+   
+   <?
+   
+    $myq="select * from tarh where payannameh='1' and cod_tarh='$cod_tarh'";
+					    $res_user=mysql_query($myq) or die("Error");
+					   
+					    $payan_name_or_tarh =mysql_num_rows($res_user) ;
+   
+ 
+if( $payan_name_or_tarh> 0)
+{
+
+?>  
+
+
+<?
+}
+?>  
+   
+  <?
+      if(strcmp(trim($servicing),'1')!=0){
+if( $payan_name_or_tarh <= 0)
+{
+?>
+ 
+
+ 
+  <tr>
+    <td width="350" align="right"><select size="1" name="payan_name1" onchange=visible(this); class="edit-user" dir="rtl">
+    <option value="-1">انتخاب کنيد</option>
+    <option<? echo $select_0; ?> value="0">پايان نامه نيست</option>
+    <option <? echo $select_1; ?> value="1">پايان نامه با سقف اعتباري پايان نامه ها</option>
+    <option <? echo $select_2; ?> value="2">پايان نامه با سقف اعتباري بالاتر از پايان نامه ها</option>    
+    
+  </select></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>آيا طرح پايان نامه است</td>
+  </tr>
+
+  <?
+}
+  ?>
+  
+  
+   <?
+
+?>  
+  <tr>
+  <?
+    $query="select * from maghta_payan_name";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+  ?>
+    <td width="350" align="right"><select size="1" name="payan_name_daraje_elmi" disabled="disabled" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+      if(strcmp($payan_name_daraje_elmi, $row_fetched["maghta_payan_name"])==0)
+        $selected=" selected ";
+      else
+	    $selected="";   
+      echo "<option $selected value=\"".$row_fetched["maghta_payan_name"]."\" class=\"tahoma1\">".$row_fetched["maghta_payan_name_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">مقطع پايان نامه</td>
+  </tr>  
+   <?
+      }
+  ?>
+   
+ 
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="zarorat"  class="edit-user"  dir=RTL   ><? echo $zarorat; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"><span class="star-message">*</span>خلاصه ضرورت اجراي طرح</td>
+  </tr>
+<?php     if(strcmp(trim($servicing),'1')!=0){?>
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="ahdaf" class="edit-user"  dir=RTL   > <? echo $ahdaf; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"><span class="star-message">*</span>اهداف کلي ,اختصاصي و کاربردي</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="soalat" class="edit-user"   dir=RTL   ><? echo $soalat; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"><span class="star-message">*</span>سوالات پژوهشي و فرضيات</td>
+  </tr>
+<?php }?>
+      <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="raveshejra" class="edit-user"  dir=RTL   ><? echo $raveshejra; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"><span class="star-message">*</span>خلاصه روش اجرا و شيوه هاي تحليل</td>
+  </tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+ 
+<script>
+function visible(t){
+	
+	if(t.options[t.selectedIndex].value==-1 || t.options[t.selectedIndex].value==0)
+		document.sabt_tarh.payan_name_daraje_elmi.disabled=true;
+	else
+		document.sabt_tarh.payan_name_daraje_elmi.disabled=false;
+	
+}
+            function setdefault()
+            {
+              document.sabt_tarh.cod_group.options[0].selected=true;
+
+              document.sabt_tarh.cod_daneshkade.options[0].selected=true;
+            }
+
+
+
+            var temp=document.sabt_tarh.cod_group
+            function redirect()
+            {
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex
+                myselecteditem--
+                if( myselecteditem<0 )
+                  return
+
+                for (i=0;i<group[myselecteditem].length;i++)
+                {
+
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }
+
+
+
+            </script>
+
+

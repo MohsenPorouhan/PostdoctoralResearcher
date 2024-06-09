@@ -1,0 +1,95 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ 
+ 	 	
+   if(mysql_num_rows($result) > 0)
+   {
+   	 $row_f=mysql_fetch_array($result);
+ 	 $modir_comment=$row_f["modir_comment"];
+ //echo $modir_comment."lfkelrtfe";
+	 $modir_confirm=$row_f["modir_confirm"];
+ 	  if(strcmp($modir_confirm,'0')==0)
+ 	 	$modir_confirm_st="رد";
+ 	 else if(strcmp($modir_confirm,'1')==0)
+ 	 	$modir_confirm_st="تاييد";
+ 	 else if(strcmp($modir_confirm,'2')==0)
+ 	 	$modir_confirm_st="تاييد مشروط";
+ 	 else 
+ 	 	$modir_confirm_st="ثبت نشده"; 
+ 
+    echo "<br>";
+?>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+   <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="tarh_list_new_after_submit.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+    
+  </TR>
+  </TBODY>
+  </TABLE>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+    $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+    echo "<br>";
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+       
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$modir_confirm_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">وضعيت</td>";
+    echo "</tr>";
+    
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$modir_comment."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نظر مدير</td>";
+    echo "</tr>";
+
+
+    echo "</table>";
+   }
+?>
+
+<?
+
+footer_forms($admin,$seed);
+?>
+

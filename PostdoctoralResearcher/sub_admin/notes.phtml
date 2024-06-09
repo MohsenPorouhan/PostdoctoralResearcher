@@ -1,0 +1,175 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+$query="select * from modir_daneshkade where modir_username='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+$cod_modir=$row_fetched['cod_modir'];
+
+if(isset($action))
+{
+	//echo "nnn";
+	
+  if (strcmp($action,"set_note")==0)
+  {
+  	//echo "ssss";
+  $query="select * from modir_daneshkade_tarh where cod_tarh=\"$cod_tarh\" and version='-1' and cod_modir='$cod_modir' ";
+    
+    $result=mysql_query($query) or die("Error in updating data into tarh");
+    if(mysql_num_rows($result) > 0)
+    {
+     $my_row_fetched=mysql_fetch_array($result);
+      $sending_date=date("Y-m-d");
+      $startyear = substr($sending_date,0,4);
+  $startmon = substr($sending_date,5,2);
+  $startday = substr($sending_date,8,2);
+  $sending_date=hijricalender( $startyear , $startmon , $startday );
+  $sending_date = enum2fnum($sending_date);
+   //  $cod_tarh_user =$my_row_fetched["cod_tarh_user"];
+   $notes1=$my_row_fetched['comment_karshenas'];
+   $notes1=$notes1."<hr>".$notes."<br>".$sending_date;
+     
+     
+      
+      $query="update modir_daneshkade_tarh set comment_karshenas='$notes1' where cod_tarh=\"$cod_tarh\" and version='-1' and cod_modir='$cod_modir'";
+ 	 
+      mysql_query($query) or die("Error in updating data into tarh");
+      $query="select * from tarh where cod_tarh=\"$cod_tarh\"";
+      $tarh_result=mysql_query($query) or die("Error in selecting data into tarh");
+	  $row_fetched=mysql_fetch_array($tarh_result);
+	  
+		
+    }
+    
+  }
+}
+?>
+
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched1=mysql_fetch_array($result1);
+
+?>
+<br>
+<center>
+<TABLE cellSpacing=0  width="490" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched1["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+<center>
+
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>" method="post">
+  <table cellSpacing="0" cellPadding="0" width="500" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="360" height="19"></td>
+                        <td align="middle" width="140" background="image/notes_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="500" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      ?>
+      <tr>
+        <td align="right" width="400"><textarea   rows="8" cols="40" name="notes"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="100">نظر شما در مورد اين طرح</td>
+      </tr>
+
+     
+     
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit"  value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+      
+      
+      
+    </tbody>
+  </table>
+</form>
+<?php 
+		$query="select * from modir_daneshkade_tarh,modir_daneshkade where cod_tarh=\"$cod_tarh\" and version='-1' and modir_daneshkade_tarh.cod_modir=modir_daneshkade.cod_modir and modir_daneshkade.modir_username='$admin'";
+		$result1=mysql_query($query) or die("Error in selecting data from tarh");
+		$row_fetched1=mysql_fetch_array($result1);
+		$comment_karshenas=$row_fetched1['comment_karshenas'];
+		
+		?>
+		<table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="500" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      ?>
+      <tr>
+        
+        <td class="tahoma1" align="center" >نظر شما در مورد اين طرح</td>
+      </tr>
+   
+      <tr>
+        <td width="100%" class="tahoma1" align="center" colSpan="1">
+          <p align="center"><?php echo $comment_karshenas;?></p>
+        </td>
+      </tr>
+      
+      
+      
+    </tbody>
+  </table>
+  <?php 
+		
+		
+
+?>
+
+<?php footer_forms($admin,$seed);
+
+
+?> 

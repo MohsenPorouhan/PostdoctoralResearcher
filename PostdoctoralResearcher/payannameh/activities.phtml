@@ -1,0 +1,149 @@
+<?
+include("include/styles.phtml");
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+
+
+ if ( ! isset($current))
+    $current = 1;
+
+ if( ! isset($startw))
+    $startw = 0;
+
+ if ( !isset($endw))
+    $endw = 0;
+
+
+?>
+
+
+<br>
+
+
+  <!-- <table cellSpacing="0" cellPadding="0" width="400" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0" align="center" width="100%">
+                    <tbody>
+                      <tr>
+
+                        <td align="middle" width="100%"  height="19" align="center" ><img border="0" src="image/activities.gif" width="230" height="19"></td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>  -->
+
+ <?
+ 
+ $query="select * from log where username=\"$admin\" order by id desc";
+ $result=mysql_query($query) or die("Error in selecting data from log file");
+ $reccount = mysql_num_rows($result);
+
+
+ $qrstr = "select * from log  where action like '%9111373006%' order by id desc ";
+
+ $result = mysql_query($qrstr);
+ $myascdescpub="username=$username";
+
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="80%" bgColor="white" border="0">
+ <tr>
+ <td align="right">
+
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ </table>
+
+ <?
+ }
+ if(mysql_num_rows($result) > 0 )
+ {
+  // pubshowpages("activities.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"80%",$title_color);
+ ?>
+
+ <!-- <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="0" width="80%" bgColor="#eee7f8" border="0"> -->
+  <table  cellSpacing="1" cellPadding="1" width="80%" bgColor="white" border="0">
+    <tbody>
+    
+      <?
+      $color="#E2E0E0";
+     /* while($myrow_fetched=mysql_fetch_array($result))
+      {
+        if(strcmp($color,"#E2E0E0")==0)
+           $color="#CFCDCD";
+        else
+           $color="#E2E0E0";
+      }*/
+      ?>
+      <tr >
+        <td width="30%" class="tahoma1" align="center" height="16"  bgcolor=<? echo "$title_color"; ?>><font color="black">تاريخ</font></td>
+        <td width="70%"  class="tahoma1" align="center" height="16"  bgcolor=<? echo "$title_color"; ?>><font color="black">نوع فعاليت</font></td>        
+      </tr>
+
+<?
+
+ 
+ $color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ 
+ 
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$row_fetched["date"]."</td>";
+  echo "<td width=\"70%\" bgcolor=$color align=\"center\" class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["action"]."</td>";
+  
+  echo "</tr>";
+
+ }
+ echo "</table>";
+
+?>
+<!--      <tr bgcolor="#E2E0E0">
+        <td width="60%" class="tahoma1" align="center" height="16">تاريخ</td>
+        <td width="40%"  class="tahoma1" align="center" height="16">نوع فعاليت</td>
+      </tr>
+
+      <tr bgcolor="#CFCDCD">
+        <td width="60%" class="tahoma1" align="center" height="16">تاريخ</td>
+        <td width="40%"  class="tahoma1" align="center" height="16">نوع فعاليت</td>
+      </tr>
+
+    </tbody>
+  </table> -->
+
+<br>
+<?
+}
+else
+{
+  message_show(".هيچ موردي يافت نشد","red");
+}
+
+  footer_forms($admin,$seed);
+?>

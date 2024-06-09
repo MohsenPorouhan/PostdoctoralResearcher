@@ -1,0 +1,268 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+
+  if( $type != 0 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+
+    function fa_digits($text){
+        $persian_digits = array('&#1776;','&#1777;','&#1778;','&#1779;','&#1780;','&#1781;','&#1782;','&#1783;','&#1784;','&#1785;');
+        $english_digits = array('0','1','2','3','4','5','6','7','8','9');
+        $text = str_replace($english_digits, $persian_digits, $text);
+        return $text;
+    }
+
+include("include/print.phtml");
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+
+?>
+<META http-equiv=content-type content=text/html;charset=utf-8>
+<?
+if(!isset($username))
+  $username="";
+if(!isset($rand))
+  $rand="";
+  
+
+?>
+<table class="tahoma1" style="font-size:9pt" border="1" >
+
+<tr>
+<td>
+<table width="97%"  class="tahoma1" style="font-size:9pt" dir="rtl">
+  
+  <tr>
+    <td>جناب آقاي دكتر مسعود يونسيان - معاون محترم پژوهشي دانشگاه</td>
+  </tr>
+  <tr>
+    <td>با سلام</td>
+  </tr>
+  <tr>
+    <td>احتراما با عنايت به اينكه  گزارشات پيشرفت/ نهايي طرح هاي به شرح جدول ذيل مورد تاييد ناظرين محترم قرار گرفته است، خواهشمند است دستور فرمائيد نسبت به پرداخت مبالغ مربوطه به مجريان و ناظران     اقدام لازم به عمل آورند.در ضمن علت دير كرد در پرداخت برخي از مراحل به علت درخواست مجري مبني بر افزايش طول مدت قرارداد و موافقت مديريت امور پژوهش با درخواست تمديد مهلت مي باشد</td>
+  </tr>
+  <tr align="left">
+    <td >مديريت امور پژوهش</td>
+  </tr>
+</table>
+<br></br>
+
+</td>
+</tr>
+<tr><td>
+<table width="17%" align="center" class="tahoma1" style="font-size:9pt"  dir="rtl" >
+  
+  <tr>
+   <td class="tahoma1" align="left"><b> کد ليست دستور پرداخت : </b></td>
+    <td class="tahoma1" align="right"><b><? echo $paperno; ?></b></td>
+   
+ 
+  </tr>
+</table>
+</td></tr>
+<?
+$query="select tarh_hesabdari.personname as personname_mojri,tarh_hesabdari.accountno as accountno_mojri,tarh_hesabdari.shebano as shebano_mojri,tarh_hesabdari.id as tarh_hesabdari_id,tarh_hesabdari.startdate,tarh_hesabdari.enddate,tarh_hesabdari.amount,marhale_gharardad_hesabdari.* from tarh_hesabdari,marhale_gharardad_hesabdari,dastoor_pardakht_marhale where  tarh_hesabdari.id=dastoor_pardakht_marhale.tarh_hesabdari_id and  marhale_gharardad_hesabdari.id=dastoor_pardakht_marhale.marhale_gharardad_id and dastoor_pardakht_marhale.paperno='$paperno' ";
+$result=mysql_query($query) or die("Error in selecting data from tarh 200");
+ 
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ ?>
+<tr>
+<td>
+
+<table border="1" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+     <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ماليات مرحله</font></td>  
+   <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">سهم ناظر</font></td>  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره شبا ناظر</font></td>  
+    <td width="8%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره حساب ناظر</font></td>  
+    <td width="8%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ناظر اين مرحله</font></td>
+    <td width="7%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">سهم مجري</font></td> 
+    <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">***مبلغ قابل پرداخت</font></td>
+    <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ مرحله</font></td>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مرحله قرارداد</font></td> 
+	<td width="13%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره شبا مجري</font></td>
+   <td width="8%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره حساب مجري</font></td>
+       <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ پايان</font></td>
+       <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ شروع</font></td>
+    <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ کل طرح</font></td>
+    <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري طرف قرارداد</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+       <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+ 
+  </tr>
+
+<?
+  
+ $row="1";
+ $doctor_in_list=1;
+ $color=$list_color_1;
+ $k='1';
+ //fa_digits($k);
+ $sum=0;
+ $sum_tax=0;
+ $sum_amount2=0;
+ $sum_amount1=0;
+ $sum_stepamount=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ 	
+  $marhale_gharardad_hesabdari_id=$row_fetched["id"];
+  $tarh_hesabdari_id=$row_fetched["tarh_hesabdari_id"];
+  $cod_tarh=$row_fetched["researchno"];
+  $personname=$row_fetched["personname_mojri"];
+  $accountno=$row_fetched["accountno_mojri"];
+  $shebano=$row_fetched["shebano_mojri"];
+  $stepno=$row_fetched["stepno"];
+  $stepamount=$row_fetched["stepamount"];
+  $mablagh_ghable_pardakht=$row_fetched["mablagh_ghable_pardakht"];
+  $amount1=$row_fetched["amount1_pardakht"];
+  $amount2=$row_fetched["amount2"];
+  $personname_nazer=$row_fetched["personname"];
+  $accountno_nazer=$row_fetched["accountno"];
+  $shebano_nazer=$row_fetched["shebano"];
+  $tax=$row_fetched["tax_pardakht"];
+  $sum_tax=$sum_tax+round($tax);
+  $sum_amount2=$sum_amount2+round($amount2);
+  $sum_amount1=$sum_amount1+round($amount1);
+  $sum_stepamount=$sum_stepamount+round($stepamount);
+  $amount=$row_fetched["amount"];
+  $startdate=$row_fetched["startdate"];
+  $enddate=$row_fetched["enddate"];
+  $sum=$sum+round($mablagh_ghable_pardakht);
+  $amount=number_format($amount);
+  $amount1=number_format($amount1);
+  $stepamount=number_format($stepamount);
+  $mablagh_ghable_pardakht=number_format($mablagh_ghable_pardakht);
+  $tax=number_format($tax);
+  $amount2=number_format($amount2);
+    
+    //$sum=$sum+$mablagh_ghable_pardakht;
+ if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($tax)."</td>";
+  echo "<td width=\"5%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($amount2)."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($shebano_nazer)."</td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($accountno_nazer)."</td>";
+  echo "<td width=\"7%\" bgcolor=$color align=\"center\" class=\"tahoma1\">$personname_nazer</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($amount1)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($mablagh_ghable_pardakht)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($stepamount)."</td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($stepno)."</td>";
+  echo "<td width=\"13%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($shebano)."</td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($accountno)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($enddate)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($startdate)."</td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($amount)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">$personname</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($cod_tarh)."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($k)."</td>";
+  echo "</tr>";
+  $k++;
+  
+ }
+   echo "<tr>";
+  $sum_amount2=number_format($sum_amount2);
+  $sum_tax=number_format($sum_tax);
+  $sum_amount1=number_format($sum_amount1);
+  $sum=number_format($sum);
+  $sum_stepamount=number_format($sum_stepamount); 
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($sum_tax)."</td>";
+  echo "<td width=\"5%\"  bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($sum_amount2)."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"7%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($sum_amount1)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($sum)."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".enum2fnum($sum_stepamount)."</td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"13%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">جمع</td>";
+  echo "</tr>";
+ 
+
+echo "</table>";
+}
+
+?>
+</td>
+</tr>
+<tr  dir="rtl">
+<td>***علت اختلاف مبلغ قابل پرداخت با مبلغ مرحله مربوط به نظر کميته طرح هاي تاخيري يا ناظر طرح مبني بر کاهش مبلغ اين مرحله از قرارداد مي باشد.
+</td>
+</tr>
+<tr >
+<td>
+<table class="tahoma1" style="font-size:9pt" width="97%" dir="rtl" style="">
+  <tr>
+    <td>سرپرست محترم حسابداري معاونت پژوهشي</td>
+  </tr>
+  <tr>
+    <td>با سلام</td>
+  </tr>
+  <tr>
+    <td> احتراما با توجه به گزارش مديريت امور پژوهش، جدول فوق مورد تاييد مي باشد، نسبت به پرداخت    <?php  echo enum2fnum($sum);?>  ريال  برابر مقررات اقدام نمائيد.   
+    </td>
+  </tr>
+  <tr align="left">
+    <td >    معاون پژوهشي دانشگاه<br>دكتر مسعود يونسيان<br></br><br></br></td>
+  </tr>
+  <br></br>
+</table>
+</td>
+</tr>
+</table>
+
+
+ 

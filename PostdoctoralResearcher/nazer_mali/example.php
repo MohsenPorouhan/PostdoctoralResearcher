@@ -1,0 +1,271 @@
+<?php
+include("include/database-connect.phtml");
+include("include/include.phtml");
+ include("include/styles.phtml");
+header_forms($admin,$seed);
+ 
+
+require_once 'Excel/reader.php';
+require_once 'Excel/oleread.inc.php';
+
+
+// ExcelFile($filename, $encoding);
+
+
+
+
+
+
+if(  isset($action)  && strcmp($action,"upload_final") ==0)
+{
+
+   $data = new Spreadsheet_Excel_Reader();
+  $data->setOutputEncoding('CP1256');
+  $data->read("../form_pardakht/tarhs.xls");
+
+
+$cntr=0;
+$cod_tarh_error="";
+$inserted=0;
+$updated=0;
+ for ($i = 2; $i <= $data->sheets[0]['numRows']; $i++)
+  {
+ 	 
+		$row_number=$data->sheets[0]['cells'][$i][1];
+		 $cod_tarh=$data->sheets[0]['cells'][$i][5];
+
+		if(strlen(trim($cod_tarh)) > 0)
+		{
+		  $family=$data->sheets[0]['cells'][$i][2];
+		  $name=$data->sheets[0]['cells'][$i][3];
+		  $contract=$data->sheets[0]['cells'][$i][4];
+	      $cod_tarh=$data->sheets[0]['cells'][$i][5];
+		  
+		  $q="select * from tarh where cod_tarh like '%$cod_tarh%'";
+		   
+		  $rs_tarh=mysql_query($q) or die("error");
+	      $gozaresh=$data->sheets[0]['cells'][$i][6];
+	      $pay_center=$data->sheets[0]['cells'][$i][7];
+	      $ghest=$data->sheets[0]['cells'][$i][8];
+	      $maliat=$data->sheets[0]['cells'][$i][9];
+	      $mablagh_mojri=$data->sheets[0]['cells'][$i][10];
+	      $mablagh_nazer=$data->sheets[0]['cells'][$i][11];
+	      $sanad_no=$data->sheets[0]['cells'][$i][12];
+	      $check_no=$data->sheets[0]['cells'][$i][13];
+	      $hesab_no=$data->sheets[0]['cells'][$i][14];
+		   $date=$data->sheets[0]['cells'][$i][15];
+		   if(mysql_num_rows($rs_tarh)>0)
+		   {
+		   $cntr++;
+		     $rf_tarh=mysql_fetch_array($rs_tarh);
+			 $cod_tarh=$rf_tarh["cod_tarh"];
+			 $q="select * from feedback_pardakht where cod_tarh='$cod_tarh' and  gozaresh='$gozaresh'";
+ 			 $rs_q=mysql_query($q) or die("error");
+			 if(mysql_num_rows($rs_q) <=0)
+			 {
+			 
+		         $q="insert into feedback_pardakht  set  family='$family',name='$name',contract='$contract',cod_tarh='$cod_tarh',gozaresh='$gozaresh',pay_center='$pay_center',ghest='$ghest',maliat='$maliat',mablagh_mojri='$mablagh_mojri', mablagh_nazer='$mablagh_nazer',sanad_no='$sanad_no',check_no='$check_no',hesab_no='$hesab_no',date='$date' ";
+				 $inserted++;
+			 }
+			 else
+			 {
+			 	 $q="  update feedback_pardakht  set  family='$family',name='$name',contract='$contract' ,pay_center='$pay_center',ghest='$ghest',maliat='$maliat',mablagh_mojri='$mablagh_mojri', mablagh_nazer='$mablagh_nazer',sanad_no='$sanad_no',check_no='$check_no',hesab_no='$hesab_no',date='$date'  where cod_tarh='$cod_tarh' and  gozaresh='$gozaresh'";
+				 $updated++;
+
+			 }
+	 	  
+		   $rs=mysql_query($q) or die("error");
+		   }
+		   else
+		     $cod_tarh_error=$cod_tarh_error."$cod_tarh"."<br>";
+		 }
+		 
+  }
+       echo "<center  >اتمام ارسال اطلاعات ";
+
+	      echo "<center  >تعداد رکوردهاي اطلاعاتي ارسالي $cntr  مي باشد";
+		  	      echo "<center  >تعداد رکوردهاي اطلاعاتي جديد $inserted  مي باشد";
+
+		  	      echo "<center  >تعداد رکوردهاي اطلاعاتي به روز شده $updated  مي باشد";
+
+	      echo "<center  >رکورد هايي که کد طرح آنها ايراد دارد به شرح زير است <br>$cod_tarh_error";
+		       echo "<center  >براي مشاهده ليست کلي روي لينک زير کليک کنيد";
+
+	 echo "<br><a href='list_payments.phtml?admin=$admin&seed=$seed'> مشاهده </a></center>";
+	     footer_forms($admin,$seed);
+		 exit();
+}
+
+
+
+if(  isset($action)  && strcmp($action,"show_uploaded") ==0)
+{
+$data = new Spreadsheet_Excel_Reader();
+  $data->setOutputEncoding('CP1256');
+  $data->read("../form_pardakht/tarhs.xls");
+ error_reporting(E_ALL ^ E_NOTICE);
+ echo "<br><br>";
+  echo "<form name=\"submit_list\" method=\"post\" enctype=\"multipart/form-data\" action=\"$PHP_SELF?action=upload_final&admin=$admin&seed=$seed \">";  
+
+ echo "<table width='80%' border='1' dir='rtl' class='tahoma1'>";
+  echo "<tr>";
+ echo "<td colspan='45' align='center' ><b>آيا ليست مورد نظر طبق ليست زير مي باشد ؟</b></td>";
+echo "</tr>";
+ echo "<tr>";
+ echo "<td>نام</td>";
+   echo "<td>نام خانوادگي</td>";
+  echo "<td>قرارداد</td>";
+   echo "<td>کد طرح</td>";
+  echo "<td>گزارش</td>";
+  echo "<td>مرکز پرداخت</td>";
+  echo "<td>مبلغ قسط مذکور</td>";
+  echo "<td>گزارش</td>";
+    echo "<td>ماليات</td>";
+	    echo "<td>سهم مجري</td>";
+
+    echo "<td>سهم ناظر</td>";
+    echo "<td>شماره سند</td>";
+    echo "<td>شماره چک</td>";
+    echo "<td>شماره حساب</td>";
+    echo "<td>تاريخ</td>";
+ echo "</tr>";
+
+
+ for ($i = 2; $i <= $data->sheets[0]['numRows']; $i++)
+  {
+ 	 
+		$row_number=$data->sheets[0]['cells'][$i][1];
+		if(strlen($row_number) > 0)
+		{
+		  $family=$data->sheets[0]['cells'][$i][2];
+		  $name=$data->sheets[0]['cells'][$i][3];
+		  $contract=$data->sheets[0]['cells'][$i][4];
+	      $cod_tarh=$data->sheets[0]['cells'][$i][5];
+	      $gozaresh=$data->sheets[0]['cells'][$i][6];
+	      $pay_center=$data->sheets[0]['cells'][$i][7];
+	      $ghest=$data->sheets[0]['cells'][$i][8];
+	      $maliat=$data->sheets[0]['cells'][$i][9];
+	      $mablagh_mojri=$data->sheets[0]['cells'][$i][10];
+	      $mablagh_nazer=$data->sheets[0]['cells'][$i][11];
+	      $sanad_no=$data->sheets[0]['cells'][$i][12];
+	      $check_no=$data->sheets[0]['cells'][$i][13];
+	      $hesab_no=$data->sheets[0]['cells'][$i][14];
+		   $date=$data->sheets[0]['cells'][$i][15];
+		    echo "<tr>";
+ echo "<td>$name</td>";
+   echo "<td>$family</td>";
+  echo "<td>$contract</td>";
+   echo "<td>$cod_tarh </td>";
+  echo "<td>$gozaresh</td>";
+  echo "<td>$pay_center</td>";
+  echo "<td>$ghest</td>";
+  echo "<td>$gozaresh</td>";
+    echo "<td>$maliat</td>";
+	    echo "<td>$mablagh_mojri</td>";
+
+    echo "<td>$mablagh_nazer</td>";
+    echo "<td>$sanad_no</td>";
+    echo "<td>$check_no</td>";
+    echo "<td>$hesab_no</td>";
+    echo "<td>$date</td>";
+ echo "</tr>";
+	   
+		   
+ 
+ 	}
+
+}
+
+	 echo "<tr>";
+
+	    echo "<td colspan='45' align='center'><input class='tahoma1'  type='submit' name='submit' value='ارسال نهايي'></td>";
+ echo "</tr>";
+
+ echo "</form></table>";
+
+}
+
+if(isset($action))
+{
+   if (strcmp($action,"sabt")==0)
+  {
+      $mydir = dir("../form_pardakht/tarhs.xls");
+     //while(($file = $mydir->read()) !== false)
+     //if($file = $mydir->read())
+  delete_file("../form_pardakht","","tarhs.xls");
+        $status_upload=upload_file("../form_pardakht","","tarhs.xls");
+ 	   if(strcmp($status_upload,"10")==0)
+        {
+       ?>
+           <script language="javascript">
+           window.location="<? echo "$PHP_SELF?admin=$admin&seed=$seed&action=show_uploaded";  ?>";
+           </script>
+           <?
+     }
+	 else
+	 {
+	   echo "مشکل در ارسال فايل";
+	     footer_forms($admin,$seed);
+exit();
+	 }
+  }
+  
+ 
+}
+
+
+if(! isset($action) || strlen($action) <=0)
+{
+
+ 
+ echo "<form name=\"mojri_tarh\" method=\"post\" enctype=\"multipart/form-data\" action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed \">"; ?>
+ 
+<br /><br /><br />
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+<?
+
+ 
+
+echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">فايل بايد با فرمت excell 2003 باشد</td>";
+    echo "</tr>";
+	echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">نام فايل بايد tarhs.xls  باشد</td>";
+    echo "</tr>";
+	echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">سيستم به گونه اي عمل مي کند که به شماره گزارش و کد طرح حساس است. در صورتي که اطلاعات رديفي از اطلاعات با توجه به کد طرح و شماره کزارش تکراري باشد آن رکورد را به روز مي کند در غير اين صورت رکورد اطلاعاتي جديدي درج مي شود</td>";
+    echo "</tr>";
+
+?>
+
+  <tr>
+     <td width="100" align="right"><input type="file" name="fupload" class="edit-user"></td>
+    <td width="400" class="tahoma1" valign="top" >  فايلها  با نام انگليسي معتبر هستند</td>
+
+  </tr>
+
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+ 
+ <?
+}
+
+		       echo "<center  >براي مشاهده ليست کلي روي لينک زير کليک کنيد";
+
+	 echo "<br><a href='list_payments.phtml?admin=$admin&seed=$seed'> مشاهده </a></center>";
+
+//print_r($data);
+//print_r($data->formatRecords);
+  footer_forms($admin,$seed);
+
+?>

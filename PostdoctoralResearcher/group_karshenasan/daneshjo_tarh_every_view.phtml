@@ -1,0 +1,190 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(!isset($version))
+  $version="-1";
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version='$version'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh' and version='$version'";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name."<br>"."مشخصات دانشجو" ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+    $query="select * from daneshjo , daneshjo_tarh where daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=\"$cod_tarh\" and daneshjo.cod_daneshjo=\"$cod_daneshjo\"  and daneshjo_tarh.version='$version' order by  family ";
+    $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+    $row_fetched = mysql_fetch_array($result);
+	$mojri_name=$row_fetched["name"];
+	$mojri_family=$row_fetched["family"];
+	if($row_fetched["sex"]=="0")
+	  $sex = "زن";
+	if($row_fetched["sex"]=="-1")
+	  $sex = "نامعلوم";
+    if($row_fetched["sex"]=="1")
+	  $sex = "مرد";
+    $maghtaee_tahsili = $row_fetched["maghtaee_tahsili"];
+    if($maghtaee_tahsili==0)
+      $maghtaee_tahsili="کارداني";
+    if($maghtaee_tahsili==1)
+      $maghtaee_tahsili="کارشناسي";
+    if($maghtaee_tahsili==2)
+      $maghtaee_tahsili="کارشناسي ارشد";
+    if($maghtaee_tahsili==3)
+      $maghtaee_tahsili="دکتراي حرفه اي";
+    if($maghtaee_tahsili==4)
+      $maghtaee_tahsili="PHD";
+    if($maghtaee_tahsili==5)
+      $maghtaee_tahsili="دکتراي تخصصي";
+    $reshteh_tahsili = $row_fetched["reshteh_tahsili"];
+    
+	$workaddr = $row_fetched["address_job"];
+	$homeaddr = $row_fetched["address_home"];
+	$telno = $row_fetched["telno"];
+	$faxno = $row_fetched["fax"];
+	$melli_code = $row_fetched["melli_code"];
+    $email = $row_fetched["email"];
+    $query_daraje_elmi = "select * from darajeelmi where darajeelmi = \"".$row_fetched["darajeelmi"]."\"";
+    $daraje_result = mysql_query($query_daraje_elmi) or die ("Error in selecting data from darajeelmi");
+    if(mysql_num_rows($daraje_result) > 0)
+    {
+      $daraje_row_fetched=mysql_fetch_array($daraje_result);
+      $daraje_elmi = $daraje_row_fetched["darajeelmi_desc"];
+    }
+
+    else
+	  $daraje_elmi = "";
+
+	$takhasos = $row_fetched["takhasos"];
+	$semat = $row_fetched["semat"];
+	$daneshgah_akhz = $row_fetched["univ_madrak"];
+	$country_univ = $row_fetched["country_univ"];
+	$hesab = $row_fetched["hesab"];
+	$bankname = $row_fetched["bank_name"];
+	$shoabe = $row_fetched["shoabe"];
+	$cod_bank = $row_fetched["cod_bank"];
+	$reshteh = $row_fetched["reshteh_tahsili"];
+	$cod_daneshjo = $row_fetched["cod_daneshjo"];
+    echo "<br>";
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$mojri_name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$mojri_family."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام خانوادگي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$sex."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">جنسيت</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$maghtaee_tahsili."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مقطع تحصيلي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$reshteh."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">رشته تحصيلي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\"  dir=\"rtl\">".$workaddr."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">آدرس محل کار</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($homeaddr)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">آدرس منزل</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($telno)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تلفن</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($faxno)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">فاکس</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$cod_daneshjo."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">شماره دانشجويي</td>";
+    echo "</tr>";
+
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($melli_code)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">کد ملي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"ltr\">".nl2br($email)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">پست الکترونيکي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($hesab)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">شماره حساب</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($bankname)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام بانک</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($shoabe)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">شعبه بانک</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($cod_bank)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">کد بانک</td>";
+    echo "</tr>";
+
+
+    echo "</table>";
+   }
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="javascript:history.go(-1)" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

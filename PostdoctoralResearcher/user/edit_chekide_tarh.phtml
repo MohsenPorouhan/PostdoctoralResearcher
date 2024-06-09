@@ -1,0 +1,48 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+ 
+    include("../tarh_modification/edit_chekide_tarh.phtml");
+
+ 
+  footer_forms($admin,$seed);
+ ?>
+
+<script>
+
+            function setdefault()
+            {
+              document.sabt_tarh.cod_group.options[0].selected=true;
+
+              document.sabt_tarh.cod_daneshkade.options[0].selected=true;
+            }
+
+
+
+            var temp=document.sabt_tarh.cod_group
+            function redirect()
+            {
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex
+                myselecteditem--
+                if( myselecteditem<0 )
+                  return
+
+                for (i=0;i<group[myselecteditem].length;i++)
+                {
+
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }
+
+
+
+            </script>
+
+

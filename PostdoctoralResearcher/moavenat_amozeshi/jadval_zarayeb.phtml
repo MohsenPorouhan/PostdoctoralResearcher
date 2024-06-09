@@ -1,0 +1,395 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+?>
+<script type="text/javascript">
+<!--
+
+function addEvent()
+{
+var ni = document.getElementById('myDiv');
+var numi = document.getElementById('theValue');
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "my"+num+"Div";
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+newdiv.innerHTML = "<tr><td width=\"50%\"  align=\"right\" ><input taborder=\"2\" type=\"text\" name=\"naghsh_var"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"><span style=\"font-family: tahoma; font-size: 8pt\">نقش متغير</span></td><td width=\"50%\" class=\"tahoma1\" ><input taborder=\"1\" type=\"text\" name=\"name_var"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"><span class=\"star-message\">*</span><span style=\"font-family: tahoma; font-size: 8pt\">عنوان متغير</span></td></tr><tr><td width=\"50%\" align=\"right\" class=\"tahoma1\"><select taborder=\"4\" size=\"1\" name=\"var_type"+num+"\" dir=\"rtl\" class=\"but-small\"><option value=\"0\" class=\"in\">کيفي / رتبه اي</option><option value=\"1\" class=\"in\">کيفي / اسمي</option><option value=\"2\" class=\"in\">کمي / پيوسته</option><option value=\"3\" class=\"in\">کمي /گسسته</option></select><span >*</span><span style=\"font-family: tahoma; font-size: 8pt\">نوع متغير</span></td><td width=\"50%\" class=\"tahoma1\"><input taborder=\"3\" type=\"text\" name=\"taarif_elmi_amali"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"><span style=\"font-family: tahoma; font-size: 8pt\">تعريف علمي و عملي</span></td></tr><tr><td width=\"50%\" class=\"tahoma1\" align=\"right\"><input taborder=\"6\" type=\"text\" name=\"ravesh_andaze"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"><span style=\"font-family: tahoma; font-size: 8pt\">نحوه اندازه گيري</span></td><td width=\"50%\" class=\"tahoma1\"><input taborder=\"5\" type=\"text\" name=\"meghyas"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"><span style=\"font-family: tahoma; font-size: 8pt\">مقياس</span></td><hr><a href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\')\">Remove </a></tr>";
+ni.appendChild(newdiv);
+}
+
+function removeEvent(divNum)
+{
+var d = document.getElementById('myDiv');
+var olddiv = document.getElementById(divNum);
+d.removeChild(olddiv);
+}
+
+//-->
+</script>
+<?
+header_forms($admin,$seed);
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_daneshjo")==0)
+  {
+
+     if(strlen(trim($name_var)) > 0 &&  strlen(trim($var_type)) > 0)
+     {
+      $query="select * from jadval_zarayeb where  name_var=\"$name_var\" and var_type=\"$var_type\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+
+
+        $query  = "insert into jadval_zarayeb set name_var=\"$name_var\" , naghsh_var=\"$naghsh_var\",taarif_elmi_amali=\"$taarif_elmi_amali\",var_type=\"$var_type\",meghyas=\"$meghyas\",ravesh_andaze=\"$ravesh_andaze\",cod_tarh=\"$cod_tarh\" ";
+       // echo $query;
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+
+       
+        $action="ثبت جدول ضرائب"."<br>".$name."&nbsp;&nbsp;".$family;
+        set_log($action,$admin,date("Y-d-m"));
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+     // name moteghayer va naghshe an baraye bare dovvom
+     
+      if(strlen(trim($name_var1)) > 0 &&  strlen(trim($var_type1)) > 0)
+     {
+      $query="select * from jadval_zarayeb where  name_var=\"$name_var1\" and var_type=\"$var_type1\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+
+
+        $query  = "insert into jadval_zarayeb set name_var=\"$name_var1\" , naghsh_var=\"$naghsh_var1\",taarif_elmi_amali=\"$taarif_elmi_amali1\",var_type=\"$var_type1\",meghyas=\"$meghyas1\",ravesh_andaze=\"$ravesh_andaze1\",cod_tarh=\"$cod_tarh\" ";
+       // echo $query;
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+
+       
+        $action="ثبت جدول ضرائب"."<br>".$name."&nbsp;&nbsp;".$family;
+        set_log($action,$admin,date("Y-d-m"));
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+    
+     // name moteghayer va naghshe an baraye bare dovvom
+   
+     if(strlen(trim($name_var2)) > 0 &&  strlen(trim($var_type2)) > 0)
+     {
+      $query="select * from jadval_zarayeb where  name_var=\"$name_var2\" and var_type=\"$var_type2\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+
+
+        $query  = "insert into jadval_zarayeb set name_var=\"$name_var2\" , naghsh_var=\"$naghsh_var2\",taarif_elmi_amali=\"$taarif_elmi_amali2\",var_type=\"$var_type2\",meghyas=\"$meghyas2\",ravesh_andaze=\"$ravesh_andaze2\",cod_tarh=\"$cod_tarh\" ";
+       // echo $query;
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+
+       
+        $action="ثبت جدول ضرائب"."<br>".$name."&nbsp;&nbsp;".$family;
+        set_log($action,$admin,date("Y-d-m"));
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+    
+    
+  }
+
+ if (strcmp($action,"delete_zarib")==0)
+ {
+    $query="delete from jadval_zarayeb where cod_zarib = \"$delete_id\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_elmi");
+ }
+
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_daneshjo&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+   
+    
+    <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="ravesh_ejra.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+ 
+      </TD>
+      <TD align=middle width="251"  background="image/motegayer.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+<!--  <tr>
+  <td colspan=2>
+      <table border="0" id="myTable" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+        <td>
+        <input type="hidden" value="0" id="theValue" /><a href="javascript:;" onclick="addEvent();" class="tahoma1">add</a>
+        <div id="myDiv">
+        </div>
+        </td>
+        </tr>
+      </table>
+  </td>
+  </tr> -->
+    <tr>
+    
+    <td width="50%" class="tahoma1" align="right">
+	<select size="1" name="naghsh_var" class="but-small">
+    <option selected value="0">مستقل</option>
+    <option value="1">وابسته</option>
+  </select>
+	<!--<input taborder="2" type="text" name="naghsh_var" size="20" value="" class="but-small" dir=RTL   >--> نقش متغير</td> 
+    <td width="50%" class="tahoma1" ><input taborder="1" type="text" name="name_var" size="20" value="" class="but-small" dir=RTL   ><span class="star-message">*</span>عنوان متغير</td>
+  </tr>
+
+   <tr>
+    <td width="50%" align="right" class="tahoma1">
+	                             <select taborder="4" size="1" name="var_type" dir="rtl" class="but-small">
+                                 <option value="0" class="in">کيفي / رتبه اي</option>
+                                 <option value="1" class="in">کيفي / اسمي</option>
+                                  <option value="2" class="in">کمي / پيوسته</option>
+                                 <option value="3" class="in">کمي /گسسته</option>
+                                 </select>
+                                 <span >*</span>نوع متغير
+                                 </td>
+    <td width="50%" class="tahoma1"><input taborder="3" type="text" name="taarif_elmi_amali" size="20" value="" class="but-small" dir=RTL   >تعريف علمي و عملي</td>
+  </tr>
+<tr>
+    <td width="50%" class="tahoma1" align="right"><input taborder="6" type="text" name="ravesh_andaze" size="20" value="" class="but-small" dir=RTL   >نحوه اندازه گيري</td>
+    <td width="50%" class="tahoma1"><input taborder="5" type="text" name="meghyas" size="20" value="" class="but-small" dir=RTL   >مقياس</td>
+  </tr>
+
+
+<tr>
+    
+    <td width="50%" class="tahoma1" align="right"><hr>
+		<select size="1" name="naghsh_var1" class="but-small">
+    <option selected value="0">مستقل</option>
+    <option value="1">وابسته</option>
+  </select>
+
+	<!-- <input taborder="2" type="text" name="naghsh_var1" size="20" value="" class="but-small" dir=RTL   >--> نقش متغير</td>
+    <td width="50%" class="tahoma1" ><hr><input taborder="1" type="text" name="name_var1" size="20" value="" class="but-small" dir=RTL   ><span class="star-message">*</span>عنوان متغير</td>
+  </tr>
+
+   <tr>
+    <td width="50%" align="right" class="tahoma1">
+	                             <select taborder="4" size="1" name="var_type1" dir="rtl" class="but-small">
+                                 <option value="0" class="in">کيفي / رتبه اي</option>
+                                 <option value="1" class="in">کيفي / اسمي</option>
+                                  <option value="2" class="in">کمي / پيوسته</option>
+                                 <option value="3" class="in">کمي /گسسته</option>
+                                 </select>
+                                 <span >*</span>نوع متغير
+                                 </td>
+    <td width="50%" class="tahoma1"><input taborder="3" type="text" name="taarif_elmi_amali1" size="20" value="" class="but-small" dir=RTL   >تعريف علمي و عملي</td>
+  </tr>
+<tr>
+    <td width="50%" class="tahoma1" align="right"><input taborder="6" type="text" name="ravesh_andaze1" size="20" value="" class="but-small" dir=RTL   >نحوه اندازه گيري</td>
+    <td width="50%" class="tahoma1"><input taborder="5" type="text" name="meghyas1" size="20" value="" class="but-small" dir=RTL   >مقياس</td>
+  </tr>
+  
+
+ 
+  
+<tr>
+    
+    <td width="50%" class="tahoma1" align="right"><hr>
+		<select size="1" name="naghsh_var2" class="but-small">
+    <option selected value="0">مستقل</option>
+    <option value="1">وابسته</option>
+  </select>
+	<!--<input taborder="2" type="text" name="naghsh_var2" size="20" value="" class="but-small" dir=RTL   >-->
+	 نقش متغير</td>
+    <td width="50%" class="tahoma1" ><hr><input taborder="1" type="text" name="name_var2" size="20" value="" class="but-small" dir=RTL   ><span class="star-message">*</span>عنوان متغير</td>
+  </tr>
+
+   <tr>
+    <td width="50%" align="right" class="tahoma1">
+	                             <select taborder="4" size="1" name="var_type2" dir="rtl" class="but-small">
+                                 <option value="0" class="in">کيفي / رتبه اي</option>
+                                 <option value="1" class="in">کيفي / اسمي</option>
+                                  <option value="2" class="in">کمي / پيوسته</option>
+                                 <option value="3" class="in">کمي /گسسته</option>
+                                 </select>
+                                 <span >*</span>نوع متغير
+                                 </td>
+    <td width="50%" class="tahoma1"><input taborder="3" type="text" name="taarif_elmi_amali2" size="20" value="" class="but-small" dir=RTL   >تعريف علمي و عملي</td>
+  </tr>
+<tr>
+    <td width="50%" class="tahoma1" align="right"><input taborder="6" type="text" name="ravesh_andaze2" size="20" value="" class="but-small" dir=RTL   >نحوه اندازه گيري</td>
+    <td width="50%" class="tahoma1"><input taborder="5" type="text" name="meghyas2" size="20" value="" class="but-small" dir=RTL   >مقياس</td>
+
+
+  </tr>
+
+
+  
+
+  <tr>
+    <td width="100%"  colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+  
+ 
+</table>
+
+</form>
+
+
+
+  <?
+  
+   $query="select * from  jadval_zarayeb where cod_tarh=\"$cod_tarh\"  and version='-1' order by name_var ";
+
+   $result=mysql_query($query) or die("Error in selecting data from jadval zarayeb");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+     
+     echo "<tr>";
+     echo "<td width=\"5%\" rowspan=\"3\" align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"20%\" rowspan=\"3\" align=\"center\" class=\"tahoma1\">مقياس</td>";
+     echo "<td width=\"20%\" rowspan=\"3\" align=\"center\" class=\"tahoma1\">نحوه اندازه گيري</td>";
+     echo "<td width=\"5%\" rowspan=\"3\" align=\"center\" class=\"tahoma1\">تعريف علمي عملي</td>";
+     echo "<td width=\"26%\" colspan=\"4\" align=\"center\"  class=\"tahoma1\">نوع متغير</td>";
+     echo "<td width=\"14%\" rowspan=\"3\" align=\"center\"  class=\"tahoma1\">نقش متغير</td>";
+     echo "<td width=\"20%\" rowspan=\"3\" align=\"center\"  class=\"tahoma1\">عنوان متغير</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"13%\" align=\"center\" colspan=\"2\"  class=\"tahoma1\">کيفي</td>";
+     echo "<td width=\"13%\" align=\"center\" colspan=\"2\"  class=\"tahoma1\">کمي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"7%\" align=\"center\"  class=\"tahoma1\">رتبه اي</td>";
+     echo "<td width=\"6%\" align=\"center\"  class=\"tahoma1\">اسمي</td>";
+     echo "<td width=\"7%\" align=\"center\"  class=\"tahoma1\">پيوسته</td>";
+     echo "<td width=\"6%\" align=\"center\"  class=\"tahoma1\">گسسته</td>";
+     echo "</tr>";
+     
+    
+   
+     $rownumber=0;
+     
+      while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=jadval_zarayeb.phtml&admin=$admin&seed=$seed&action=delete_zarib&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_zarib"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+  if(strlen(trim($row_fetched["meghyas"])) ==0 )
+         $meghyas="&nbsp;";
+       else
+         $meghyas=$row_fetched["meghyas"];
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$meghyas."</td>";
+
+
+	   if(strlen(trim($row_fetched["ravesh_andaze"])) ==0 )
+         $ravesh_andaze="&nbsp;";
+       else
+         $ravesh_andaze=$row_fetched["ravesh_andaze"];
+
+
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$ravesh_andaze."</td>";
+  if(strlen(trim($row_fetched["taarif_elmi_amali"])) ==0 )
+         $taarif_elmi_amali="&nbsp;";
+       else
+         $taarif_elmi_amali=$row_fetched["taarif_elmi_amali"];
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$taarif_elmi_amali."</td>";
+
+	   /*if(strlen(trim($row_fetched["vahed"])) ==0 )
+         $myvahed="&nbsp;";
+       else
+         $myvahed=$row_fetched["vahed"];
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$myvahed."</td>";
+*/
+       if($row_fetched["var_type"]==0)
+         echo "<td align=\"center\"  class=\"tahoma1\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+
+       if($row_fetched["var_type"]==1)
+         echo "<td align=\"center\"  class=\"tahoma1\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+
+       if($row_fetched["var_type"]==2)
+         echo "<td align=\"center\"  class=\"tahoma1\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+
+       if($row_fetched["var_type"]==3)
+         echo "<td align=\"center\"  class=\"tahoma1\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+//<img border=\"0\" src=image/cancel.gif>
+       if($row_fetched["naghsh_var"]==0)
+         $naghsh="مستقل";
+       else
+	     $naghsh="وابسته";
+
+       echo "<td align=\"center\"  class=\"tahoma1\" dir=\"rtl\">".$naghsh."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" dir=\"rtl\">".$row_fetched["name_var"]."</td>";
+       echo "</tr>";
+     }
+     
+     
+
+
+     echo "</table>";
+
+   }
+
+ footer_forms($admin,$seed);
+?>
+

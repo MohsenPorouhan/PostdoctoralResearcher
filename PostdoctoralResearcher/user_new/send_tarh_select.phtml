@@ -1,0 +1,313 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+?>
+ <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+ <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+
+<?php
+$menu_id="2";
+$sub_menu_id="1";
+include("include/new_menu.php");
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                      
+                       <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a href="home.php">
+                                    خانه
+                                </a>
+                                <i class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a href="send_tarh_select.phtml">
+                                   ارسال طرح
+                                </a>
+                              <!--   <i class="fa fa-angle-left"></i> -->
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                    	  <div class="portlet-body">
+                                <div class="row">
+                                  <div class="col-md-12 col-sm-12 col-xs-12">
+                                       <div class="portlet box blue" id="div_tarh_select">
+											<div class="portlet-title">
+												<div class="caption">
+													<i class="fa fa-reorder"></i>نوع طرح تحقيقاتي
+												</div>
+												<div class="tools">
+													<a href="javascript:;" class="collapse">
+													</a>
+													<a href="#portlet-config" data-toggle="modal"
+													class="fa fa-info-circle" title="راهنما"
+													style="color: white">
+													</a>
+												</div>
+											</div>
+											<div class="portlet-body form">
+												<!-- BEGIN FORM-->
+												 	<div class="form-body">
+														<div class="row">
+					                                        <div class="col-md-offset-0 col-md-9">
+					                                            <label><b>	توجه : نوع طرح مشخص مي کند مسير پيگيري طرحي را که ثبت خواهيد کرد، چگونه خواهد بود</b></label>
+					                                        </div>
+			                                      		</div>
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label><b>تعريف طرح هاي آچ اس آر  : </b>طرح هايي هستند که معمولاً از طرف معاونت‌هاي دانشگاه و به منظور ارتقاء فعاليت‌هاي اين معاونت‌ها درخواست شده و در شوراي HSR دانشگاه مصوبه خواهند گرفت.</label>
+					                                        </div>
+			                                      		</div>	
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label><b> تعريف طرح هاي غير اچ اس آر : </b>چنين طرح‌هايي از طرف دانشكده‌ها و مراكز تحقيقاتي ارسال مي شود و پيگيري آن از طريق شوراهاي پژوهشي دانشكده‌ها و مراكز تحقيقاتي و نهايتاَ شوراي پژوهشي دانشگاه خواهد بود.</label>
+					                                        </div>
+			                                      		</div>
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label><b>تعريف طرح هاي خدماتي  : </b>اين طرح ها سفارش شده از مركزي خارج از دانشگاه مي باشند كه يك خدمت خاص را (همچون خدمات آزمايشگاهي- خدمات آموزشي، خدمات مشاوره‌اي و...) در داخل دانشگاه درخواست نموده است و در دفتر ارتباط با صنعت پيگيري خواهند شد. ضمناً اگر طرحي صرفاً جنبه پژوهشي داشته و اعتبار آن از خارج از دانشگاه تأمين مي‌شود، شامل اين نوع طرح‌ها  يعني طرح هاي خدماتي نمي‌شود و مجريان محترم لازم است طرح فوق الذکر را به عنوان طرح‌ علمي ثبت نموده و سپس دانشكده يا مركز هدف را دفتر همكاري صنعت و دانشگاه انتخاب نمايند. مسير پيگيري اين نوع طرح‌ها نيز از دفتر همكاري دانشگاه و صنعت خواهد بود.</label>
+					                                        </div>
+			                                      		</div>										
+														<h3 class="form-section"></h3>
+														<div class="row">
+															<div class="col-md-6">
+																<div class="form-group">
+						                                            <div class="col-md-9">
+						                                                <div class="radio-list">
+						                                                    <label>
+						                                                        <input type="radio" name="tarh_select" id="hsr" value="6" > طرح اچ اس آر
+						                                                    </label>
+						                                                    <label>
+						                                                        <input type="radio" name="tarh_select" id="non_hsr" value="8" > طرح غير اچ اس آر
+						                                                    </label>
+						                                                    <label>
+						                                                        <input type="radio" name="tarh_select" id="services" value="10" > طرح خدماتي دفتر همکاري دانشگاه و صنعت
+						                                                    </label>
+						                                                </div>
+						                                            </div>
+						                                        </div>
+															</div>
+														</div>
+														<!--/row-->
+													
+													</div>
+													<div class="form-actions fluid">
+														<div class="row">
+															<div class="col-md-6">
+																<div class="col-md-offset-3 col-md-9">
+																	<button type="button" onclick="send_tarh_select();" class="btn green">ارسال</button>
+																	<button type="button" class="btn default">انصراف</button>
+																</div>
+															</div>
+															<div class="col-md-6">
+															</div>
+														</div>
+													</div>
+												
+												<!-- END FORM-->
+											</div>
+										</div>
+										<div class="portlet box blue hidden" id="div_hsr">
+											<div class="portlet-title">
+												<div class="caption">
+													<i class="fa fa-reorder"></i>موافقت نامه اچ اس آر
+												</div>
+												<div class="tools">
+													<a href="javascript:;" class="collapse">
+													</a>
+													<a href="#portlet-config" data-toggle="modal"
+													class="fa fa-info-circle" title="اطلاع رساني"
+													style="color: white">
+													</a>
+													</a>
+												</div>
+											</div>
+											<div class="portlet-body form">
+												<!-- BEGIN FORM-->
+												 <? //echo "<form  method=\"post\" action=\"send_tarh_select.php?action=sabt&admin=$admin&seed=$seed class=\"form-horizontal \">"; ?>
+													<div class="form-body">
+														<div class="row">
+						                                        <div class="col-md-offset-0 col-md-12">
+						                                            <label>با سلام و عرض ادب </label>
+						                                        </div>
+				                                      	</div>
+														<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label>همانگونه كه مستحضر ميباشيد نتايج <b> طرحهاي اچ اس ار</b> براي حوزه هاي اجرايي دانشگاه كاربرد دارد و بر اساس ضوابط و قوانين لازم است تا هزينه هاي خود را از محل اعتبارات همان حوزه تامين نمايد</label>
+					                                        </div>
+			                                      		</div>
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label>به اين منظور لازم است پس از هماهنگي هاي لازم با مديريت ارشد حوزه خود (كه اجازه هزينه كردن اعتبارات آن حوزه را دارد)نسبت به تكميل نامه اي با دو امضا كه به اين منظور تدوين شده است اقدام و پس از امضاء مديريت ارشد و حسابدار حوزه خود مكاتبه را به حوزه مديريت امور پژوهش ارسال نماييد (فرمت اين نامه را ميتوانيد از منوي اطلاع رساني پس از ورود به سطح مجري در برنامه پژوهشيار برداشت نماييد).</label>
+					                                        </div>
+			                                      		</div>
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label>لطفا پس از ارسال مكاتبه مذكور بصورت نامه اداري به مديريت امور پژوهش مراتب را به صورت تلفني به كارشناس بررسي وضعيت طرحهاي اچ اس ار دکتر ديوان بيگي(81633569) اطلاع تا پس از وصول نامه به مديريت امور پژوهش، گردش كاري طرح مذكور آغاز و در دستور جلسه شوراي اچ اس ار قرار داده شود و پس از كارشناسي و تصويب، روند انعقاد قرارداد را طي نمايد شايان ذكر است كه چنانچه تا مدت 4 هفته پس از ثبت چكيده طرح مكاتبه يا تماس مذكور ارسال نگردد اين طرح توسط مديريت پژوهشي بايگاني خواهد شد.</label>
+					                                        </div>
+			                                      		</div>
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12">
+					                                            <label><b>توجه توجه: </b>اگر تامين اعتبار طرح خارج از دانشگاه است مثلا از وزارت بهداشت لازم است طرح از ابتدا بصورت غير اچ اس ار ثبت شده و مرکز هدف "دفتر همکاري دانشگاه و صنعت" انتخاب گردد.</label>
+					                                        </div>
+			                                      		</div><br/>
+			                                      		<div class="row">
+					                                        <div class="col-md-offset-0 col-md-12" dir="ltr">
+					                                            <label>با تشکر </label>
+					                                        </div>
+			                                      		</div>		                                      											
+														<h3 class="form-section"></h3>
+														<div class="row">
+															<div class="form-group">
+						                                            <div class="col-md-9">
+						                                                <div class="checkbox-list">
+						                                                    <label class="checkbox-inline">
+						                                                        <input type="checkbox" id="confirm" value="1">اين متن را خوانده و با توجه به مفاد آن چكيده را ثبت خواهم كرد
+						                                                    </label>
+						                                                </div>
+						                                            </div>
+						                                 	</div>
+															
+														</div>
+														<!--/row-->
+													
+													</div>
+													<div class="form-actions fluid">
+														<div class="row">
+															<div class="col-md-6">
+																<div class="col-md-offset-3 col-md-9">
+																	<button type="button" onclick="send_hsr_select();" class="btn green">ثبت</button>
+																	<button type="button" onclick="cancel_hsr_select();" class="btn default">انصراف</button>
+																</div>
+															</div>
+															<div class="col-md-6">
+															</div>
+														</div>
+													</div>
+											
+												<!-- END FORM-->
+											</div>
+										</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+	
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="../assets/scripts/core/app.js"></script>
+	<script src="../assets/scripts/custom/form-samples.js"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+	<script>
+	jQuery(document).ready(function() {    
+	   // initiate layout and plugins
+	   //App.init();
+	   //FormSamples.init();
+	   //$(".").select2();
+	   //$("#div_hsr").css("visibility", "hidden");
+	});
+	</script>
+	<!-- END JAVASCRIPTS -->
+	
+	 <script>
+	 function send_tarh_select()
+     {    
+		var tarh_select=$('input:radio[name=tarh_select]:checked').val();
+	      // debugger;   
+		if(tarh_select==6)
+		{
+			$("#div_tarh_select").slideUp();
+			$("#div_hsr").removeClass("hidden").slideDown();
+		}
+		else if(tarh_select==8)
+		{
+			 
+			window.location="<? echo "sabt_tarh.phtml?admin=$admin&seed=$seed&tarh_select=8";  ?>";
+		}
+		else if(tarh_select==10)
+		{
+			 var answer = confirm ("آيااطمينان داريد طرح شما خدماتي است و کل اعتبار آن از خارج از دانشگاه تامين ميشود؟");
+	           if (answer)
+	        	   window.location="<? echo "sabt_tarh.phtml?admin=$admin&seed=$seed&tarh_select=10";  ?>";
+	           else
+	        	   window.location="<? echo "send_tarh_select.phtml?admin=$admin&seed=$seed";  ?>";
+		}
+     } 
+	 function send_hsr_select()
+     {    
+		        
+		if ($('#confirm').is(":checked"))
+			{
+			window.location="<? echo "sabt_tarh.phtml?admin=$admin&seed=$seed&tarh_select=6";  ?>";
+	 		}
+		
+     }  
+	 function cancel_hsr_select()
+     {    
+		        
+		 $("#div_hsr").slideUp();
+		 $("#div_hsr").addClass("hidden")
+		 $("#div_tarh_select").css("visibility", "visible").slideDown();
+		
+     }      
+	 
+	 </script>
+<?php
+footer_forms($admin,$seed);
+?>
+

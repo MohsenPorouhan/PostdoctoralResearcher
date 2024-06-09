@@ -1,0 +1,407 @@
+<?
+ include("include/database-connect.phtml");
+ include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 1 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login.phtml");
+   exit();
+  }
+ }
+
+// header_forms($admin,$seed);
+ include("include/styles.phtml");
+ 
+ echo "<br>";
+?>
+
+<?
+
+
+if(strcmp($action,"delete") ==0 )
+{
+   	$query="delete  from activities where act_code ='$deleted_item'";
+	$result=mysql_query($query) or die("Error in deleting data from activities");
+
+}
+
+
+if ($action==1)
+{
+ $title=trim($subject);
+
+ $q="select max(myorder) from activities where cod_tarh='$cod_tarh'";
+ 
+ $r=mysql_query($q) or die("server Error 1");
+ echo mysql_error();
+ if (mysql_num_rows($r)>0)
+  {
+   while($l=mysql_fetch_array($r))
+   	$myorder=$l["max(myorder)"];
+  }
+ else
+  $myorder=0;
+ $myorder++;
+
+ $q="insert into activities (cod_tarh,activity,start_mon,start_week,end_mon,end_week,myorder) values ($cod_tarh,'$act_title','$start_mon',$start_week,'$end_mon',$end_week,$myorder)";
+
+ $r=mysql_query($q) or die("server Error");
+}//end of action==1
+?>
+<? echo "<form name=\"add_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<script language="javascript" src="js/farsi.js"></script>
+
+<input type="hidden" value="1" name="action">
+<center>
+  <table border="0" width="74%" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt">
+    <tr>
+      <td width="66%" align="right"><input type="text" name="act_title" size="57" class="edit-user"  dir=RTL   ></td>
+      <td width="34%">عنوان فعاليت</td>
+    </tr>
+  </center>
+    <tr>
+      <td width="66%" align="right">
+        <table border="0" width="74%" cellspacing="0" cellpadding="0" style="font-size: 8pt; font-family: Tahoma">
+          <tr>
+            <td width="55%">
+              <p align="right"><b>هفته</b></td>
+            <td width="45%">
+              <p align="right"><b>ماه</b></td>
+          </tr>
+          <tr>
+            <td width="55%">
+              <p align="right">
+              <select size="1" name="start_week">
+                <option selected value="0"> -- انتخاب کنيد --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select></td>
+            <td width="45%">
+              <p align="right">
+              <select size="1" name="start_mon">
+                <option selected value="0"> -- انتخاب کنيد --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+                <option value="32">32</option>
+                <option value="33">33</option>
+                <option value="34">34</option>
+                <option value="35">35</option>
+                <option value="36">36</option>
+                <option value="37">37</option>
+                <option value="38">38</option>
+                <option value="39">39</option>
+                <option value="40">40</option>
+                <option value="41">41</option>
+                <option value="42">42</option>
+                <option value="43">43</option>
+                <option value="44">44</option>
+                <option value="45">45</option>
+                <option value="46">46</option>
+                <option value="47">47</option>
+                <option value="48">48</option>
+
+              </select></td>
+          </tr>
+        </table>
+      </td>
+<center>
+      <td width="34%">(زمان شروع (ابتداي ماه / هفته</td>
+    </tr>
+  </center>
+    <tr>
+      <td width="66%" align="right">
+        <table border="0" width="74%" cellspacing="0" cellpadding="0" style="font-size: 8pt; font-family: Tahoma">
+          <tr>
+            <td width="55%">
+              <p align="right"><b>هفته</b></td>
+            <td width="45%">
+              <p align="right"><b>ماه</b></td>
+          </tr>
+          <tr>
+            <td width="55%">
+              <p align="right">
+              <select size="1" name="end_week">
+                <option selected value="0"> -- انتخاب کنيد --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select></td>
+            <td width="45%">
+              <p align="right">
+              <select size="1" name="end_mon">
+                <option selected value="0"> -- انتخاب کنيد --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+                <option value="32">32</option>
+                <option value="33">33</option>
+                <option value="34">34</option>
+                <option value="35">35</option>
+                <option value="36">36</option>
+                <option value="37">37</option>
+                <option value="38">38</option>
+                <option value="39">39</option>
+                <option value="40">40</option>
+                <option value="41">41</option>
+                <option value="42">42</option>
+                <option value="43">43</option>
+                <option value="44">44</option>
+                <option value="45">45</option>
+                <option value="46">46</option>
+                <option value="47">47</option>
+                <option value="47">48</option>
+	            </select></td>
+          </tr>
+        </table>
+      </td>
+<center>
+      <td width="34%">(زمان پايان (انتهاي ماه / هفته</td>
+    </tr>
+    <tr>
+      <td width="100%" align="right" colspan="2"><br>
+        <p align="center"><input type="submit" value="تاييد" name="ok" style="border-style: solid; border-width: 1"></td>
+    </tr>
+  </table>
+  </center>
+</form>
+
+
+
+
+
+
+
+
+
+<?
+ $q="select max(end_mon) from activities where cod_tarh=$cod_tarh";
+
+ $r=mysql_query($q) or die("server error1");
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+   $max_mon=$l["max(end_mon)"];
+ }
+ $q="select * from activities where cod_tarh=$cod_tarh order by myorder";
+ $r=mysql_query($q) or die("server error2");
+?>
+<table border="1" width="100%" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="53%" align="right" valign="top">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  $moncounter=$max_mon;
+  while($moncounter>0)
+   {
+?>
+
+          <td width="50" align="right">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+
+         echo "<td width=\"20\" align=center>ماه $moncounter</td>";
+?>
+        </tr>
+      </table>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="11%">
+      <p align="center"><b>زمان کل</b></td>
+    <td width="30%">
+      <p align="center"><b>فعاليتهاي اجرايي</b></td>
+    <td width="6%">
+      <p align="center"><b>رديف</b></td>
+    <td width="6%">
+      <p align="center"><b>حذف</b></td>
+  </tr>
+<?
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+  {
+   $activity=$l["activity"];
+   $myorder=$l["myorder"];
+   $act_code=$l["act_code"];
+   $start_mon=$l["start_mon"];
+   $start_week=$l["start_week"];
+   $end_mon=$l["end_mon"];
+   $end_week=$l["end_week"];
+   $end_by_week=($end_mon*4)-(4-$end_week);
+//   echo "end by week=$end_by_week    end mon=$end_mon";
+if($start_mon==1)
+   $start_by_week=$start_week-1;
+else
+{
+  $var_week=$start_week-1;
+   $start_by_week=($start_mon*4)-(4-$var_week);
+
+}
+//   $start_by_week=(($start_mon-1)*4)-($start_week-1);
+//   echo "   start by week=$start_by_week    start mon=$start_mon";
+
+//   $total_time_week=$end_by_week - ($start_by_week-1);
+   $total_time_week=$end_by_week - $start_by_week;
+   $total_mon=(int)($total_time_week/4);
+   $total_week=(int)($total_time_week-$total_mon*4);
+   $weekcounter=$max_mon*4;
+   $moncounter=$max_mon;
+   if($start_by_week<0)
+     $start_by_week=$start_by_week*-1;
+
+   if($end_by_week<0)
+     $end_by_week=$end_by_week*-1;
+
+
+?>
+  <tr>
+    <td width="53%" align="right" valign="top">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  while($moncounter>0)
+   {
+?>
+
+          <td width="100" align="right">
+      <table border="0" width="50" height="100%" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+	    $tmp1=$moncounter*4;
+	    $tmp2=($moncounter-1)*4;
+        while (($tmp1>=$weekcounter) && ($tmp2<$weekcounter))
+        {
+       	 if (($weekcounter<=$end_by_week) && ($weekcounter>$start_by_week))
+			$bgcolor="bgcolor=\"blue\"";
+  		 else
+			$bgcolor="";
+//         $real_week=(int)($weekcounter/4)+($weekcounter-($weekcounter/4)*4);
+         echo "<td width=\"25%\" $bgcolor>&nbsp;</td>";
+		 $weekcounter--;
+        }
+?>
+        </tr>
+      </table>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="11%" dir="rtl" align="center">
+	<?
+	 if (($total_mon!=0) && ($total_week!=0))
+	   echo " $total_mon  ماه و  $total_week هفته";
+     else
+     {
+	  if ($total_mon!=0)
+	   echo "$total_mon ماه";
+	  if ($total_week!=0)
+	   echo "$total_week هفته";
+	 }
+	?></td>
+    <td width="30%" align="center"><? echo $activity; ?></td>
+    <td width="6%" align="center"><? echo $myorder; ?></td>
+   
+    <td style="border-style: solid; border-width: 1" width="6%" align="center"><a href=<? echo "add_activity.phtml?deleted_item=$act_code&admin=$admin&seed=$seed&action=delete&cod_tarh=$cod_tarh"; ?> ><img border="0" src="image/button_drop.png"></td>
+  </tr>
+<?
+   }
+ }
+?>
+</table>
+<?
+?>
+
+
+<?
+  //footer_forms($admin,$seed);
+ ?>
+
+

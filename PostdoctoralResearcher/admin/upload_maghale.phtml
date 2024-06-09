@@ -1,0 +1,131 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+ 
+ 
+
+if(isset($action))
+{
+  if (strcmp($action,"sabt")==0)
+  {
+  
+ 
+       $status_upload=upload_file("../tasvir_maghalat","","");
+       if(!strcmp($status_upload,"10") == 0 )
+       {
+	     $status="upload_error";
+	     $action="ضميمه ثبت شد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+
+       }
+	    ?>
+           <script language="javascript">
+           window.location="<? echo "old_tarhs.phtml?admin=$admin&seed=$seed&cod_tarh=$max_cod";  ?>";
+           </script>
+           <?
+
+	 
+  }
+  
+  
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" enctype=\"multipart/form-data\" action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=left width="249"   height=19>    
+    <a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=middle width="251"  background="image/zamaem.jpg" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+<?
+
+
+ if (strcmp($status_upload,"-5") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين فايلي قبلا بارگذاري شده</td>";
+    echo "</tr>";
+  }
+
+
+
+
+if (strcmp($status,"exceed_upload") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">حداکثر 3 عدد فايل همراه قابل بارگذاري است</td>";
+    echo "</tr>";
+  }
+
+
+
+
+if (strcmp($status_upload,"-2") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">قابل بارگذاري هستند Ms word و Adobe Acrobat  تنها فايلهاي</td>";
+    echo "</tr>";
+  }
+
+echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\" dir='rtl'> فايل مقاله صرفا .jpg  و يا .zip بوده و بايد همنام کد طرح باشد</td>";
+    echo "</tr>";
+?>
+
+  <tr>
+     <td width="100" align="right"><input type="file" name="fupload" class="edit-user"></td>
+    <td width="400" class="tahoma1" valign="top" >فايل مقاله</td>
+
+  </tr>
+
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+
+
+  <?
+  
+    
+ 
+ footer_forms($admin,$seed);
+?>
+
+
+
+

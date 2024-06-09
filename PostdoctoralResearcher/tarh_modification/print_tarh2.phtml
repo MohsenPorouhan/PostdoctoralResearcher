@@ -1,0 +1,2659 @@
+<?php session_start(); 
+	$la=$_SESSION["la"];
+	//echo $la." language";
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <?php 
+    if($la=="en")
+		$print="Print";
+    else 
+    	$print="چاپ";
+    ?>
+    <title><?php echo $print; ?></title>
+
+    <link href="../new_css/bootstrap.css" rel="stylesheet">
+    <?php if($la=="en"){ ?>
+    <link href="../new_css/print_style_ltr.css" rel="stylesheet">
+	<?php }else{?>
+	<link href="../new_css/print_style.css" rel="stylesheet">
+	<?php }?>
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"> </script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"> </script>
+        <![endif]-->
+
+</head>
+<body>
+
+<?
+if(!isset($version))
+	$version="-1";
+if(!isset($username))
+  $username="";
+if(!isset($rand))
+  $rand="";
+
+ $myq="select * from tarh where payannameh='1' and cod_tarh='$cod_tarh'";
+					    $res_user=mysql_query($myq) or die("Error");
+					   
+					    $payan_name_or_tarh =mysql_num_rows($res_user) ;
+					    
+   
+ 
+if( $payan_name_or_tarh <= 0)
+{
+	if($la=="en")
+		$title_caption=" Tarh ";
+	else
+        $title_caption=" طرح ";
+}
+else
+{
+	if($la=="en")
+         $title_caption=" Thesis ";
+	else 
+		$title_caption=" پايان نامه ";
+		
+} 
+ 
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='$version' ";
+  
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $servicing = $row_fetched["servicing"];
+  if(strcasecmp($servicing,"1")==0)
+  {
+	  	if($la=="en")
+	  		$title_caption="  Servicing Tarh ";
+	  	else 
+	  		$title_caption="  طرح خدماتي ";
+  }	
+  if( $payan_name_or_tarh <= 0)
+  {
+		if($la=="en")
+	  		$title_caption=" Tarh ";
+		else 
+			$title_caption=" طرح ";
+  }
+  else
+  {
+		if($la=="en")
+	    	$title_caption=" Thesis ";
+		else
+			$title_caption=" پايان نامه ";
+  }
+
+  $query_savabet_system="select * from savabetsystem";
+   $savabet_system=mysql_query($query_savabet_system) or die("Error in selectiong data from query_savabet_system");
+   if(mysql_num_rows($savabet_system) > 0 )
+   {
+     $tarhtype_second = mysql_fetch_array($savabet_system);
+     $tarh_type_1 = $tarhtype_second["tarh_type_1"];
+     $tarh_type_2 = $tarhtype_second["tarh_type_2"];
+   }
+   else
+   {
+     $tarh_type_1 = "";
+     $tarh_type_2 = "";
+   }
+   ?>
+    <div class="container">
+    <br></br>
+        <div class="panel panel-success hidden-print">
+            <div class=" panel-heading">
+                <h3 class="panel-title">
+                     <?php 
+					    if($la=="en")
+							$Printing_Options="Printing Options";
+					    else 
+					    	$Printing_Options="تنظيمات چاپ";
+					    echo $Printing_Options;
+					 ?>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <?php 
+                            if($la=="en") 
+                            {
+								echo "Guidance: </br>";
+								echo "You can put the tick next to each panel to does not print </br>";
+								echo "You can choose your favorite fonts from list the fonts below to print </br>";
+								echo 'To print use the button "Print"';
+							}
+                            else{
+                            ?>
+                            
+                            راهنما:
+                                <br />
+                            مي توانيد براي چاپ نشدن هر پنل از تيک کنار آن استفاده کنيد
+                       
+                                <br />
+                            مي توانيد از ليست فونت هاي زير فونت دلخواه خود را براي چاپ انتخاب کنيد
+                                <br />
+                            در نهايت براي چاپ از کليد "چاپ" استفاده کنيد
+							<?php }?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 pull-right">
+                        <form class="form-horizontal" role="form">
+                            <div class="col-md-10 pull-right myform">
+                                <div class="form-group">
+                                <?php 
+                                if($la=="en")
+                                {
+                                	?>
+                                	<label for="font">
+                                        Printing Font   
+                                    </label>
+                                    <select id="font" class="form-control">
+                                        <option id="BKoodakBold">Koodak</option>
+                                        <option id="BNazanin">Nazanin</option>
+                                        <option id="BTitrBold">Titr</option>
+                                        <option id="BZar">Zar</option>
+                                        <option id="BTraffic">Traffic</option>
+                                        <option id="BYagut">Yagut</option>
+                                        <option id="BYekan">Yekan</option>
+                                    </select>
+                               <?php  }
+                                else
+                                {
+								?>
+                                	<label for="font">فونت چاپ</label>
+										<select id="font" class="form-control">
+										<option id="BKoodakBold">کودک</option>
+										<option id="BNazanin">نازنين</option>
+										<option id="BTitrBold">تيتر</option>
+										<option id="BZar">زر</option>
+										<option id="BTraffic">ترافيک</option>
+										<option id="BYagut">ياقوت</option>
+										<option id="BYekan">يکان</option>
+										</select>	
+							   <?php 
+                                }
+								?>
+
+                                </div>
+                                <div class="checkbox">
+                                <input type="checkbox" id="useTitrFont" class="except">
+                                    <label>
+                                    <?php 
+                                    if($la=="en")
+                                    	echo"&nbsp;Use the Titr font for the titles";
+                                    else "&nbsp; استفاده از فونت تيتر براي عنوان ها";
+                                    ?>
+                                                                           
+                                    </label>
+								</div>
+                                <div class="form-group">
+                                    <label for="font">
+                                    <?php 
+                                    if($la=="en")
+                                        echo"Font size for writing";
+                                     else 
+                                     	echo"سايز فونت نوشته ها";
+                                     	
+                                    ?>
+                                    </label>
+                                    <input class="form-control" type="number" value="14" id="fontSize" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="font">
+                                    <?php 
+                                    if($la=="en")
+                                    {
+                                    	echo "Font size for titles";
+                                    	$print="Print";
+                                    }
+                                    else 
+                                    {
+                                    	echo"سايز فونت تيتر ها";
+                                    	$print="چاپ";
+                                    }
+                                    ?>
+                                    </label>
+                                    <input class="form-control" type="number" value="14" id="fontSizeHeader" />
+                                </div>
+                                <button type="submit" class="btn btn-default btn-primary" onclick=" window.print(<?php echo $cod_tarh;?>) "><?php echo $print; ?></button>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-info text-center">
+        <?php 
+        if($la=="en")
+        {
+			$title="Title:";
+			$edit_date="Date this edit:";
+			$code="with code";
+		}
+		else 
+		{
+			$title=":عنوان";
+			$edit_date=":تاريخ اين ويراست";
+			$code="با کد";
+		}
+        ?>
+            <h4><?php echo$title.$title_caption;?>   
+            </h4>
+            <span dir="rtl"><?php echo $tarh_name." ".$code." ".$cod_tarh;?></span>
+            <h4><?php echo $edit_date ?></h4>
+            <p>
+                
+            </p>
+        </div>
+        
+        <?
+	  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='$version' ";
+	  
+	  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+	  $row_fetched=mysql_fetch_array($result);
+	  $tarh_name = $row_fetched["tarh_title_farsi"];
+	
+	
+	  $first_ostad = $row_fetched["first_ostad"];
+	  $second_ostad= $row_fetched["second_ostad"];
+	  $third_ostad= $row_fetched["third_ostad"];
+	  $forth_ostad= $row_fetched["forth_ostad"];
+	  
+	  
+	   $first_ostad_moshaver = $row_fetched["first_ostad_moshaver"];
+	   $second_ostad_moshaver = $row_fetched["second_ostad_moshaver"];
+	   $third_ostad_moshaver = $row_fetched["third_ostad_moshaver"];
+	  $forth_ostad_moshaver = $row_fetched["forth_ostad_moshaver"];
+	
+	  $query_savabet_system="select * from savabetsystem";
+	   $savabet_system=mysql_query($query_savabet_system) or die("Error in selectiong data from query_savabet_system");
+	   if(mysql_num_rows($savabet_system) > 0 )
+	   {
+	     $tarhtype_second = mysql_fetch_array($savabet_system);
+	     $tarh_type_1 = $tarhtype_second["tarh_type_1"];
+	     $tarh_type_2 = $tarhtype_second["tarh_type_2"];
+	   }
+	   else
+	   {
+	     $tarh_type_1 = "";
+	     $tarh_type_2 = "";
+	   }
+	
+	
+	   $query="select * from tarh where cod_tarh='$cod_tarh'   and version='$version' ";
+	  
+	   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+	     $payan_name1 = $row_fetched["payan_name1"];
+	     $payan_name_daraje_elmi = $row_fetched["payan_name_daraje_elmi"];  
+	     $payan_name = $row_fetched["payan_name1"];
+	
+	if($la=="en")
+	{
+		     if($payan_name1=="0")
+			    $payan_name1="Is not thesis";
+			 if($payan_name1=="1")
+			    $payan_name1="thesis with ceiling cridit from thesises ";
+		 	 if($payan_name1=="2")
+			    $payan_name1="thesis with ceiling cridit above than thesises";
+	}
+	else 
+	{
+			 if($payan_name1=="0")
+				$payan_name1="پايان نامه نيست";
+			 if($payan_name1=="1")
+				$payan_name1="پايان نامه با سقف اعتباري پايان نامه ها";
+			 if($payan_name1=="2")
+				$payan_name1="پايان نامه با سقف اعتباري بالاتر از پايان نامه ها";	
+	}
+	   if($payan_name1!="0"){
+		   $query="select * from maghta_payan_name where maghta_payan_name=$payan_name_daraje_elmi";
+	       $qresult_maghta=mysql_query($query) or die("Error in selecting data from daraje elmi");
+			if(mysql_num_rows($qresult_maghta) > 0)
+			{
+			$rf_payan=mysql_fetch_array($qresult_maghta);
+			$desc_payan=$rf_payan["maghta_payan_name_desc"];
+			}
+	   }
+	   $daneshkade=$row_fetched["cod_daneshkade"];
+					$myq="select * from daneshkade where cod_daneshkade='$daneshkade'";
+					$myres=mysql_query($myq) or die("Error in selecting daneshkade");
+					$row_fetched_daneshkade = mysql_fetch_array($myres);
+					$daneshkade_name=$row_fetched_daneshkade["daneshkade_name"];
+					
+		$cod_group=$row_fetched["cod_group"];
+		$myq="select * from group_daneshkade where cod_group='$cod_group'";
+		
+		$myres=mysql_query($myq) or die("Error in selecting daneshkade");
+		$row_fetched_group = mysql_fetch_array($myres);
+		$group_name=$row_fetched_group["group_name"];  
+		
+		if($row_fetched["tarh_type"]< 10 )
+		  $tarh_type_code =trim($row_fetched["tarh_type"]);
+		else
+		  $tarh_type_code=$row_fetched["tarh_type"];
+	    $query="select * from tarhtype where tarh_type='".$tarh_type_code."'";
+	    
+	    $myresult = mysql_query($query);
+	    $my_fetch_array = mysql_fetch_array($myresult);
+	    
+	        $query="select * from tarhtype_1 where tarh_type='".$row_fetched["tarh_type_1"]."'";
+		    $myresult = mysql_query($query);
+		    $my_fetch_array_m = mysql_fetch_array($myresult);
+	     
+?>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+            <?php 
+            	if($la=="en")
+            	{
+            ?>
+                <h3 class="panel-title"><?php echo $title_caption." abstract";?>
+                        <div class="pull-left">
+                            <input type="checkbox" id="chekied-tarh" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4><?php echo $title_caption." title:";?> 
+                </h4>
+                <p >
+                    <?php echo $tarh_name;?>
+                </p>
+                <hr />
+				<?php if(strcasecmp($servicing,"1")!=0){?>
+                <h4><?php echo $title_caption."title(english):";?>
+                </h4>
+                <p>
+                    <?php echo $row_fetched["tarh_title_english"];?>
+                </p>
+                <hr />
+
+                <h4>Keywords(3-5 word): 
+                </h4>
+                <p>
+                    <?php echo nl2br($row_fetched["kelidvajeh"]);?>
+                </p>
+                <hr />
+                <h4>Line of research: 
+                </h4>
+                <p>
+                    <?php echo nl2br($row_fetched["line"]);?>
+                </p>
+                <hr />
+                <?php }?>
+                <h4>college / target center:
+                </h4>
+                <p>
+                    <?php echo $row_fetched_daneshkade["daneshkade_english_name"];?>
+                </p>
+                <hr />
+                <h4>Target group:
+                </h4>
+                <p>
+                    <?php echo $group_name;?>
+                </p>
+                <hr />
+
+                <h4>Type of tarh:
+                </h4>
+                <p>
+                    <?php echo $my_fetch_array["tarh_type_english_desc"];?>
+                </p>
+                <hr />
+				<?php if(strcasecmp($servicing,"1")!=0){?>
+                <h4>Type of study
+                </h4>
+                <p>
+                    <?php echo $my_fetch_array_m["tarh_type_english_desc"];?>
+                </p>
+                <hr />
+                <?php  
+                $payannameh=$row_fetched["payannameh"];
+        		if(strcmp($payannameh,"1")==0){?>
+                <h4>Whether Tarh is thesis?
+                </h4>
+                <p>
+                    <?php echo $payan_name1.". ".$desc_payan;?>
+                </p>
+                <?php }?>
+                <hr />
+				<?php }?>
+                <h4>Summary of Tarh necessary implementing:
+                </h4>
+                <p>
+                    <?php echo $row_fetched["zarorat"];?>
+                </p>
+
+				 <h4>Summary of implementing way and analysis method:
+                </h4>
+                <p>
+                    <?php echo $row_fetched["shive_ejra"];?>
+                </p>
+            </div>
+        </div>
+        <?php }else{?>
+          <h3 class="panel-title">چكيده <?php echo $title_caption;?>
+                        <div class="pull-left">
+                            <input type="checkbox" id="chekied-tarh" class="hidden-print" title="نمايش اين  در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>:عنوان <?php echo $title_caption;?> 
+                </h4>
+                <p >
+                    <?php echo $tarh_name;?>
+                </p>
+                <hr />
+				<?php if(strcasecmp($servicing,"1")!=0){?>
+                <h4>:(عنوان <?php echo $title_caption;?> (انگليسي
+                </h4>
+                <p>
+                    <?php echo $row_fetched["tarh_title_english"];?>
+                </p>
+                <hr />
+
+                <h4>:(واژگان كليدي (3-5 واژه 
+                </h4>
+                <p>
+                    <?php echo nl2br($row_fetched["kelidvajeh"]);?>
+                </p>
+                <hr />
+                <h4>:لاين تحقيقاتي 
+                </h4>
+                <p>
+                    <?php echo nl2br($row_fetched["line"]);?>
+                </p>
+                <hr />
+                <?php }?>
+                <h4>:دانشکده / مرکز هدف
+                </h4>
+                <p>
+                    <?php echo $daneshkade_name;?>
+                </p>
+                <hr />
+                <h4>:گروه هدف
+                </h4>
+                <p>
+                    <?php echo $group_name;?>
+                </p>
+                <hr />
+
+                <h4>:نوع طرح
+                </h4>
+                <p>
+                    <?php echo $my_fetch_array["tarh_type_desc"];?>
+                </p>
+                <hr />
+				<?php if(strcasecmp($servicing,"1")!=0){?>
+                <h4>:نوع مطالعه
+                </h4>
+                <p>
+                    <?php echo $my_fetch_array_m["tarh_type_desc"];?>
+                </p>
+                <hr />
+                <?php  
+                $payannameh=$row_fetched["payannameh"];
+        		if(strcmp($payannameh,"0")==0){?>
+                <h4>:آيا طرح پايان نامه است
+                </h4>
+                <p>
+                    <?php echo $payan_name1.". ".$desc_payan;?>
+                </p>
+                <?php }?>
+                <hr />
+				<?php }?>
+                <h4>:خلاصه ضرورت اجراي طرح 
+                </h4>
+                <p>
+                    <?php echo nl2br($row_fetched["zarorat"]);?>
+                </p>
+
+				 <h4>:خلاصه روش اجرا و شيوه تحليل 
+                </h4>
+                <p>
+                    <?php echo nl2br($row_fetched["shive_ejra"]);?>
+                </p>
+            </div>
+        </div>
+        <?php }if($la=="en"){?>
+        
+        <?php if(strcasecmp($servicing,"1")!=0){?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Description of issue
+                        <div class="pull-left">
+                            <input type="checkbox" id="bayanMasale" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>Description of issue(introduction):
+                </h4>
+                <p>
+                <?php echo $row_fetched["bayan_masale"];?>
+                </p>
+                
+                <h4>Investigation of statments:
+                </h4>
+                <p>
+                <?php echo $row_fetched["zarorat_ejra"];?>
+                </p>
+                
+                <h4>Definition of words:
+                </h4>
+                <p>
+                <?php echo $row_fetched["taarif_vajeh"];?>
+                </p>
+                
+                <h4>General,Specific,Practical Goals:
+                </h4>
+                <p>
+                <?php echo $row_fetched["ahdaf"];?>
+                </p>
+                
+                <h4>Assumptions and Researches Questions:
+                </h4>
+                <p>
+                <?php echo $row_fetched["soalat"];?>
+                </p>
+                
+                <h4><?php echo $title_caption;?> Lists of item of sources that use this research:
+                </h4>
+				<p>
+                <?php echo $row_fetched["fehrest_manabea"];?>
+                </p>
+
+            </div>
+        </div>
+        
+        <?php }}else{?>
+             <?php if(strcasecmp($servicing,"1")!=0){?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">بيان مساله
+                        <div class="pull-left">
+                            <input type="checkbox" id="bayanMasale" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>:(بيان مسئله (مقدمه
+                </h4>
+                <p>
+                <?php echo nl2br($row_fetched["bayan_masale"]);?>
+                </p>
+                
+                <h4>:بررسي متون
+                </h4>
+                <p>
+                <?php echo nl2br($row_fetched["zarorat_ejra"]);?>
+                </p>
+                
+                <h4>:تعريف واژه ها
+                </h4>
+                <p>
+                <?php echo $row_fetched["taarif_vajeh"];?>
+                </p>
+                
+                <h4>:اهداف کلي, اختصاصي و کاربردي
+                </h4>
+                <p>
+                <?php echo nl2br($row_fetched["ahdaf"]);?>
+                </p>
+                
+                <h4>:سوالات پژوهشي و فرضيات
+                </h4>
+                <p>
+                <?php echo $row_fetched["soalat"];?>
+                </p>
+                
+                <h4>:فهرست منابع مورد استفاده در اين <?php echo $title_caption;?>
+                </h4>
+				<p style="direction: ltr;">
+                <?php echo nl2br($row_fetched["fehrest_manabea"]);?>
+                </p>
+
+            </div>
+        </div>
+        <?php 
+            }} 
+        	$query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"  and mojri_tarh.version='$version' ";
+			$result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+   		if($la=="en")
+   		{
+	    ?>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">Assistances
+                        <div class="pull-left">
+                            <input type="checkbox" id="mojrian" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+            
+            <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                        	<th>Type of Cooperation</th>
+                        	<th>Email</th>
+                        	<th>Last Name</th>
+                            <th>Name</th>    
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+					   while($row_fetched_mojri=mysql_fetch_array($result))
+						 {
+						  if(strcmp($color,$list_color_1)==0)
+						   $color=$list_color_2;
+						  else
+						   $color=$list_color_1;
+						   
+						  $cod_tarh=$row_fetched_mojri["cod_tarh"];
+						  
+						
+						  $hamkari=$row_fetched_mojri["mojri_or_hamkar"];
+						  if(strcmp(trim($hamkari),"0")==0)
+						    $hamkari="Administrator";
+						  else
+						    $hamkari="Assistance";
+						    $mojri_code =$row_fetched_mojri["mojri_code"];
+						    
+						     $madrak=$row_fetched_mojri["madrak"];
+						    switch($madrak)
+						    {
+						      case '1':
+						      $madrak_string="Under Bachelor";
+						      break;
+						      
+						       case '2':
+						      $madrak_string="Bachelor";
+						      break;
+						       case '3':
+						      $madrak_string="Master";
+						      break;
+						      
+						       case '4':
+						      $madrak_string="professional PHD";
+						      break;
+						      
+						       case '5':
+						      $madrak_string="PHD";
+						      break;
+						      
+						       case '6':
+						      $madrak_string="specialist";
+						      break;
+						      
+						       case '7':
+						      $madrak_string="speciality";
+						      break;
+						      
+						       case '8':
+						      $madrak_string="MPH";
+						      break;
+					      
+					    }
+                    ?>
+                        <tr>
+                        	<td><?php echo $hamkari;?></td>
+                        	<td><?php echo $row_fetched_mojri["email"];?></td>
+                        	<td><?php echo $row_fetched_mojri["family"];?></td>
+                            <td><?php echo $row_fetched_mojri["name"];?></td>   
+                        </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <?php 
+		}else{
+
+		?>
+		        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">مجريان / همكاران
+                        <div class="pull-left">
+                            <input type="checkbox" id="mojrian" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+            
+            <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                        	<th>نوع همکاري</th>
+                        	<th>پست الکترونيکي</th>
+                        	<th>نام خانوادگي</th>
+                            <th>نام</th>    
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+					   while($row_fetched_mojri=mysql_fetch_array($result))
+						 {
+						  if(strcmp($color,$list_color_1)==0)
+						   $color=$list_color_2;
+						  else
+						   $color=$list_color_1;
+						   
+						  $cod_tarh=$row_fetched_mojri["cod_tarh"];
+						  
+						
+						  $hamkari=$row_fetched_mojri["mojri_or_hamkar"];
+						  if(strcmp(trim($hamkari),"0")==0)
+						    $hamkari="مجري";
+						  else
+						    $hamkari="همکار";
+						    $mojri_code =$row_fetched_mojri["mojri_code"];
+						    
+						     $madrak=$row_fetched_mojri["madrak"];
+						    switch($madrak)
+						    {
+						      case '1':
+						      $madrak_string="زير کارشناسي";
+						      break;
+						      
+						       case '2':
+						      $madrak_string="کارشناسي";
+						      break;
+						       case '3':
+						      $madrak_string="کارشناسي ارشد";
+						      break;
+						      
+						       case '4':
+						      $madrak_string="دکتراي حرفه اي";
+						      break;
+						      
+						       case '5':
+						      $madrak_string="PHD";
+						      break;
+						      
+						       case '6':
+						      $madrak_string="تخصص";
+						      break;
+						      
+						       case '7':
+						      $madrak_string="فوق تخصص";
+						      break;
+						      
+						       case '8':
+						      $madrak_string="MPH";
+						      break;
+					      
+					    }
+                    ?>
+                        <tr>
+                        	<td><?php echo $hamkari;?></td>
+                        	<td><?php echo $row_fetched_mojri["email"];?></td>
+                        	<td><?php echo $row_fetched_mojri["family"];?></td>
+                            <td><?php echo $row_fetched_mojri["name"];?></td>   
+                        </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+		<?php
+		}
+		if($la=="en"){
+        $payannameh=$row_fetched["payannameh"];
+        if(strcmp($payannameh,"1")==0){
+        ?>
+        
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">Supervisors and Advisers
+                        <div class="pull-left">
+                            <input type="checkbox" id="ostad" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+            
+            <div class="panel-body">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                        	<th>Email</th>
+                        	<th>Last Name</th>
+                            <th>Name</th>
+                            <th>Position</th>    
+                        </tr>
+                    </thead>
+                    <tbody>
+                   
+                   <?php  $first_ostad=$row_fetched["first_ostad"];
+                   $query="select * from user_login where email='$first_ostad'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($first_ostad)>0)
+                   {
+                   ?>
+                        <tr>
+                        	<td><?php echo $first_ostad;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>Supervisor</td>
+                        </tr>
+                       
+                   <?php  
+                   }
+                   $second_ostad=$row_fetched["second_ostad"];
+                   $query="select * from user_login where email='$second_ostad'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($second_ostad)>0)
+                   {
+                   ?>
+                        <tr>
+                        	<td><?php echo $second_ostad;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>Supervisor</td>
+                        </tr>
+                   <?php
+			       }
+                   $first_moshaver=$row_fetched["first_ostad_moshaver"];
+                   $query="select * from user_login where email='$first_moshaver'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($first_moshaver)>0)
+                   {
+                   ?>
+                        <tr>
+                        	<td><?php echo $first_moshaver;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>Adviser</td>
+                        </tr>
+                   <?php 
+                   }
+                   $second_ostad_moshaver=$row_fetched["second_ostad_moshaver"];
+                   $query="select * from user_login where email='$second_ostad_moshaver'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($second_ostad_moshaver)>0)
+                   {
+                   ?>
+                        <tr>
+                        	<td><?php echo $second_ostad_moshaver;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>Adviser</td>
+                        </tr>
+                    <?php 
+                   }?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php }}else{?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">اساتيد راهنما و مشاور
+                        <div class="pull-left">
+                            <input type="checkbox" id="ostad" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+            
+            <div class="panel-body">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                        	<th>پست الکترونيکي</th>
+                        	<th>نام خانوادگي</th>
+                            <th>نام</th>
+                            <th>سمت</th>    
+                        </tr>
+                    </thead>
+                    <tbody>
+                   
+                   <?php  $first_ostad=$row_fetched["first_ostad"];
+                   $query="select *from user_login where email='$first_ostad'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($first_ostad)>0){
+                   ?>
+                        <tr>
+                        	<td><?php echo $first_ostad;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>استاد راهنما اول</td>
+                        </tr>
+                        <?php }
+                        
+                   $second_ostad=$row_fetched["second_ostad"];
+                   $query="select * from user_login where email='$second_ostad'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($second_ostad)>0)
+                   {
+                   ?>
+                        <tr>
+                        	<td><?php echo $second_ostad;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>استاد راهنما دوم</td>
+                        </tr>
+                   <?php
+			       }
+                   $first_moshaver=$row_fetched["first_ostad_moshaver"];
+                   $query="select *from user_login where email='$first_moshaver'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($first_moshaver)>0){
+                   ?>
+                        <tr>
+                        	<td><?php echo $first_moshaver;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>استاد مشاور اول</td>
+                        </tr>
+                        <?php }
+                   $second_ostad_moshaver=$row_fetched["second_ostad_moshaver"];
+                   $query="select * from user_login where email='$second_ostad_moshaver'";
+                   $result_ostad=mysql_query($query) or die("Error in selecting data from tarh");
+        		   $row_fetched_ostad=mysql_fetch_array($result_ostad);
+                   if(strlen($second_ostad_moshaver)>0)
+                   {
+                   ?>
+                        <tr>
+                        	<td><?php echo $second_ostad_moshaver;?></td>
+                        	<td><?php echo $row_fetched_ostad["family"];?></td>
+                            <td><?php echo $row_fetched_ostad["name"];?></td>   
+                            <td>استاد مشاور دوم</td>
+                        </tr>
+                    <?php 
+                   }?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php	
+        }
+        if(strcasecmp($servicing,"1")!=0){
+			if($la=="en"){   
+        	$query="select * from ravesh_ejra where cod_tarh='$cod_tarh' and version='$version'";
+        	$result=mysql_query($query) or die("Error in selecting data from tarh");
+        	$row_fetched=mysql_fetch_array($result);
+        ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Implementation Way
+                    <div class="pull-left">
+                        <input type="checkbox" id="raveshEjra" class="hidden-print" title="Show this panel in print" checked="checked" />
+                    </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>Implementation Way:</h4>
+                <p>
+                    <?php echo $row_fetched["ravesh_ejra"];?>
+                </p>
+                <hr />
+                <h4>Specification tool`s information collection and way of collection:</h4>
+                <p>
+                    <?php echo $row_fetched["moshakhasat_abzar"];?>
+                </p>
+                <hr />
+                <h4>Way of calculation`s instance content and count of it:</h4>
+                <p>
+                   <?php echo $row_fetched["ravesh_mohasebe"];?>       
+                </p>
+                <hr />
+                <h4>Implementation of <?php echo $title_caption;?>`s limitations</h4>
+                <p>
+                    <?php echo $row_fetched["mahdoudiat_ejra"];?> 
+                </p>
+            </div>
+        </div>
+        <?php 
+        }else{
+		$query="select * from ravesh_ejra where cod_tarh='$cod_tarh' and version='$version'";
+		$result=mysql_query($query) or die("Error in selecting data from tarh");
+		$row_fetched=mysql_fetch_array($result);
+		?>
+			
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">روش اجرا
+                    <div class="pull-left">
+                        <input type="checkbox" id="raveshEjra" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                    </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>:روش اجرا</h4>
+                <p>
+                    <?php echo nl2br($row_fetched["ravesh_ejra"]);?>
+                </p>
+                <hr />
+                <h4>:مشخصات ابزار جمع آوري اطلاعات و نحوه جمع آوري آن</h4>
+                <p>
+                    <?php echo nl2br($row_fetched["moshakhasat_abzar"]);?>
+                </p>
+                <hr />
+                <h4>:روش محاسبه حجم نمونه و تعداد آن</h4>
+                <p>
+                   <?php echo nl2br($row_fetched["ravesh_mohasebe"]);?>       
+                </p>
+                <hr />
+                <h4>:محدوديتهاي اجرايي <?php echo $title_caption;?> و روش کاهش آنها</h4>
+                <p>
+                    <?php echo nl2br($row_fetched["mahdoudiat_ejra"]);?> 
+                </p>
+            </div>
+        </div>
+			 
+	    <?php
+	    }
+	    if($la=="en"){
+        	$query="select * from  jadval_zarayeb where cod_tarh=\"$cod_tarh\" and version='$version' order by name_var ";
+ 			$result=mysql_query($query) or die("Error in selecting data from jadval zarayeb");
+        ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">Variables table
+                        <div class="pull-left">
+                            <input type="checkbox" id="jadval_zarayeb" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+        <div class="panel-body">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                            <td rowspan="3" >scale</td>
+                            <td rowspan="3">measurement way</td>
+                            <td rowspan=3>science-practical definition</td>
+                            <td colspan=4>variable type</td>
+                            <td rowspan=3>variable role</td>
+                            <td rowspan=3>variable title</td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 >Qualitative</td>
+                            <td colspan=2>Rank</td>
+                        </tr>
+                        <tr>
+                            <td>Rank</td>
+                            <td>Nominal</td>
+                            <td>Continuous</td>
+                            <td>Discrete</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+					   while($row_fetched=mysql_fetch_array($result))
+						 {
+						  
+						 if(strlen(trim($row_fetched["meghyas"])) ==0 )
+				         	$meghyas="&nbsp;";
+				       	 else
+				         	$meghyas=$row_fetched["meghyas"];
+				         	
+				       	 if(strlen(trim($row_fetched["ravesh_andaze"])) ==0 )
+				         	$ravesh_andaze="&nbsp;";
+				         else
+				         	$ravesh_andaze=$row_fetched["ravesh_andaze"];
+				         	
+						 if(strlen(trim($row_fetched["taarif_elmi_amali"])) ==0 )
+				         	$taarif_elmi_amali="&nbsp;";
+				         else
+				         	$taarif_elmi_amali=$row_fetched["taarif_elmi_amali"];
+				      
+				         					 	
+                    ?>
+                        <tr>
+                            <td><?php echo $meghyas;?></td>
+                            <td><?php echo $ravesh_andaze;?></td>
+                            <td><?php echo $taarif_elmi_amali;?></td>
+                            
+                        
+                        <?php 
+				       	  if($row_fetched["var_type"]==0)
+				         	echo "<td ><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td >&nbsp;</td>";
+					
+					       if($row_fetched["var_type"]==1)
+					         echo "<td ><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td >&nbsp;</td>";
+					
+					       if($row_fetched["var_type"]==2)
+					         echo "<td ><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+					
+					       if($row_fetched["var_type"]==3)
+					         echo "<td><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td >&nbsp;</td>";
+					
+					       if($row_fetched["naghsh_var"]==0)
+					         $naghsh="Independent";
+					       else
+						     $naghsh="dependent";
+						?>
+					
+						<td><?php echo $naghsh;?></td>
+						<td><?php echo $row_fetched["name_var"];?></td>
+					    </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php }else{?>
+        	<?php
+        	$query="select * from  jadval_zarayeb where cod_tarh=\"$cod_tarh\" and version='$version' order by name_var ";
+ 			$result=mysql_query($query) or die("Error in selecting data from jadval zarayeb");
+            ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">جدول متغيرها
+                        <div class="pull-left">
+                            <input type="checkbox" id="jadval_zarayeb" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+        <div class="panel-body">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                            <td rowspan="3" >مقياس</td>
+                            <td rowspan="3">نحوه اندازه گيري</td>
+                            <td rowspan=3>تعريف علمي عملي</td>
+                            <td colspan=4>نوع متغير</td>
+                            <td rowspan=3>نقش متغير</td>
+                            <td rowspan=3>عنوان متغير</td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 >کيفي</td>
+                            <td colspan=2>کمي</td>
+                        </tr>
+                        <tr>
+                            <td>رتبه اي</td>
+                            <td>اسمي</td>
+                            <td>پيوسته</td>
+                            <td>گسسته</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+					   while($row_fetched=mysql_fetch_array($result))
+						 {
+						  
+						 if(strlen(trim($row_fetched["meghyas"])) ==0 )
+				         	$meghyas="&nbsp;";
+				       	 else
+				         	$meghyas=$row_fetched["meghyas"];
+				         	
+				       	 if(strlen(trim($row_fetched["ravesh_andaze"])) ==0 )
+				         	$ravesh_andaze="&nbsp;";
+				         else
+				         	$ravesh_andaze=$row_fetched["ravesh_andaze"];
+				         	
+						 if(strlen(trim($row_fetched["taarif_elmi_amali"])) ==0 )
+				         	$taarif_elmi_amali="&nbsp;";
+				         else
+				         	$taarif_elmi_amali=$row_fetched["taarif_elmi_amali"];
+				      
+				         					 	
+                    ?>
+                        <tr>
+                            <td><?php echo $meghyas;?></td>
+                            <td><?php echo $ravesh_andaze;?></td>
+                            <td><?php echo $taarif_elmi_amali;?></td>
+                            
+                        
+                        <?php 
+				       	  if($row_fetched["var_type"]==0)
+				         	echo "<td ><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td >&nbsp;</td>";
+					
+					       if($row_fetched["var_type"]==1)
+					         echo "<td ><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td >&nbsp;</td>";
+					
+					       if($row_fetched["var_type"]==2)
+					         echo "<td ><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+					
+					       if($row_fetched["var_type"]==3)
+					         echo "<td><img border=\"0\" src=image/tick.gif></td>";
+					      else
+					         echo "<td >&nbsp;</td>";
+					
+					       if($row_fetched["naghsh_var"]==0)
+					         $naghsh="مستقل";
+					       else
+						     $naghsh="وابسته";
+						?>
+					
+						<td><?php echo $naghsh;?></td>
+						<td><?php echo $row_fetched["name_var"];?></td>
+					    </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+       <?php }}?>
+        <?php  
+        	$q="select max(end_mon) from activities where cod_tarh='$cod_tarh'  and version='$version'";
+			 $r=mysql_query($q) or die("server error1");
+			 if(mysql_num_rows($r)>0)
+			 {
+			  while ($l=mysql_fetch_array($r))
+			   $max_mon=$l["max(end_mon)"];
+			 }
+			  $q="select * from activities where cod_tarh='$cod_tarh'  and version='$version'";
+ 			 $r=mysql_query($q) or die("server error2");
+ 			 if($la=="en"){
+ 		?>
+        <div class="panel panel-info" id="jadval">
+            <div class="panel-heading">
+                <h3 class="panel-title">Table of schedule implementation step:
+                        <div class="pull-left">
+                            <input type="checkbox" id="JadvalZamani" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body" id="jadval-body">
+                <table class="table table-bordered table-striped" id="tbl-gant">
+                    <thead>
+                        <tr>
+                            <th>
+                                <table style="float:right;">
+                                    <tbody>
+                                        <tr>
+        								<?php  $moncounter=$max_mon;
+											  while($moncounter>0)
+											   {?>
+											    <td>
+	                                                <table width="40" style="float:right;">
+	                                                    <tbody>
+	                                                        <tr>
+	                                                            <td width="35"><?php echo "Month ".$moncounter?></td>
+	                                                        </tr>
+	                                                    </tbody>
+	                                                </table>
+                                            	</td>
+											  
+											   <?php 
+											   $moncounter--;
+											   }?>
+											</tr>
+                                    </tbody>
+                                </table>
+                            </th>
+                                                       
+                            <th>Total of time per month /week     
+                            </th>
+                            <th>
+                             Tarh implementation step 
+                                         
+                            <th>Number of row
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $row_number=1;
+					 if(mysql_num_rows($r)>0)
+					 {
+					  while ($l=mysql_fetch_array($r))
+					  {
+					  
+					   $activity=$l["activity"];
+					   $myorder=$l["myorder"];
+					   $act_code=$l["act_code"];
+					   $start_mon=$l["start_mon"];
+					   $start_week=$l["start_week"];
+					   $end_mon=$l["end_mon"];
+					   $end_week=$l["end_week"];
+					   $end_by_week=($end_mon*4)-(4-$end_week);
+					//   echo "end by week=$end_by_week    end mon=$end_mon";
+						if($start_mon==1)
+						   $start_by_week=$start_week-1;
+						else
+						{
+						  $var_week=$start_week-1;
+						  $start_by_week=($start_mon*4)-(4-$var_week);
+						}
+					//   $start_by_week=(($start_mon-1)*4)-($start_week-1);
+					//   echo "   start by week=$start_by_week    start mon=$start_mon";
+					
+					//   $total_time_week=$end_by_week - ($start_by_week-1);
+					   $total_time_week=$end_by_week - $start_by_week;
+					   $total_mon=(int)($total_time_week/4);
+					   $total_week=(int)($total_time_week-$total_mon*4);
+					   $weekcounter=$max_mon*4;
+					   $moncounter=$max_mon;
+					   if($start_by_week<0)
+					     $start_by_week=$start_by_week*-1;
+					   if($end_by_week<0)
+					     $end_by_week=$end_by_week*-1;
+                    ?>
+                         <tr>
+                            <td width="53%" align="right" valign="middle" height="100%">
+                                <table border="0" width="40" height="100%" style="float: right;" cellspacing="0" cellpadding="0">
+                                    <tbody>
+                                        <tr>
+										<?php 
+										//echo $moncounter;
+										while($moncounter>0)
+   										{
+
+										?>
+                                            <td align="right">
+                                                <table border="1" width="40" height="100%" style="float: right;" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+                                                        <tr>
+                                                       <?
+													    $tmp1=$moncounter*4;
+													    $tmp2=($moncounter-1)*4;
+												        while (($tmp1>=$weekcounter) && ($tmp2<$weekcounter))
+												        {
+												       	 if (($weekcounter<=$end_by_week) && ($weekcounter>$start_by_week))
+															$bgcolor="bgcolor=\"blue\"";
+												  		 else
+															$bgcolor="";
+												//         $real_week=(int)($weekcounter/4)+($weekcounter-($weekcounter/4)*4);
+												         echo "<td width=\"7\" $bgcolor>&nbsp;</td>";
+														 $weekcounter--;
+												        }
+                                                         ?>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </td>
+                                            <?php 
+                                            $moncounter--;
+   										}
+                                            ?>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td width="11%" dir="ltr" align="center"><?php 
+								 if (($total_mon!=0) && ($total_week!=0))
+								   echo " $total_mon   month and  $total_week week";
+							     else
+							     {
+								  if ($total_mon!=0)
+								   echo "$total_mon month";
+								  if ($total_week!=0)
+								   echo "$total_week week";
+								 }
+								?> 
+							</td>
+                            <td width="10%" align="center"><?php echo $activity;?></td>
+                            <td width="6%" align="center"><? echo $row_number; ?></td>
+                        </tr>
+                        <?php 
+					  $row_number++;
+					  }
+					  
+					  }?>
+											        
+        
+        			</tbody>
+                </table>
+            </div>
+        </div>
+        
+        
+        <?php 
+		}else{?>
+			
+			        <div class="panel panel-info" id="jadval">
+            <div class="panel-heading">
+                <h3 class="panel-title">:جدول زماني مراحل اجرا و پيشرفت کار
+                        <div class="pull-left">
+                            <input type="checkbox" id="JadvalZamani" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body" id="jadval-body">
+                <table class="table table-bordered table-striped" id="tbl-gant">
+                    <thead>
+                        <tr>
+                            <th>
+                                <table style="float:right;">
+                                    <tbody>
+                                        <tr>
+        								<?php  $moncounter=$max_mon;
+											  while($moncounter>0)
+											   {?>
+											    <td>
+	                                                <table width="40" style="float:right;">
+	                                                    <tbody>
+	                                                        <tr>
+	                                                            <td width="35"><?php echo "ماه ".$moncounter?></td>
+	                                                        </tr>
+	                                                    </tbody>
+	                                                </table>
+                                            	</td>
+											  
+											   <?php 
+											   $moncounter--;
+											   }?>
+											</tr>
+                                    </tbody>
+                                </table>
+                            </th>
+                                                       
+                            <th>زمان كل بر حسب ماه /هفته          
+                            </th>
+                            <th>
+                            مراحل اجرايي طرح
+                                         
+                            <th>رديف
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $row_number=1;
+					 if(mysql_num_rows($r)>0)
+					 {
+					  while ($l=mysql_fetch_array($r))
+					  {
+					  
+					   $activity=$l["activity"];
+					   $myorder=$l["myorder"];
+					   $act_code=$l["act_code"];
+					   $start_mon=$l["start_mon"];
+					   $start_week=$l["start_week"];
+					   $end_mon=$l["end_mon"];
+					   $end_week=$l["end_week"];
+					   $end_by_week=($end_mon*4)-(4-$end_week);
+					//   echo "end by week=$end_by_week    end mon=$end_mon";
+						if($start_mon==1)
+						   $start_by_week=$start_week-1;
+						else
+						{
+						  $var_week=$start_week-1;
+						  $start_by_week=($start_mon*4)-(4-$var_week);
+						}
+					//   $start_by_week=(($start_mon-1)*4)-($start_week-1);
+					//   echo "   start by week=$start_by_week    start mon=$start_mon";
+					
+					//   $total_time_week=$end_by_week - ($start_by_week-1);
+					   $total_time_week=$end_by_week - $start_by_week;
+					   $total_mon=(int)($total_time_week/4);
+					   $total_week=(int)($total_time_week-$total_mon*4);
+					   $weekcounter=$max_mon*4;
+					   $moncounter=$max_mon;
+					   if($start_by_week<0)
+					     $start_by_week=$start_by_week*-1;
+					   if($end_by_week<0)
+					     $end_by_week=$end_by_week*-1;
+                    ?>
+                         <tr>
+                            <td width="53%" align="right" valign="middle" height="100%">
+                                <table border="0" width="40" height="100%" style="float: right;" cellspacing="0" cellpadding="0">
+                                    <tbody>
+                                        <tr>
+										<?php 
+										//echo $moncounter;
+										while($moncounter>0)
+   										{
+
+										?>
+                                            <td align="right">
+                                                <table border="1" width="40" height="100%" style="float: right;" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+                                                        <tr>
+                                                       <?
+													    $tmp1=$moncounter*4;
+													    $tmp2=($moncounter-1)*4;
+												        while (($tmp1>=$weekcounter) && ($tmp2<$weekcounter))
+												        {
+												       	 if (($weekcounter<=$end_by_week) && ($weekcounter>$start_by_week))
+															$bgcolor="bgcolor=\"blue\"";
+												  		 else
+															$bgcolor="";
+												//         $real_week=(int)($weekcounter/4)+($weekcounter-($weekcounter/4)*4);
+												         echo "<td width=\"7\" $bgcolor>&nbsp;</td>";
+														 $weekcounter--;
+												        }
+                                                         ?>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </td>
+                                            <?php 
+                                            $moncounter--;
+   										}
+                                            ?>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td width="11%" dir="rtl" align="center"><?php 
+								 if (($total_mon!=0) && ($total_week!=0))
+								   echo " $total_mon  ماه و  $total_week هفته";
+							     else
+							     {
+								  if ($total_mon!=0)
+								   echo "$total_mon ماه";
+								  if ($total_week!=0)
+								   echo "$total_week هفته";
+								 }
+								?> 
+							</td>
+                            <td width="10%" align="center"><?php echo $activity;?></td>
+                            <td width="6%" align="center"><? echo $row_number; ?></td>
+                        </tr>
+                        <?php 
+					  $row_number++;
+					  }
+					  
+					  }?>
+											        
+        
+        			</tbody>
+                </table>
+            </div>
+        </div>
+			
+		<?php }
+        $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='$version'";
+   		$result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   		
+   		if($la=="en"){
+   		?>
+   		 <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">Funding from other organizations
+                        <div class="pull-left">
+                            <input type="checkbox" id="etebar" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+        <div class="panel-body">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                            <th>Payment Way</th>
+                            <th>Letter Date</th>
+                            <th>Number of letter notification credit</th>
+                            <th>Amount</th>
+                            <th>Institute Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $eatebare_sazmanha_pardakht_add=0;
+					   while($row_fetched=mysql_fetch_array($result))
+						 {
+						    $mojri_code = $row_fetched["mojri_code"];
+						   	$eatebare_sazmanha_value = $row_fetched["eatebare_sazmanha_value"]; 
+						   	$eatebare_sazmanha_pardakht = $row_fetched["eatebare_sazmanha_pardakht"];
+						   	$eatebare_sazmanha_fax = $row_fetched["eatebare_sazmanha_fax"];
+						   	$eatebare_sazmanha_telno= $row_fetched["eatebare_sazmanha_telno"];
+						   	$eatebare_sazmanha_organ = $row_fetched["eatebare_sazmanha_organ"];
+						    $eatebare_sazmanha_address = $row_fetched["eatebare_sazmanha_address"];
+						    $letter_number = $row_fetched["letter_number"];
+						    $letter_date = $row_fetched["letter_date"];
+						    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+						    $id_pardakht= $row_fetched["id"];
+						  
+						  	if(strcmp($eatebare_sazmanha_pardakht,'0')==0)
+						        $eatebare_sazmanha="Credit is going to receive by the Executive ";
+						    if(strcmp($eatebare_sazmanha_pardakht,'1')==0)
+						        $eatebare_sazmanha=" Credit is paid to the university, until from through the contract will pay to Executive ";
+                    ?>
+                        <tr>
+                            <td><?php echo $eatebare_sazmanha;?></td>
+                            <td><?php echo $letter_date;?></td>
+                            <td><?php echo $letter_number;?></td>
+                            <td><?php echo $eatebare_sazmanha_value;?></td>
+                            <td><?php echo $eatebare_sazmanha_organ;?></td>
+                        </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php 
+		}else{?>
+		 <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title ">تامين اعتبار از ساير سازمانها
+                        <div class="pull-left">
+                            <input type="checkbox" id="etebar" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+
+            </div>
+        <div class="panel-body">
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 70%;">
+                    <thead>
+                        <tr>
+                            <th>نحوه پرداخت</th>
+                            <th>تاريخ نامه</th>
+                            <th>شماره نامه ابلاغ اعتبار</th>
+                            <th>مبلغ</th>
+                            <th>نام موسسه</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $eatebare_sazmanha_pardakht_add=0;
+					   while($row_fetched=mysql_fetch_array($result))
+						 {
+						    $mojri_code = $row_fetched["mojri_code"];
+						   	$eatebare_sazmanha_value = $row_fetched["eatebare_sazmanha_value"]; 
+						   	$eatebare_sazmanha_pardakht = $row_fetched["eatebare_sazmanha_pardakht"];
+						   	$eatebare_sazmanha_fax = $row_fetched["eatebare_sazmanha_fax"];
+						   	$eatebare_sazmanha_telno= $row_fetched["eatebare_sazmanha_telno"];
+						   	$eatebare_sazmanha_organ = $row_fetched["eatebare_sazmanha_organ"];
+						    $eatebare_sazmanha_address = $row_fetched["eatebare_sazmanha_address"];
+						    $letter_number = $row_fetched["letter_number"];
+						    $letter_date = $row_fetched["letter_date"];
+						    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+						    $id_pardakht= $row_fetched["id"];
+						  
+						  	if(strcmp($eatebare_sazmanha_pardakht,'0')==0)
+						        $eatebare_sazmanha="اعتبار توسط مجري دريافت مي شود ";
+						    if(strcmp($eatebare_sazmanha_pardakht,'1')==0)
+						        $eatebare_sazmanha=" اعتبار به دانشگاه پرداخت ميشود تا از طريق قرارداد به مجري پرداخت شود ";
+                    ?>
+                        <tr>
+                            <td><?php echo $eatebare_sazmanha;?></td>
+                            <td><?php echo $letter_date;?></td>
+                            <td><?php echo $letter_number;?></td>
+                            <td><?php echo $eatebare_sazmanha_value;?></td>
+                            <td><?php echo $eatebare_sazmanha_organ;?></td>
+                        </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+		<?php
+		 }
+         $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='$version'";
+		 $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+		 if(mysql_num_rows($result) > 0)
+		 {
+			if($la=="en"){
+        ?>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Personnel cost
+                        <div class="pull-left">
+                            <input type="checkbox" id="hazinePersoneli" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                        <tr>
+                            <th>Total</th>
+                            <th>Fees hour</th>
+                            <th>Total hour each person</th>
+                            <th>Degree</th>
+                            <th>Number of persons</th>
+                            <th>Activities Type</th>
+                            <th>Name of executive / assistance / other persons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $personnel_sum=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				       echo "<tr>";
+				       
+				       $mojri_code=$row_fetched["mojri_code"];
+				       $query1="select distinct user_login.* from user_login  where user_login.email='$mojri_code'";
+				       $result1=mysql_query($query1) or die("Error");
+				       $mojri_name_family="*";
+				       
+				       if(mysql_num_rows($result1)>0)		   
+					   {
+					   	
+					   	$myrf=mysql_fetch_array($result1);
+					   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+					   	
+					   }
+					
+				       $query2="select distinct mojri.* from  mojri  where mojri.mojri_code= '$mojri_code'";
+				       $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+				       
+				       if(mysql_num_rows($result2)>0)		   
+					   {
+					   	
+					   	$myrf=mysql_fetch_array($result2);
+					   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+					   	
+					   }
+					   $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       				   $personnel_sum=$personnel_sum+$my_summary;
+       				    
+       				   $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+				       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+				       if(mysql_num_rows($qresult) > 0 )
+				       {
+				         $row_degree = mysql_fetch_array($qresult);
+				         $degree_result = $row_degree["darajeelmi_desc"];
+				       }
+				       else
+				         $degree_result = "Not registered";
+                    ?>
+					 <tr>
+                            <td><?php echo number_format($my_summary);?></td>
+                            <td><?php echo number_format($row_fetched["per_hour"]);?></td>
+                            <td><?php echo number_format($row_fetched["majmoa_saat"]);?></td>
+                            <td><?php echo $degree_result;?></td>
+                            <td><?php echo number_format($row_fetched["persons"]);?></td>
+                            <td><?php echo $row_fetched["activity_type"];?></td>
+                            <td><?php echo $mojri_name_family;?></td>
+                        </tr>
+                       
+                        <?php }?>
+                         <tr>
+                            <td><?php echo number_format($personnel_sum);?></td>
+                            <td>Total</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <?php
+		 }else{?>
+		 	<div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">هزينه پرسنلي
+                        <div class="pull-left">
+                            <input type="checkbox" id="hazinePersoneli" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                        <tr>
+                            <th>جمع</th>
+                            <th>حق الزحمه در ساعت</th>
+                            <th>مجموع ساعت هر فرد</th>
+                            <th>درجه تحصيلي</th>
+                            <th>تعداد افراد</th>
+                            <th>نوع فعاليت</th>
+                            <th>نام مجري / همکار / ديگر افراي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $personnel_sum=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				       echo "<tr>";
+				       
+				       $mojri_code=$row_fetched["mojri_code"];
+				       $query1="select distinct user_login.* from user_login  where user_login.email='$mojri_code'";
+				       $result1=mysql_query($query1) or die("Error");
+				       $mojri_name_family="*";
+				       
+				       if(mysql_num_rows($result1)>0)		   
+					   {
+					   	
+					   	$myrf=mysql_fetch_array($result1);
+					   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+					   	
+					   }
+					
+				       $query2="select distinct mojri.* from  mojri  where mojri.mojri_code= '$mojri_code'";
+				       $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+				       
+				       if(mysql_num_rows($result2)>0)		   
+					   {
+					   	
+					   	$myrf=mysql_fetch_array($result2);
+					   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+					   	
+					   }
+					   $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       				   $personnel_sum=$personnel_sum+$my_summary;
+       				    
+       				   $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+				       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+				       if(mysql_num_rows($qresult) > 0 )
+				       {
+				         $row_degree = mysql_fetch_array($qresult);
+				         $degree_result = $row_degree["darajeelmi_desc"];
+				       }
+				       else
+				         $degree_result = "ثبت نشده";
+                    ?>
+					 <tr>
+                            <td><?php echo number_format($my_summary);?></td>
+                            <td><?php echo number_format($row_fetched["per_hour"]);?></td>
+                            <td><?php echo number_format($row_fetched["majmoa_saat"]);?></td>
+                            <td><?php echo $degree_result;?></td>
+                            <td><?php echo number_format($row_fetched["persons"]);?></td>
+                            <td><?php echo $row_fetched["activity_type"];?></td>
+                            <td><?php echo $mojri_name_family;?></td>
+                        </tr>
+                       
+                        <?php }?>
+                         <tr>
+                            <td><?php echo number_format($personnel_sum);?></td>
+                            <td>مجموع</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+		 <?php 
+		}}
+		 if(strcmp($servicing,"1")==0){
+		
+    	$hazine_azmayesh_lable="هزينه استفاده از خدمات آزمايشگاهي و کارگاهي";
+	    }
+	    else
+	    	$hazine_azmayesh_lable="هزينه هاي آزمايشات وخدمات تخصصي";
+		 
+        $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='$version' order by mozoa_azmayesh ";
+		$result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   		if(mysql_num_rows($result) > 0)
+   		{
+			if($la=="en"){
+				if(strcmp($servicing,"1")==0){
+
+					$hazine_azmayesh_lable="The cost of use laboratory services and workshops";
+				}
+				else
+					$hazine_azmayesh_lable="Costs of specialized services and experiments";
+        ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><? echo $hazine_azmayesh_lable;?>
+                        <div class="pull-left">
+                            <input type="checkbox" id="hazineAzmayesh" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                            <th>Sum</th>
+                            <th>The cost per</th>
+                            <th>Total Number of</th>
+                            <th>Service Provider</th>
+                            <th>Experiment type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $lab_sum=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				        $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       					$lab_sum=$lab_sum+$my_summary;
+       					if (strcmp($row_fetched["azmayesh_center"],'1')==0)
+				        	$mahall_azmayesh="Private";
+				       if (strcmp($row_fetched["azmayesh_center"],'2')==0)
+				        	$mahall_azmayesh="Inside university";
+					   if (strcmp($row_fetched["azmayesh_center"],'3')==0)
+				        	$mahall_azmayesh="outside university"; 
+                    ?>
+					 <tr>
+                            <td><?php echo number_format($my_summary);?></td>
+                            <td><?php echo number_format($row_fetched["hazine_har_bar"]);?></td>
+                            <td><?php echo number_format($row_fetched["azmayesh_cnt"]);?></td>
+                            <td><?php echo $mahall_azmayesh;?></td>
+                            <td><?php echo $row_fetched["mozoa_azmayesh"];?></td>
+                        </tr>
+
+              <?php }?>
+                        <tr>
+                            <td><?php echo number_format($lab_sum);?></td>
+                            <td>Sum</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php 
+   		}else{ ?>
+   		
+   		         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><? echo $hazine_azmayesh_lable;?>
+                        <div class="pull-left">
+                            <input type="checkbox" id="hazineAzmayesh" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                            <th>جمع</th>
+                            <th>هزينه هر دفعه</th>
+                            <th>تعداد كل دفعات</th>
+                            <th>مركز سرويس دهنده</th>
+                            <th>نوع آزمايش يا خدمات تخصصي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $lab_sum=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				        $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       					$lab_sum=$lab_sum+$my_summary;
+       					if (strcmp($row_fetched["azmayesh_center"],'1')==0)
+				        	$mahall_azmayesh="خصوصي";
+				       if (strcmp($row_fetched["azmayesh_center"],'2')==0)
+				        	$mahall_azmayesh="داخل دانشگاه";
+					   if (strcmp($row_fetched["azmayesh_center"],'3')==0)
+				        	$mahall_azmayesh="دولتي خارج دانشگاه"; 
+                    ?>
+					 <tr>
+                            <td><?php echo number_format($my_summary);?></td>
+                            <td><?php echo number_format($row_fetched["hazine_har_bar"]);?></td>
+                            <td><?php echo number_format($row_fetched["azmayesh_cnt"]);?></td>
+                            <td><?php echo $mahall_azmayesh;?></td>
+                            <td><?php echo $row_fetched["mozoa_azmayesh"];?></td>
+                        </tr>
+
+              <?php }?>
+                        <tr>
+                            <td><?php echo number_format($lab_sum);?></td>
+                            <td>مجموع</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+   		
+    	<?php
+		}}
+        $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='$version'";
+		$result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   		if(mysql_num_rows($result) > 0)
+   		{
+			if($la=="en"){
+        ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                 <h3 class="panel-title">Menu equipments and instruments that must will purchase
+                        <div class="pull-left">
+                            <input type="checkbox" id="fehrestVasayel" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                            <th>Total price</th>
+                            <th>Price unit</th>
+                            <th>Unit</th>
+                            <th>Count or Amount</th>
+                            <th>Consumable or Non-Consumable</th>
+                            <th>Device code</th>
+                            <th>Manufacture or provider</th>
+                            <th>Name of machine</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $vasile_sum=0;
+                    $mycount1=0;
+				    while($row_fetched=mysql_fetch_array($result))
+				    {
+				    	 	$mycount1=$mycount1+$row_fetched["count"];
+       						$vasile_sum=$vasile_sum+$row_fetched["price"]*$row_fetched["count"];
+       						if( $row_fetched["usage_unusage"] == "0" )
+						        $using_unusage= "Consumable";
+						    else
+						          $using_unusage= "Non-Consumable"; 
+                    ?>
+					 <tr>
+                            <td><?php echo number_format($row_fetched["price"]*$row_fetched["count"]);?></td>
+                            <td><?php echo number_format($row_fetched["price"]);?></td>
+                            <td><?php echo $row_fetched["meghyas"];?></td>
+                            <td><?php echo number_format($row_fetched["count"]);?></td>
+                            <td><?php echo $using_unusage;?></td>
+                            <td><?php echo $row_fetched["country"];?></td>
+                            <td><?php echo $row_fetched["company"];?></td>
+                            <td><?php echo $row_fetched["name_dastgah"];?></td>
+                        </tr>
+                       
+                     <?php 
+				    }?>
+				     <tr>
+                            <td><?php echo number_format($vasile_sum);?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td><?php echo number_format($mycount1);?></td>
+                            <td>Total</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+        <?php 
+   		}else{?>
+       
+       <div class="panel panel-info">
+            <div class="panel-heading">
+                 <h3 class="panel-title">فهرست وسايل و مواردي که بايد خريداري شود
+                        <div class="pull-left">
+                            <input type="checkbox" id="fehrestVasayel" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                            <th>قيمت کل</th>
+                            <th>قيمت واحد</th>
+                            <th>واحد</th>
+                            <th>تعداد يا مقدار</th>
+                            <th>مصرفي يا غير مصرفي</th>
+                            <th>كد دستگاه</th>
+                            <th>شرکت سازنده</th>
+                            <th>نام دستگاه يا ماده</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $vasile_sum=0;
+                    $mycount1=0;
+				    while($row_fetched=mysql_fetch_array($result))
+				    {
+				    	 	$mycount1=$mycount1+$row_fetched["count"];
+       						$vasile_sum=$vasile_sum+$row_fetched["price"]*$row_fetched["count"];
+       						if( $row_fetched["usage_unusage"] == "0" )
+						        $using_unusage= "مصرفي";
+						    else
+						          $using_unusage= "غير مصرفي"; 
+                    ?>
+					 <tr>
+                            <td><?php echo number_format($row_fetched["price"]*$row_fetched["count"]);?></td>
+                            <td><?php echo number_format($row_fetched["price"]);?></td>
+                            <td><?php echo $row_fetched["meghyas"];?></td>
+                            <td><?php echo number_format($row_fetched["count"]);?></td>
+                            <td><?php echo $using_unusage;?></td>
+                            <td><?php echo $row_fetched["country"];?></td>
+                            <td><?php echo $row_fetched["company"];?></td>
+                            <td><?php echo $row_fetched["name_dastgah"];?></td>
+                        </tr>
+                       
+                     <?php 
+				    }?>
+				     <tr>
+                            <td><?php echo number_format($vasile_sum);?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td><?php echo number_format($mycount1);?></td>
+                            <td>مجموع</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+       
+       <?php
+       }}
+   		$query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='$version'";
+		$result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   		if(mysql_num_rows($result) > 0)
+   		{
+			if($la=="en"){
+        ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                 <h3 class="panel-title">Travel expenses
+                        <div class="pull-left">
+                            <input type="checkbox" id="HazineSafar" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                            <th>Cost</th>
+                            <th>Number of people travelling</th>
+                            <th>Transport mode</th>
+                            <th>Number of trips</th>
+                            <th>Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $trip_sum=0;
+				     $mycount1=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				       $trip_sum=$trip_sum+$row_fetched["hazine"];
+				       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+                    ?>
+					 	<tr>
+                            <td><?php echo number_format($row_fetched["hazine"]);?></td>
+                            <td><?php echo number_format($row_fetched["persons_cnt"]);?></td>
+                            <td><?php echo $row_fetched["vasile"];?></td>
+                            <td><?php echo number_format($row_fetched["dafe_safar"]);?></td>
+                            <td><?php echo $row_fetched["target"];?></td>
+                        </tr>
+                        
+                     <?php 
+				    }?>
+				    	<tr>
+                            <td><?php echo number_format($trip_sum);?></td>
+
+                            <td><?php echo number_format($mycount1);?></td>
+                            <td>Total</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+        <?php 
+   		}else{?>
+		<div class="panel panel-info">
+            <div class="panel-heading">
+                 <h3 class="panel-title">هزينه مسافرت
+                        <div class="pull-left">
+                            <input type="checkbox" id="HazineSafar" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                            <th>هزينه  به ريال</th>
+                            <th>تعداد افراد</th>
+                            <th>نوع وسيله</th>
+                            <th>دفعات مسافرت</th>
+                            <th>مقصد</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $trip_sum=0;
+				     $mycount1=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				       $trip_sum=$trip_sum+$row_fetched["hazine"];
+				       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+                    ?>
+					 	<tr>
+                            <td><?php echo number_format($row_fetched["hazine"]);?></td>
+                            <td><?php echo number_format($row_fetched["persons_cnt"]);?></td>
+                            <td><?php echo $row_fetched["vasile"];?></td>
+                            <td><?php echo number_format($row_fetched["dafe_safar"]);?></td>
+                            <td><?php echo $row_fetched["target"];?></td>
+                        </tr>
+                        
+                     <?php 
+				    }?>
+				    	<tr>
+                            <td><?php echo number_format($trip_sum);?></td>
+
+                            <td><?php echo number_format($mycount1);?></td>
+                            <td>مجموع</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+		<?php
+		}}
+   		$query="select * from  sayer_hazine where cod_tarh=\"$cod_tarh\"  and version='$version'";
+		$result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   		if(mysql_num_rows($result) > 0)
+   		{
+			if($la=="en"){
+        ?>
+         <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Other Expenditures
+                        <div class="pull-left">
+                            <input type="checkbox" id="sayerHazineha" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                       <? if(strcmp($servicing,"1")==0){?>
+                       		<th>University overhead</th>
+                            <th>Observing</th>
+                            <th>Tax</th>
+                        <? }else{ ?>
+                            <th>Other Expenditures</th>
+                            <th>Books, copy and print</th>
+                        <? }?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $sum_sayer=0;
+				     $mycount1=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				       $sayer_hazine  = $row_fetched["sayer_hazine"];
+    				   $hazine_taksir = $row_fetched["hazine_taksir"];
+    				   $maliat = $row_fetched["maliat"];
+    				   $nezarat = $row_fetched["nezarat"];
+    				   $balasari = $row_fetched["balasari"];
+    				   $sum_sayer=$sum_sayer+$sayer_hazine+$hazine_taksir+$maliat+$nezarat+$balasari;
+                    ?>
+                    <? if(strcmp($servicing,"1")==0){?>
+                     <tr>
+	                            <td><?php echo number_format($balasari);?></td>
+	                            <td><?php echo number_format($nezarat);?></td>
+	                            <td><?php echo number_format($maliat);?></td>
+	                     </tr>
+	                      <? }else{ ?>
+						 <tr>
+	                            <td><?php echo number_format($sayer_hazine);?></td>
+	                            <td><?php echo number_format($hazine_taksir);?></td>
+	                     </tr>
+	                      <? }?>
+                        
+                     <?php 
+				    }?>
+				    <tr>
+                            <td><?php echo number_format($sum_sayer);?></td>
+                            <td>Total</td>
+                             <? if(strcmp($servicing,"1")==0){?>
+                            <td>&nbsp;</td>
+                            <? }?>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+        <?php 
+   		}else{?>
+   		
+   		<div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">ساير هزينه ها
+                        <div class="pull-left">
+                            <input type="checkbox" id="sayerHazineha" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 60%;">
+                    <thead>
+                       <tr>
+                       <? if(strcmp($servicing,"1")==0){?>
+                       		<th>بالاسري دانشگاه</th>
+                            <th>حق نظارت</th>
+                            <th>ماليات</th>
+                        <? }else{ ?>
+                            <th>ساير هزينه ها</th>
+                            <th>هزينه تکثير اوراق</th>
+                        <? }?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                     $sum_sayer=0;
+				     $mycount1=0;
+				     while($row_fetched=mysql_fetch_array($result))
+				     {
+				       $sayer_hazine  = $row_fetched["sayer_hazine"];
+    				   $hazine_taksir = $row_fetched["hazine_taksir"];
+    				   $maliat = $row_fetched["maliat"];
+    				   $nezarat = $row_fetched["nezarat"];
+    				   $balasari = $row_fetched["balasari"];
+    				   $sum_sayer=$sum_sayer+$sayer_hazine+$hazine_taksir+$maliat+$nezarat+$balasari;
+                    ?>
+                    <? if(strcmp($servicing,"1")==0){?>
+                     <tr>
+	                            <td><?php echo number_format($balasari);?></td>
+	                            <td><?php echo number_format($nezarat);?></td>
+	                            <td><?php echo number_format($maliat);?></td>
+	                     </tr>
+	                      <? }else{ ?>
+						 <tr>
+	                            <td><?php echo number_format($sayer_hazine);?></td>
+	                            <td><?php echo number_format($hazine_taksir);?></td>
+	                     </tr>
+	                      <? }?>
+                        
+                     <?php 
+				    }?>
+				    <tr>
+                            <td><?php echo number_format($sum_sayer);?></td>
+                            <td>مجموع</td>
+                             <? if(strcmp($servicing,"1")==0){?>
+                            <td>&nbsp;</td>
+                            <? }?>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+   		
+		<?php
+		}}
+		if($la=="en"){
+		?>
+		<div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Sum of cost
+                        <div class="pull-left">
+                            <input type="checkbox" id="hazineha" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 40%;">
+                    <tbody>
+                        <tr>
+                            <td><b>Total<b></b></b></td>
+                            <td><b>Expenditures<b></b></b></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($personnel_sum);?></td>
+                            <td>Sum of personnel expenditures</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($lab_sum);?></td>
+                            <td>Sum of costs of specialized services and experiments</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($vasile_sum);?></td>
+                            <td>Sum of costs instrument</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($trip_sum);?></td>
+                            <td>Sum of costs travelling</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><?php echo number_format($sum_sayer);?></td>
+                            <td>Sum of other expenditure</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($eatebare_sazmanha_pardakht_add);?></td>
+                            <td>Credit from other organization</td>
+                        </tr>
+                        <?php $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;?>
+                        <tr>
+                            <td><b><?php echo number_format($sum_of_all);?></b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php }else{?>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">جمع هزينه ها
+                        <div class="pull-left">
+                            <input type="checkbox" id="hazineha" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-bordered table-striped" style="margin: 0 auto; width: 40%;">
+                    <tbody>
+                        <tr>
+                            <td><b>(مجموع(ريال<b></b></b></td>
+                            <td><b>هزينه<b></b></b></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($personnel_sum);?></td>
+                            <td>جمع هزينه پرسنلي</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($lab_sum);?></td>
+                            <td>جمع هزينه هاي آزمايشات وخدمات تخصصي</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($vasile_sum);?></td>
+                            <td>جمع هزِينه هاي وسايل</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($trip_sum);?></td>
+                            <td>جمع هزينه هاي مسافرت</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><?php echo number_format($sum_sayer);?></td>
+                            <td>جمع ساير هزينه ها</td>
+                        </tr>
+                        <tr>
+                            <td><?php echo number_format($eatebare_sazmanha_pardakht_add);?></td>
+                            <td>اعتبار از سازمانهاي ديگر</td>
+                        </tr>
+                        <?php $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;?>
+                        <tr>
+                            <td><b><?php echo number_format($sum_of_all);?></b></td>
+                            <td><b>جمع کل</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+		<?php }
+        if(strcasecmp($servicing,"1")!=0){?>
+        <?php
+		   $query="select * from tarh where cod_tarh='$cod_tarh'  and version='$version' ";
+		   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+		    $row_fetched=mysql_fetch_array($result);
+		    $moshkelat_akhlaghi = $row_fetched["moshkelat_akhlaghi"];
+		    $halle_moshkelat_akhlaghi = $row_fetched["halle_moshkelat_akhlaghi"];
+		    $rezayatname = $row_fetched["rezayatname"];
+			$rezayatnamefile = $row_fetched["rezayatname_filename"];
+		    if( strcmp(trim($rezayatname),"1")==0 )
+		      $rezayatname="دارد";
+		    else
+		      $rezayatname="ندارد";
+		    if($la=="en"){
+				if( strcmp(trim($rezayatname),"1")==0 )
+					$rezayatname="Have";
+				else
+					$rezayatname="Don`t have";
+        ?>
+   		<div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Ethical items
+                        <div class="pull-left">
+                            <input type="checkbox" id="molahezat" class="hidden-print" title="Show this panel in print" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>considerations and ethical problems of Tarh:
+                </h4>
+                <p >
+                    <?php echo $moshkelat_akhlaghi;?>
+                </p>
+                <hr />
+
+                <h4>Solution to ethical problems:
+                </h4>
+                <p>
+                    <?php echo $halle_moshkelat_akhlaghi;?>
+                </p>
+                <hr />
+
+                <h4>Does the Tarh has moral consent? 
+                </h4>
+                <p>
+                    <?php echo $rezayatname;?>
+                </p>
+
+            </div>
+        </div>
+        <?php }else{?>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">موارد اخلاقي
+                        <div class="pull-left">
+                            <input type="checkbox" id="molahezat" class="hidden-print" title="نمايش اين پنل در چاپ" checked="checked" />
+                        </div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>:ملاحظات و مشکلات اخلاقي طرح 
+                </h4>
+                <p >
+                    <?php echo nl2br($moshkelat_akhlaghi);?>
+                </p>
+                <hr />
+
+                <h4>:راه حل مشکلات اخلاقي
+                </h4>
+                <p>
+                    <?php echo nl2br($halle_moshkelat_akhlaghi);?>
+                </p>
+                <hr />
+
+                <h4>:آيا طرح رضايتنامه اخلاقي دارد 
+                </h4>
+                <p>
+                    <?php echo $rezayatname;?>
+                </p>
+
+            </div>
+        </div>
+       <?php }}?>
+        <div id="jadvalOverflow"></div>
+   	<script src="../js/jquery.min.js"> </script>
+    <script src="../js/jquery-ui-1.10.4.min.js"> </script>
+    <script src="../js/bootstrap.min.js"> </script>
+    
+		    <script>
+		    $(document).ready(function(){
+				$("p").css("text-align","justify");
+			    });
+        $(':checkbox').each(function () {
+            $(this).click(function () {
+                var par = $(this.parentElement.parentElement.parentElement.parentNode);
+                //debugger;
+                if (this.id != "useTitrFont") {
+                    if (this.checked) {
+                        par.removeClass("hidden-print");
+
+                    } else {
+                        par.addClass("hidden-print");
+                    }
+                }
+
+            });
+        });
+        var id;
+        $("#font").change(function () {
+            id = $(this).children(":selected").attr("id");
+            $("body").removeClass();
+            $("body").addClass(id);
+
+        });
+        $("#useTitrFont").change(function () {
+
+            $("h3").toggleClass("BTitrBold");
+            $("h4").toggleClass("BTitrBold");
+        });
+        $('#fontSize').keyup(function () {
+            $("body").css("font-size", this.value.toString() + 'px');
+        });
+        $("#fontSize").change(function (a, b, c) {
+            $("body").css("font-size", this.value.toString() + 'px');
+        });
+        
+        $('#fontSizeHeader').keyup(function () {
+            $("h3").css("font-size", this.value.toString() + 'px');
+            $("h4").css("font-size", this.value.toString() + 'px');
+        });
+        $("#fontSizeHeader").change(function (a, b, c) {
+            $("h3").css("font-size", this.value.toString() + 'px');
+            $("h4").css("font-size", this.value.toString() + 'px');
+        });
+        var pageWidth = $("#jadval-body").width();
+        var elementWidth = $("#tbl-gant").width();
+        var elementLeft = $("#tbl-gant").position().left;
+
+        if (pageWidth - (elementWidth + elementLeft) < 0) {
+            //alert("overflow!");
+            
+            jadvalOverflow.innerHTML = jadval.outerHTML;
+            
+            $("#jadval").remove();
+            $("#jadval").css("height", pageWidth + "px");
+            $("#jadval").css("width", elementWidth + "px");
+            $("#jadval").css("right", (elementWidth - pageWidth + 120 + "px"));
+            //debugger;
+        } else {
+            //alert("doesn't overflow");
+        }
+    </script>
+		</body>
+		</html>
+        
+        
+        

@@ -1,0 +1,566 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+//include("profile.php");
+header_forms();
+ $query="select * from user_login where  email='$admin'";
+ 
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+
+      if ( mysql_num_rows($result) > 0 )
+      {
+		$row_fetched = mysql_fetch_array($result);
+		$name=$row_fetched["name"];
+		$family=$row_fetched["family"];
+		$shno=$row_fetched["shno"];
+		$birth_date=$row_fetched["birth_date"];
+		$work_addr=$row_fetched["work_addr"];
+		$home_addr=$row_fetched["home_addr"];
+		$telno=$row_fetched["telno"];
+		$fax=$row_fetched["fax"];
+		$nampedar=$row_fetched["fath_name"];
+		$melli_code=$row_fetched["melli_code"];
+		$email=$row_fetched["email"];
+		$darajeelmi=$row_fetched["darajeelmi"];
+		$takhasos=$row_fetched["takhasos"];
+		$semat=$row_fetched["semat"];
+		$univ_madrak=$row_fetched["univ_madrak"];
+		$country_univ=$row_fetched["country_univ"];								
+        $hesab=$row_fetched["hesab"];
+		$bank_name=$row_fetched["bank_name"];
+		$shoabe=$row_fetched["shoabe"];
+		$sex=$row_fetched["sex"];
+		$line=$row_fetched["line"];
+		$cod_bank=$row_fetched["cod_bank"];
+		$maghalat=$row_fetched["maghalat"];
+		$mobile=$row_fetched["mobile"];
+		$jobplace=$row_fetched["jobplace"];
+        $madrak=trim($row_fetched["madrak"]);
+		$payan_name=$row_fetched["payan_name"];
+		$daneshjo_no=$row_fetched["daneshjo_no"];
+		$sheba_no=$row_fetched["sheba_no"];
+		$picture=$row_fetched["picture"];
+		
+		
+		
+      }
+      else
+      {
+      $madrak="";
+        $jobplace="";
+        $name="";
+		$family="";
+		$shno="";
+		$line="";
+		$birth_date="";
+		$work_addr="";
+		$home_addr="";
+		$telno="";
+		$fax="";
+		$nampedar="";
+		$melli_code="";
+		$email="";
+		$darajeelmi="";
+		$takhasos="";
+		$semat="";
+		$univ_madrak="";
+		$country_univ="";
+        $hesab="";
+		$bank_name="";
+		$shoabe="";
+		$sex="";
+		$cod_bank="";
+		$maghalat="";
+		$mobile="";
+		$payan_name=0;
+		$daneshjo_no='';
+		$sheba_no='';
+		 
+       }
+?>
+<link rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+
+
+<?php
+include("include/new_menu.php");
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                 <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                               در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h4 id="page_title" class="page-title">
+                           <i class="fa fa-user"></i>  پروفايل کاربري
+                        </h4>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="breadcrumb1" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle-left1" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb2" href="#">
+                                <i class="fa fa-user"></i>
+                                    پروفايل کاربري
+                                </a>
+                               
+                            </li>
+                            
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        
+                            
+                            <div class="portlet-body">
+                                <div class="row">
+                                
+                                   
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                    
+                                 <div class="portlet box blue">
+									<div class="portlet-title">
+										<div id="portlet_caption" class="caption">
+											<i class="fa fa-reorder"></i>پروفايل
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body form">  
+                                  <!-- BEGIN FORM-->
+										<?
+                                        
+										echo "<form name=\"profile\" id=\"profile\" method=\"post\" enctype=\"multipart/form-data\"  action=\"profile.php?admin=$admin&seed=$seed&action=finish\">";?>
+							              <div class="form-body">
+			                               <div class="row">
+											<div class="col-md-6">
+											 <div class="form-group">
+											    <label id="lb1" class="control-label col-md-3">نام</label>
+												  <div class="col-md-9">
+													<input id="name" name="name1" type="text" class="form-control" placeholder="" tabindex="1" value="<?php echo $name;?>">
+
+												  </div>
+											</div>
+										   </div>
+										   <!--/span-->
+										   <div class="col-md-6">
+											<div class="form-group">
+											  <label id="lb2" class="control-label col-md-3">نام خانوادگي</label>
+											   <div class="col-md-9">
+												<input  name="family1" type="text" class="form-control" placeholder="" tabindex="2" value="<?php echo $family;?>">
+																							
+											   </div>
+											</div>
+											</div>
+										 </div>
+										 <br>
+										   <div class="row">
+											<div class="col-md-6">
+											 <div class="form-group">
+											    <label id="lb3" class="control-label col-md-3">جنسيت</label>
+												  <div class="col-md-9">
+													<select name="sex1"  class="form-control" tabindex="3">
+													<?
+													if($sex=='-1')
+												 	$select="selected";
+												 	else 
+												 	$select=""; ?>
+													 <option id="gender_select_lb1" <?php echo $select ?> value="-1">انتخاب کنيد</option>
+													 <?if($sex=='0')
+												 	$select="selected";
+												 	else 
+												 	$select=""; ?>
+													 <option id="gender_select_lb2" <?php echo $select ?> value="0">زن</option>
+													 <?
+													 if($sex=='1')
+												 	$select="selected";
+												 	else 
+												 	$select=""; ?>
+													 <option id="gender_select_lb3" <?php echo $select ?> value="1">مرد</option>									        
+													</select>													
+												  </div>
+											</div>
+										   </div>
+										   <!--/span-->
+										   <div class="col-md-6">
+											<div class="form-group">
+											  <label id="lb4" class="control-label col-md-3">محل کار</label>
+											   <div class="col-md-9">
+											     <select name="jobplace1" class="select2 form-control" tabindex="4">
+													 <option id="office_select_lb1" value="-1">انتخاب نماييد</option>
+													 <?
+													    $query="select * from daneshkade order by daneshkade_name";
+													    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+													    $groupcount = mysql_num_rows($qresult);
+														
+															 while($row_fetched=mysql_fetch_array($qresult))
+															    {
+															        if(strcmp($jobplace,$row_fetched["cod_daneshkade"])==0)
+															          $selected= " selected ";
+															        else
+																	  $selected=""; 
+															        
+															        if($la=="en")
+															        	$daneshkade_name=$row_fetched["daneshkade_english_name"];
+															        else
+															        	$daneshkade_name=$row_fetched["daneshkade_name"];
+															        
+																	  echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\">".$daneshkade_name."</option>"; 
+															    }
+													?>
+												</select>												
+																							
+											   </div>
+											</div>
+											</div>
+										 </div>
+										 <br>
+                                          <div class="row">
+											<div class="col-md-6">
+											 <div class="form-group">
+											    <label id="lb5" class="control-label col-md-3">تلفن ثابت</label>
+												  <div class="col-md-9">
+													<input  name="telno1" type="text" class="form-control" placeholder="" tabindex="5" value="<?php echo $telno;?>">
+
+												  </div>
+											</div>
+										   </div>
+										   <!--/span-->
+										   <div class="col-md-6">
+											<div class="form-group">
+											  <label id="lb6" class="control-label col-md-3">تلفن همراه</label>
+											   <div class="col-md-9">
+												<input  name="mobile1" type="text" class="form-control" placeholder="" tabindex="6" value="<?php echo $mobile;?>">
+																							
+											   </div>
+											</div>
+											</div>
+										 </div>
+										 <br>
+										  <div class="row">
+											<div class="col-md-6">
+											 <div class="form-group">
+											    <label id="lb7" class="control-label col-md-3">کد ملي</label>
+												  <div class="col-md-9">
+													<input  name="melli_code1" type="text" class="form-control" placeholder="" tabindex="7" value="<?php echo $melli_code;?>">
+
+												  </div>
+											</div>
+										   </div>
+										   <!--/span-->
+										   <div class="col-md-6">
+											<div class="form-group">
+											  <label id="lb8" class="control-label col-md-3">فکس</label>
+											   <div class="col-md-9">
+												<input  name="fax1" type="text" class="form-control" placeholder="" tabindex="8" value="<?php echo $fax;?>">
+																							
+											   </div>
+											</div>
+											</div>
+										 </div>
+										 <br>  
+										<!--    <div class="form-group text-center">
+							                 <div>
+								               <h>همكاران محترم به اين نكته توجه فرمايند كه حسابداري معاونت پژوهشي براساس تفاهمي كه با بانكهاي ملت و پاسارگاد دارد صرفا ميتواند اعتبار طرحها را به اين 2 بانك واريز نمايد بنابراين چنانچه از اين 2 بانك داراي حساب سراسري (براي يانك ملت حساب جام)ميباشيد در فيلدهاي مربوطه ذيل وارد نماييد چنانچه در هيچ يك از بانكهاي فوق داراي حساب سراسري نيستيد لازم است ابتدا حساب را در بانك مفتوح نموده و شماره حساب را در فيلدهاي زير اعلام نماييد" امكان پرداخت به غير از روش فوق براي معاونت مقدور نميباشد</h4>
+									         </div>
+							              </div>-->
+									
+										  <div class="row">
+										   <div class="col-md-6">
+											<div class="form-group">
+											  <label id="lb9" class="control-label col-md-3">تخصص</label>
+											   <div class="col-md-9">
+												<input  name="takhasos1" type="text" class="form-control" placeholder="" tabindex="9" value="<?php echo $takhasos;?>">
+																							
+											   </div>
+											</div>
+											</div>										   
+											<div class="col-md-6">
+											 <div class="form-group">
+											    <label id="lb10" class="control-label col-md-3">نوع حساب</label>
+												  <div class="col-md-9">
+											     <select name="bank_name1" class="select2 form-control" tabindex="10">
+													 <option id="acount_select_lb1" value="-1">انتخاب نماييد</option>
+													 <?
+													     $query="select * from hesab_type order by hesab_type_desc";
+													     $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+													     $groupcount = mysql_num_rows($qresult);
+															     while($row_fetched=mysql_fetch_array($qresult))
+																    {
+																        if(strcmp($bank_name,$row_fetched["hesab_type"])==0)
+																          $selected= " selected ";
+																        else
+																		  $selected=""; 
+																        if($la=="en")
+																        	$hesab_type_desc=$row_fetched['hesab_type_english_desc'];
+																        else 
+																        	$hesab_type_desc=$row_fetched["hesab_type_desc"];
+																		   echo "<option $selected value=\"".$row_fetched["hesab_type"]."\">".$hesab_type_desc."</option>"; 
+																        
+																    }
+													?>
+												</select>													
+
+												  </div>
+											 </div>
+										    </div>
+										   </div>
+										   <br>
+										   <div class="row">
+												   <div class="col-md-6">
+														<div class="form-group">
+														  <label id="lb11" class="control-label col-md-3"> شماره حساب</label>
+														   <div class="col-md-9">
+															<input  name="hesab1" type="text" class="form-control" placeholder="" tabindex="11" value="<?php echo $hesab;?>">
+																										
+														   </div>
+														</div>
+													</div>
+												   <div class="col-md-6">
+														<div class="form-group">
+														  <label id="lb12" class="control-label col-md-3"> شماره حساب شبا</label>
+														   <div class="col-md-9">
+															<input  name="sheba_no1" type="text" class="form-control" placeholder="" tabindex="12" value="<?php echo $sheba_no;?>">
+																										
+														   </div>
+														 </div>
+												   </div>										
+										  	</div>
+										 <br>
+										   <div class="row">
+											<div class="col-md-6">
+											 <div class="form-group">
+											    <label id="lb13" class="control-label col-md-3">مدرک علمي</label>
+												  <div class="col-md-9">
+											     <select name="madrak1" class="select2 form-control" tabindex="13">
+													<option id="evidence_select_lb1" value="-1" class="tahoma1">انتخاب کنيد</option>
+											      
+											       <?
+											       if(strcmp('1',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+											    
+											    <option id="evidence_select_lb2" value="1"  <? echo $selected; ?> class="tahoma1">زير کارشناسي</option>
+											    
+											      <?
+											       if(strcmp('2',trim($madrak))==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+											    <option id="evidence_select_lb3" value="2"  <? echo $selected; ?> class="tahoma1">کارشناسي</option>
+											     <?
+											       if(strcmp('3',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+												<option id="evidence_select_lb4" value="3"  <? echo $selected; ?> class="tahoma1">کارشناسي ارشد</option>
+											    <?
+											       if(strcmp('4',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+											    <option id="evidence_select_lb5" value="4"  <? echo $selected; ?> class="tahoma1">دکتراي حرفه اي</option>
+												 <?
+											       if(strcmp('5',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+												<option id="evidence_select_lb6" value="5"  <? echo $selected; ?> class="tahoma1">PHD</option>
+												 <?
+											       if(strcmp('6',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+												<option id="evidence_select_lb7" value="6"  <? echo $selected; ?> class="tahoma1">تخصص</option>	
+												 <?
+											       if(strcmp('7',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+												<option id="evidence_select_lb8" value="7"  <? echo $selected; ?> class="tahoma1">فوق تخصص</option>	
+												 <?
+											       if(strcmp('8',$madrak)==0)
+											          $selected= " selected ";
+											        else
+													  $selected="";
+											      ?>
+												<option id="evidence_select_lb9" value="8"  <? echo $selected; ?> class="tahoma1">MPH</option>	
+												</select>													
+
+												  </div>
+											</div>
+										   </div>
+										   <!--/span-->
+										   <div class="col-md-6">
+											<div class="form-group">
+											  <label id="lb14" class="control-label col-md-3">درجه علمي</label>
+											   <div class="col-md-9">
+											     <select name="darajeelmi1" class="select2 form-control" tabindex="14">
+													 <option id="degree_select_lb1" value="-1">انتخاب نماييد</option>
+													 <?
+														$query="select * from darajeelmi";
+													    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+														   while($row_fetched=mysql_fetch_array($qresult))
+															    {
+															     $rade_tmp=$row_fetched["darajeelmi"];
+																 if(strcmp(trim($darajeelmi),trim($rade_tmp))==0)
+																    $selected=" selected ";
+																 else
+																    $selected="";
+																 if($la=="en")
+																 	$darajeelmi_desc=$row_fetched["darajeelmi_english_desc"];
+																 else 
+																 	$darajeelmi_desc=$row_fetched["darajeelmi_desc"];
+															      echo "<option $selected value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$darajeelmi_desc."</option>";
+															    }
+													?>
+												</select>												
+																							
+											   </div>
+											</div>
+											</div>
+										 </div>
+										 <br>
+										 <div class="row">
+												   <div class="col-md-6">
+														<div class="form-group">
+														  <label id="lb15" class="control-label col-md-3"> عکس</label>
+														   <div class="col-md-9">
+																<input type="file" name="userfile" value="">
+																								
+														   </div>
+														</div>
+													</div>	
+																					
+										  	</div>
+	
+											</div>
+											<div class="form-actions fluid">
+												<div class="col-md-offset-3 col-md-9">
+													<button id="btn1" type="submit" class="btn blue">ذخيره</button>
+													<button id="btn2" type="button" class="btn default">انصراف</button>
+												</div>
+											</div>
+										</form>
+										<!-- END FORM-->
+								  </div>
+								</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en"){																										    
+debugger;
+document.getElementById("page_title").innerHTML="<i class='fa fa-user'></i> User profile";
+document.getElementById("breadcrumb1").textContent="Home";
+document.getElementById("fa-angle-left1").setAttribute("class","fa fa-angle-right");
+document.getElementById("breadcrumb2").innerHTML="<i class='fa fa-user'></i> User profile";
+document.getElementById("portlet_caption").innerHTML="<i class='fa fa-reorder'></i> profile";
+
+document.getElementById("lb1").textContent="First Name";
+document.getElementById("lb2").textContent="Last Name";
+document.getElementById("lb3").textContent="Gender";
+document.getElementById("gender_select_lb1").textContent="Choose";
+document.getElementById("gender_select_lb2").textContent="Woman";
+document.getElementById("gender_select_lb3").textContent="Man";
+document.getElementById("lb4").textContent="Office";
+document.getElementById("office_select_lb1").textContent="Choose";
+document.getElementById("lb5").textContent="Cell Phone";
+document.getElementById("lb6").textContent="Mobile Phone";
+document.getElementById("lb7").textContent="National Code";
+document.getElementById("lb8").textContent="Fax";
+document.getElementById("lb9").textContent="Expert";
+document.getElementById("lb10").textContent="Acount Type";
+document.getElementById("acount_select_lb1").textContent="Choose";
+document.getElementById("lb11").textContent="Acount Number";
+document.getElementById("lb12").textContent="Shaba Acount Number";
+document.getElementById("lb13").textContent="Scientific evidence";
+document.getElementById("evidence_select_lb1").textContent="Choose";
+document.getElementById("evidence_select_lb2").textContent="Under Bachelor";
+document.getElementById("evidence_select_lb3").textContent="Bachelor";
+document.getElementById("evidence_select_lb4").textContent="Master";
+document.getElementById("evidence_select_lb5").textContent="Professional PHD";
+//document.getElementById("evidence_select_lb6").textContent="PHD";
+document.getElementById("evidence_select_lb7").textContent="Special";
+document.getElementById("evidence_select_lb8").textContent="Specialty";
+//document.getElementById("evidence_select_lb9").textContent="MPH";
+document.getElementById("lb14").textContent="Scientific Degree";
+document.getElementById("degree_select_lb1").textContent="Choose";
+document.getElementById("lb15").textContent="Portrait";
+document.getElementById("btn1").textContent="Save";
+document.getElementById("btn2").textContent="Cancel";
+}
+</script>
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+
+<?php
+footer_forms($admin,$seed);
+?>
+  <script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="../assets/scripts/custom/login-soft.js" type="text/javascript"></script>
+  	<script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+  	
+
+
+
+   

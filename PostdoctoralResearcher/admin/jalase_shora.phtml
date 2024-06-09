@@ -1,0 +1,258 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+$status="";
+if (strcmp($action,"add")==0)
+{
+
+  if(strlen(trim($shomare_jalase)) > 0  && $endday !=0 && $endyear != 0 && $endmonth != 0)
+  {
+   // $query="select * from jalase_shora where shomare_jalase=\"$shomare_jalase\" and creator='$admin'";
+//	$result=mysql_query($query) or die ("Error in inserting data into jalase_shora");
+//	if( mysql_num_rows($result) <=0 )
+///	//{
+    $i=0;
+    $tarikh_jalase = $endyear."/". $endmonth."/". $endday;
+    $query="select * from jalase_shora where creator=\"$admin\" and shomare_jalase=\"$shomare_jalase\"";
+    $result=mysql_query($query) or die("Error");
+    if(mysql_num_rows($result) <=0 )
+    {
+ 	 $query="insert into jalase_shora set jalase_type='$jalase_type',creator=\"$admin\",shomare_jalase=\"$shomare_jalase\" , rank_jalase='$rank_jalase' , tarikh_jalase = \"$tarikh_jalase\"";
+	
+	 $result=mysql_query($query) or die ("Error in inserting data into jalase_shora1");
+	$shomare_jalase= mysql_insert_id();
+     $myvariable="check".$i;
+     $myuser="value_".$i;
+     for($i==0;$i<100;$i++)
+     {
+      $myvariable="check".$i;
+      $myuser="value_".$i;
+      if (isset($$myvariable))
+      {
+        $myvariable="check".$i;
+        $myuser="value_".$i;
+        $cod_karshenas=$$myuser;
+        $query="insert into jalase_shora_karshenas_shora set creator='$admin' ,shomare_jalase=\"$shomare_jalase\" , cod_karshenas = \"$cod_karshenas\"";
+   	    $result=mysql_query($query) or die ("Error in inserting data into jalase_shora_karshenas_shora");
+	  // $i++;
+      }
+     }
+     
+      echo "<SCRIPT language=\"JavaScript\">";
+      echo "window.location=\"jalase_shora_divide.phtml?jalase_type=$jalase_type&admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&cod_jalase=$cod_jalase&rank_jalase=$rank_jalase\"";
+      echo "</SCRIPT>";
+
+    }
+     else
+      $status="duplicate_entry";
+    
+   
+	//}
+	//else
+	 //$status="duplicate_entry";
+
+  }
+  else
+   $status="entry_error";
+}
+
+?>
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=add&admin=$admin&seed=$seed&jalase_type=$jalase_type\">"; ?>
+
+
+
+
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/taarif_jalase_shora.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+  <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  ?>
+    <tr>
+      <td width="100%">
+
+          <table border="0" width="100%"  bgcolor="#EEE7F8" height="100%" cellpadding="0" cellspacing="0">
+          
+            <tr>
+              <td width="300" align="right" >
+                <p align="right"><input type="text" name="shomare_jalase" size="48" class="edit-tarh-type" value="" class="edit-user" ></td>
+              <td width="200" align="left" >
+                <p align="left" class="tahoma1"><span class="star-message">*</span>شماره جلسه شوراي پژوهشي</td>
+            </tr>
+             <tr>
+                 <td align="right" ><select class="in3" dir="rtl" size="1" name="endyear">
+          <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option value="1390">&#1777;&#1779;&#1785;&#1776;</option>
+		  <option value="1391">&#1777;&#1779;&#1785;&#1777;</option>
+          <option value="1392">&#1777;&#1779;&#1785;&#1778;</option>
+        </select>
+      <select class="in3" dir="rtl" size="1" name="endmonth">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="04">&#1578;&#1610;&#1585;</option>
+          <option value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option value="07">&#1605;&#1607;&#1585;</option>
+          <option value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option value="09">&#1570;&#1584;&#1585;</option>
+          <option value="10">&#1583;&#1610;</option>
+          <option value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="endday">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option value="01">&#1777;</option>
+          <option value="02">&#1778;</option>
+          <option value="03">&#1779;</option>
+          <option value="04">&#1780;</option>
+          <option value="05">&#1781;</option>
+          <option value="06">&#1782;</option>
+          <option value="07">&#1783;</option>
+          <option value="08">&#1784;</option>
+          <option value="09">&#1785;</option>
+          <option value="10">&#1777;&#1776;</option>
+          <option value="11">&#1777;&#1777;</option>
+          <option value="12">&#1777;&#1778;</option>
+          <option value="13">&#1777;&#1779;</option>
+          <option value="14">&#1777;&#1780;</option>
+          <option value="15">&#1777;&#1781;</option>
+          <option value="16">&#1777;&#1782;</option>
+          <option value="17">&#1777;&#1783;</option>
+          <option value="18">&#1777;&#1784;</option>
+          <option value="19">&#1777;&#1785;</option>
+          <option value="20">&#1778;&#1776;</option>
+          <option value="21">&#1778;&#1777;</option>
+          <option value="22">&#1778;&#1778;</option>
+          <option value="23">&#1778;&#1779;</option>
+          <option value="24">&#1778;&#1780;</option>
+          <option value="25">&#1778;&#1781;</option>
+          <option value="26">&#1778;&#1782;</option>
+          <option value="27">&#1778;&#1783;</option>
+          <option value="28">&#1778;&#1784;</option>
+          <option value="29">&#1778;&#1785;</option>
+          <option value="30">&#1779;&#1776;</option>
+          <option value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="200" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>تاريخ جلسه شورا</td>
+            </tr>
+		 <tr>
+        <td align="right" width="400"><input type="text" name="cod_jalase" value="<? echo $cod_jalase; ?>"  size="20" class="edit-tarh-type" ></td>
+        <td class="tahoma1" width="100">کد جلسه شورا</td>
+      </tr>
+
+
+
+
+<!--            <tr>
+              <td width="300" align="right" valign="top">
+                <p align="right"><textarea  name="band_azad" size="78" rows="8" class="edit-tarh-type" dir=RTL    ></textarea></td>
+              <td width="200" align="left" vaign="top" class="tahoma1">
+                بند آزاد</td>
+            </tr>    -->
+            
+            
+          </table>
+
+      </td>
+    </tr>
+</table>
+<br>
+<?
+
+if(DBreccount("karshenas_shora") > 0)
+{
+    
+    echo "<table border=\"0\" width=\"500\"  cellspacing=\"1\" cellpadding=\"1\"  >";
+    echo "<tr>";
+    echo "<td width=\"80%\" bgcolor=\"$title_color\" height=\"20\" class=\"tahoma1\" align=\"center\">اعضاي شورا</td>";
+    echo "<td width=\"20%\" bgcolor=\"$title_color\" height=\"20\" class=\"tahoma1\" align=\"center\">انتخاب حاضرين</td>";
+    echo "</tr>";
+
+  $Query=mysql_query("select * from karshenas_shora,modir_daneshkade  where modir_daneshkade.modir_username =karshenas_shora.creator and ( modir_daneshkade.modir_type='1' or  modir_daneshkade.modir_type='4') ") or die("Error in selecting tarh-type");
+  $color=$list_color_1;
+  $i=0;
+  while($row_fetched=mysql_fetch_array($Query))
+  {
+   if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr bgcolor=\"$color\">";
+  echo "<td width=\"80%\">";
+  echo "<p align=\"center\"  class=\"tahoma1\">".$row_fetched["kar_shora_family"]."&nbsp;".$row_fetched["kar_shora_name"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\" name=\"check".$i."\" value=\"ON\"></td>";
+  echo "<input type=\"hidden\" name=\"value_".$i."\" value=\"".$row_fetched["cod_karshenas"]."\">";
+  $i++;
+  
+  echo "</tr>";
+
+  }
+  echo "</table>";
+  
+}
+echo "<table border=\"0\" width=\"500\"  bgcolor=\"white\"  >";
+    echo "<tr>";
+  echo "<tr>";
+  echo "<td width=\"100%\" colspan=\"2\" height=\"32\">";
+  echo "<p align=\"center\"><input class=\"but-tarh-type\" type=\"submit\" value=\"ثبت\" name=\"submit_tarh\"></td>";
+  echo "</tr>";
+  echo "</form>";
+
+  echo "</table>";
+
+
+  footer_forms($admin,$seed);
+?>
+
+
+

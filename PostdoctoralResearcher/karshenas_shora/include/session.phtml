@@ -1,0 +1,97 @@
+<?
+
+//-----------------------------------------------------------------------
+
+function startsession($admuser,$seed,$usertype)
+{
+
+ $q1="select * from sessions where username=\"".$admuser."\"";
+ //echo $q1;
+ $result=mysql_query($q1)
+             or die("ERROR ON SERVER!!!! CONTACT admin11");
+ $rownumber = mysql_num_rows($result);
+
+
+ //$q1="delete from sessions where username=\"".$admuser."\"";
+
+ //$result=mysql_query($q1)
+   //            or die("ERROR ON SERVER!!!! CONTACT admin110");
+
+ if ( getenv("HTTP_X_FORWARDED_FOR"))
+   $ip = getenv("HTTP_X_FORWARDED_FOR" );
+ else
+   $ip = getenv("REMOTE_ADDR");
+
+ $q1="insert into sessions (username,logintime,rand,ip,usertype) values (\"".$admuser."\",".time().",\"$seed\",\"$ip\",$usertype)";
+
+ $result=mysql_query($q1) or die("ERROR ON SERVER!!!! CONTACT ADMINISTRATOR33");
+
+}
+
+//-------------------------------------------------------
+
+function updatesession($admuser,$seed)
+{
+
+ if ( getenv("HTTP_X_FORWARDED_FOR"))
+   $ip = getenv("HTTP_X_FORWARDED_FOR" );
+ else
+   $ip = getenv("REMOTE_ADDR");
+
+ $q1="update sessions set "."logintime=".time()." where username=\"$admuser\" and rand=\"$seed\""." and ip=\"$ip\"";
+
+ $result=mysql_query($q1) or die("ERROR ON SERVER!!!! CONTACT ADMINISTRATOR33");
+}
+
+//-------------------------------------------------------
+
+function checksession($admuser,$seed)
+{
+ $q1="select * from sessions where username=\"".trim($admuser)."\" and rand=\"".$seed."\" and usertype=6";
+ //echo $q1;
+ $result=mysql_query($q1) or die("ERROR ON SERVER!!!! CONTACT ADMINISTRATOR111");
+ if ( getenv("HTTP_X_FORWARDED_FOR"))
+   $ip = getenv("HTTP_X_FORWARDED_FOR" );
+ else
+   $ip = getenv("REMOTE_ADDR");
+
+ if(mysql_num_rows($result) > 0)
+ {
+    $line = mysql_fetch_array($result);
+      // after 10 minutes burn
+    if((time() > ($line["logintime"]+240000)) || (strcmp(trim($line["ip"]) , trim($ip)) <> 0 ))
+       return 0;	
+ }
+ else
+      return 0;
+
+// in this place you should be set user type
+ return 1;
+
+}
+
+//-------------------------------------------------------
+
+function clearsession($admuser,$seed)
+{
+ $q1="delete from sessions where username=\"".$admuser."\"";
+ $result=mysql_query($q1) or die("ERROR ON SERVER!!!! CONTACT ADMINISTRATOR111");
+}
+
+//-------------------------------------------------------
+
+function randString ($pass_len = 50)
+{
+ $allchars = 'abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLNMOPQRSTUVWXYZ0123456789';
+ $string = '';
+ mt_srand ((double) microtime() * 1000000);
+ for ($i = 0; $i < $pass_len; $i++)
+ {
+  $string .= $allchars{mt_rand (0,strlen($allchars))};
+ }
+ return $string;
+}
+
+//-------------------------------------------------------
+
+?>

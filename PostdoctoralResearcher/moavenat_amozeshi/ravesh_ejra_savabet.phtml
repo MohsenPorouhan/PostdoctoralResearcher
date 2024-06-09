@@ -1,0 +1,229 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+
+if(isset($action) )
+{
+  if (strcmp($action,"add_tarh")==0)
+  {
+		$query = "select * from ravesh_ejra where cod_tarh = \"$cod_tarh\"";
+        $result=mysql_query($query) or die ("Error in selecting data from ravesh_ejra");
+		if(mysql_num_rows($result) > 0 )
+		{
+		  $query="update ravesh_ejra  set pish_azmoon=\"$pish_azmoon\",sayer_mavared=\"$sayer_mavared\", noa_motalee=\"$noa_motalee\" ,meayar_ghabool =\"$meayar_ghabool\",ravesh_nemone=\"$ravesh_nemone\",   formul_hajm_nemone  =\"$formul_hajm_nemone\", mabna_nemone  =\"$mabna_nemone\", ravesh_jama_avari =\"$ravesh_jama_avari\", ravayee  =\"$ravayee\", abzar  =\"$abzar\", ravesh_kar  =\"$ravesh_kar\", mohit_pajohesh =\"$mohit_pajohesh\", tajzie_tahlil =\"$tajzie_tahlil\" where creator  =\"$admin\" and cod_tarh=\"$cod_tarh\"";
+		   
+          $result=mysql_query($query) or die("Error in updating data into ravesh_ejra");
+          $action="ويرايش روش اجرا با عنوان"."<br>".$tarh_name;
+          set_log($action,$admin,date("Y-d-m"));
+
+          ?>
+          <script language="javascript">
+          window.location="<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+          <?
+		}
+		else
+		{
+		  $query="insert into ravesh_ejra  set pish_azmoon=\"$pish_azmoon\",sayer_mavared=\"$sayer_mavared\" ,noa_motalee=\"$noa_motalee\" ,meayar_ghabool =\"$meayar_ghabool\",ravesh_nemone=\"$ravesh_nemone\",   formul_hajm_nemone  =\"$formul_hajm_nemone\", mabna_nemone  =\"$mabna_nemone\", ravesh_jama_avari =\"$ravesh_jama_avari\", ravayee  =\"$ravayee\", abzar  =\"$abzar\", ravesh_kar  =\"$ravesh_kar\", mohit_pajohesh =\"$mohit_pajohesh\", tajzie_tahlil =\"$tajzie_tahlil\" , creator  =\"$admin\" , cod_tarh=\"$cod_tarh\"";
+
+          $result=mysql_query($query) or die("Error in inserting data into tarh");
+          $action="اضافه کردن روش اجرا با عنوان"."<br>".$tarh_name;
+          set_log($action,$admin,date("Y-d-m"));
+
+          ?>
+          <script language="javascript">
+          window.location="<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+          <?
+
+		}
+
+    
+  }
+
+}
+
+
+  $query="select * from ravesh_ejra where cod_tarh='$cod_tarh'  ";
+
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+
+  $noa_motalee = $row_fetched["noa_motalee"];
+
+  $meayar_ghabool =$row_fetched["meayar_ghabool"];
+  $ravesh_nemone =$row_fetched["ravesh_nemone"];
+  $formul_hajm_nemone=$row_fetched["formul_hajm_nemone"];
+  $mabna_nemone=$row_fetched["mabna_nemone"];
+  $ravesh_jama_avari=$row_fetched["ravesh_jama_avari"];
+  $ravayee =$row_fetched["ravayee"];
+  $abzar =$row_fetched["abzar"];
+  $ravesh_kar=$row_fetched["ravesh_kar"];
+  $mohit_pajohesh=$row_fetched["mohit_pajohesh"];
+  $tajzie_tahlil =$row_fetched["tajzie_tahlil"];
+  $pish_azmoon=$row_fetched["pish_azmoon"];
+  $sayer_mavared = $row_fetched["sayer_mavared"];
+  
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_tarh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/ravesh_ejra.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+  if (strcmp($status,"entry_error")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="noa_motalee" size="20" value="<? echo $noa_motalee; ?>" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1" valign="top">نوع مطالعه و جهت آن</td>
+  </tr>
+   <tr>                             
+    <td width="350" align="right"><textarea   rows="3"  name="meayar_ghabool" class="edit-user"  dir=RTL   ><? echo $meayar_ghabool ; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"  valign="top">معيار هاي قابل قبول <br> (ورود و خروج از مطالعه)</td>
+  </tr>
+
+ <tr>                             
+    <td width="350" align="right"><textarea   rows="3"  name="ravesh_nemone" class="edit-user"  dir=RTL   ><? echo $ravesh_nemone ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">روش نمونه گيري</td>
+  </tr>
+
+    <tr>
+    <td width="350" align="right"><textarea width="300" rows="3"  name="formul_hajm_nemone" class="edit-user"  dir=RTL   ><? echo $formul_hajm_nemone ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">حجم نمونه و فرمول آن</td>
+  </tr>
+<script language="javascript1.2">
+var config = new Object();
+config.width = "100%";
+config.height = "200px";
+config.toolbar = [
+  ['fontname'],
+  ['fontsize'],
+  ['linebreak'],
+  ['bold','italic','underline','separator'],
+  ['strikethrough','subscript','superscript','separator'],
+  ['OrderedList','UnOrderedList','Outdent','Indent','separator'],
+  ['forecolor','backcolor','separator'],
+  ['farsi','dirleft','dirright','separator']
+];
+editor_generate('formul_hajm_nemone',config);
+</script>
+
+ 
+
+    <tr>                           
+     <td width="350" align="right"><textarea   rows="3"  name="mabna_nemone" class="edit-user"  dir=RTL   ><? echo $mabna_nemone ; ?></textarea></td>
+     <td width="150" class="tahoma1"  valign="top">مبناي تعيين حجم نمونه</td>
+  </tr>
+
+  <tr>    
+     <td width="350" align="right"><textarea   rows="3"  name="ravesh_jama_avari" class="edit-user"  dir=RTL   ><? echo $ravesh_jama_avari ; ?></textarea></td>
+     <td width="150" class="tahoma1"  valign="top">روشهاي جمع آوري اطلاعات</td>
+  </tr>
+
+  <tr>                              
+     <td width="350" align="right"><textarea   rows="3"  name="ravayee" class="edit-user"  dir=RTL   ><? echo $ravayee ; ?></textarea></td>
+     <td width="150" class="tahoma1"  valign="top">روائي و پايايي اطلاعات</td>
+  </tr>
+
+  <tr>                            
+     <td width="350" align="right"><textarea   rows="3"  name="abzar" class="edit-user"  dir=RTL   ><? echo $abzar ; ?></textarea></td>
+     <td width="150" class="tahoma1" valign="top">ابزار گردآوري اطلاعات</td>
+  </tr>
+
+  <tr>                              
+     <td width="350" align="right"><textarea   rows="3"  name="ravesh_kar" class="edit-user"  dir=RTL   ><? echo $ravesh_kar ; ?></textarea></td>
+     <td width="150" class="tahoma1" valign="top">روش انجام کار</td>
+  </tr>
+
+  <tr>                             
+     <td width="350" align="right"><textarea   rows="3"  name="mohit_pajohesh" class="edit-user"  dir=RTL   ><? echo $mohit_pajohesh ; ?></textarea></td>
+     <td width="150" class="tahoma1" valign="top">محيط پژوهش</td>
+  </tr>
+
+  <tr>                             
+     <td width="350" align="right"><textarea   rows="3"  name="tajzie_tahlil" class="edit-user"  dir=RTL   ><? echo $tajzie_tahlil ; ?></textarea></td>
+     <td width="150" class="tahoma1" valign="top">طرح تجزيه و تحليل دادهها</td>
+  </tr>
+
+
+ <tr>                             
+     <td width="350" align="right"><textarea   rows="3"  name="pish_azmoon" class="edit-user"  dir=RTL   ><? echo $pish_azmoon ; ?></textarea></td>
+     <td width="150" class="tahoma1" valign="top">پيش آزمون و مطالعه راهنما</td>
+  </tr>
+
+  <tr>                            
+     <td width="350" align="right"><textarea   rows="3"  name="sayer_mavared" class="edit-user"  dir=RTL   ><? echo $sayer_mavared ; ?></textarea></td>
+     <td width="150" class="tahoma1" valign="top">ساير موارد</td>
+  </tr>
+
+
+ <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="ravesh_ejra.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+  </tr>
+</table>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

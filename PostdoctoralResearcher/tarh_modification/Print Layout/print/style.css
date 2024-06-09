@@ -1,0 +1,148 @@
+@font-face {
+    font-family: 'saeed';
+    src: url('../print/fonts/BKoodakBold.eot?#') format('eot'), /* IE6–8 */
+    url('../print/fonts/BKoodakBold.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+    url('../print/fonts/BKoodakBold.ttf') format('truetype'); /* Saf3—5, Chrome4+, FF3.5, Opera 10+ */
+}
+.myform {
+    text-align: right;
+    direction: rtl
+}
+.text-center {
+    text-align: center;
+}
+
+.panel-info,.panel-success > .panel-heading {
+    text-align: right;
+}
+
+.panel-body > h4 {
+    text-align: right;
+}
+
+.panel-body > p {
+    text-align: right;
+    direction: rtl;
+}
+
+.refrences li {
+    float: right;
+    text-align: right;
+    direction: rtl;
+}
+th,td {
+    text-align: center
+}
+.alert-dismissable .close {
+    float: left!important;
+    left: 0px!important;
+}
+.alert{text-align: right}
+/*font section*/
+
+
+
+@font-face {
+  font-family: 'BKoodakBold';
+  src: url('fonts/BKoodakBold.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BKoodakBold.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BKoodakBold.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BNazanin';
+  src: url('fonts/BNazanin.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BNazanin.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BNazanin.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+@font-face {
+  font-family: 'BTitrBold';
+  src: url('fonts/BTitrBold.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BTitrBold.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BTitrBold.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BTraffic';
+  src: url('fonts/BTraffic.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BTraffic.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BTraffic.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BYagut';
+  src: url('fonts/BYagut.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BYagut.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BYagut.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('fonts/BYekan.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BYekan.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BYekan.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+@font-face {
+  font-family: 'BZar';
+  src: url('fonts/BZar.eot?#') format('eot'),  /* IE6â€“8 */
+       url('fonts/BZar.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+       url('fonts/BZar.ttf') format('truetype');  /* Saf3â€”5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+
+
+.BKoodakBold {
+	font-family: BKoodakBold, Arial, Helvetica, sans-serif;
+}
+
+
+.BNazanin {
+	font-family: BNazanin, Arial, Helvetica, sans-serif;
+}
+
+
+.BTitrBold {
+	font-family: BTitrBold, Arial, Helvetica, sans-serif;
+}
+
+.BTitrTGEBold {
+	font-family: BTitrTGEBold, Arial, Helvetica, sans-serif;
+}
+
+.BTraffic {
+	font-family: BTraffic, Arial, Helvetica, sans-serif;
+}
+
+
+
+.BYagut {
+	font-family: BYagut, Arial, Helvetica, sans-serif;
+}
+
+
+
+.BYekan {
+	font-family: BYekan, Arial, Helvetica, sans-serif;
+}
+
+.BZar {
+	font-family: BZar, Arial, Helvetica, sans-serif;
+}
+
+
+
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+    
+    float: right;
+margin-left: 0;
+}

@@ -1,0 +1,207 @@
+<script>
+function checkit()
+{
+	var key
+	key = window.event.keyCode
+	
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	{
+		if(key!=46)
+	      window.event.returnValue= false;
+	    else  
+	    window.event.returnValue= true
+	}
+
+	  
+}
+</script>
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+$rotbe_tarh="0";
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+  	 
+	  $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+       
+       
+      if ( mysql_num_rows($result) == 1 )
+      {
+	    $now_date=date("Y-m-d");
+		$query="update tarh  set send_moavenat_date_confirm='$now_date' ,send_moavenat_confirm=\"1\" ,send_moavenat_confirm_comment='$comment'   where  cod_tarh='$cod_tarh'";	    
+		 
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+       
+        
+         insert_position($cod_tarh,"29",$admin);
+        $action="ارسال براي معاونت"."<br>".$tarh_name;
+        $query="select * from tarh_send_moavenat where cod_tarh='$cod_tarh'";
+        $result2=mysql_query($query) or die("Error in selecting data from tarh_send_moavenat");
+        
+        
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show(".طرح مربوطه به معاونت پژوهشي دانشگاه ارسال شد<br> ","green");
+		footer_forms($admin,$seed);
+		exit();		
+      }
+      else
+      {
+        message_show(".در اين رنک و سال طرحي با اين رتبه وجود دارد","red");
+		footer_forms($admin,$seed);
+		exit();		
+      
+      }
+      
+    
+  }
+}
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+  
+  
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+
+
+
+
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+  
+  
+    <TR>
+     <TD align=left width="360"   >
+     
+      </TD>
+      <TD align=middle width="140"  background="image/finish_send.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+  $query="select * from savabetsystem ";
+   $myresult=mysql_query($query) or die("Error in selecting data from savabetsystem");
+   if(mysql_num_rows($myresult) > 0)
+   
+   {  
+   	$rf=mysql_fetch_array($myresult);
+	$main_content=$rf["main_content"];    
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\" dir='rtl'>در اين مرحله طرح به دانشگاه براي تاييد قرارداد ارسال مي شود</td>";
+    echo "</tr>";
+
+    //echo "<tr>";
+    //echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">قبل از ارسال طرحها مطمئن باشيد كه صورتجلسه شوراي پژوهشي را براي اين طرح تنظيم نموده ايد و اين صورتجلسه را به معاونت ارسال كرده ايد. بعد از ارسال همه طرحها به معاونت نيز كليه طرحهايي را كه براي رنك دوم ارسال نموده ايد رتبه بندي نموده و آن را متعاقب امضا به معاونت بفرستيد بنابراين مجموعا براي هر طرح 3 مورد بايد به معاونت فرستاده شود 1-صورتجلسه 2 - خود طرح 3- رتبه بندي كليه طرحها همكاران محترم دانشكده ها و مراكز حتما قبل از اتمام مهلت ارسال براي اين رنك ( 12 تير ما ه) از اتمام عمليات ارسال طرحها از  مديريت امور پژوهش و شماره تلفن 81633612 خانم دكتر كوشان مطمئن شويد.</td>";
+    //echo "</tr>";
+   }
+?>
+
+  <tr>
+   
+    <td colspan="2" width="100%" class="tahoma1" valign="top" align="right"><span class="star-message">آيا مايل به ارسال به  معاونت پژوهشي براي تاييد هستيد ؟</span></td>
+  </tr>
+ 
+<tr>
+    <td width="350" align="right">
+	<textarea   rows="8"  name="comment" class="edit-user"  dir=RTL   ></textarea></td>	
+    <td width="150" class="tahoma1" valign="top">توضيح</td>
+  </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

@@ -1,0 +1,1816 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+
+<script type="text/javascript">
+<!--
+
+function addEvent()
+{
+var ni = document.getElementById('myDiv');
+var numi = document.getElementById('theValue');
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "my"+num+"Div";
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+newdiv.innerHTML = "<table border=\"0\" width=\"100%\" bgcolor=\"#EEE7F8\"   cellspacing=\"0\" cellpadding=\"0\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 0; \">"+
+  "<tr>"+  
+ 
+       "<td width=\"10%\" align=\"right\"><input type=\"text\"  onkeyup=\"MakingMoneyForm(this)\"  name=\"mablagh"+num+"\" size=\"20\" value=\"\" class=\"edit-small-2\" ></td>"+
+   "<td width=\"20%\" class=\"tahoma1\"> مبلغ</td>"+
+   
+   
+   "<td width=\"10%\" align=\"right\"><input type=\"text\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"  name=\"faaliat"+num+"\" size=\"20\" value=\"\" class=\"edit-small-2\" ></td>"+
+    "<td width=\"20%\" class=\"tahoma1\" > فعاليت</td>"+  
+
+     
+     "<td width=\"10%\" align=\"right\"><input type=\"text\" name=\"hazine"+num+"\" size=\"20\" value=\"\" class=\"edit-small-2\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>"+
+    "<td width=\"20%\" class=\"tahoma1\"><span class=\"star-message\">*</span> هزينه</td>"+  
+ 
+ "</tr>"+  
+"</table>"+
+"<a class=\"tahoma0\" href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\')\">حذف</a></tr>";
+ni.appendChild(newdiv);
+}
+
+function removeEvent(divNum)
+{
+var d = document.getElementById('myDiv');
+var olddiv = document.getElementById(divNum);
+d.removeChild(olddiv);
+}
+
+//-->
+</script>
+
+<?
+echo "<br>";
+ 
+ 
+  if (strcmp($action,"delete_file")==0)
+  {
+   	
+  	$del_file="../reports/".$cod_tarh;
+    //echo $delete_id;
+	delete_file($del_file,"",$delete_id);
+    
+    //$query="delete  from marhale_report where id='$delete_id'";
+  	//$result=mysql_query($query);
+    $step=4;
+  }
+ 
+
+if(isset($action))
+{
+	
+	if (strcmp($action,"delete_hazine")==0)
+ {
+    $query="delete from marhale_report_final_hazine where id = \"$delete_id\" and cod_tarh=\"$cod_tarh\" ";
+
+    $result=mysql_query($query) or die("Error in  delete data from hazine azmayesh");
+    $action=" حدف هزينه هاي مربوط به گزارش نهايي ".$cod_tarh;
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+
+ }
+	
+  if (strcmp($action,"sabt")==0)
+  {
+  
+  
+     if($step==1)
+     {
+     	if(strlen(trim($natayej))>0 && strlen(trim($ravesh_ejra)) > 0)
+     	{
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";	 
+	 
+	   	$result=mysql_query($query) or die("Error");
+     
+	    if(mysql_num_rows($result) <= 0)
+	    {
+	     	
+	     	
+	      $sazmanha=str_replace("'"," ",$sazmanha);
+	      $sazmanha=str_replace("\""," ",$sazmanha);
+	      $sazmanha=str_replace(";"," ",$sazmanha);
+	
+    	  $pishnahadat=str_replace("'"," ",$pishnahadat);
+	      $pishnahadat=str_replace("\""," ",$pishnahadat);
+	      $pishnahadat=str_replace(";"," ",$pishnahadat);
+
+    	  $natije_giri=str_replace("'"," ",$natije_giri);
+	      $natije_giri=str_replace("\""," ",$natije_giri);
+	      $natije_giri=str_replace(";"," ",$natije_giri);
+
+    	  $natayej=str_replace("'"," ",$natayej);
+	      $natayej=str_replace("\""," ",$natayej);
+	      $natayej=str_replace(";"," ",$natayej);
+
+    	  $ravesh_ejra=str_replace("'"," ",$ravesh_ejra);
+	      $ravesh_ejra=str_replace("\""," ",$ravesh_ejra);
+	      $ravesh_ejra=str_replace(";"," ",$ravesh_ejra);
+
+     	  $send_date=date("Y-m-d");
+     	  
+     	  
+     	   $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh' and group_karshenasan.karshenas_type='1'";
+	      $result123=mysql_query($query) or die("Error 120000");
+		 while($rf=mysql_fetch_array($result123)){
+		  $sms_box=$rf["sms_box"];
+		   $send_date=date("Y-m-d");
+	
+		  $startdate =$send_date;
+	      $startyear = substr($startdate,0,4);
+	      $startmon = substr($startdate,5,2);
+	      $startday = substr($startdate,8,2);
+	      $send_date=hijricalender( $startyear , $startmon , $startday ); 
+	 	  $query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='Gozaresh marboot be tarh $cod_tarh  dar tarikh   $send_date  ersal shod'";
+	 
+		  $result=mysql_query($query) or die("Error 120000");
+		 	  
+		 } 
+     	  
+     	  
+     	  
+     	  $query="insert into  marhale_report set sazmanha='$sazmanha' ,pishnahadat='$pishnahadat', natije_giri='$natije_giri',natayej='$natayej',ravesh_ejra='$ravesh_ejra', marhale='100',cod_tarh='$cod_tarh',send_date='$send_date'";
+	   	 
+	   	  $r_update=mysql_query($query) or die("Error");
+	       ?>
+             <script language="javascript">
+             window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=2";  ?>";
+             </script>
+           <?
+        
+		}
+		else
+		{
+		   $send_date=date("Y-m-d");
+      	   $query="update  marhale_report set sazmanha='$sazmanha' ,pishnahadat='$pishnahadat', natije_giri='$natije_giri',natayej='$natayej',ravesh_ejra='$ravesh_ejra',send_date='$send_date' where    marhale='100' and cod_tarh='$cod_tarh'";
+	   	// echo $query;
+	   	   $r_update=mysql_query($query) or die("Error");
+	       ?>
+             <script language="javascript">
+             window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=2";  ?>";
+             </script>
+           <?
+        	
+		}
+		
+		  
+     	}
+     	else
+     	  $status='entry_error';
+     }
+     
+     if($step==2)
+     {
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";	 
+		  
+	   	$result=mysql_query($query) or die("Error");
+     
+	    if(mysql_num_rows($result) > 0)
+	    {
+	      $chekide_latin=str_replace("'"," ",$chekide_latin);
+	      $chekide_latin=str_replace("\""," ",$chekide_latin);
+	      $chekide_latin=str_replace(";"," ",$chekide_latin);
+
+	 	  $send_date=date("Y-m-d");
+     	  $query="update  marhale_report set chekide_latin='$chekide_latin' where marhale='100' and cod_tarh='$cod_tarh'";
+	   	 
+	   	  $r_update=mysql_query($query) or die("Error");
+	   	   ?>
+           <script language="javascript">
+           window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=3";  ?>";
+           </script>
+           <?
+
+	    }
+	    else
+	    {
+	      $status='step_error';	
+	    }
+     }
+   
+     if($step==3)
+     {
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";
+		 	   	 
+	   	$result=mysql_query($query) or die("Error");
+	    
+        if(strlen(trim($kalame_1))> 0  )
+     	{
+	    if(mysql_num_rows($result) > 0)
+	    {
+	    	
+	      $kalame_1=str_replace("'"," ",$kalame_1);
+	      $kalame_1=str_replace("\""," ",$kalame_1);
+	      $kalame_1=str_replace(";"," ",$kalame_1);
+
+	      $kalame_2=str_replace("'"," ",$kalame_2);
+	      $kalame_2=str_replace("\""," ",$kalame_2);
+	      $kalame_2=str_replace(";"," ",$kalame_2);
+
+	      $kalame_3=str_replace("'"," ",$kalame_3);
+	      $kalame_3=str_replace("\""," ",$kalame_3);
+	      $kalame_3=str_replace(";"," ",$kalame_3);
+
+	      $kalame_4=str_replace("'"," ",$kalame_4);
+	      $kalame_4=str_replace("\""," ",$kalame_4);
+	      $kalame_4=str_replace(";"," ",$kalame_4);
+	    	
+	 	  $send_date=date("Y-m-d");
+     	  $query="update  marhale_report set kalame_1='$kalame_1',kalame_2='$kalame_2',kalame_3='$kalame_3',kalame_4='$kalame_4' where marhale='100' and cod_tarh='$cod_tarh'";
+	   	 
+	   	  $r_update=mysql_query($query) or die("Error");
+	   	   ?>
+           <script language="javascript">
+           window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=4";  ?>";
+           </script>
+           <?
+	    }
+	    
+	    }
+	    else
+	      $status='entry_error';
+	    
+     }
+     else 
+	      $status='step_error';	
+ 
+     
+   
+     
+      if($step==4)
+     {
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";	   	 
+	   	$result=mysql_query($query) or die("Error");
+     
+	    if(mysql_num_rows($result) > 0 )
+	    {
+	 	  
+	 	  
+	 	  
+	    $file_cnt=0;
+        $dir_name="../reports/".$cod_tarh;
+        if ($dir = @opendir($dir_name))
+        {
+     
+          $mydir = dir($dir_name);
+     //while(($file = $mydir->read()) !== false)
+          while($file = $mydir->read())
+	       if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0) )
+	         $file_cnt++;
+          closedir($dir);
+     
+        }
+ 
+	   
+	      $send_date=date("Y-m-d");
+	      $fupload_name=$_FILES["fupload"]["name"];
+	      $fupload_name='final-'.$file_row.'-'.$send_date."-".$fupload_name;
+	     
+          $status_upload=upload_file("../reports",$cod_tarh,"$fupload_name");
+          
+          $query="update marhale_report set  filename='$fupload_name' where marhale='100' and cod_tarh='$cod_tarh'";
+	   	 
+	   	  $r_update=mysql_query($query) or die("Error");
+          if(!strcmp($status_upload,"10") == 0 )
+	         $status="upload_error";
+	      else
+		  {
+			  
+			
+			   ?>
+           <script language="javascript">
+             alert("فايل مربوطه ارسال شد" );
+            <!--window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=5";  ?>";
+			 -->
+           </script>
+           
+           <?
+		  }
+	     
+	    
+	 	  
+      
+	  $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh' and group_karshenasan.karshenas_type='1'";
+      $result123=mysql_query($query) or die("Error 120000");
+	 while($rf=mysql_fetch_array($result123)){
+	  $sms_box=$rf["sms_box"];
+	   $send_date=date("Y-m-d");
+
+	  $startdate =$send_date;
+      $startyear = substr($startdate,0,4);
+      $startmon = substr($startdate,5,2);
+      $startday = substr($startdate,8,2);
+      $send_date=hijricalender( $startyear , $startmon , $startday ); 
+ 	  $query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='File Gozaresh marboot be tarh $cod_tarh  dar tarikh   $send_date  ersal shod'";
+ 
+	  $result=mysql_query($query) or die("Error 120000");
+	 	  
+	 } 
+	 	  
+	 	  
+	 	  
+    }
+   else
+    {
+	   $status='step_error';	
+	 }
+    }
+     
+	 
+	 
+	 
+	 
+	 
+	 if($step==5)
+     {
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";
+		 	   	 
+	   	$result=mysql_query($query) or die("Error");
+	    
+        
+	    if(mysql_num_rows($result) > 0)
+	    {
+			
+		  if(isset($yes_no))
+		  {
+			  $query="update marhale_report set  yes_no='$yes_no' where marhale='100' and cod_tarh='$cod_tarh'";
+	   	       
+	   	       $r_update=mysql_query($query) or die("Error"); 
+		  }
+	      
+		     if(strcmp($yes_no,'0')==0)
+		     {
+			  
+			   ?>
+             <script language="javascript">
+             window.location="<? echo "final_report_view.phtml?marhale=100&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=2";  ?>";
+             </script>
+           <?
+		     }
+		     else
+		     {
+		  
+		  
+		    ?>
+           <script language="javascript">
+           window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=6";  ?>";
+           </script>
+           <?
+		     }
+	    }
+	    
+	    
+	    
+     }
+    
+     
+	 
+	 
+	  if($step==6)
+     {
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";
+		  	   	 
+	   	$result=mysql_query($query) or die("Error");
+	    
+        $form_next_val="";
+	    if(mysql_num_rows($result) > 0)
+	    {
+	     
+		   
+		   $value_form="";
+           for($i=0;$i<=11;$i++)
+  	       {
+	         $var= "form6_".$i;
+ 	         if(isset($$var))
+	         {
+				 
+				 
+				 
+		       if(strlen(trim($value_form))<=0)
+		          $value_form=$var."="."\"".addslashes($$var)."\"";
+		       else
+		          $value_form=$value_form.",".$var."="."\"".addslashes($$var)."\"";
+	     
+	         }
+			 $form_next_val="form6_8";
+			 $form_next_val=$$form_next_val;
+  	       }
+		   $query="update marhale_report set  form_6='$value_form' where marhale='100' and cod_tarh='$cod_tarh'";
+	   	        
+	   	    $r_update=mysql_query($query) or die("Error"); 
+		  
+		  if(strcmp($form_next_val,'1')==0)
+		     {
+		    ?>
+           <script language="javascript">
+           window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=7";  ?>";
+           </script>
+           <?
+			 }
+			 else
+			  {
+			  
+			   ?>
+             <script language="javascript">
+             window.location="<? echo "final_report_view.phtml?marhale=100&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=2";  ?>";
+             </script>
+           <?
+		     }
+	    }
+	    
+	    
+	    
+     }
+    
+	 
+	 
+	  if($step==7)
+     {
+     	$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";
+		  	   	 
+	   	$result=mysql_query($query) or die("Error");
+	    
+        
+	    if(mysql_num_rows($result) > 0)
+	    {
+	     
+		   
+		   $value_form="";
+           for($i=0;$i<=7;$i++)
+  	       {
+	         $var= "form7_".$i;
+ 	         if(isset($$var))
+	         {
+		       if(strlen(trim($value_form))<=0)
+		          $value_form=$var."="."\"".addslashes($$var)."\"";
+		       else
+		          $value_form=$value_form.",".$var."="."\"".addslashes($$var)."\"";
+	     
+	         }
+  	       }
+		   $query="update marhale_report set  form_7='$value_form' where marhale='100' and cod_tarh='$cod_tarh'";
+	   	        
+	   	    $r_update=mysql_query($query) or die("Error"); 
+		    
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				for($i=0;$i<100;$i++)
+    {
+     $hazine ="hazine".$i;     
+	 $faaliat ="faaliat".$i;
+	 $mablagh ="mablagh".$i;
+	   
+     
+    
+     if(strlen(trim($$mablagh)) > 0     )
+     {
+     	$hazine =$$hazine;
+     	$faaliat=$$faaliat;
+      
+     	$mablagh=$$mablagh;
+     	
+     	$hazine=str_replace(",","",$hazine);
+      	$mablagh=str_replace(",","",$mablagh);
+      	//$persons=str_replace(",","",$persons);
+     	 
+     	
+     	$query  = "insert into marhale_report_final_hazine set hazine=\"$hazine\",faaliat=\"$faaliat\" , mablagh=\"$mablagh\" ,cod_tarh=\"$cod_tarh\"";
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        
+	
+        
+      }
+     else
+       $status="entry_error";
+    }
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		    ?>
+           <script language="javascript">
+           window.location="<? echo "final_report.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=7";  ?>";
+           </script>
+           <?
+	    }
+	    
+	    
+	    
+     }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	     
+  }
+  
+  
+  
+ 
+}
+
+  
+if(!isset($step))
+  $step='1';
+ echo "<form name=\"sabt_tarh\" method=\"post\"  enctype=\"multipart/form-data\" action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&step=$step\">"; 
+ 
+   $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1' ";
+
+   $result=mysql_query($query) or die("Error in selecting data from tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+	 $row_fetched=mysql_fetch_array($result);
+     $tarh_name = $row_fetched["tarh_title_farsi"];
+ ?>
+ 
+
+ <TABLE cellSpacing=0  width="600" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+ 
+</table>
+<?
+}
+?>
+<table border="0" width="600"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+$query="select * from  marhale_report where  marhale='100' and cod_tarh='$cod_tarh'";	   	 
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) > 0)
+{
+  $rf=mysql_fetch_array($result);
+  $ravesh_ejra=$rf["ravesh_ejra"];
+  $natayej=$rf["natayej"];
+  $natije_giri=$rf["natije_giri"];
+  $pishnahadat=$rf["pishnahadat"];
+  $chekide_latin=$rf["chekide_latin"];
+  $kalame_1=$rf["kalame_1"];
+  $kalame_2=$rf["kalame_2"];
+  $kalame_3=$rf["kalame_3"];
+  $kalame_4=$rf["kalame_4"];
+  $sazmanha=$rf["sazmanha"];
+  $filename_last=$rf["file_name"];
+  $yes_no=$rf["yes_no"];
+  $form_6=$rf["form_6"];
+  $form_7=$rf["form_7"];
+}
+else
+{
+  $natayej='';
+  $natije_giri='';
+  $pishnahadat='';
+  $chekide_latin='';
+  $kalame_1='';
+  $kalame_2='';
+  $kalame_3='';
+  $kalame_4='';
+  $sazmanha='';	
+  $filename_last="";
+   $yes_no="-1";
+   $form_6="";
+   
+      $form_7="";
+
+}
+
+if (strcmp($status,"step_error") == 0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"100%\" class=\"tahoma1\"  >قبل از ورود اين مرحله ، مرحله اول را ثبت كنيد</td>";
+    echo "</tr>";
+  }
+ if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+?>
+
+<tr>   
+    <td width="100%"   class="tahoma1" align='center' valign="top"><b> </b></td>
+  </tr>
+  
+  
+ <tr>   
+    <td width="100%"   class="tahoma1" align='right' valign="top" dir='rtl' ><b>
+    
+   1-	براي شروع &quot;روند نظارت گزارش نهائي&quot; لازم است گزارش نهائي به تاييديه ساب ادمين(دانشكده يا مركز تحقيقاتي مربوط به آن طرح ) برسد .  اين كار توسط مسئول &quot;سطح ساب ادمين پژوهشيار&quot; صورت ميگيرد.
+<br />
+2-	شما در هر مرحله ميتوانيد با كليك روي هر يك از مراحل ديگر آن  را ويرايش نماييد.
+
+<br />
+3-	براي ثبت اطلاعات هر مرحله لازم است تا كليد ثبت در آن مرحله را بزنيد.
+   
+    
+    </b></td>
+  </tr>
+ 
+  
+  
+  
+  
+  
+  
+  
+<tr>   
+    <td width="100%"   class="tahoma1" align='center' valign="top"><u><b> </b></u></td>
+  </tr>
+  <tr>   
+    <td width="100%"   class="tahoma1" align='center' valign="top">
+	<?
+	$step_string="مرحله اول";
+	if(isset($step))
+	  if($step==1)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	   echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=1&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>
+	  
+    &nbsp;&nbsp;&nbsp;
+    <?
+	$step_string="مرحله دوم";
+	if(isset($step))
+	  if($step==2)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	 echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=2&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>
+	  &nbsp;&nbsp;&nbsp;  
+	  <?
+	$step_string="مرحله سوم";
+	if(isset($step))
+	  if($step==3)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	 echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=3&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>                
+	 
+	 &nbsp;&nbsp;&nbsp;
+	 
+ 
+	
+		<?
+	$step_string="مرحله چهارم";
+	if(isset($step))
+	  if($step==4)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	 echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=4&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>  
+	 &nbsp;&nbsp;&nbsp;
+	
+		<?
+	$step_string="مرحله پنجم";
+	if(isset($step))
+	  if($step==5)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	 echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=5&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>  
+     &nbsp;&nbsp;&nbsp;  
+    	<?
+	$step_string="مرحله ششم";
+	if(isset($step))
+	  if($step==6)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	 echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=6&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>  	
+     &nbsp;&nbsp;&nbsp;  
+    	<?
+	$step_string="مرحله هفتم";
+	if(isset($step))
+	  if($step==7)
+	  {
+	  	$step_string="<b>".$step_string."</b>";
+	  }
+	 echo "<a href='$PHP_SELF?admin=$admin&seed=$seed&step=7&cod_tarh=$cod_tarh'>".$step_string."</a>"; 
+	?>  	
+    
+    	
+	</td>
+  </tr>
+ 
+
+</table>
+
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+   
+ <?
+if($step==1)
+{
+?>
+  <tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='center' valign="top"> فرم خلاصه گزارش نهايي</td>
+  </tr>
+  <tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='right' valign="top"> <b>چكيده فارسي</b></td>
+  </tr>
+  
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="ravesh_ejra" class="edit-user"  dir=RTL   > <? echo $ravesh_ejra; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"><span class="star-message">*</span>روش اجرا</td>
+  </tr>
+  
+  
+  
+ <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="natayej" class="edit-user"  dir=RTL   > <? echo $natayej; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"><span class="star-message">*</span>نتايج</td>
+  </tr> 
+  <tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='right' valign="top"> <b>نتيجه گيري</b></td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="natije_giri" class="edit-user"   dir=RTL   ><? echo $natije_giri; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"> </td>
+  </tr>
+
+<tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='right' valign="top"> <b>پيشنهادها</b></td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="pishnahadat" class="edit-user"   dir=RTL   ><? echo $pishnahadat; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"> </td>
+  </tr>
+<tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='right' valign="top"> <b>سازمانهاي استفاده كننده از نتايج</b></td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="sazmanha" class="edit-user"   dir=RTL   ><? echo $sazmanha; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"> </td>
+  </tr>
+  <?
+}
+  ?>
+  <?
+if($step==2)
+{
+?>
+  <tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='right' valign="top"> <b>چكيده لاتين</b></td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><textarea   rows="7"  name="chekide_latin" class="edit-user"  ><? echo $chekide_latin; ?></textarea></td>
+    <td width="250" class="tahoma1" valign="top"> </td>
+  </tr>
+  <?
+}
+  ?>
+ 
+<?
+if($step==3)
+{
+?>
+
+ <tr>   
+    <td width="100%" colspan='2' class="tahoma1" align='right' valign="top"> <b>كلمات كليدي</b></td>
+  </tr>
+    <tr>
+    <td width="350" align="right"><input type="text" name="kalame_1"  value="<? echo $kalame_1; ?>" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="250" class="tahoma1"><span class="star-message">*</span>كلمه اول</td>
+  </tr>
+ <tr>
+    <td width="350" align="right"><input type="text" name="kalame_2"  value="<? echo $kalame_2; ?>" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="250" class="tahoma1"> كلمه دوم</td>
+  </tr>
+ <tr>
+    <td width="350" align="right"><input type="text" name="kalame_3"  value="<? echo $kalame_3; ?>" size="20" class="edit-user" dir=RTL    ></td>
+    <td width="250" class="tahoma1"> كلمه سوم</td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><input type="text" name="kalame_4"  value="<? echo $kalame_4; ?>" size="20" class="edit-user" dir=RTL   ></td>
+    <td width="250" class="tahoma1"> كلمه چهارم</td>
+  </tr>
+   <tr>
+    <td width="600" colspan='2' align='right' class="tahoma1">شما ميتوانيد تا 4 كلمه كليدي وارد نماييد. ثبت حداقل يك كلمه كليدي اجباري است. كلمه كليدي كلمه اي است كه مي توانيد با جستجوي آن به عنوان و هدف مقاله شما برسيد</td>
+  </tr>
+  <?
+}
+  
+if($step==4)
+{
+?>
+	<tr>
+		<td width="1100" align="right" class="tahoma1">"براي ارسال گزارش نهايي طرح علاوه بر پرکردن متغير هاي ذيل، ارسال فايل گزارش نهايي که بر اساس فرمت قابل قبول اين حوزه( در منوي اطلاع رساني موجود است) الزامي است و بدون ارسال اين فايل امکان اقدام نظارت براي اين طرح مقدور نيست"</td>
+	</tr>
+	<br></br>
+   <tr>
+     <td width="100" align="right"><input type="file" name="fupload" class="edit-user"></td>
+    <td width="400" class="tahoma1" valign="top" >فايل ضميمه </td>
+
+  </tr>
+     <tr>
+     <td width="100" align="right"><select size="1" name="file_row"  class="edit-user">
+     <option selected  value="-1">انتخاب کنيد</option>
+	<option   value="1">نگارش اول</option>
+	<option  value="2">(نگارش دوم (اصلاحي اول</option>
+	<option  value="3">(نگارش سوم (اصلاحي دوم</option>
+	<option  value="4">(نگارش چهارم (اصلاحي سوم </option>
+	<option  value="5">(نگارش پنجم (اصلاحي چهارم</option>
+	</select></td>
+    <td width="400" class="tahoma1" valign="top" >(آيا اين فايل اولين نگارش فايل گزارش نهايي است يا نگارشهاي اصلاحي بعد از آن ميباشد؟ ( شماره نگارش را مشخص نماييد</td>
+
+  </tr>
+  
+  <? echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"100%\" class=\"tahoma1\" colspan=\"2\" dir='rtl'>تعداد فايلهاي ارسالي حداکثر 8 عدد مي باشد<br>حداکثر حجم فايل 8 مگابايت مي باشد. نام فايل را انگليسي و بدون فاصله وارد کنيدفايل ارسالي بايد به فرمت Word يا PDF باشد.صرفا از فونت زر استفاده کنيد </td>";
+    echo "</tr>";
+?>
+   <?
+}
+  ?>
+    <?
+if($step==5)
+{
+?>
+   <tr>
+     <td width="500" colspan='2' align="right" class="tahoma1" > طبق مصوبه آيين‌نامه اختصاص امتياز به نتايج طرح‌هاي تحقيقاتي در صورتي كه طرح شما كاربردي باشد، يعني گروه‌هاي مخاطب (به غير از ساير پژوهشگران)  بتوانند از نتيجه آن بلافصل استفاده كنند، و مورد تاييد معاونت قرار گيرد، پيام تهيه شده نيز به عنوان يكي از محصولات پژوهشي  در نظر گرفته  خواهد شد. در صورتي كه طرح خود را واجد شرايط مي‌دانيد اين بخش را تكميل كنيد. در اين بخش لازم است پيام پژوهش خود را در يك صفحه براي مخاطب بنويسيد. چنانچه براي انواع روشهاي انتقال دانش كه در مراحل بعد به آن اشاره ميشود هزينه اي مترتب باشد اين هزينه پس از تاييد معاونت پژوهشي قابل پرداخت خواهد بود.</td>
+   
+
+  </tr>
+  <tr>
+   <td    align="right" class="tahoma1" align='right'> 
+     <label>
+    
+    <?
+ 	   $checked="   "; 
+
+      if(strcmp($yes_no,"0")==0)
+          $checked=" checked='checked' "; 
+		  
+ 		  
+?>
+    
+    بلي<input  <?  echo $checked ; ?> type="radio" name="yes_no"   value="0" /></label>
+     <label>
+    
+    <?
+    	   $checked="   "; 
+
+      if(strcmp($yes_no,"1")==0)
+          $checked=" checked='checked' "; 
+    ?>
+
+
+    خير<input <?  echo $checked ; ?> type="radio" name="yes_no"   value="1" /></label>
+     </td>
+     <td   align="center" class="tahoma1" ><b> 
+     طرح من واجد شرايط است
+     </b>
+     </td>
+   
+
+
+  </tr>
+    <tr>
+   <td  colspan='12'  align="right" class="tahoma1" align='right' dir='rtl'> 
+بديهي است که قابليت انتقال نتيجه طرح پس از تاييد معاونت پژوهشي تعيين خواهد شد.
+</td>
+</tr>
+
+
+   <?
+}
+   
+  
+  
+  
+    
+if($step==6)
+{
+?>
+
+
+<tr>
+ 
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b>مخاطبين طرح شما چه کساني هستند؟</b></td>
+
+  </tr>
+   <tr>
+ 
+    <td width="100%" colspan='2' class="tahoma1" valign="top" dir='rtl' align='center'> (گروه مخاطب به فرد يا گروهي گفته مي شود که بتواند از نتايج طرح به طور مستقيم استفاده کند.) </td>
+
+  </tr>
+  
+  
+  
+<tr>
+ 
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+
+
+
+     <tr>
+      <td width="100%" align='right' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+ 
+       <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_0");
+    if(strcmp(trim($i),"1")==0)
+    $sl1="checked=\"checked\"";
+     
+?>
+    <input <? echo $sl1; ?> type="checkbox" name="form6_0"   value="1" /><b>
+    بيماران و مردم </b>(مخاطب خود را دقيقا مشخص کنيد. مثلا بنويسيد "بيماران مبتلا به ديابت نوع 1")</label>
+  
+ </td>
+  </tr>
+  
+   <tr>
+ 
+    <td width="90%"   class="tahoma1" valign="top" dir='rtl' align='right' > در صورتي که نتايج پژوهش شما از نظر علمي قابليت استناد بالايي دارد و به نظر شما آگاهي از آن براي مردم و بيماران مناسب مي باشد، پيام هاي اصلي طرح را بدون استفاده از واژگان پيچيده و به زبان ساده حداكثر در يک صفحه بنويسيد. درنظر داشته باشيد خوانندگان اين سطور گروه هاي مختلف مردم مي باشند. </td>
+  <td width="10%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+  
+<tr>
+        <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_1");
+    
+     
+?>
+
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form6_1"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  
+   <tr>
+ 
+    <td width="90%"   class="tahoma1" valign="top" dir='rtl' align='right' > مخاطب خود را مشخص کنيد</td>
+  <td width="10%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+  
+<tr>
+        <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_9");
+    
+     
+?>
+
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="3"  class="edit-user"  name="form6_9"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <tr>
+ 
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+
+
+
+     <tr>
+      <td width="100%" align='right' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+         <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_2");
+    if(strcmp(trim($i),"1")==0)
+    $sl1="checked=\"checked\"";
+     
+?>
+    <input <? echo $sl1; ?> type="checkbox" name="form6_2"   value="1" /><b>
+    مديران و سياست‌گذاران  </b>(مخاطب خود را دقيقا مشخص کنيد. مثلا «روساي مراكز بهداشتي درماني»)</label>
+  
+ </td>
+  </tr>
+  <tr>
+ 
+    <td width="90%" align='right'   class="tahoma1" valign="top" dir='rtl' > در صورتي که نتايج پژوهش شما از نظر علمي قابليت استناد بالايي دارد وگرچه براي انتقال به عموم مردم مناسب نمي باشد، ولي ممكن است آگاهي از پيام اين پژوهش براي گروه هاي خاص نظير مديران و سياست‌گذاران نظام سلامت، ارايه كنندگان خدمات بهداشتي و درماني و يا ساير كارشناسان و متخصصين مفيد باشد، گروه هاي مخاطب خود را مشخص کنيد و پيام هاي اصلي طرح را حداكثر در سه صفحه بدون استفاده از لغات تخصصي و به زبان ساده بنويسيد. درنظر داشته باشيد كه خوانندگان اين سطور ممكن است افرادي با تخصص هاي متفاوت باشند.  </td>
+<td width="10%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+
+  
+  
+  
+  
+<tr>
+      <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_3");
+    
+     
+?>
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form6_3"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+
+
+
+
+  <tr>
+ 
+    <td width="90%"   class="tahoma1" valign="top" dir='rtl' align='right' > مخاطب خود را مشخص کنيد</td>
+  <td width="10%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+  
+<tr>
+        <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_10");
+    
+     
+?>
+
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="3"  class="edit-user"  name="form6_10"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+
+
+
+
+
+
+<tr>
+ 
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+
+
+
+     <tr>
+      <td width="100%" align='right' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+      
+        <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_4");
+    if(strcmp(trim($i),"1")==0)
+    $sl1="checked=\"checked\"";
+     
+?>
+    <input  <? echo $sl1; ?> type="checkbox" name="form6_4"   value="2" /><b>
+ ارايه كنندگان خدمات بهداشتي و درماني شامل دندانپزشكان، پزشكان، داروسازان، پيراپزشكان، پرستاران، ماماها  </b>(مخاطب خود را دقيقا مشخص کنيد. مثلا "فيزيوتراپيست هايي که بالغين مبتلا به سيب شانه را مداوا مي کنند")</label>
+  
+ </td>
+  </tr>
+  
+ 
+  
+  
+<tr>
+   <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_5");
+    
+     
+?>
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form6_5"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+
+
+
+
+
+
+
+  <tr>
+ 
+    <td width="90%"   class="tahoma1" valign="top" dir='rtl' align='right' > مخاطب خود را مشخص کنيد</td>
+  <td width="10%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+  
+<tr>
+        <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_11");
+    
+     
+?>
+
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="3"  class="edit-user"  name="form6_11"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+
+
+
+
+<tr>
+ 
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+
+
+
+     <tr>
+      <td width="100%" align='right' colspan='3' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+      
+       <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_6");
+    if(strcmp(trim($i),"1")==0)
+    $sl1="checked=\"checked\"";
+     
+?>
+      
+        <input type="checkbox" <? echo $sl1; ?> name="form6_6"  value="1" /><b>
+<b>  ساير مخاطبين مانند مهندسين، كارشناسان و مديران خارج از نظام سلامت </b>(مخاطب خود را دقيقا مشخص کنيد. مثلا "مهندسين صنايع غذايي کارخانجات توليدکننده فرآورده¬هاي کنسروي")</label>
+  
+ </td>
+  </tr>
+  
+ 
+<tr>
+ <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_6,"form6_7");
+    
+     
+?>
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form6_7"   ><? echo $i; ?></textarea></td>
+
+  </tr>
+  
+  
+  
+  
+  
+  
+ <tr>
+ 
+    <td width="90%"   class="tahoma1" valign="top" dir='rtl' align='right' > مخاطب خود را مشخص کنيد</td>
+  <td width="10%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b> </b></td>
+
+  </tr>
+  
+<tr>
+        <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_12");
+    
+     
+?>
+
+    <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' ><textarea  rows="3"  class="edit-user"  name="form6_12"   ><? echo $i; ?></textarea></td>
+
+  </tr>  
+  
+  
+  
+  
+  
+  
+     <tr>
+      <td width="100%" align='right' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b>
+       در صورت تکميل اين بخش و تائيد آن توسط مديريت پژوهش  ، امتياز مربوط به محصولات پژوهشي به طرح شما تعلق مي گيرد و پيام پژوهش شما جهت اطلاع رساني به مخاطبين بر روي وب سايت به نمايش گذاشته خواهد شد.
+  </b>
+ </td>
+  </tr>
+  
+   <tr>
+      <td width="100%" align='right' colspan='2' class="tahoma1" valign="top" dir='rtl' ><b>آيا به غير از انتشار مقاله و يا ارائه نتايج طرح در كنگره ها و سمينارها، و قرار دادن پيام پژوهش در وب سايت راه ديگري براي انتقال نتايج طرح خود در نظر داريد؟
+  </b>
+ </td>
+  </tr>
+  
+  
+   <tr>
+   <td   width="100%"  colspan='2'  align="right" class="tahoma1" > 
+     <label>
+      <?
+ 	 $i='';
+	 $sl1="";
+ $i=check_field_value($form_6,"form6_8");
+    if(strcmp(trim($i),"0")==0)
+       $sl1="checked=\"checked\"";
+     
+?>
+    
+    
+    بلي<input <? echo $sl1; ?> type="radio" name="form6_8"   value="0" /></label>
+     <label>
+    <?
+		 $sl1="";
+
+     if(strcmp(trim($i),"1")==0)
+       $sl1="checked=\"checked\"";
+	?>
+    خير<input <? echo $sl1; ?> type="radio" name="form6_8"   value="1" /></label>
+     </td>
+     
+   
+
+  </tr>
+  
+   <?
+}
+  ?>
+
+
+   <?
+if($step==7)
+{
+?>
+  <tr>
+     <td  dir='rtl' width="100%" colspan='2' align="center" class="tahoma1" ><b>نحوه انتشار </b></td>
+   
+
+  </tr>
+
+   <tr>
+     <td  dir='rtl' width="100%" colspan='2' align="right" class="tahoma1" >در صورتي كه براي انتقال نتايج پژوهش خود برنامه قابل اجرايي (بجز قرار دادن پيام پژوهش خود در وب سايت، انتشار مقاله و ارائه نتايج در کنگره ها و سمينارها) مد نظر داريد، طبق مصوبه شوراي پژوهشي، دانشگاه قادر به پرداخت بودجه اي براي فعاليت هاي شما مي باشد. بديهي است هزينه  فعاليت هاي انتقال دانش حاصل از پژوهش تنها پس از تاييد معاونت پژوهشي قابل پرداخت خواهد بود.
+لطفا روش هاي پيشنهادي خود را به تفكيك گروه مخاطب، در جدول زير ذكر نماييد
+ </td>
+   
+
+  </tr>
+  
+  
+  
+  
+  
+     <tr>
+      <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+        <b>
+<b> بيماران و مردم   </b></label>
+  
+ </td>
+  </tr>
+  
+ 
+<tr>
+  <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_0");
+    
+     
+?>
+    <td width="60%" align='center'   class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_0"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'   class="tahoma1" valign="top" dir='rtl' ><b>گروه مخاطب به صورت دقيق مشخص گردد </b></td>
+
+  </tr>
+  
+<tr>
+   <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_1");
+    
+     
+?>
+
+    <td width="60%" align='center'  class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_1"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'  class="tahoma1" valign="top" dir='rtl' ><b> روش انتشار</b></td>
+
+  </tr>
+    
+  
+  <tr>
+      <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+        <b>
+<b>مديران و سياست‌گذاران   </b></label>
+  
+ </td>
+  </tr>
+  
+ 
+<tr>
+    <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_2");
+    
+     
+?>
+
+    <td width="60%" align='center'   class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_2"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'   class="tahoma1" valign="top" dir='rtl' ><b>گروه مخاطب به صورت دقيق مشخص گردد </b></td>
+
+  </tr>
+  
+<tr>
+   <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_3");
+    
+     
+?>
+
+    <td width="60%" align='center'  class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_3"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'  class="tahoma1" valign="top" dir='rtl' ><b> روش انتشار</b></td>
+
+  </tr>
+     
+  
+
+
+
+
+
+
+
+
+
+
+  <tr>
+      <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+        <b>
+<b>ارايه كنندگان خدمات بهداشتي و درماني شامل دندانپزشكان، پزشكان، داروسازان، پيراپزشكان، پرستاران، ماماها</b></label>
+  
+ </td>
+  </tr>
+  
+ 
+<tr>
+    <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_4");
+    
+     
+?>
+
+    <td width="60%" align='center'   class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_4"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'   class="tahoma1" valign="top" dir='rtl' ><b>گروه مخاطب به صورت دقيق مشخص گردد </b></td>
+
+  </tr>
+  
+<tr>
+    <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_5");
+    
+     
+?>
+    <td width="60%" align='center'  class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_5"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'  class="tahoma1" valign="top" dir='rtl' ><b> روش انتشار</b></td>
+
+  </tr>
+   
+   
+   
+   
+   
+
+  <tr>
+      <td width="100%" align='center' colspan='2' class="tahoma1" valign="top" dir='rtl' >
+      <label>
+        <b>
+<b>ساير مخاطبين مانند مهندسين، كارشناسان و مديران خارج از نظام سلامت</b></label>
+  
+ </td>
+  </tr>
+  
+ 
+<tr>
+     <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_6");
+    
+     
+?>
+
+    <td width="60%" align='center'   class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_6"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'   class="tahoma1" valign="top" dir='rtl' ><b>گروه مخاطب به صورت دقيق مشخص گردد </b></td>
+
+  </tr>
+  
+<tr>
+      <?
+ 	 $i='';
+	 $sl1="";
+     $i=check_field_value($form_7,"form7_7");
+    
+     
+?>
+
+    <td width="60%" align='center'  class="tahoma1" valign="top" dir='rtl' ><textarea  rows="7"  class="edit-user"  name="form7_7"   ><?  echo $i; ?></textarea></td>
+<td width="40%" align='right'  class="tahoma1" valign="top" dir='rtl' ><b> روش انتشار</b></td>
+
+  </tr>    
+  
+ 
+ 
+ <tr>
+ 
+    
+<td width="100%" colspan='2' align='right'  class="tahoma1" valign="top" dir='rtl' ><b>*  تاييد نهايي روش انتشار با معاونت پژوهشي است. 
+</b></td>
+
+  </tr>    
+ 
+  
+  
+  
+  <tr>
+  <td colspan='2'>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ <br><br>
+<table border="0"  width="100%" cellspacing="0" cellpadding="0" >
+
+<tr>
+ 
+  <TD width="100%"  align="center" class="tahoma1" height=19><b>
+       . لطفا هزينه هاي مربوطه را در جدول زير مشخص فرماييد      
+</b></td>
+</tr>
+
+
+  
+</TABLE>
+
+<table border="0"  width="100%" cellspacing="0" cellpadding="0" >
+
+ <tr>
+    <td width="100%"  colspan='22' class="tahoma1" align="center"> &nbsp;</b></td>
+  </tr> 
+
+  <tr> 
+    <tr>
+    <td width="100%"  colspan='22' class="tahoma1" align="center"><b>مجري محترم ، در وارد کردن کليه هزينه هاي فعاليت هاي خود از اعداد بدون جدا کننده (, - / ) استفاده کنيد <br></b></td>
+  </tr> 
+
+  <tr>
+  
+  
+  
+   <td width="10%" align="right"><input type="text"  onkeyup="MakingMoneyForm(this)"  name="mablagh0" size="20" value="" class="edit-small-2" ></td>
+   <td width="20%" class="tahoma1"> مبلغ</td>
+   
+   
+   
+       <td width="10%" align="right"><input type="text" dir='rtl'  onkeydown= "return FarsiKeyDown()" onkeypress= "return FarsiKeyPress() " name="faaliat0" size="20" value="" class="edit-small-2" ></td>
+    <td width="20%" class="tahoma1" > فعاليت</td>
+  
+   
+   
+
+   
+    <td width="10%" align="right"><input type="text" name="hazine0" size="20" value="" class="edit-small-2" dir=RTL   ></td>
+    <td width="20%" class="tahoma1"><span class=\"star-message\">*</span> هزينه</td>
+  
+ </tr>
+ 
+  <tr>
+    <td width="100%"  colspan='22' class="tahoma1" align="center"><b> پس از کارشناسي هزينه و تاييد آن نتيجه از طريق پست الكترونيك به شما اعلام خواهد شد و مي¬توانيد فعاليت هاي انتقال دانش خود را آغاز کنيد. پرداخت هزينه فعاليت هاي انتقال دانش مبني بر ارائه گزارش و مستندات اين فعاليت ها مي باشد <br></b></td>
+  </tr> 
+<?
+
+   echo "<tr>";
+     echo "<td width=\"100%\" colspan=\"8\" class=\"tahoma0\" align=\"left\">";
+     echo "<input type=\"hidden\" value=\"0\" id=\"theValue\" /><a href=\"javascript:;\" onclick=\"addEvent();\" class=\"tahoma1\">اضافه کردن</a>";
+     echo "<div id=\"myDiv\">";
+     echo "</div>";
+     echo "</td>";
+     echo "</tr>";
+     ?>
+ 
+   
+</table>
+
+ 
+
+
+  <?
+   $query="select * from  marhale_report_final_hazine where cod_tarh=\"$cod_tarh\"   ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"100%\" >";
+     echo "<tr>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+      echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">مبلغ</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">فعاليت</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">هزينه</td>";
+      echo "</tr>";
+
+     $mycount=0;
+	 $my_summary =0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       $id=$row_fetched["id"];
+//       echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=final_report.phtml&step=7&admin=$admin&seed=$seed&action=delete_hazine&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 
+ 
+  $mablagh_row=$row_fetched["mablagh"];
+ $my_summary =$mablagh_row +$my_summary;
+ 
+ 
+        echo "<td align=\"center\"  class=\"tahoma1\" >".number_format($row_fetched["mablagh"])."</td>";
+       
+	  echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["faaliat"]."</td>";
+
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["hazine"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+	        echo "<td align=\"center\"  class=\"tahoma1\">".number_format($my_summary)."</td>";
+      echo "<td align=\"right\" colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+
+       echo "</tr>";
+     echo "</table>";
+
+   }
+
+?>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </td>
+  </tr>
+  
+ 
+ 
+   <?
+}
+   
+  ?>
+
+
+  <tr>
+      <?
+if($step==7)
+{
+?>
+
+  
+    <td width="50%" colspan="2" align='left'>
+      <p align="left"><input type="button" value="خاتمه" name="B1" class="but-small" onclick= window.location='<? echo "final_report_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&marhale=100";  ?>'></td>
+   
+  
+  
+  <?
+}
+  ?>
+ 
+
+    <td width="50%" align='left' colspan='2' >
+      <p align="center"><input type="submit" value="ثبت " name="B1" class="but-small"></td>
+   
+  </tr>
+</table>
+
+</form>
+
+<?
+if($step==4)
+{
+
+
+ 
+  $query="select * from marhale_report where cod_tarh='$cod_tarh' and marhale='100'";
+   
+  $result=mysql_query($query) or die("Error");
+   
+    
+      $mycount=0;
+     $dir_name="../reports/".$cod_tarh;
+     if ($dir = @opendir($dir_name))
+     {
+      echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+      echo "<tr>";
+      echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+      echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام فايل</td>";
+    //  echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">تاريخ ارسال</td>";
+      echo "</tr>";
+
+     //echo $dir_name;
+     $mydir = dir($dir_name);
+     //while(($file = $mydir->read()) !== false)
+     while($file = $mydir->read())
+     {
+     	
+	   if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0 || strcmp(trim($file),"Thumbs.db")==0) && strcmp(substr($file,0,5),'final')==0 )
+	   {
+         echo "<tr>";
+        
+         $myq="select * from tarh_indoing where cod_tarh='$cod_tarh' and marhale='100' and submitted='1'";
+         $res=mysql_query($myq) or die("Error");
+         if(mysql_num_rows($res)>0)
+            $level_submitted='1';
+         else 
+            $level_submitted='0';  
+     	
+     	
+	     echo "<tr>";
+	     if($level_submitted==0)
+             echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=final_report.phtml&admin=$admin&seed=$seed&action=delete_file&marhale=$marhale&cod_tarh=".$cod_tarh."&delete_id=".$file."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+         else 
+             echo "<td ><p align=\"center\" class='tahoma1'> غير قابل حذف</td>";    
+       
+         //echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=upload_file.phtml&admin=$admin&seed=$seed&action=delete_file&cod_tarh=".$cod_tarh."&delete_id=".$file."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+         echo "<td align=\"center\"  class=\"tahoma1\"><a target=\"_blank\" href=\"../reports/$cod_tarh/$file\">".$file."</a></td>";
+       //  echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">".$row_fetched["send_date"]."</td>";
+        
+		 echo "</tr>";
+	   }
+     }
+      closedir($dir);
+      echo "</table>";
+	 }
+
+
+
+
+
+
+	
+}
+
+  footer_forms($admin,$seed);
+ ?>
+
+<script>
+
+            function setdefault()
+            {
+              document.sabt_tarh.cod_group.options[0].selected=true;
+
+              document.sabt_tarh.cod_daneshkade.options[0].selected=true;
+            }
+
+
+
+            var temp=document.sabt_tarh.cod_group
+            function redirect()
+            {
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex
+                myselecteditem--
+                if( myselecteditem<0 )
+                  return
+
+                for (i=0;i<group[myselecteditem].length;i++)
+                {
+
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }
+
+
+
+            </script>
+
+

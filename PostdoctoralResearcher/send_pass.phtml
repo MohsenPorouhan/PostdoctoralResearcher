@@ -1,0 +1,297 @@
+
+
+<?php 
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("soap-email/send_email.php");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+if (strcmp($action,"send_email")==0   )
+{
+
+    session_start();
+	if ($_POST['code']==$_SESSION['key']) {
+		$cod_error = 1;
+	} else {
+		$cod_error = 0;
+	}
+	//echo $cod_error;
+ if(strcmp($cod_error,'1')==0)
+ {
+  if(strcmp($user_type,'1')==0)  	
+    $query="select * from user_login where email=\"$email\"";
+  
+ 
+  if(strcmp(substr($email,0,2),"09")==0)  
+    $caution="mobile";
+  else
+    $caution="username";  
+    
+  if(strcmp($user_type,'2')==0)
+  
+     $query="select * from karshenasan where $caution=\"$email\""; 
+ 
+  if(strcmp($user_type,'3')==0)
+  
+     $query="select * from group_karshenasan where $caution=\"$email\""; 
+ 
+
+  
+  $result=mysql_query($query);
+  if(mysql_num_rows($result) > 0 )
+  {
+    $row_fetched=mysql_fetch_array($result);
+     if(strcmp($user_type,'1')==0)
+    {
+      $username=$row_fetched["email"];
+      $password=$row_fetched["password"];
+      $email=$username;
+      $name_e=$row_fetched["name_e"];
+      $family_e=$row_fetched["family_e"];
+	  $mobile_user=$row_fetched["mobile"];
+	  
+    }
+    
+	if(strcmp($user_type,'2')==0) 
+    {
+      $username=$row_fetched["username"];
+      $password=$row_fetched["password"];
+      $email=$row_fetched["karshenas_email"];
+      $name_e=$row_fetched["karshenas_name_e"];
+      $family_e=$row_fetched["karshenas_family_e"];	
+    }
+
+	if(strcmp($user_type,'3')==0) 
+    {
+      $username=$row_fetched["username"];
+      $password=$row_fetched["password"];
+      $email=$row_fetched["karshenas_email"];
+      $name_e=$row_fetched["karshenas_name_e"];
+      $family_e=$row_fetched["karshenas_family_e"];	
+    }
+   
+  $mail = new PHPMailer();
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye." ".$name_e;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($email, $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "Your Username & password in $url_address (Do not reply this email)";
+         $emailbody="";
+    $emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+    $emailbody=$emailbody."<br>For using comprehensive research administration and sending your proposals<br>";
+    $emailbody=$emailbody."<br> using the below username and password<br>";
+    $emailbody=$emailbody."<br>Username: $username<br>Password: $password<br><br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login.phtml>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Peyvand Co. (Peyvandco.com).</font></center>";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+    }
+    
+    
+   
+	 $message_string="نام کاربري و کلمه عبور به آدرس پست الکترونيکي شما فرستاده شد";
+	  if(strcmp($user_type,'1')==0)
+		   {
+		        $message_string=$message_string."  ضمنا يک پيامک به شماره تلفن همراه شما نيز ارسال شد  ";
+		       
+		        $send_string="Username:$username   Password : $password";
+		        send_sms($mobile_user,$send_string);
+    
+              //  send_sms_user_main("$mobile_user",$send_string);
+           }
+         //message_show($message_string,"green");
+       
+	
+  	}
+  	else{
+  		$status="email_error";
+  	}
+  }
+ else 
+    $status="security_error"; 
+    
+ }
+ 
+ ?>
+       
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>پژوهشيار - ورود / عضويت</title>
+
+    <!-- Bootstrap -->
+    <link href="new_css/bootstrap.css" rel="stylesheet">
+    <link href="new_css/style-login.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="login-body">
+    <!-- modal -->
+    <div class="modal fade" id="notify">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">اطلاع رساني</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                     <?php 
+                      if(isset($status) && strcmp($status,"security_error")==0)
+					   {
+					  
+					    echo "کد امنيتي صحيح وارد نشد."; 
+					  
+					   }
+					   else
+					   if(isset($status) && strcmp($status,"email_error")==0)
+					   {
+					  
+					    echo "چنين کاربري وجود ندارد"; 
+					  
+					   }
+					   else
+					   if(isset($status) && strcmp($status,"mail_err")==0)
+					   {
+					  
+					    echo "خطا در ارسال ايميل. مجددا تلاش نماييد"; 
+					  
+					   }
+					   else {
+					   	echo $message_string;
+					   }
+					  
+                     ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">تاييد</button>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!--login-->
+
+    <div class="panel-login-wrapper">
+        <div class="login-border">
+        <img src="img/tums_logo.png" alt="login heading" class="login-heading-logo" />
+            <img src="img/login-heading.png"  alt="login heading" class="login-heading-title" />
+            <img src="img/user.png" class="login-heading-img" alt="کاربر" />
+            <div class="panel panel-login">
+                <div class="panel-heading login-heading" id="result">
+
+
+                   <h3 class="panel-title">ارسال کلمه عبور</h3>
+                    <a href="#" id="myAnchor"  data-toggle="modal" data-target="#notify" class="pull-left login-notify"></a>
+                    <a href="login.phtml" class="pull-left login-notify">
+                        
+                        صفحه ورود
+                    </a>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <h4>قابل توجه کاربران</h4>
+                        <p>
+                           در صورتيکه مجري طرح هستيد آدرس پست الکترونيکي و در صورتي که کارشناس هستيد نام کاربري خود را وارد کنيد<br></br>
+                           در صورتيکه کارشناس ،يا داور هستيد و نام کاربري خود را هم فراموش کرده ايد شماره موبايل خود را وارد نماييد
+                        </p>
+                       
+                        
+                        <form name="user_login" action="send_pass.phtml?action=send_email" class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label">نام کاربري</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="email" class="form-control" id="username" placeholder="نام کاربري" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inputPassword3" class="col-sm-2 control-label">نوع ورود</label>
+                                <div class="col-sm-10">
+                                    <select name="user_type" class="form-control">
+                                        <option value="1">ورود مجري طرح</option>
+                                        <option value="3">کارشناس حوزه معاونت</option>
+                                        <option value="2">کارشناس پژوهشي/ناظر</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-10">
+                                <? if (!isset($_POST['Submit'])) { ?>
+								<img src="capcha.php">
+								<? } else { ?>
+								&nbsp;
+								<? } ?>
+								   </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="code" class="col-sm-2 control-label">کد فوق را وارد کنيد</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="code" class="form-control" id="code" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div style="margin: 0 auto;width: 50%;">
+                                   
+                                    <button type="submit" class="btn btn-info">ارسال</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+   <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!--<script src="js/jquery.js"></script>-->
+
+    <!--/.login-->
+    
+</body>
+</html>
+<?php 
+
+  if (strcmp($action,"send_email")==0)
+  {
+  	?>
+   
+         <script type="text/javascript">
+         $(document).ready(function() {
+             
+       	  $('#result').find('a').trigger('click');
+       	});         
+               	
+		</script> 
+		<?php 
+  }
+
+  
+?>

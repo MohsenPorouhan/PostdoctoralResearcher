@@ -1,0 +1,40 @@
+<?
+ include("include/database-connect.phtml");
+ include("include/include.phtml");
+ 
+  
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+?>
+ 
+<?
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+
+ $q="select * from karshenasan where  karshenas_email='$admin'";
+ $rs=mysql_query($q) or die("error 333");
+ $rf=mysql_fetch_array($rs);
+ $username=$rf["username"];
+ 
+ $q="update sessions  set usertype='3',username='$username'  where username='$admin' and rand='$seed'";
+ $rs=mysql_query($q) or die("error 333");
+ 
+ 
+ ?>
+ 
+ 
+ 
+ <SCRIPT language="JavaScript">
+
+ 
+window.location="<? echo "../karshenas/tarh_list_new.phtml?admin=$username&seed=$seed";?>";
+ 
+
+</SCRIPT>

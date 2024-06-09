@@ -1,0 +1,503 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+//include("include/session.phtml");
+?>
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+
+<?
+echo "<br>";
+
+
+if(isset($action))
+{
+  if (strcmp($action,"signup")==0)
+  {  
+
+    if( strlen(trim($takhasos)) > 0    && strlen(trim($melli_code)) > 0    && strlen(trim($mobile)) > 0   && strlen(trim($name)) > 0 && strlen(trim($family)) > 0 && strlen(trim($hesab)) > 0 && strcmp($bank_name,"-1")!=0 )
+//	if( strlen(trim($melli_code)) > 0 && strlen(trim($mobile)) > 0 && strlen(trim($name)) > 0 &&strlen(trim($family)) > 0  )
+    {
+      $query="select * from user_login where  email=\"$admin\"";
+      //echo $query;
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+      
+      if ( mysql_num_rows($result) > 0 )
+      {
+	    $rf=mysql_fetch_array($result);
+		$hsb=$rf["hesab"];
+		$bnm=$rf["bank_name"];
+		 $action_more="";
+		if(strcmp($hesab,$hsb)!=0)
+		  $action_more="  تغيير در شماره حساب  ";
+	   if(strcmp($bnm,$bank_name)!=0)
+		  $action_more="  تغيير در نوح حساب  "." - ". $action_more;
+       $daneshjo_no=str_replace(" ","", $daneshjo_no);
+       $daneshjo_no=str_replace(",","", $daneshjo_no);	   
+ 	    $maghalat=addslashes($maghalat);
+		//echo "aa".$payan_name."aa";
+	   if(isset($payan_name) && strcmp($payan_name,"1")==0 )
+		   $payan_name_text=" payan_name='1',daneshjo_no='$daneshjo_no', ";
+		 else
+		   $payan_name_text="   ";
+		   
+		   
+		   
+        $fileName = $_FILES['userfile']['name'];
+		$tmpName  = $_FILES['userfile']['tmp_name'];
+		$fileSize = $_FILES['userfile']['size'];
+		$fileType = $_FILES['userfile']['type'];
+		
+		$fp      = fopen($tmpName, 'r');
+		$content = fread($fp, filesize($tmpName));
+		$content = addslashes($content);
+		fclose($fp);
+		
+		if(!get_magic_quotes_gpc())
+		{
+		    $fileName = addslashes($fileName);
+		}
+				   
+		   
+		   
+		   
+		   
+		   
+		   
+		   
+        $query = "update user_login  set  $payan_name_text  jobplace='$jobplace',cod_daneshkade='$jobplace',madrak='$madrak',mobile=\"$mobile\",line=\"$line\",maghalat=\"$maghalat\" , name=\"$name\" , family=\"$family\", shno = \"$shno\",  birth_date  = \"$birth_date\", work_addr = \"$work_addr\", home_addr = \"$home_addr\", telno = \"$telno\", fax =\"$fax\", melli_code =\"$melli_code\",  darajeelmi = \"$darajeelmi\" , takhasos = \"$takhasos\" ,  semat = \"$semat\", univ_madrak = \"$univ_madrak\" ,country_univ = \"$country_univ\"  , cod_bank=\"$cod_bank\" , bank_name=\"$bank_name\" , shoabe=\"$shoabe\" , hesab=\"$hesab\",sex=\"$sex\",picture='$content' where email='$admin'"; 
+     //  echo $query;
+     //exit();
+	  //        $query="update user_login set cod_melli='$cod_melli',name='$name' , family='$family', rade_elmi='$rade_elmi',  takhasos  = '$takhasos',  email  ='$email', shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar',hesab='$hesab',bank_name='$bank_name',shoabe='$shoabe',cod_bank='$cod_bank' where email='$admin'";
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="تغيير در پروفايل -". $action_more;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show("پروفايل شما با موفقيت ثبت شد","green");
+		footer_forms($admin,$seed);
+		exit();
+      }
+      else
+       $status="duplicate_entry";
+
+    }
+    else
+      $status="entry_error";
+  }
+
+}
+
+      $query="select * from user_login where  email=\"$admin\"";
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+
+      if ( mysql_num_rows($result) > 0 )
+      {
+		$row_fetched = mysql_fetch_array($result);
+		$name=$row_fetched["name"];
+		$family=$row_fetched["family"];
+		$shno=$row_fetched["shno"];
+		$birth_date=$row_fetched["birth_date"];
+		$work_addr=$row_fetched["work_addr"];
+		$home_addr=$row_fetched["home_addr"];
+		$telno=$row_fetched["telno"];
+		$fax=$row_fetched["fax"];
+		$nampedar=$row_fetched["fath_name"];
+		$melli_code=$row_fetched["melli_code"];
+		$email=$row_fetched["email"];
+		$darajeelmi=$row_fetched["darajeelmi"];
+		$takhasos=$row_fetched["takhasos"];
+		$semat=$row_fetched["semat"];
+		$univ_madrak=$row_fetched["univ_madrak"];
+		$country_univ=$row_fetched["country_univ"];								
+        $hesab=$row_fetched["hesab"];
+		$bank_name=$row_fetched["bank_name"];
+		$shoabe=$row_fetched["shoabe"];
+		$sex=$row_fetched["sex"];
+		$line=$row_fetched["line"];
+		$cod_bank=$row_fetched["cod_bank"];
+		$maghalat=$row_fetched["maghalat"];
+		$mobile=$row_fetched["mobile"];
+		$jobplace=$row_fetched["jobplace"];
+        $madrak=trim($row_fetched["madrak"]);
+		$payan_name=$row_fetched["payan_name"];
+		$daneshjo_no=$row_fetched["daneshjo_no"];
+		
+		
+      }
+      else
+      {
+      $madrak="";
+        $jobplace="";
+        $name="";
+		$family="";
+		$shno="";
+		$line="";
+		$birth_date="";
+		$work_addr="";
+		$home_addr="";
+		$telno="";
+		$fax="";
+		$nampedar="";
+		$melli_code="";
+		$email="";
+		$darajeelmi="";
+		$takhasos="";
+		$semat="";
+		$univ_madrak="";
+		$country_univ="";
+        $hesab="";
+		$bank_name="";
+		$shoabe="";
+		$sex="";
+		$cod_bank="";
+		$maghalat="";
+		$mobile="";
+		$payan_name=0;
+		$daneshjo_no='';
+		 
+       }
+
+?>
+
+
+<? echo "<form name=\"signup\" method=\"post\" enctype=\"multipart/form-data\" action=\"$PHP_SELF?&admin=$admin&seed=$seed&action=signup\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+   <tr>
+     <td colspan='2' width="500" class="tahoma1" dir='rtl'><span class="star-message">همکاران گرامي با توجه به اجباري بودن فيلد تخصص خواهشمند است فيلد تخصص را ثبت اطلاع کرده و بعد ساير موارد طرح خود را بررسي کنيد. توجه داشته باشيد تا زماني که اين فيلد تکميل نشود دسترسي به ساير فرمها ميسر نيست</span></td>
+   </tr>
+
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/profile.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">در صورت هر گونه تغيير در اطلاعات شخصي در پروفايل زير اين تغييرات را ثبت نماييد</td>";
+    echo "</tr>";
+  
+
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">چنين کاربري وجود ندارد</td>";
+    echo "</tr>";
+  }
+
+  if (strcmp($status,"mail_err")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\"  colspan=\"2\">خطا در ارسال ايميل</td>";
+    echo "</tr>";
+  }
+
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="name" size="20" class="edit-sugnup" dir=RTL    value='<? echo $name; ?>'></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نام</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="family" size="20" class="edit-sugnup" dir=RTL    value='<? echo $family; ?>'></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>نام خانوادگي</td>
+  </tr>
+
+
+   
+    <tr>
+   <td width="350" align="right"><select size="1" name="sex" class="edit-sugnup" dir="rtl">
+      <option value="-1" class="tahoma1">انتخاب کنيد</option>
+      <?
+       if(strcmp('0',$row_fetched["sex"])==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+      
+      
+      <option value="0" <? echo $selected; ?> class="tahoma1">زن</option>
+     
+	   <?
+       if(strcmp('1',$row_fetched["sex"])==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+	  <option value="1" <? echo $selected; ?> class="tahoma1">مرد</option>
+
+    </select></td>
+    <td width="150" class="tahoma1">جنسيت</td>
+    </tr>
+    
+      <tr>
+  <?
+    $query="select * from daneshkade order by daneshkade_name";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+    <td width="350" align="right"><select size="1"   name="jobplace" class="edit-sugnup"  dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+        if(strcmp($jobplace,$row_fetched["cod_daneshkade"])==0)
+          $selected= " selected ";
+        else
+		  $selected="";  
+         echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+    }
+    ?>
+    </select>	
+  
+	</td>
+    <td width="150" class="tahoma1">محل کار</td>
+  </tr>
+  
+   <tr>
+    <td width="350" align="right"><input type="text" name="melli_code" size="20" class="edit-sugnup" value='<? echo $melli_code; ?>'></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>کد ملي</td>
+  </tr>
+
+   <tr>
+    <td width="350" align="right"><input type="text" name="telno" size="20" value=<?echo "\"".$telno."\""; ?> class="edit-sugnup" ></td>
+    <td width="150" class="tahoma1">تلفن ثابت</td>
+   </tr>
+
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="mobile" size="20" class="edit-sugnup" value='<? echo $mobile; ?>'></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>تلفن همراه</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="fax" size="20" value=<?echo "\"".$fax."\""; ?> class="edit-sugnup" ></td>
+    <td width="150" class="tahoma1">فاکس</td>
+  </tr>
+ 	 <tr>
+     <td colspan='2' width="500" class="tahoma1" dir='rtl'><span class="star-message">همكاران محترم به اين نكته توجه فرمايند كه حسابداري معاونت پژوهشي براساس تفاهمي كه با بانكهاي ملت و پاسارگاد دارد صرفا ميتواند اعتبار طرحها را به اين 2 بانك واريز نمايد بنابراين چنانچه از اين 2 بانك داراي حساب سراسري (براي يانك ملت حساب جام)ميباشيد در فيلدهاي مربوطه ذيل وارد نماييد چنانچه در هيچ يك از بانكهاي فوق داراي حساب سراسري نيستيد لازم است ابتدا حساب را در بانك مفتوح نموده و شماره حساب را در فيلدهاي زير اعلام نماييد" امكان پرداخت به غير از روش فوق براي معاونت مقدور نميباشد</span></td>
+   </tr>
+
+  <tr>
+      <?
+    $query="select * from hesab_type order by hesab_type_desc";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $groupcount = mysql_num_rows($qresult);
+  ?>
+    <td width="350" align="right"><select size="1"   name="bank_name" class="edit-sugnup"  dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+        if(strcmp($bank_name,$row_fetched["hesab_type"])==0)
+          $selected= " selected ";
+        else
+		  $selected="";  
+         echo "<option $selected value=\"".$row_fetched["hesab_type"]."\" class=\"tahoma1\">".$row_fetched["hesab_type_desc"]."</option>";
+    }
+    ?>
+</select>
+    </td>
+    <td width="150" class="tahoma1"><span class="star-message">* نوع حساب </span></td>
+  </tr>
+
+
+    <tr>
+    <td width="350" align="right"><input type="text" name="hesab" size="20" value=<?echo "\"".$hesab."\""; ?> class="edit-sugnup" ></td>
+    <td width="150" class="tahoma1"><span class="star-message">* شماره حساب سراسري</span></td>
+   </tr>
+
+  
+ 
+  <tr>
+    <td width="350" align="right"> <select size="1" name="madrak" class="edit-sugnup" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+       <?
+       if(strcmp('1',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+    
+    <option value="1"  <? echo $selected; ?> class="tahoma1">زير کارشناسي</option>
+    
+      <?
+       if(strcmp('2',trim($madrak))==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+    <option value="2"  <? echo $selected; ?> class="tahoma1">کارشناسي</option>
+     <?
+       if(strcmp('3',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+	<option value="3"  <? echo $selected; ?> class="tahoma1">کارشناسي ارشد</option>
+    <?
+       if(strcmp('4',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+    <option value="4"  <? echo $selected; ?> class="tahoma1">دکتراي حرفه اي</option>
+	 <?
+       if(strcmp('5',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+	<option value="5"  <? echo $selected; ?> class="tahoma1">PHD</option>
+	 <?
+       if(strcmp('6',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+	<option value="6"  <? echo $selected; ?> class="tahoma1">تخصص</option>	
+	 <?
+       if(strcmp('7',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+	<option value="7"  <? echo $selected; ?> class="tahoma1">فوق تخصص</option>	
+	 <?
+       if(strcmp('8',$madrak)==0)
+          $selected= " selected ";
+        else
+		  $selected="";
+      ?>
+	<option value="8"  <? echo $selected; ?> class="tahoma1">MPH</option>	
+   
+    </select></td>
+    <td width="150" class="tahoma1">مدرک علمي</td>
+  </tr>
+  
+ 
+  <tr>
+  <?
+    $query="select * from darajeelmi";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+  ?>
+    <td width="350" align="right"><select size="1" name="darajeelmi" class="edit-sugnup" dir="rtl" >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+     $rade_tmp=$row_fetched["darajeelmi"];
+	 if(strcmp(trim($darajeelmi),trim($rade_tmp))==0)
+	    $selected=" selected ";
+	 else
+	    $selected="";
+      echo "<option $selected value=\"".$row_fetched["darajeelmi"]."\" class=\"tahoma1\">".$row_fetched["darajeelmi_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="150" class="tahoma1">درجه علمي</td>
+  </tr>
+ 
+   <tr>
+    <td width="350" align="right"><input type="text" name="takhasos"  value='<? echo $takhasos; ?>' size="20" class="edit-sugnup" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*تخصص</span></td>
+  </tr>
+  <?
+  if(strcmp($payan_name,"1")==0)
+     $payan_name_check="  checked ";
+   else
+     $payan_name_check="  ";
+  ?>
+  
+  <?
+  		 if(  strlen(trim($daneshjo_no)) <=0  && strcmp($payan_name,"1")==0 )
+		 {
+		/*   $READONLY="  READONLY ";
+		   $DISABLED=" DISABLED ";
+		 }
+		  else
+		  {
+		   $READONLY="";
+		    $DISABLED="   ";
+		  }*/
+  ?> 
+  <tr>
+    
+    <td width="500" colspan='2' class="tahoma1" align='center'><font color='red'><b>در صورتي که صرفا براي ثبت پايان نامه دانشجويي اقدام مي کنيد گزينه زير را تيک بزنيد</font></b></td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><input <? echo $DISABLED; echo $payan_name_check; ?>  type="checkbox" name="payan_name"  value='1' ></td>
+    <td width="150" class="tahoma1">ثبت پايان نامه </td>
+  </tr>
+  <tr>
+    <td width="350" align="right"><input <? echo $READONLY; ?> type="text" name="daneshjo_no"  value='<? echo $daneshjo_no; ?>' size="20" class="edit-sugnup"  ></td>
+    <td width="150" class="tahoma1"><span class="star-message">شماره دانشجويي</span></td>
+  </tr>
+   
+ 
+<?
+}
+?>
+<tr>
+    <td width="350" align="right"><input  type="file" name="userfile"  ></td>
+    <td width="150" class="tahoma1"><span class="star-message">عکس:</span></td>
+  </tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

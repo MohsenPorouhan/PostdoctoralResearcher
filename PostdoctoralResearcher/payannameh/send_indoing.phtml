@@ -1,0 +1,245 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+      $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+   
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+   
+      
+      if ( mysql_num_rows($result) == 1 )
+      {
+		$mablagh=str_replace(",","",$mablagh);
+		$query="update tarh  set mablagh_aghd_gharardad=\"$mablagh\" where  cod_tarh='$cod_tarh' and version='-1'";
+ 
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="تغيير در مبلغ طرح"."<br>".$tarh_name;
+   
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show(".مبلغ طرح تغيير يافت ","green");
+		footer_forms($admin,$seed);
+		exit();		
+      }
+    
+  }
+}
+$qt1="select * from jalase_shora_tarh where cod_tarh='$cod_tarh'";
+  $rt1=mysql_query($qt1) or die("error");
+  $budje_mosavab=0;
+  if(mysql_num_rows($rt1) > 0)
+  {
+  	 $rft1=mysql_fetch_array($rt1);
+  	 $budje_mosavab=$rft1["budjeh"];
+  	 
+  } 
+  $budje_mosavab=str_replace("/","",$budje_mosavab);
+  $budje_mosavab=number_format($budje_mosavab);
+  
+   $budje=sum_of_hazine($cod_tarh,"-1");
+   $budje=number_format($budje);
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $mablagh=number_format($row_fetched["mablagh_aghd_gharardad"]);
+ 
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان پايان نامه   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+ <TD align=right width="100%" class="tahoma1"  >
+    مبلغ قرارداد
+      </TD>  
+	  </TR>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+  ?>
+  
+  
+   <tr>
+    <td width="350" align="right"><select size="1"   name="contract_user" class="edit-user" dir=RTL   >
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+  
+    <?
+    $query="select * from user_login,tarh where (tarh.first_ostad=user_login.email or tarh.second_ostad=user_login.email or tarh.third_ostad=user_login.email or tarh.forth_ostad=user_login.email) and tarh.cod_tarh='$cod_tarh' order by family  ";
+    $qresult_ostad=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+    
+     while($row_fetched_ostad=mysql_fetch_array($qresult_ostad))
+    {
+		 
+         echo "<option $selected  value=\"".$row_fetched_ostad["email"]."\" class=\"tahoma1\">".$row_fetched_ostad["family"]."&nbsp;".$row_fetched_ostad["name"]."</option>";
+    }
+    
+
+  ?>
+  </select>
+  </td>
+      <td width="150" class="tahoma1">طرف قرارداد</td>
+
+ </tr>
+
+ <tr>
+    <td width="350" align="right"><input type="text"  value='<? echo $budje ; ?>'  disabled  name="mablagh" class="edit-user"></td>
+    <td width="150" class="tahoma1">بودجه پيشنهادي مجري</td>
+  </tr>
+ 
+  <tr>
+   
+    <td width="60%" class="tahoma1" valign="top" align="right"><span class="star-message"><input type="text"  onkeyup="MakingMoneyForm(this)" name="mablagh" value="<? echo $mablagh; ?>"  size="20" class="edit-user" ></span></td>
+        <td width="40%" class="tahoma1" valign="top" align="left">مبلغ</td>
+  </tr>
+
+
+
+<tr>
+    <td width="350" align="right">
+ 
+     	 <select size="1" dir="rtl"  name="year" class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option <? echo $c1;  ?> value="1381">1381</option>
+          <option <? echo $c2;  ?> value="1382">1382</option>
+          <option <? echo $c3;  ?> value="1383">1383</option>
+          <option <? echo $c4;  ?> value="1384">1384</option>
+          <option <? echo $c5;  ?> value="1385">1385</option>
+	  	  <option <? echo $c6;  ?> value="1386">1386</option>
+	      <option <? echo $c7;  ?> value="1387">1387</option>
+	      <option <? echo $c8;  ?> value="1388">1388</option>
+	      <option <? echo $c9;  ?> value="1389">1389</option>
+	      <option <? echo $c10;  ?> value="1390">1390</option>
+
+        </select>
+        
+        
+        <select size="1" dir="rtl"  name="month"  class="combo-date">
+         <option selected value="-1">انتخاب</option>
+          <option <? echo $c1; ?> value="01">فروردين</option>
+          <option <? echo $c2; ?> value="02">ارديبهشت</option>
+          <option <? echo $c3; ?> value="03">خرداد</option>
+          <option <? echo $c4; ?> value="04">تير</option>
+          <option <? echo $c5; ?> value="05">مرداد</option>
+          <option <? echo $c6; ?> value="06">شهريور</option>
+          <option <? echo $c7; ?> value="07">مهر</option>
+          <option <? echo $c8; ?> value="08">آبان</option>
+          <option <? echo $c9; ?> value="09">آذر</option>
+          <option <? echo $c10; ?> value="10">دي</option>
+          <option <? echo $c11; ?> value="11">بهمن</option>
+          <option <? echo $c12; ?> value="12">اسفند</option>
+        </select>
+ 
+        <select size="1" dir="rtl"  name="day"  class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option <? echo $c1; ?> value="01">1</option>
+          <option <? echo $c2; ?> value="02">2</option>
+          <option <? echo $c3; ?> value="03">3</option>
+          <option <? echo $c4; ?> value="04">4</option>
+          <option <? echo $c5; ?> value="05">5</option>
+          <option <? echo $c6; ?> value="06">6</option>
+          <option <? echo $c7; ?> value="07">7</option>
+          <option <? echo $c8; ?> value="08">8</option>
+          <option <? echo $c9; ?> value="09">9</option>
+          <option <? echo $c10; ?> value="10">10</option>
+          <option <? echo $c11; ?> value="11">11</option>
+          <option <? echo $c12; ?> value="12">12</option>
+          <option <? echo $c13; ?> value="13">13</option>
+          <option <? echo $c14; ?> value="14">14</option>
+          <option <? echo $c15; ?> value="15">15</option>
+          <option <? echo $c16; ?> value="16">16</option>
+          <option <? echo $c17; ?> value="17">17</option>
+          <option <? echo $c18; ?> value="18">18</option>
+          <option <? echo $c19; ?> value="19">19</option>
+          <option <? echo $c20; ?> value="20">20</option>
+          <option <? echo $c21; ?> value="21">21</option>
+		  <option <? echo $c22; ?> value="22">22</option>
+		  <option <? echo $c23; ?> value="23">23</option>
+		  <option <? echo $c24; ?> value="24">24</option>
+		  <option <? echo $c25; ?> value="25">25</option>
+		  <option <? echo $c26; ?> value="26">26</option>
+		  <option <? echo $c27; ?> value="27">27</option>
+		  <option <? echo $c28; ?> value="28">28</option>
+		  <option <? echo $c29; ?> value="29">29</option>
+		  <option <? echo $c30; ?> value="30">30</option>
+		  <option <? echo $c31; ?> value="31">31</option>
+        </select>
+ 
+	
+	
+	
+	
+	
+	</td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>تاريخ شروع قرارداد</td>
+  </tr> 
+ 
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

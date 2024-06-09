@@ -1,0 +1,91 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+
+echo "<br>";
+   $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"  and mojri_tarh.version='-1' ";
+
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+    ?>
+    <table border="0" width="90%" cellpadding="1" cellspacing="1">
+    <tr>
+    <td width="100%"   colspan="6">
+      <p align="center" class="verdana1"><font color="black">مجريان طرح</font></td>
+    </tr>
+	<tr>
+	<td width="3%"  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نوع همکاري</font></td>
+    <td width="3%"  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">پست الکترونيکي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تخصص</font></td>
+  
+    <td width="35%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="35%"  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color=$list_color_1;
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+  $cod_tarh=$row_fetched["cod_tarh"];
+  
+
+  $hamkari=$row_fetched["mojri_or_hamkar"];
+  if(strcmp(trim($hamkari),"0")==0)
+    $hamkari="مجري";
+  else
+    $hamkari="همکار";
+    $mojri_code =$row_fetched["mojri_code"];
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$hamkari."</a></td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["email"]."</a></td>";
+  //echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["fax"]."</a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["takhasos"]."</a></td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["family"]."</a></td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["name"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+
+
+
+
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

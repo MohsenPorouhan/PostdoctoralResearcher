@@ -1,0 +1,124 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+//header_forms($admin,$seed);
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+
+//if(isset($telno)) 
+
+   	   //$letter_body = iconv("windows-1256", "UTF-8", $letter_body);
+
+   	    
+   	   
+   	   
+   	   
+   	   $username = 'niazi_ws';
+$password = 'pahsmn';
+$domain = 'niazi';
+
+
+// Connect ...
+//$client = new soapclient('http://192.168.0.1/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+$client = new soapclient('http://messaging.magfa.com/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+
+
+// Read error
+$err = $client->getError();
+if ($err) {
+	echo "<h2>Constructor error</h2><pre>$err</pre>";
+}
+$client->setCredentials($username, $password, 'basic');
+
+// Authentication
+$msg1=array(10);
+$j=0;
+//$message=iconv("windows-1256", "UTF-8","سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام با سلام اميدوارم حال شما خوب باشد و من بتوانم يک اس ام اس چند قسمتي ارسال  کنم به اميد خدا و سلامتي");
+//$message=arabic2utf("سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام سلام با سلام اميدوارم حال شما خوب باشد و من بتوانم يک اس ام اس چند قسمتي ارسال  کنم به اميد خدا و سلامتي");
+//echo  strlen($message)."<br>";
+$a="";
+$b="";
+$c="";
+echo strlen($message);
+
+for($i=0;$i<strlen($message);$i+=161)
+{
+	if($i==0)
+	  $a=substr($message,$i,161);
+	if($i>=161 && $i<322)
+	  $b=substr($message,$i,161);
+    if($i>=322)
+	  $c=substr($message,$i,161);
+    
+  //$msg1[$j]=substr($message,$i,160);
+  $j++;	
+}
+ echo $a."<br>".$b."<br>".$c;
+//print_r($msg1);
+ if(strlen($a) > 0)
+ {
+ 	echo '1<br>';
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+		$a,			//Message
+		array("+989133264926"),			//Destination
+		array(""),				//Originator
+		array("%05%00%03%23%02%01"),
+		array(1)						//UDH
+		)
+	);
+	
+}	//echo $msg1($k-1);
+ 
+ //echo "<br>".$k."<br>";
+ if(strlen($b) > 0)
+ {
+ 	echo '2<br>';
+ $result["enqueue2"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+		$b, 			//Message
+		array("+989133264926"),			//Destination
+		array(""),				//Originator
+		array("%05%00%03%23%02%02"),
+		array(1)				//UDH
+		)
+	);
+ }	   
+ 
+  if(strlen($c) > 0)
+ {
+ 	echo '3<br>';
+ $result["enqueue2"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		1,					//Message Type
+		$c, 			//Message
+		array("+989133264926"),			//Destination
+		array(""),				//Originator
+		array("%05%00%03%23%02%03"),
+		array(1)				//UDH
+		)
+	);
+ }	   
+ 
+ if ($client->fault) {
+	echo '<h2>Fault</h2><pre>';	   
+    }  
+       
+     
+    print_r($result);
+
+?>
+
+
+

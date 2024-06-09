@@ -1,0 +1,202 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+if(isset($cod_daneshkade) && strcmp($cod_daneshkade,'-1')!=0 )
+{
+	$daneshkade_caution="creator = '$cod_daneshkade'";
+}
+else
+   $daneshkade_caution=1;
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    
+if(isset($action))
+ {
+ if(strcmp($action,"del")==0)
+  {
+     $query="select *  from jalase_shora where jalase_id=\"$delete_id\"";     
+     $res=mysql_query($query) or die("Error in deleting data from jalase_shora");
+	 $row_fetched=mysql_fetch_array($res);
+     $sender=$row_fetched["creator"];
+     $delete_id=$row_fetched["shomare_jalase"];
+     $jalase_name=$row_fetched["shomare_jalase"];
+     
+     $query="delete from jalase_shora where shomare_jalase=\"$delete_id\" and creator='$sender'";	 	
+     $res=mysql_query($query) or die("Error in deleting data from jalase_shora");
+     
+     $query="delete from jalase_shora_tarh where shomare_jalase=\"$delete_id\" and creator='$sender'";
+	 $res=mysql_query($query) or die("Error in deleting data from jalase_shora_tarh");
+	 
+     $query="delete from jalase_shora_karshenas_shora where shomare_jalase=\"$delete_id\" and creator='$sender'";     
+     $res=mysql_query($query) or die("Error in deleting data from jalase_shora_karshenas_shora");
+      $action=". جلسه شورا با شماره مقابل حذف شد"."<br>".$delete_id;   
+     set_log($action,$admin,date("Y-m-d, g:i a"));
+	
+	      
+  }
+ }
+ 
+  $query="select * from jalase_shora where $daneshkade_caution and send_moavenat='1'  order by send_moavenat_date desc";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh12");
+
+$reccount = mysql_num_rows($result);
+
+
+
+$query="select * from jalase_shora where $daneshkade_caution and send_moavenat='1' order by send_moavenat_date desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh1");
+
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+
+<?
+echo "<form name=\"change_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type\">";
+ 
+
+
+$query="select * from daneshkade,modir_daneshkade where daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade group by daneshkade.cod_daneshkade order by  daneshkade_name  desc ";
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td  align=\"left\" class=\"tahoma1\"><select size=\"1\" class='tahoma1' name=\"cod_daneshkade\" onchange=\"JavaScript:document.change_daneshkade.submit();\" dir=\"rtl\">";
+echo "<option value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if($row_fetched["cod_daneshkade"]==$cod_daneshkade)
+   	  $selected="selected";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["modir_username"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+ }
+ 
+?>
+
+</select> دانشکده / مرکز 
+</td>
+   </form>
+ 
+ <?
+  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ ?>
+ 
+ 
+ 
+ 
+ 
+ <td align="right">
+
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ </tr>
+ </table>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ if(isset($cod_daneshkade) && strcmp($cod_daneshkade,'-1')!=0 )
+{
+  $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade";	
+}
+		
+ pubshowpages("jalase_shora_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">بازگشت به دانشکده / مرکز</font></td>
+ 
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">حذف</font></td>
+      <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي مطرح شده</font></td>  
+    
+      
+    <td width="30%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ارسال کننده</font></td>  
+      <td width="15%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال به معاونت</font></td>
+      
+    <td width="15%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ جلسه</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد جلسه </font></td>
+  </tr>
+  <?
+
+$color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   $startdate=$row_fetched["send_moavenat_date"];
+   $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  $shomare_jalase = $row_fetched["jalase_id"];
+  $sender=$row_fetched["creator"];
+  $q="select * from modir_daneshkade,daneshkade where modir_username='$sender' and modir_daneshkade.cod_daneshkade=daneshkade.cod_daneshkade";
+  $r=mysql_query($q) or die("Error");
+  if(mysql_num_rows($r)>0)
+  {
+  	$rf=mysql_fetch_array($r);
+  	$daneshkade=$rf["daneshkade_name"];
+  }
+  else 
+  $daneshkade="";
+  echo "<tr>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a   style=\"text-decoration:none\" href=\"return_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&sender=$sender\" >بازگشت</a></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=jalase_shora_list.phtml&admin=$admin&seed=$seed&action=delete_jalase&delete_id=".$row_fetched["jalase_id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"tarh_list_jalase_shora.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&sender=$sender\" >طرح هاي مطرح شده</a></td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&sender=$sender\" >($daneshkade)".$row_fetched["creator"]."</a></td>";
+  echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&sender=$sender\" >".$farsistartdate."</a></td>";
+  echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&sender=$sender\" >".enum2fnum($row_fetched["tarikh_jalase"])."</a></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a target=\"_blank\" style=\"text-decoration:none\" href=\"print_jalase.phtml?admin=$admin&seed=$seed&shomare_jalase=$shomare_jalase&sender=$sender\" >".$row_fetched["shomare_jalase"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>
+

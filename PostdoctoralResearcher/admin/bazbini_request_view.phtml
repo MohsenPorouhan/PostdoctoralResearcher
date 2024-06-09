@@ -1,0 +1,90 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ 
+ 	 	
+   if(mysql_num_rows($result) > 0)
+   {
+   	 $row_f=mysql_fetch_array($result);
+ 	 $bazbini_request=$row_f["bazbini_request"];
+ 	 $bazbini_request_date=$row_f["bazbini_request_date"];
+	 $startyear1 = substr($bazbini_request_date,0,4);
+	 $startmon1 = substr($bazbini_request_date,5,2);
+	 $startday1 = substr($bazbini_request_date,8,2);
+	 $farsistartdate=hijricalender( $startyear1 , $startmon1 , $startday1 );
+	 $date = enum2fnum($farsistartdate);
+ 
+    echo "<br>";
+?>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+   <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="control_gharardad_tarh_list.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+    
+  </TR>
+  </TBODY>
+  </TABLE>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+    $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+    echo "<br>";
+    echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+       
+ 
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$bazbini_request."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">درخواست بازبيني</td>";
+    echo "</tr>";
+
+	echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$date."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تاريخ درخواست </td>";
+    echo "</tr>";
+    echo "</table>";
+   }
+?>
+
+<?
+
+footer_forms($admin,$seed);
+?>
+

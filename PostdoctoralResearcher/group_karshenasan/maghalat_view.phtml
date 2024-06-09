@@ -1,0 +1,193 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+
+  $query1="select * from tarh where cod_tarh='$cod_tarh' ";
+  //echo $query1;
+  $result1=mysql_query($query1) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched1=mysql_fetch_array($result1);
+  $tarh_name=$row_fetched1["tarh_title_farsi"];
+
+
+  $query="select * from maghale where cod_tarh='$cod_tarh' ";
+  //echo $query;
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+ // $row_fetched=mysql_fetch_array($result);
+ // $tarh_name=$row_fetched["tarh_title_farsi"];
+  
+   //echo $query;
+   //echo "<br>";
+  // $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+  // $result=mysql_query($query) or die("Error in selecting data from tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+
+
+
+<?
+
+    echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    //$row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+   // echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">تاريخ ثبت امتياز</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">امتياز</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">فايل مقالات </td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">وضعيت مقاله از نظر وابستگي به دانشگاه علوم پزشکي تهران </td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">لينک مقاله</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">indexing</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">سال ميلادي انتشار</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">سال شمسي انتشار</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">نوع مقاله</td>";
+     echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">جايگاه نويسنده</td>";
+     echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">ISSN</td>";
+      echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">نام مجله</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">عنوان مقاله</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" valign=\"top\">کد مقاله</td>";
+ 
+      
+    echo "</tr>";
+ $mycount=0;
+    while($row_fetched=mysql_fetch_array($result))
+ {
+ 	$tarh_name = $row_fetched["tarh_title_farsi"];
+  $maghale_title= $row_fetched["maghale_title"];
+  $journal_name= $row_fetched["journal_name"];
+  $journal_link=$row_fetched["journal_link"];
+  $issn= $row_fetched["issn"];
+  
+  $q="select * from issn where issn_id='$issn'";
+  $res=mysql_query($q) or die("Error in selecting data from daraje elmi");
+  $row_f1=mysql_fetch_array($res);
+  $p_issn=$row_f1["p_issn"];
+  
+  $outer_level= $row_fetched["outer_level"];
+  if(strcmp($outer_level,'0')==0)
+  	$outer_level_t="اول";
+  else if(strcmp($outer_level,'1')==0)
+	$outer_level_t="مسول";
+  else if(strcmp($outer_level,'2')==0)
+	$outer_level_t="اول و مسول";
+  else if(strcmp($outer_level,'3')==0)
+  	$outer_level_t="ساير";
+  
+  $Affiliation= $row_fetched["Affiliation"];
+  if(strcmp($Affiliation,'1')==0)
+  	$Affiliation_t="دارد";
+  else 
+  	$Affiliation_t="ندارد";
+  $year_publish_shamsi= $row_fetched["year_publish_shamsi"];
+  $year_publish_milady= $row_fetched["year_publish_milady"];
+  
+  $indexing= $row_fetched["indexing"];
+  $query="select * from maghale_indexing where index_id='$indexing' order by indexing_desc  ";
+  $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  $row_fetched1=mysql_fetch_array($qresult);
+  $indexing_desc=$row_fetched1["indexing_desc"];
+  
+  $maghale_type= $row_fetched["maghale_type"];
+  $query="select * from maghale_type where maghale_type_id='$maghale_type' order by maghale_type_desc";
+  $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  $row_fetched2=mysql_fetch_array($qresult);
+  $maghale_type_desc=$row_fetched2["maghale_type_desc"];
+  
+  $emtiaz=$row_fetched["emtiaz"];
+  $mycount=$mycount+$emtiaz;
+  
+  $emtiaz_date=$row_fetched["emtiaz_date"];
+  if($emtiaz_date !='')
+  {
+  $startyear = substr($emtiaz_date,0,4);
+  $startmon = substr($emtiaz_date,5,2);
+  $startday = substr($emtiaz_date,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  }
+  else 
+  $farsistartdate='----';
+  
+  $maghale_id=$row_fetched["maghale_id"];
+ // echo $maghale_id;
+ $maghale_file="";
+    echo "<tr>";
+  $dir_name="../maghale/".$maghale_id;
+   //  echo $dir_name;
+     if ($dir = @opendir($dir_name))
+     {
+	     $mydir = dir($dir_name);
+	   
+	     while($file = $mydir->read())
+	     {
+		   if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0 || strcmp(trim($file),"Thumbs.db")==0) )
+		   {
+	  			$maghale_file=$maghale_file."<a target=\"_blank\" href=\"../maghale/$maghale_id/$file\">".$file."</a><br><hr>";
+		   }
+		  
+	     }
+	      closedir($dir);
+	      
+	 }
+	 
+	if(strcmp($emtiaz,'0')==0)
+		$emtiaz_st="ثبت";
+	else 
+		$emtiaz_st=$emtiaz;
+		
+	//echo "<td width=\"20%\" bgcolor=$color align=\"center\" dir='ltr' class=\"tahoma1\" dir=\"rtl\">".$farsistartdate."</td>";	
+	echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\"><a href=\"sabt_emtiaz.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&maghale_id=$maghale_id\">".$emtiaz_st."</a></td>";
+	echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$maghale_file."</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$Affiliation_t."</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$journal_link."</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$indexing_desc."</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" dir='ltr' class=\"tahoma1\" dir=\"rtl\">".$year_publish_milady."</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" dir='ltr' class=\"tahoma1\" dir=\"rtl\">".$year_publish_shamsi."</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$maghale_type_desc."</td>";
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$outer_level_t."</td>";
+    echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$p_issn."</td>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$journal_name."</td>";
+   	echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$maghale_title."</td>";
+   	echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$maghale_id."</td>";
+    echo "</tr>";
+
+ }
+ 	echo "<tr>";
+      
+      echo "<td align=\"center\" bgcolor=$color colspan=\"1\" class=\"tahoma1\"><b>".number_format($mycount)."</b></td>";
+      echo "<td align=\"center\"  bgcolor=$color colspan=\"12\"  class=\"tahoma1\"><b>مجموع امتيازات </b></td>";
+    echo "</tr>";
+    
+    echo "</table>";
+ 
+   
+   }
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a href="javascript:history.go(-1)"><img src=images/return.gif border="0" alt="Return">بازگشت</a></td>
+</tr>
+
+</table>
+ <?
+ 	footer_forms($admin,$seed);
+ ?>

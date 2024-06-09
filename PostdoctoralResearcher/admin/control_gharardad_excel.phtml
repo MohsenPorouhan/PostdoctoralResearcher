@@ -1,0 +1,133 @@
+<?
+header("Content-type: application/x-msexcel");
+
+include("include/database-connect.phtml");
+include("include/include.phtml");
+ 
+include("include/styles.phtml");
+
+echo "<br>";
+ 
+?>
+ 
+ 
+
+ <?
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ 
+   if(mysql_num_rows($result) > 0)
+   {
+   	  
+ //$row_f=mysql_fetch_array($result);
+
+    echo "<br>";
+    echo "<table border=\"1\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"600\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    
+    
+    echo "<tr>";
+      echo "<td width=\"47\"  height=\"20\" class=\"tahoma1\" align=\"center\">تامين اعتبار</td>";
+    echo "<td width=\"150\"  height=\"20\" class=\"tahoma1\" align=\"center\">نوع طرح</td>";
+    echo "<td width=\"164\"  height=\"20\" class=\"tahoma1\" align=\"center\">نام ثبت کننده طرح</td>";
+     
+     echo "</tr>";
+   $color="#E2E0E0";
+   while($row_f=mysql_fetch_array($result))
+   {
+   	
+    $id=$row_f["id"];
+ $cod_karshenas=$row_f["cod_karshenas"];
+ $vabastegi=$row_f["vabastegi"];
+ $tarh_type=$row_f["tarh_type"];
+ $tamin_etebar=$row_f["tamin_etebar"];
+ $is_payan_name=$row_f["is_payan_name"];
+ $maghta=$row_f["maghta"];
+ $grant_type=$row_f["grant_type"];
+ $has_tamin_etebar=$row_f["has_tamin_etebar"];
+ $mahale_tamin_etebar=$row_f["mahale_tamin_etebar"];
+ $mablagh_tamin_etebar=$row_f["mablagh_tamin_etebar"];
+ $nahveye_tamin_etebar=$row_f["nahveye_tamin_etebar"];
+ $tarh_moshtarak=$row_f["tarh_moshtarak"];
+ $letter=$row_f["letter"];
+ $letter_no=$row_f["letter_no"];
+ $mablagh_mosharekat=$row_f["mablagh_mosharekat"];
+ $mablagh_tarh=$row_f["mablagh_tarh"];
+ $mablagh_nahaei=$row_f["mablagh_nahaei"];
+ $need_safte=$row_f["need_safte"];
+ $num_safte=$row_f["num_safte"];
+ $mablagh_safte=$row_f["mablagh_safte"];
+ $tarh_takhiri=$row_f["tarh_takhiri"];
+ $tarh_takhiri_no=$row_f["tarh_takhiri_no"];
+ $shora_cond=$row_f["shora_cond"];
+ $commite_akhlagh_confirm=$row_f["commite_akhlagh_confirm"];
+ $letter_no_akhlagh=$row_f["letter_no_akhlagh"];
+ $letter_date_akhlagh=$row_f["letter_date_akhlagh"];  
+ $davar_mali_shorot=$row_f["davar_mali_shorot"];
+ $karshenas=$row_f["karshenas"];
+// echo $karshenas;
+ $nazer_pishnahadi=$row_f["nazer_pishnahadi"];
+ $shorot_gharardad=$row_f["shorot_gharardad"];
+ 
+    $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+   	
+   	
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    $mobile = $myrow_fetched["mobile"];
+    echo "<tr >";
+    
+    
+     if(strcmp($tamin_etebar,"0")==0)
+    	$tamin_etebar_st="  ";
+
+    if(strcmp($tamin_etebar,"1")==0)
+    	$tamin_etebar_st=" تامين اعتبار طرح HSR از معاونت پژوهشي يا EDC ";
+
+    if(strcmp($tamin_etebar,"2")==0)
+    	$tamin_etebar_st=" تامين اعتبار از ساير منابع (معاونت ها، دانشکده ها،مراکز تحقيقاتي ,...) ";
+    
+       echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\"> ".$tamin_etebar_st."</a></p></td>";
+
+       if(strcmp($tarh_type,"1")==0)
+			$tarh_type_st="معمولي";
+		if(strcmp($tarh_type,"2")==0)
+			$tarh_type_st="گرنت";
+		if(strcmp($tarh_type,"3")==0)
+			$tarh_type_st="HSR";
+     echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">".$tarh_type_st." </p></td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">".$First_mojri_name." </p></td>";
+    
+     echo "</tr>";
+   }
+  
+   echo "</table>";
+
+  }
+ 
+ ?>
+
+
+
+

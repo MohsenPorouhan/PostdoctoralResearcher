@@ -1,0 +1,132 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+?>
+<script>
+function change_target()
+{
+ <?
+
+ echo "window.location=\"jalase_shora.phtml?admin=$admin&seed=$seed\";";
+ 
+ ?>
+}
+</script> 
+<style>
+<!--
+ p.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	text-align:right;
+	direction:rtl;
+	unicode-bidi:embed;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0cm; margin-right:0cm; margin-top:0cm}
+-->
+</style>
+</head>
+
+<body>
+<br><br>
+<p class="MsoNormal" dir="RTL"><span lang="FA" style="font-family: Zar">همكاران 
+محترم ساب ادمين </span></p>
+<p class="MsoNormal" dir="RTL"><span lang="FA" style="font-family: Zar">با سلام 
+و عرض ادب </span></p>
+<p class="MsoNormal" dir="RTL"><span lang="FA" style="font-family: Zar">به جهت 
+سهولت در تنظيم صورتجلسه و ارسال طرحها به معاونت پژوهشي تغييراتي داده شده است 
+فلذا به نكات زير توجه فرماييد.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+1-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">براي تنظيم صورتجلسه ابتدا 
+كنترل نماييد تا تمامي طرحهايي كه قصد ارسال آنها را داريد در منوي &quot;طرحهاي قبل از 
+تصويب&quot; قرار گرفته است.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+2-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">به منوي شوراي پژوهشي ساب منوي 
+&quot;تعريف جلسه شوراي پژوهشي&quot; رفته&nbsp; و اين ساب منو را انتخاب نماييد.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+3-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">براي وارد كردن شماره جلسه 
+شوراي پژوهشي&nbsp; از 3 عدد دو رقمي استفاده نماييد</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 72.0pt">
+-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">2 رقم اول دست چپ كد مركز يا 
+دانشكده شماست (اين كد در قسمت كد طرحها قابل دسترسي است مثلا كد طرح 4567-33-03-86 
+براي مركز به شماره 33 ميباشد )</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 72.0pt">
+-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">2 رقم وسط سال مربوطه مثلا 86</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 72.0pt">
+-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">و 2 رقم دست راست جلسه رتبه 
+بندي (رنكي ) كه در معاونت پژوهشي قرار است طرحها را براي آن بفرستيد مثلا 03</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 72.0pt">
+-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">بنابراين كد جلسه مثالهاي فوق 
+به اين ترتيب خواهد بود 338603</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+4-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">تاريخ جلسه و اعضاي حاضر را 
+انتخاب كنيد و پس از ثبت به طرحهاي قبل از تصويب وارد خواهيد شد</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+5-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">در اين صفحه&nbsp; وضعيت طرحها 
+را انتخاب كرده و رتبه هر طرح را وارد نموده&nbsp; اگر توضيحي برا ي هر طرح داريد 
+وارد نماييد </span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+6-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">اگر تعداد طرحها بيش از يك 
+صفحه باشد اين اقدام را براي تك تك صفحات انجام دهيد.نكته قابل توجه اينكه در هر 
+صفحه پس از ثبت ميتوانيد تعداد طرحهايي را كه در جلسه ثبت نموده ايد بالاي صفحه 
+بخوانيد و اينكه پس از ثبت همان صفحه باقي ميماند تا شما نتيجه تغييرات صفحه را 
+ملاحظه نماييد ولي براي طرحهاي صفحات ديگر بايد به صفحه بعد برويد.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+7-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">راه ديگر براي ثبت طرحهاي چند 
+صفحه استفاده از + كنار شماره صفحات است كه كليه طرحها را در يك صفحه مياورد و شما 
+ميتوانيد تغييرات را در يك صفحه انجام دهيد.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+8-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">پس از مطمئن شدن به اينكه كليه 
+طرحها در جلسه ثبت گرديد در صفحه آخر كليد خاتمه را بفشاريد و سپس خاتمه و صدور 
+صورتجلسه چاپي را تيك زده صورتجلسه را پرينت گرفته و&nbsp; كنترل نماييد.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+9-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp; </span>
+<span lang="FA" style="font-family: Zar" dir="RTL">تا اين مرحله اگر مشكلي در 
+صورتجلسه مشاهده نموديد ميتوانيد با مراجعه به ساب منوي جلسات شوراي پژوهشي از منوي 
+شوراي پژوهشي آن را دقيقا مشابه تنظيم جلسه&nbsp; ويرايش نماييد. </span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+10-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang="FA" style="font-family: Zar" dir="RTL">تا اين مرحله هنوز 
+طرحها در منوي طرحهاي قبل از تصويب قرار دارد.عليرغم اينكه در صورتجلسه وضعيت طرحها 
+را مصوب كرده ايد</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+11-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang="FA" style="font-family: Zar" dir="RTL">چنانچه از صورتجلسه 
+تنظيمي اطمينان حاصل كرديد با مراجعه به ساب منوي جلسات شوراي پژوهشي از منوي شوراي 
+پژوهشي صورتجلسه مربوطه را براي معاونت پژوهشي ارسال نماييد اين كار با تيك كردن 
+روي گزينه ارسال صورت ميگيرد. با اين اقدام 2 اتفاق خواهد افتاد</span></p>
+<p class="MsoNormal" dir="RTL" style="margin-right:36.0pt">
+<span lang="FA" style="font-family: Zar">الف- طرحهاي قبل از تصويب كه در صورتجلسه 
+به مصوب تغيير داده ايد از منوي طرحهاي قبل از تصويب به منوي طرحهاي بعد از تصويب 
+خواهد رفت.</span></p>
+<p class="MsoNormal" dir="RTL" style="margin-right:36.0pt">
+<span lang="FA" style="font-family: Zar">ب- صورتجلسه از حالت قابل ويرايش خارج 
+خواهد شد.</span></p>
+<p class="MsoNormal" dir="RTL" style="text-indent: -18.0pt; margin-right: 36.0pt">
+12-<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang="FA" style="font-family: Zar" dir="RTL">تاكنون صورتجلسه را 
+براي معاونت پژوهشي ارسال نموده ايد اما لازم است تا خود طرحها را نيز به معاونت 
+پژوهشي بفرستيد براي اين كار به منوي طرحهاي بعد از تصويب رفته و با تيك زدن در 
+باكس ارسال طرحها ميتوانيد طرح ها را به صورت تك تك و يا به صورت دسته جمعي به 
+معاونت پژوهشي بفرستيد چنانچه براي ارسال طرح توضيحي داريد قبل از ارسال نظر خودتان 
+را درستون ارسال نظر بفرستيد.</span></p>
+<p class="MsoNormal" dir="RTL"><span dir="LTR">&nbsp;</span></p>
+<center> <input type="button"   value="شروع تعريف صورتجلسه " name="finish"  onclick="change_target()"> </center>
+<?
+  footer_forms($admin,$seed);
+?>

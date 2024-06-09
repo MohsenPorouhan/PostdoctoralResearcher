@@ -1,0 +1,439 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+
+
+
+$query="select * from tarh where  tarh.cod_tarh=\"$cod_tarh\" ";
+
+$result = mysql_query($query) or die("Error in selecting data from tarh , mojri_tarh");
+if(mysql_num_rows($result) <= 0 )
+{
+    echo "<table border=\"0\"  height=\"100%\" width=\"400\"    cellspacing=\"0\" cellpadding=\"2\"  >";
+
+    echo "<tr>";
+    echo "<td align=\"center\"   width=\"25%\" class=\"error-message\" colspan=\"2\">.چنين طرحي وجود ندارد</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+     footer_forms($admin,$seed);
+     exit();
+    
+}
+
+$row_fetched=mysql_fetch_array($result);
+$tarh_name=$row_fetched["tarh_title_farsi"];
+$comment_karshenas_shora=$row_fetched["comment_karshenas_shora"];
+$dastoor_shora=$row_fetched["dastoor_shora"];
+  
+
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if(  strlen(trim($cod_tarh))>0 && strlen(trim($letter_subject))>0)
+{
+	$mydate=date("Y-m-d");
+	$to_letter=$row_fetched["creator"];
+	$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	$q="select max(id) as max_id from letter_to_mojri where cod_tarh='$cod_tarh'";
+	$r=mysql_query($q);
+	$rf=mysql_fetch_array($r);
+	$max_l_no = $rf["max_id"]+1;
+	$letter_no=$cod_tarh."-".$max_l_no;  
+    $query="insert into letter_to_mojri set from_letter='$admin',to_letter='$to_letter',cod_daneshkade='$cod_daneshkade',cod_tarh='$cod_tarh' , letter_no='$letter_no' , letter_subject='$letter_subject' , letter_body='$letter_body' , letter_date='$mydate'";    
+    $result=mysql_query($query) or die("error in inserting data");
+    if(isset($version) && strcmp($version,'1')==0)
+    {
+      $query="update tarh set finished='0',edit_request='0' where cod_tarh='$cod_tarh' ";
+      $result=mysql_query($query) or die("error in inserting data");
+    }
+    
+   $query="select * from user_login where email=\"$to_letter\"";
+   $result=mysql_query($query);
+   if(mysql_num_rows($result) > 0 )
+   {
+    $row_fetched=mysql_fetch_array($result);
+    $username=$row_fetched["email"];
+    $password=$row_fetched["password"];
+    $email=$username;
+    $name_e=$row_fetched["name_e"];
+    $family_e=$row_fetched["family_e"];
+
+
+    $mail = new PHPMailer();
+    $emailbody="";
+    $emailbody=$emailbody."<br><b>Please Check your administration area in Pajoheshyar System<b><br><br>";
+    $emailbody=$emailbody."<br>You have a New Letter For this proposal<br>";
+    $emailbody=$emailbody."<b><br>$tarh_name<br></b>";
+    $emailbody=$emailbody."<br>For Using our system Please login with Below URL<br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login.phtml>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Rahpouyan Fanavar Sabz (Rahpouyanco.com).</font></center>";
+
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye." ".$name_e;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($email, $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "You have a New Letter in $url_address (Do not reply this email)";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+    }
+    
+   }
+}
+    
+
+
+
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+
+
+
+
+
+
+
+
+$query="select * from group_karshenasan_tarh where cod_tarh='$cod_tarh' and karshenas_type='0'" ;
+$query="select * from group_karshenasan,group_karshenasan_tarh where cod_tarh='$cod_tarh' and group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas ";
+						  
+
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+ <tr>
+    
+    <td width="100%"colspan="5" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظريه کارشناسي معاونت پژوهشي</font></td>
+    
+  </tr>
+  <tr>
+      <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نوع کارشناس</font></td>
+   <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد کارشناس</font></td>
+ 
+    
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+  $note_submitted=$row_fetched["note_submitted"];
+   $string="";
+ 
+ 
+  //if(strcmp($note_submitted,"1")==0) 
+    $comment_note=$row_fetched["comment_karshenas"];
+//  else
+//  	$comment_note="نظر ايشان ثبت نشده"; 
+
+
+  $username=$row_fetched["username"];
+  $myq="select * from group_karshenasan where username='$username'";
+  $myres=mysql_query($myq) or die("Error in selecting data from group_karshenasan");
+  $myrow_fetched=mysql_fetch_array($myres);
+  if(strcmp($myrow_fetched["karshenas_type"],"0")==0)
+    $karshenas_type="کارشناس گروه کارشناسي";
+ // echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["comment_karshenas"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$karshenas_type."</td>";  
+   echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["cod_karshenas"]."</td>";
+//  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  
+echo "</tr>";
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ //message_show(".نظر ي وجود ندارد","red");
+}
+//echo "</form>";
+
+
+
+$query="select * from karshenas_shora,karshenas_shora_tarh where cod_tarh='$cod_tarh' and karshenas_shora.cod_karshenas=karshenas_shora_tarh.cod_karshenas ";
+						  
+
+$result_shora=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+
+if(mysql_num_rows($result_shora) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+ <tr>
+    
+    <td width="100%"colspan="5" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر اعضاي شورا</font></td>
+    
+  </tr>
+  <tr>
+    <td width="80%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+      
+      
+        <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد کارشناس </font></td>
+      
+        <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رديف </font></td>  
+    
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+$row_cntr=1;
+ while($row_fetched=mysql_fetch_array($result_shora))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+  $note_submitted=$row_fetched["note_submitted"];
+   $string="";
+ 
+ 
+  //if(strcmp($note_submitted,"1")==0) 
+    $comment_note=$row_fetched["comment_karshenas"];
+ // else
+ // 	$comment_note="نظر ايشان ثبت نشده"; 
+
+
+  $username=$row_fetched["username"];
+ 
+///  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["notes"])."</td>";
+  //echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$karshenas_type."</td>";  
+  //echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["note_date"]."</td>";
+ // echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["kar_shora_family"]."</td>";
+//  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["kar_shora_name"]."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["cod_karshenas"]."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_cntr."</td>";
+  $row_cntr++;
+  
+echo "</tr>";
+ }
+echo "</table>";
+}
+ 
+
+
+
+$query="select * from karshenasan_tarh where cod_tarh='$cod_tarh'" ;
+ $query="select * from karshenasan,karshenasan_tarh where  cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas";
+						  
+
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+<tr>
+    <td width="50%" colspan="8" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس در مورد قسمتهاي طرح</font></td>
+  
+  </tr>
+  
+  
+  <tr>
+    <?
+    if(strcmp($admin,"mtdandan")==0 || strcmp($admin,"shenavai")==0)
+  {
+  ?>
+   <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">SMS</font></td>
+   <?
+  }
+  ?>
+      <td width="75%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+     <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ</font></td>
+	    
+     
+     <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد کارشناس</font></td>
+       <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رديف </font></td>
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+$row_cntr=1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+ 
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+ 
+ 
+ $string="";
+ $note_submitted=$row_fetched["refered"];
+// if(strcmp($note_submitted,"1")==0)
+// {
+ 	$cnt=$row_fetched["chekide"];
+ 	$string=$string."  چکيده : ".$table[$cnt];
+ 	$cnt=$row_fetched["sabt"];
+ 	$string=$string."<br>"." ثبت : ".$table[$cnt];
+ 	$cnt=$row_fetched["mojrian"];
+ 	$string=$string."<br>"." مجريان : ".$table[$cnt];
+ 	$cnt=$row_fetched["daneshjoyan"];
+ 	$string=$string."<br>"." دانشجويان : ".$table[$cnt];
+ 	$cnt=$row_fetched["raveshejra"];
+ 	$string=$string."<br>"." روش اجرا : ".$table[$cnt];
+ 	$cnt=$row_fetched["hazineha"];
+ 	$string=$string."<br>"."  هزينه ها : ".$table[$cnt];
+ 	$cnt=$row_fetched["akhlaghi"];
+ 	$string=$string."<br>"." ملاحظات اخلاقي : ".$table[$cnt];
+ 	$cnt=$row_fetched["gant"];
+ 	$string=$string."<br>"." جدول زمانبندي : ".$table[$cnt];
+ 	$cnt=$row_fetched["variables"];
+ 	$string=$string."<br>"." جدول متغيرها : ".$table[$cnt];
+ 	$cnt=$row_fetched["zamaem"];
+ 	$string=$string."<br>"." ضمائم : ".$table[$cnt];
+// }
+// else
+//   $string="نظر ايشان ثبت نشده";
+ 
+ 
+  //if(strcmp($note_submitted,"1")==0) 
+    $comment_note=$row_fetched["comment_karshenas"];
+ // else
+  //	$comment_note="نظر ايشان ثبت نشده"; 
+
+  $cod_karshenas=$row_fetched["cod_karshenas"];
+  if(strlen(trim($comment_note)) >0)
+  {
+   echo "<tr>";
+ // echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  
+ 
+  if(strcmp($admin,"mtdandan")==0 || strcmp($admin,"shenavai")==0)
+  {   
+   echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\"><a href='send_sms.phtml?action=send_karshenas_sms&admin=$admin&seed=$seed&cod_karshenas=$cod_karshenas'>SMS</a></td>";
+  }
+  echo "<td width=\"75%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$comment_note."</td>";
+ // echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["username"]."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["note_date"]."</td>";
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["cod_karshenas"]."</td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_cntr."</td>";
+  $row_cntr++;
+  echo "</tr>";
+  }
+
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+// message_show(".نظر ي وجود ندارد","red");
+}
+footer_forms($admin,$seed);
+?>
+

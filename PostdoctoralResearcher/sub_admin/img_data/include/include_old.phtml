@@ -1,0 +1,889 @@
+<?
+include("include/database-connect.phtml");
+include("include/session.phtml");
+require("include/mailserver-statistics.phtml");
+
+//-----------------------------------------------------
+function rename_directory($base_dir,$target_dir)
+{
+  $mybasedir= getcwd();
+  chdir("../attachments");
+   rename("$base_dir","$target_dir");
+
+  chdir("$mybasedir");
+   chdir("../reports");
+   rename("$base_dir","$target_dir");
+  chdir("$mybasedir");
+ 
+  return -4;
+}
+//-----------------------------------------------------
+ 
+function send_sms($cell_number,$message,$admin)
+{
+ $username = 'olomPezeshki';
+$password = 'medicalu_01';
+$domain = 'magfa';
+
+
+
+
+$query="select * from daneshkade,modir_daneshkade where daneshkade.cod_daneshkade=modir_daneshkade.cod_daneshkade and modir_daneshkade.modir_username ='$admin'";
+$result_group_karshenas=mysql_query($query) or die("Error");
+$row_fetched=mysql_fetch_array($result_group_karshenas);
+$sms_box=$row_fetched["daneshkade_mobile"];
+//if(strlen($sms_box) <=0 )
+ //echo $sms_box;
+//$sms_box="30007912";
+// Connect ...
+//$client = new soapclient('http://192.168.0.1/engine/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+$client = new soapclient('http://webservice.magfa.com/services/urn:SOAPSmsQueue?wsdl', 'wsdl');
+
+
+// Read error
+$err = $client->getError();
+if ($err) {
+	echo "<h2>Constructor error</h2><pre>$err</pre>";
+}
+
+// Authentication
+$client->setCredentials($username, $password, 'basic');
+
+
+
+
+$j=0;
+ 
+$a="";
+$b="";
+$c="";
+//$message=iconv("windows-1256", "UTF-8",$message);
+for($i=0;$i<strlen($message);$i+=131)
+{
+	if($i==0)
+	  $a=substr($message,$i,131);
+	 else 
+	if($i>=131 && $i<262)
+	  $b=substr($message,$i,131);
+	 else 
+    if($i>=262 && $i<393)
+	  $c=substr($message,$i,131);
+    
+  //$msg1[$j]=substr($message,$i,160);
+  $j++;	
+}
+
+ if(strlen($message) <131 )
+ {	 
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		array("$a"),			//Message
+		array("$cell_number"),			//Destination
+	 	array("$sms_box")
+						//UDH
+		)
+	);
+ 
+	
+ 	//echo $msg1($k-1);
+ 
+ //echo "<br>".$k."<br>";
+  
+ if ($client->fault) {
+	echo '<h2>Fault 1111</h2><pre>';	   
+    }   
+	
+ 
+}
+
+
+//-----------------------------------------------------------------------------------
+
+ if(strlen($message)>=131 && strlen($message)<262)
+ {      
+ 
+  
+    $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b" ), 			//Message
+		array("$cell_number","$cell_number"),			//Destination
+		 array("$sms_box","$sms_box"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02"),
+					//UDH
+		)
+	);
+	
+	 
+  if ($client->fault) {
+	echo '<h2>Fault 2222</h2><pre>';	   
+    }  
+
+ }
+  //-------------------------------------------------------------------------------------
+  
+  if(strlen($message)>=262 && strlen($message)<393)
+ { 	 
+ 
+   $result["enqueue1"] = $client->call("enqueue",          // Method
+	array(						// Parameters
+		$domain,				//Domain
+		0,					//Message Type
+	    array("$a","$b","$c" ), 			//Message
+		array("$cell_number","$cell_number","$cell_number"),			//Destination
+	    array("$sms_box","$sms_box","$sms_box"),
+		array("%05%00%03%47%02%01","%05%00%03%47%02%02","%05%00%03%47%02%03"),
+		 			//UDH
+		)
+	);	
+ 	
+
+ if ($client->fault) {
+	echo '<h2>Fault 3333</h2><pre>';	   
+    }  
+      
+    }
+
+
+
+
+
+
+
+ 
+
+}
+
+
+
+//---------------------------------------------------------------------------------
+
+
+function sum_of_hazine($cod_tarh,$version)
+{
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='$version' order by activity_type ";
+   $personnel_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+      
+     }
+      $personnel_sum=$mycount;
+   }
+
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='$version' order by mozoa_azmayesh ";
+   $lab_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='$version' order by name_dastgah";
+   $vasile_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='$version' order by target";
+   $trip_sum=0;
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='$version'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+  $sum_sayer=$hazine_taksir+ $hazine_digar;
+ return $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+}
+
+ 
+//---------------------------------------------------------------------------------------
+
+
+function DBreccount($DBname)
+{
+
+  $query="select count(*) as mycnt from $DBname";
+  
+  $result = mysql_query($query);
+  $row_fetched = mysql_fetch_array($result);
+  return strval($row_fetched["mycnt"]);
+
+}
+//---------------------------------------------------------------------------------------
+
+
+function insert_position($cod_tarh,$position,$admin)
+{
+	
+  $action_date=date("Y-m-d");
+  $query="insert into tarh_position set cod_tarh='$cod_tarh',position='$position',creator='$admin',action_date='$action_date' ";
+
+  $result=mysql_query($query) or die("Error in inserting data into position");
+}
+
+//----------------------------------------------------------------------------------
+
+function session_validation($admin,$seed)
+{
+
+ 
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 2 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login.phtml");
+   exit();
+  }
+ }
+  else
+ {
+ 	 header ("Refresh: 0; url=../");
+   exit();
+ }
+
+
+}
+//---------------------------------------------------------------------------------------
+
+function current_position($cod_tarh)
+{
+  $query="select * from  tarh_position where  cod_tarh='$cod_tarh' order by id desc";
+  
+  $result_position=mysql_query($query) or die("Error in selecting data from position");
+  if(mysql_num_rows($result_position) > 0 )
+  {
+  	$row_fetched_position=mysql_fetch_array($result_position);
+  	$position=$row_fetched_position["position"];
+  	return $position;
+  	
+  }
+  else 
+   return -1;  // no record in position database for this tarh
+  
+}
+
+//---------------------------------------------------------------------------------------
+
+function header_forms($admin,$seed)
+{
+
+ 
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+
+ session_validation($admin,$seed);
+
+   $query="select * from modir_daneshkade where modir_username='$admin'";
+		 //echo $query;
+			  $result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+			  $row_fetched=mysql_fetch_array($result);
+			  $name=$row_fetched["modir_name"]."&nbsp;".$row_fetched["modir_family"];
+			  //echo $name;
+			  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+			  $query="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+			  $result=mysql_query($query) or die("Error in selecting data from daneshkade");
+			  $row_fetched=mysql_fetch_array($result);
+			  $daneshkade_name=$row_fetched["daneshkade_name"];
+			  
+			  $top_string=" محيط کاري ".$name." مربوط به معاونت ".$daneshkade_name;
+ 
+  					
+ include("include/header.phtml");
+ 
+  
+
+}
+
+//-----------------------------------------------------------------------
+
+function footer_forms($admin,$seed)
+{
+	
+	
+	 include("include/footer.phtml");
+
+ 
+
+}
+
+//---------------------------------------------------------------------------------------
+
+
+function admin_type($admin)     // 0 == admin daneshkade  1== admin kol
+{
+  $query="select * from modir_daneshkade where modir_username=\"$admin\"";
+  $result=mysql_query($query) or die("Error in selectiong data from modir daneshkade");
+  if(mysql_num_rows($result) > 0)
+  {
+   $row_fetched=mysql_fetch_array($result);
+   return $row_fetched["modir_type"];
+  }
+  else
+    return -1;
+  
+  
+}
+
+
+//-----------------------------------------------------------------------
+
+function pubshowpages($link,$current,$PageCountShows,$Reccount,$startw,$endw,$RecPerPage,$username,$rand,$args,$width,$bgcolor)
+{
+
+
+  if($RecPerPage >=1000)
+    
+	{
+	  $current=1;
+      echo"<table width=\"$width\"   border=0 align=\"center\" valign=\"center\"  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"$bgcolor\">";
+	  $i=0;
+
+ 	  echo "<tr>";
+      echo "<td align='center'>";
+	  echo "<a style=\"text-decoration: none\" href=$link?admin=$username&seed=$rand&$args><font face=\"arial\" size=2 color=green></font>";
+      echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+      echo "-";
+      echo "</a>";
+      echo "</td>";
+      echo "</tr>";
+      echo "<table>";
+      return;
+      
+      
+	}
+     $PageCNT = ceil($Reccount/$RecPerPage);
+     if($PageCNT <=1 )
+       return;
+     if(($startw==0 && $endw==0) )
+     {
+      $startw=1;
+      if($PageCNT < $PageCountShows )
+        $endw = $PageCNT;
+      else
+        $endw = $PageCountShows;
+     }
+     else    //line 50
+     {
+      if($PageCNT < $PageCountShows)
+      {
+        $startw = 1;
+        $endw = $PageCNT;
+      }
+      else
+      {
+        //   fgfdgdfdf
+        if( ($current-$startw) > floor(($endw-$startw)/2) )  //line60
+        {
+         if( ($endw+ceil(($endw-$startw)/2)) < $PageCNT )
+         {
+            $tmpvar = $startw;
+            $startw += ceil(($endw-$startw)/2);
+            $endw += ceil(($endw-$tmpvar)/2);
+         }
+         else
+         {
+           if($endw < $PageCNT)
+           {
+             $startw+=($PageCNT-$endw);
+             $endw+=($PageCNT-$endw);
+           }
+         }
+        }
+        else
+        {
+          if( ($current-$startw) < ceil(($endw-$startw)/2) )
+          {
+            if(($startw-ceil(($endw-$startw)/2)) > 1  )
+            {
+               $tmpvar = $startw;
+               $startw-=ceil(($endw-$startw)/2);
+               $endw-=ceil(($endw-$tmpvar)/2);
+            }
+            else
+            {
+               $tmpvar = $startw;
+               $startw=1;
+
+               if( $PageCNT > $PageCountShows )
+                  $endw = $PageCountShows;
+               else
+                  $endw=$PageCNT;
+             }
+          }
+        }
+     }
+    }
+
+if ( $current == $PageCNT )
+{
+  $endw=$PageCNT;
+  if ($PageCountShows < $PageCNT )
+    $startw = ($PageCNT+1) - $PageCountShows;
+  else
+    $startw = 1 ;
+
+
+}
+
+ echo"<table width=\"$width\"   border=0 align=\"center\" valign=\"center\"  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"$bgcolor\">";
+ $i=0;
+
+ echo "<tr>";
+
+ echo "<td width = 20% align=left dir=\"rtl\">";
+ echo "<p align=\"center\" class=\"tahoma1\">";
+ echo "$Reccount مورد يافت شد";
+ echo "</p>";
+ echo "</td>";
+ echo "<td width = 60% align=center>";
+
+ if($PageCNT>2 &&  $current > 1 )
+ {
+    printf("<a style=\"text-decoration: none\" href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\"size=3 color=green></font>",$link,1,0,0,$username,$rand,$args);
+    echo "<img src=\"image/fullleft.gif\" border=\"0\">";
+    echo "</a>";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+ else
+ {
+    echo "<img src=\"image/fullleft.gif\" border=\"0\">";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+  
+ }
+
+
+ if($current > 1 )
+ {
+    printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\"size=3 color=green></font>",$link,$current-1,$startw,$endw,$username,$rand,$args);
+    echo "<img src=\"image/left.gif\" border=\"0\">";
+    echo "</a>";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+else
+ {
+    echo "<img src=\"image/left.gif\" border=\"0\">";
+    echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+ }
+
+
+ if($PageCNT>1)
+ {
+  for($i=$startw ;$i<=$endw;$i++)
+  {
+   if($i==$current)
+      printf("<font face=\"arial\" size=2 color=green><spawn align=\"center\" class=\"tahoma1\"><b>&nbsp;%s&nbsp;</b></spawn></font>",$i);
+   else
+      printf("<a style=\"text-decoration: none\" href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=blue><spawn align=\"center\" class=\"tahoma1\"><b>&nbsp;%s&nbsp;</b></spawn></font></a>",$link,$i,$startw,$endw,$username,$rand,$args,$i);
+  }
+ }
+
+ if(  $current < $PageCNT )
+ {
+   printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$current+1,$startw,$endw,$username,$rand,$args);
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/right.gif\" border=\"0\">";
+   //echo "Next";
+   echo "</a>";
+ }
+ else
+ {
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/right.gif\" border=\"0\">";
+ }
+
+ if($PageCNT>2 && $current < $PageCNT )
+ {
+   printf("<a style=\"text-decoration: none\"href=%s?current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$username,$rand,$args);
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/fullright.gif\" border=\"0\">";
+   echo "</a>";
+    if($RecPerPage <1000)
+    {
+      printf("<a style=\"text-decoration: none\"href=%s?showall=1&current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$username,$rand,$args);
+      echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+      echo "+";
+      echo "</a>";
+     }
+	else
+	{
+	  $current=1;
+	  printf("<a style=\"text-decoration: none\"href=%s? current=%d&startw=%d&endw=%d&admin=%s&seed=%s&%s><font face=\"arial\" size=2 color=green></font>",$link,$PageCNT,$startw,$endw,$username,$rand,$args);
+      echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+      echo "+";
+      echo "</a>";
+	}
+	
+	  
+ }
+ else
+ {
+ 
+   echo "<spawn align=\"center\" class=\"tahoma1\">&nbsp;</spawn>";
+   echo "<img src=\"image/fullright.gif\" border=\"0\">";
+ }
+
+
+ echo"</td>";
+ echo "<td width = 20% align=right>";
+ echo "<p align=\"center\" class=\"tahoma1\">";
+ echo "صفحه $current از $PageCNT";
+
+ echo "</p>";
+ echo "</td>";
+
+ echo"</tr>";
+ echo"</table>";
+
+
+}
+
+//-----------------------------------------------------------------------
+
+//-----------------------------------------------------------------------
+
+function message_show($message,$color)     // 0 == admin daneshkade  1== admin kol
+{
+
+ echo "<table border=\"0\" width=\"100%\" height=\"40%\">";
+ echo "<tr>";
+ echo "<td width=\"100%\"  align=\"center\" ><font face=\"tahoma\" size=\"2\" color=\"$color\">$message</font></td>";
+ echo "</tr>";
+ echo "</table>";
+
+}
+
+//-----------------------------------------------------------------------
+function set_log($action,$admin,$date)     // 0 == admin daneshkade  1== admin kol
+{
+   $query="insert into log set username=\"$admin\" , action=\"$action\", date=\"$date\"";
+   
+   $result=mysql_query($query) or die("Error in inserting data into log file");
+}
+
+
+
+//-------------------------------------------------------------------
+
+function BaseFromMiladiDate($mldyear , $mldmonth , $mldday )
+{
+  $PrevMonthDayMld = array(0,31,59,90,120,151,181,212,243,273,304,334);
+  $iDaySum = 0 ;
+  $iNewDateElapsed =0 ;
+  $iBaseYear = 1996 ;
+  $iBaseDateElapsed = 79 ;
+  $iNewDateElapsed = ($mldday -1 ) + $PrevMonthDayMld[$mldmonth-1];
+  if ( (($mldyear % 4 ) == 0 ) && ( $mldmonth > 2))
+     $iNewDateElapsed++;
+
+  $iDaySum = $iNewDateElapsed - $iBaseDateElapsed +($mldyear-$iBaseYear) *365 +(int)(($mldyear -$iBaseYear ) / 4 );
+
+  if ((($mldyear - $iBaseYear) % 4 ) != 0 )
+     $iDaySum = $iDaySum+1;
+  return $iDaySum;
+}
+//---------------------------------------------------------------------
+function hijricalender ( $year , $month , $day )
+{
+  $PrevMonthDayHjr = array(0,31,62,93,124,155,186,216,246,276,306,336);
+  if ( $year < 1995 || $month < 1 || $month > 12 || $day > 31 || $day < 1 )
+    return 0;
+  $daysum = BaseFromMiladiDate($year , $month , $day );
+  $iaddyear=0;
+  while ($daysum >0 )
+  {
+      $daysum = $daysum -365;
+      if (($iaddyear % 4 ) == 0 )
+        $daysum--;
+      $iaddyear++;
+  }
+  if ( $daysum <0 )
+  {
+      $iaddyear--;
+      $daysum = $daysum+365;
+      if (($iaddyear % 4 ) == 0 )
+        $daysum++;
+  }
+  $itodayyear = 1375+$iaddyear;
+  $itodaymonth=1;
+  while ( $daysum >= $PrevMonthDayHjr[$itodaymonth])
+  {
+      $itodaymonth++;
+      if( $itodaymonth ==12 )
+        break;
+  }
+  $daysum=$daysum - $PrevMonthDayHjr[$itodaymonth-1];
+  $itodayday = 1 + $daysum;
+  $isodate = sprintf("%04d/%02d/%02d",$itodayyear ,$itodaymonth, $itodayday);
+  return  $isodate;
+}
+//-------------------------------------------------------------------
+
+function enum2fnum($englishnum)
+{
+  $return1 = str_replace("1", "ہ", $englishnum);
+  $return2 = str_replace("2", "×", $return1);
+  $return3 = str_replace("3", "à", $return2);
+  $return4 = str_replace("4", "â", $return3);
+  $return5 = str_replace("5", "ç", $return4);
+  $return6 = str_replace("6", "è", $return5);
+  $return7 = str_replace("7", "é", $return6);
+  $return8 = str_replace("8", "ê", $return7);
+  $return9 = str_replace("9", "ë", $return8);
+  $return0 = str_replace("0", "ô", $return9);
+  $return11 = str_replace("ہ", "&#1777;", $return0);
+  $return12 = str_replace("×", "&#1778;", $return11);
+  $return13 = str_replace("à", "&#1779;", $return12);
+  $return14 = str_replace("â", "&#1780;", $return13);
+  $return15 = str_replace("ç", "&#1781;", $return14);
+  $return16 = str_replace("è", "&#1782;", $return15);
+  $return17 = str_replace("é", "&#1783;", $return16);
+  $return18 = str_replace("ê", "&#1784;", $return17);
+  $return19 = str_replace("ë", "&#1785;", $return18);
+  $return20 = str_replace("ô", "&#1776;", $return19);
+  $return21 = str_replace(":", "<font compset size 3><b>:</b></font>", $return20);
+  return $return21;
+
+}
+
+//-------------------------------------------------------------------
+
+function send_mail_tarh($cod_tarh)
+{
+
+
+ $besme = "style=\"font-family: tahoma; font-size: 10\"";
+ $titr_asli =  "style=\"font-family: tahoma; font-size: 10\"";
+ $porseshname =  "style=\"font-family: tahoma; font-size: 10\"";
+ $anavin_asli =  "style=\"font-family: tahoma; font-size: 10\"";
+ $anavin_farii_text =  "style=\"font-family: tahoma; font-size: 10\"";
+ $anavin_farii =  "style=\"font-family: tahoma; font-size: 10\"";
+ $titr_anavin_farii =  "style=\"font-family: tahoma; font-size: 10\"";
+ $jadval_title =  "style=\"font-family: tahoma; font-size: 10\"";
+ print_title($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_globals($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_mojrian($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_daneshjoyan($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_hamkaran($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_modir_tarh($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_modir_mali_tarh($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_body_tarh($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_ravesh_ejra($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_jadval_zamani($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+ print_page_break();
+ print_hazineha($cod_tarh,$besme,$titr_asli,$porseshname,$anavin_asli,$anavin_farii_text,$anavin_farii,$titr_anavin_farii,$jadval_title);
+
+}
+
+//-------------------------------------------------------------------
+
+
+function send_letter_to_mojri($mojri_name,$mojri_family,$tarh_title_english,$tarh_title_farsi,$band_azad,$cod_tarh,$content_letter_type)
+{
+?>
+<META http-equiv=content-type content=text/html;charset=windows-1256>
+<table id="Table_00" border="0" width="100%" height="100%">
+  <tr>
+    <td width="34%" align="center" height="586"></td>
+    <td width="800" align="center" height="586">
+
+<!-- Start Main Table (Table_01) here -->
+    <table id="Table_01" class=TableStyle0 dir=ltl style="BORDER-COLLAPSE: collapse" borderColor=#336699 border="0" width="800" height="586" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="50" height="20">
+	      </td>
+        <td width="350" height="20">
+	      </td>
+        <td width="350" height="20">
+	      </td>
+        <td width="50" height="20">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="58">
+	      </td>
+        <td width="350" height="58">
+	      </td>
+        <td width="350" height="58">
+          <p align="right">
+          <img border="0" src="mui.ac.ir/researches/admin/images/MUI-Logo04b.jpg" width="80" height="120">
+	      </td>
+        <td width="50" height="58">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="25">
+	      </td>
+	      
+	      <?
+           $First_mojri_name = $mojri_name."&nbsp;".$mojri_family;
+	      ?>
+        <td width="350" height="25" align="right">
+          <? echo $First_mojri_name; ?>
+	      </td>
+        <td class=NormalText1 width="350" height="25" align="right">
+          سركار خانم دكتر / جناب آقاى دكتر
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="25">
+	      </td>
+        <td width="350" height="25" align="right">
+	      </td>
+        <td class=NormalText1 width="350" height="25" align="right">
+          با سلام
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="25">
+	      </td>
+        <td width="350" height="25" align="right">
+	      </td>
+        <td class=NormalText1 width="350" height="25" align="right">
+          احتراماً به استحضار مىرساند كه طرح
+          پيشنهادى شما تحت عنوان
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="100">
+	      </td>
+        <td width="700" height="100" align="right" colspan="2">
+          <?
+			echo $tarh_title_farsi."<br>".$tarh_title_english;
+		  ?>
+	      </td>
+        <td width="50" height="100">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="35">
+	      </td>
+        <td class=NormalText1 width="700" height="35" align="right" colspan="2">
+          <?
+			echo $content_letter_type."<br>".$band_azad;
+		  ?>
+	      </td>
+        <td width="50" height="35">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="35">
+	      </td>
+        <td class=NormalText1 width="700" height="35" align="right" colspan="2">
+	      </td>
+        <td width="50" height="35">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="35">
+	      </td>
+        <td class=NormalText1 width="350" height="35" align="right">
+          <?
+			 echo $chairman_of_letter;
+		  ?>
+	      </td>
+        <td width="350" height="35" align="right">
+	      </td>
+        <td width="50" height="25">
+	      </td>
+      </tr>
+      <tr>
+        <td width="50" height="60">
+        </td>
+        <td width="350" height="60">
+        </td>
+        <td width="350" height="60">
+        </td>
+        <td width="50" height="60">
+        </td>
+      </tr>
+    </table> <!-- Finish Main Table (Table_01) here -->
+   </td>
+   <td width="34%" align="center" height="586"></td>
+  </tr>
+</table><!-- Finish Table_00 here -->
+
+
+<?
+}
+
+
+//-------------------------------------------------------------------------------
+
+function today()
+{
+
+		$mydate=date("Y-m-d");
+		$endyear=substr($mydate,0,4);
+		$endmon=substr($mydate,5,2);
+		$endday=substr($mydate,8,2);
+		$todaydate= hijricalender($endyear,$endmon,$endday);
+		
+		return $todaydate;
+}
+
+?>

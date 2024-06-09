@@ -1,0 +1,75 @@
+ 
+.suckerdiv ul{
+margin: 0;
+padding: 0;
+list-style-type: none;
+width: 202px; 
+ height:27px;
+font-family:Tahoma;
+font-size:8pt;
+vertical-align:middle;
+margin-right:0px;
+padding: 0px 0px 0px 0px;
+border:none;
+background-color:#dfdfff;
+
+
+ }
+  
+.suckerdiv ul li{
+background-image:url(../img_data/key.png);
+background-repeat:no-repeat;
+background-position:right;
+position: relative;
+border:none;
+background-color:#dfdfff;
+ 
+
+}
+ 
+
+.suckerdiv ul li ul{
+position: absolute;
+width: 202px;
+top: 0;
+visibility: hidden;
+background-color:#dfdfff;
+
+
+}
+
+
+.suckerdiv ul li a{
+display: block;
+overflow: auto;
+color: black;
+text-decoration: none;
+background-image:url(../img_data/key.png);
+background-repeat:no-repeat;
+background-position:right;
+border:none;
+width:202px;
+padding: 5px 20px;
+  
+}
+
+.suckerdiv ul li a:visited{
+color: black;
+}
+ 
+
+.suckerdiv ul li a:hover{
+background-image:url(../img_data/over.png);
+
+ 
+}
+
+.suckerdiv .subfolderstyle{
+background: url(media/arrow-list.gif) no-repeat center right;
+}
+
+
+ 
+* html .suckerdiv ul li { float: left; height: 27px; }
+* html .suckerdiv ul li a { height: 27px; }
+ 

@@ -1,0 +1,427 @@
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+<?
+echo "<br>";
+
+$admin_edit=0;
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+   
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"];
+ 
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='12'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}
+
+
+
+if(isset($action))
+{
+  if (strcmp($action,"edit_mojri_sabt")==0)
+  {
+  	$mablagh=str_replace(",","",$mablagh);
+  	$letter_date = $endyear."/". $endmonth."/". $endday;
+  	   $query  = "update  eatebar_sazmanha set eatebare_sazmanha_value = \"$mablagh\" ,eatebare_sazmanha_pardakht=\"$nahve_pardakht\", eatebare_sazmanha_organ = \"$name_moasese\", eatebare_sazmanha_address  = \"$address_posti\" , eatebare_sazmanha_telno  = \"$telno\" , eatebare_sazmanha_fax  = \"$fax\",new_update='1',letter_date='$letter_date',letter_number='$letter_number' where id='$id' and cod_tarh=\"$cod_tarh\" ";
+       
+	   $result = mysql_query($query) or die("Error in inserting data into hamkaran_tarh 002");
+
+  }
+  if (strcmp($action,"sabt")==0)
+  {
+  	$mablagh=str_replace(",","",$mablagh);
+  	$letter_date = $endyear."/". $endmonth."/". $endday;
+     // 	$majmoa_saat=str_replace(",","",$majmoa_saat);
+     // 	$persons=str_replace(",","",$persons);
+       $query  = "insert into  eatebar_sazmanha set eatebare_sazmanha_value = \"$mablagh\" ,eatebare_sazmanha_pardakht=\"$nahve_pardakht\", eatebare_sazmanha_organ = \"$name_moasese\", eatebare_sazmanha_address  = \"$address_posti\" , eatebare_sazmanha_telno  = \"$telno\" , eatebare_sazmanha_fax  = \"$fax\" , cod_tarh=\"$cod_tarh\",letter_date='$letter_date',letter_number='$letter_number' ";
+//	    echo $query;
+	   $result = mysql_query($query) or die("Error in inserting data into hamkaran_tarh 002");
+	   $action="ثبت سازمانهاي ديگر مربوط به طرح"."<br>".$cod_tarh;
+       set_log($action,$admin,date("Y-m-d, g:i a"));
+     
+      /* message_show(".تامين اعتبار از سازمانهاي ديگر ثبت شد","green");
+       
+       echo "<table border=\"0\" width=\"500\">";
+       echo "<tr>";
+       echo "<td width=\"50%\" colspan=\"2\" align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"hazineha.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >بازگشت</a></td>";
+       echo "</tr>";
+       echo "</table>";
+         footer_forms($admin,$seed);
+       exit();*/
+       
+  }
+    if (strcmp($action,"delete_mojri")==0)
+ {
+    $query="delete from eatebar_sazmanha where id = \"$delete_id\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+    
+    
+    $result=mysql_query($query) or die("Error in  delete data from karshenas_elmi");
+ }
+
+}
+
+if(strcmp($action,"edit_mojri")==0) 
+{
+	$query="select * from eatebar_sazmanha where id='$id' ";
+	$result=mysql_query($query) or die("Error");
+	if(mysql_num_rows($result) > 0)
+	{
+		$rf=mysql_fetch_array($result);
+		$eatebare_sazmanha_value=$rf["eatebare_sazmanha_value"];
+		$eatebare_sazmanha_organ=$rf["eatebare_sazmanha_organ"];
+		$eatebare_sazmanha_pardakht=$rf["eatebare_sazmanha_pardakht"];
+		$letter_number=$rf["letter_number"];
+		$startdate = $rf["letter_date"];
+	  $startyear = substr($startdate,0,4);
+	  $startmon = substr($startdate,5,2);
+	  $startday = substr($startdate,8,2);
+	  $var_tmp="y_".$startyear;
+	  
+	  //echo $var_tmp;
+	  $$var_tmp=" selected ";
+	  
+	  $var_tmp1="m_".$startmon;
+	  $$var_tmp1=" selected ";
+	  $var_tmp2="d_".$startday;
+	  $$var_tmp2=" selected ";
+		
+	}
+}
+else 
+{
+  $eatebare_sazmanha_value = "";
+  $eatebare_sazmanha_pardakht = "";
+  $eatebare_sazmanha_organ = "";
+  $eatebare_sazmanha_address = "";
+  $eatebare_sazmanha_telno = "";
+  $eatebare_sazmanha_fax = "";	
+}
+
+?>
+
+<?
+
+if(strcmp($action,"edit_mojri")!=0) 
+   echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+else 
+   echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=edit_mojri_sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&id=$id\">";
+   
+ ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      <TD align=middle width="251"  background="image/sazmanhaye_digar.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+
+  
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين کاربري قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+ <tr>
+    <td width="500" colspan='2' class="tahoma1" align="middle"><b>مجري محترم ، در وارد کردن کليه هزينه هاي طرح خود از اعداد بدون جدا کننده (, - / ) استفاده کنيد <br></b></td>
+  </tr>
+<tr>
+  <td width="400" align="right"><input type="text" class="edit-small-1" name="name_moasese" size="20" value=<? echo "\"".$eatebare_sazmanha_organ."\""; ?> dir=RTL   ></td>
+    <td width="100" class="tahoma1"><span class="star-message">*</span>نام موسسه</td>
+</tr>
+<tr>
+  <td width="400" align="right"><input type="text" class="edit-small-1" name="letter_number" size="20" value=<? echo "\"".$letter_number."\""; ?> dir=RTL   ></td>
+    <td width="100" class="tahoma1"><span class="star-message"></span>شماره نامه ابلاغ اعتبار</td>
+</tr>
+
+  <tr>
+                 <td align="right" ><select class="in3" dir="rtl" size="1" name="endyear">
+          <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option <? echo $y_1381;  ?> value="1381">&#1777;&#1779;&#1784;&#1777;</option>
+          <option <? echo $y_1382;  ?> value="1382">&#1777;&#1779;&#1784;&#1778;</option>
+          <option <? echo $y_1383;  ?> value="1383">&#1777;&#1779;&#1784;&#1779;</option>
+          <option <? echo $y_1384;  ?> value="1384">&#1777;&#1779;&#1784;&#1780;</option>
+          <option <? echo $y_1385;  ?> value="1385">&#1777;&#1779;&#1784;&#1781;</option>
+          <option <? echo $y_1386;  ?> value="1386">&#1777;&#1779;&#1784;&#1782;</option>
+          <option <? echo $y_1387;  ?> value="1387">&#1777;&#1779;&#1784;&#1783;</option>
+          <option <? echo $y_1388;  ?> value="1388">&#1777;&#1779;&#1784;&#1784;</option>
+          <option <? echo $y_1389;  ?> value="1389">&#1777;&#1779;&#1784;&#1785;</option>
+          <option <? echo $y_1390;  ?> value="1390">&#1777;&#1779;&#1785;&#1776;</option>
+          <option <? echo $y_1391;  ?> value="1391">&#1777;&#1779;&#1785;&#1777;</option>
+		  <option <? echo $y_1392;  ?> value="1392">&#1777;&#1779;&#1785;&#1778;</option>
+		  <option <? echo $y_1393;  ?> value="1393">&#1777;&#1779;&#1785;&#1779;</option>
+		  <option <? echo $y_1394;  ?> value="1394">&#1777;&#1779;&#1785;&#1780;</option>
+		  <option <? echo $y_1395;  ?> value="1395">&#1777;&#1779;&#1785;&#1781;</option>
+		  <option <? echo $y_1396;  ?> value="1396">&#1777;&#1779;&#1785;&#1782;</option>
+        
+         
+        </select>
+      <select class="in3" dir="rtl" size="1" name="endmonth">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option <? echo $m_01;  ?> value="01">&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option <? echo $m_02;  ?> value="02">&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option <? echo $m_03;  ?> value="03">&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m_04;  ?> value="04">&#1578;&#1610;&#1585;</option>
+          <option <? echo $m_05;  ?> value="05">&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option <? echo $m_06;  ?> value="06">&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option <? echo $m_07;  ?> value="07">&#1605;&#1607;&#1585;</option>
+          <option <? echo $m_08;  ?> value="08">&#1570;&#1576;&#1575;&#1606;</option>
+          <option <? echo $m_09;  ?> value="09">&#1570;&#1584;&#1585;</option>
+          <option <? echo $m_10;  ?> value="10">&#1583;&#1610;</option>
+          <option <? echo $m_11;  ?> value="11">&#1576;&#1607;&#1605;&#1606;</option>
+          <option <? echo $m_12;  ?> value="12">&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+       <select class="in3" dir="rtl" size="1" name="endday">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option <? echo $d_01;  ?> value="01">&#1777;</option>
+          <option <? echo $d_02;  ?> value="02">&#1778;</option>
+          <option <? echo $d_03;  ?> value="03">&#1779;</option>
+          <option <? echo $d_04;  ?> value="04">&#1780;</option>
+          <option <? echo $d_05;  ?> value="05">&#1781;</option>
+          <option <? echo $d_06;  ?> value="06">&#1782;</option>
+          <option <? echo $d_07;  ?> value="07">&#1783;</option>
+          <option <? echo $d_08;  ?> value="08">&#1784;</option>
+          <option <? echo $d_09;  ?> value="09">&#1785;</option>
+          <option <? echo $d_10;  ?> value="10">&#1777;&#1776;</option>
+          <option <? echo $d_11;  ?> value="11">&#1777;&#1777;</option>
+          <option <? echo $d_12;  ?> value="12">&#1777;&#1778;</option>
+          <option <? echo $d_13;  ?> value="13">&#1777;&#1779;</option>
+          <option <? echo $d_14;  ?> value="14">&#1777;&#1780;</option>
+          <option <? echo $d_15;  ?> value="15">&#1777;&#1781;</option>
+          <option <? echo $d_16;  ?> value="16">&#1777;&#1782;</option>
+          <option <? echo $d_17;  ?> value="17">&#1777;&#1783;</option>
+          <option <? echo $d_18;  ?> value="18">&#1777;&#1784;</option>
+          <option <? echo $d_19;  ?> value="19">&#1777;&#1785;</option>
+          <option <? echo $d_20;  ?> value="20">&#1778;&#1776;</option>
+          <option <? echo $d_21;  ?> value="21">&#1778;&#1777;</option>
+          <option <? echo $d_22;  ?> value="22">&#1778;&#1778;</option>
+          <option <? echo $d_23;  ?> value="23">&#1778;&#1779;</option>
+          <option <? echo $d_24;  ?> value="24">&#1778;&#1780;</option>
+          <option <? echo $d_25;  ?> value="25">&#1778;&#1781;</option>
+          <option <? echo $d_26;  ?> value="26">&#1778;&#1782;</option>
+          <option <? echo $d_27;  ?> value="27">&#1778;&#1783;</option>
+          <option <? echo $d_28;  ?> value="28">&#1778;&#1784;</option>
+          <option <? echo $d_29;  ?> value="29">&#1778;&#1785;</option>
+          <option <? echo $d_30;  ?> value="30">&#1779;&#1776;</option>
+          <option <? echo $d_31;  ?> value="31">&#1779;&#1777;</option>
+        </select></td>
+
+              <td  align="left">
+                <p align="left" class="tahoma1"><span class="star-message"></span>تاريخ نامه</td>
+            </tr>
+  
+<tr>
+  <td width="400" align="right"><input type="text"  onkeypress="return checkit()"  onkeyup="MakingMoneyForm(this)"  class="edit-small-1" name="mablagh" size="20" value=<? echo "\"".$eatebare_sazmanha_value."\""; ?> ></td>
+    <td width="100" class="tahoma1"><span class="star-message">*</span>مبلغ</td>
+</tr>
+  
+  
+  
+<tr>
+  <td width="400" align="right"><select size="1" name="nahve_pardakht"  class="tahoma1"  dir="rtl">
+      <option value="-1" class="tahoma1">انتخاب کنيد</option>
+      <?
+      if(strcmp($eatebare_sazmanha_pardakht,'0')==0)
+        $selected=" selected ";
+      else
+         $selected=" ";	     
+      ?>
+      
+      <option value="0" <? echo  $selected ?> class="tahoma1">اعتبار توسط مجري دريافت مي شود</option>
+
+      <?
+      if(strcmp($eatebare_sazmanha_pardakht,'1')==0)
+        $selected=" selected ";
+      else
+         $selected=" ";	     
+      ?>
+
+      <option value="1"  <? echo $selected ?> class="tahoma1">اعتبار به دانشگاه پرداخت ميشود تا از طريق قرارداد به مجري پرداخت شود</option>
+
+      </td>
+    <td width="100" class="tahoma1"><span class="star-message">*</span>نحوه پرداخت</td>
+</tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<?
+   
+   $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='-1' ";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+//   	$row_fetched=mysql_fetch_array($result);
+    echo "<br>";
+    echo "<table border=\"1\" width=\"800\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<table border=\"0\" width=\"800\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    echo "<tr>";
+    echo "<td  background=\"image/top-left.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "<td background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">حذف</p></td>";
+    echo "<td background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">ويرايش</p></td>";
+    echo "<td  background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نحوه پرداخت</p></td>";
+    echo "<td  background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">مبلغ</p></td>";
+    //echo "<td background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">فکس</p></td>";
+    echo "<td  background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">تاريخ نامه</p></td>";
+    echo "<td  background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">شماره نامه ابلاغ اعتبار</p></td>";
+    echo "<td  background=\"image/top-top.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">نام موسسه</p></td>";
+    echo "<td   background=\"image/top-right.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+   $color="#E2E0E0";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    echo "<tr bgcolor=\"$color\">";
+    
+    $mojri_code = $myrow_fetched["mojri_code"];
+   	$eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+   	$eatebare_sazmanha_pardakht = $myrow_fetched["eatebare_sazmanha_pardakht"];
+   	$eatebare_sazmanha_fax = $myrow_fetched["eatebare_sazmanha_fax"];
+   	$eatebare_sazmanha_telno= $myrow_fetched["eatebare_sazmanha_telno"];
+   	$eatebare_sazmanha_organ = $myrow_fetched["eatebare_sazmanha_organ"];
+    $eatebare_sazmanha_address = $myrow_fetched["eatebare_sazmanha_address"];
+    $letter_number = $myrow_fetched["letter_number"];
+    $letter_date = $myrow_fetched["letter_date"];
+    $id_pardakht= $myrow_fetched["id"];
+  
+    //echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\">&nbsp;</td>";
+    echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=sazmanhayedigar.phtml&admin=$admin&seed=$seed&action=delete_mojri&cod_tarh=".$cod_tarh."&delete_id=".$myrow_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"47\"><p align=\"center\"><a style=\"text-decoration:none\" href=\"sazmanhayedigar.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&id=$id_pardakht&action=edit_mojri\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+    
+	if(strcmp($eatebare_sazmanha_pardakht,'0')==0)
+        $eatebare_sazmanha="اعتبار توسط مجري دريافت مي شود ";
+    if(strcmp($eatebare_sazmanha_pardakht,'1')==0)
+        $eatebare_sazmanha=" اعتبار به دانشگاه پرداخت ميشود تا از طريق قرارداد به مجري پرداخت شود ";
+            
+	
+	echo "<td class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha</td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">".number_format($eatebare_sazmanha_value)."</td>";
+    //echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_fax</td>";
+    echo "<td class=\"tahoma1\" align=\"center\"><p align=\"center\" class=\"tahoma1\">$letter_date</td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$letter_number</td>";
+    echo "<td  class=\"tahoma1\" align=\"right\"><p align=\"center\" class=\"tahoma1\">$eatebare_sazmanha_organ</td>";
+	echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+   }
+    echo "<tr>";
+    echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"47\" background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";    
+    echo "<td background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+  //  echo "<td  background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+   echo "<td background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td  background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td  background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td  background=\"image/bot-bot.gif\" height=\"20\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+
+   echo "</table>";
+
+  }
+  footer_forms($admin,$seed);
+ ?>
+

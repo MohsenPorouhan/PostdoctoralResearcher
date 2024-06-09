@@ -1,0 +1,411 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+
+$q="select * from tarh_old_desc  where cod_tarh='$cod_tarh'";
+ echo "<br><br><span class='tahoma1' bgcolor='#f6f6f6'> جزئيات طرح</span><br>";
+$rs=mysql_query($q) or die("error");
+
+
+$rf=mysql_fetch_array($rs);
+ ?>
+ 			<table class="tahoma1">
+				<tbody>
+					<tr>
+						
+						<td width="80%"  align='right' dir='rtl'>
+							 <?  echo $rf["comments"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								توضيحات
+							</label>
+						</td>
+					</tr>
+                    
+                    <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                 <?  echo $rf["markaz_type"];?>
+
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								نوع مرکز
+							</label>
+						</td>
+					</tr>
+
+                    <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                 <?  echo $rf["emtiaz"];?>
+
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								امتياز
+							</label>
+						</td>
+					</tr>
+                    
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                 <?  echo $rf["maghale_class"];?>
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								کلاس مقاله
+							</label>
+						</td>
+					</tr>
+
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                 <?  echo $rf["maghale_darad_nadarad"];?>
+
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								آيا طرح مقاله دارد ؟
+							</label>
+						</td>
+					</tr>
+
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                 <?  echo $rf["vaziat_tarh"];?>
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								وضعيت طرح
+							</label>
+						</td>
+					</tr>
+
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                                      <?  echo $rf["cod_tarh"];?>
+   
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								کد طرح
+							</label>
+						</td>
+					</tr>
+
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                                                              <?  echo $rf["modir_ejrayee_name"];?>
+
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								نام مدير اجرايي
+							</label>
+						</td>
+					</tr>
+
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'>
+                     <?  echo $rf["modir_ejrayee_family"];?>
+
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								نام خانوادگي مدير اجرايي
+							</label>
+						</td>
+					</tr>
+
+
+                            <tr>						
+						<td width="80%"  align='right' dir='rtl'  >
+                                             <?  echo $rf["daneshkade"];?>
+
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								نام دانشکده
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%" align='right'  >
+ 
+							 <?  echo $rf["start_date"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								تاريخ شروع
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["year_start"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								سال شروع
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["month_start"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								ماه شروع
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["start_day"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								روز شروع
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right' >
+							 <?  echo $rf["end_date"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								تاريخ پايان
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["end_year"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								سال پايان
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["end_month"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								ماه پايان
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["end_day"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								روز پايان
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right' >
+							 <?  echo $rf["read_end_date"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								تاريخ واقعي پايان طرح
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["real_end_year"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								سال واقعي پايان طرح
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'  >
+							 <?  echo $rf["real_end_month"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								ماه واقعي پايان طرح
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'>
+							 <?  echo $rf["real_end_day"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								روز واقعي پايان طرح
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'>
+							 <?  echo $rf["mablagh_kasr"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+							مبلغ کسر پرداخت
+							</label>
+						</td>
+					</tr>
+                            <tr>						
+						<td width="80%"  align='right'>
+							 <?  echo $rf["budject"];?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								بودجه طرح
+							</label>
+						</td>
+					</tr>
+                    
+                              <tr>						
+						<td width="80%"  align='right'>
+							 <?  
+							 $f_name_jpg="../tasvir_maghalat/".$cod_tarh.".jpg";
+							 $f_name_zip="../tasvir_maghalat/".$cod_tarh.".zip";
+							 if( file_exists($f_name_jpg))
+							    echo "<a href='$f_name_jpg' target='_blank'>".$cod_tarh.".jpg"."</a>";
+							 if( file_exists($f_name_zip))
+						        echo "<a href='$f_name_zip' target='_blank'>".$cod_tarh.".zip"."</a>";
+
+							 ?>
+						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								مقاله طرح
+							</label>
+						</td>
+					</tr>
+ 
+ 
+ 
+ 
+ 
+ 
+
+ <tr>
+     <td colspan='2' align="right">
+     
+       <table border="0" width="100%"    cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 0; ">
+
+<?
+$query="select * from tarh_old  where cod_tarh='$cod_tarh'";
+$rs=mysql_query($query) or die("Error");
+$rf=mysql_fetch_array($rs);
+$abstract=$rf["abstract"];
+?>
+<tr>
+     <td width="80%" align="right" class='tahoma1' dir='rtl'> <? echo nl2br($abstract); ?> </td>
+    <td width="20%" class="tahoma1" valign="top"   bgcolor='#f6f6f6'>خلاصه مقاله
+  </tr>
+
+ 
+</table>
+
+ 
+
+
+  <?
+  $query="select * from marhale_report where cod_tarh='$cod_tarh' ";
+   
+  $result=mysql_query($query) or die("Error");
+   
+     $mycount=0;
+    if(mysql_num_rows($result) > 0)
+    {
+      echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+       echo "<tr>";      
+      echo "<td width=\"20%\" colspan='6' align=\"center\"  class=\"tahoma1\"><b>با کليک روي نام فايل محتويات آن قابل مشاهده مي باشد</b></td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+       echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نوع فايل</td>";
+      echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام فايل</td>";
+      echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">تاريخ ارسال</td>";
+      echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">توضيحات</td>";
+      echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">مرحله</td>";
+      echo "</tr>";
+
+     //echo $dir_name;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     	$id=$row_fetched["id"];
+     	
+     	  
+     	
+     	
+	      echo "<tr>";
+	     //if($level_submitted==0)
+         // else 
+          //   echo "<td ><p align=\"center\" class='tahoma1'> غير قابل حذف</td>";    
+        $file_type=  $row_fetched["file_type"];
+        if($file_type==0)
+          $file_type_desc="مقاله";
+         if($file_type==1)
+          $file_type_desc="گزارش نهايي";
+		 if($file_type==2)
+          $file_type_desc="ضمائم";    
+           echo "<td align=\"center\"  class=\"tahoma1\">$file_type_desc</td>";
+		 echo "<td align=\"center\"  class=\"tahoma1\"><a target=\"_blank\" href=\"../reports/$cod_tarh/$file".$row_fetched["filename"]."\">".$row_fetched["filename"]."</a></td>";
+         echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">".$row_fetched["send_date"]."</td>";
+         echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">".$row_fetched["comments"]."</td>";
+         if(strcmp($row_fetched["marhale"],'0')==0)
+           $marhale='اول';
+         else  
+         if(strcmp($row_fetched["marhale"],'100')==0)
+           $marhale='آخر';  
+         else
+		   $marhale=  $row_fetched["marhale"];
+         echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">".$marhale."</td>";
+         echo "</tr>";
+	   
+     }
+         
+      echo "</table>";
+	 }
+     
+?>     
+     
+     </td>
+    <td width="400" class="tahoma1" valign="top" >
+  </tr>
+
+
+    
+     
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</tbody> 
+</table>
+<?
+footer_forms($admin,$seed);
+
+
+?>

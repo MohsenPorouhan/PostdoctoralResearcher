@@ -1,0 +1,144 @@
+<?
+$title="Feedback";
+include("include/include.phtml");
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+header_forms();
+
+  session_start();
+	if ($_POST['code']==$_SESSION['key'])
+	 {
+		$cod_error = 1;
+	} else {
+		$cod_error = 0;
+	}
+	
+ if(strcmp($cod_error,'1')==0)
+ {	
+	
+?>
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<?
+$url=$HTTP_REFERER;
+//echo "-->$url";
+if(!strstr($url,$domain_name))
+ {
+ echo "<br><br><br><br><center><h1>You are not allowed to use this!!! :D</h1></center>";
+ exit();
+ }
+   if(getenv("HTTP_X_FORWARDED_FOR"))
+      $ip=getenv("HTTP_X_FORWARDED_FOR");
+   else
+      $ip=getenv("REMOTE_ADDR");
+
+/*   if( !strstr(getenv("REMOTE_ADDR"),"80.191.144.0"))
+    {
+     echo "<br><br><br><br><br><br><br><h1>You are not Autorized to do this!!!</h1>";
+     exit();
+    }*/
+?>
+<?
+$linevar = ereg_replace("<br>","n",$linevar); 
+
+//$date = date("l, F dS, Y - h:i:s A"); 
+
+//  include("include/class.phpmailer.php");
+
+    
+	$mail = new PHPMailer();
+	$mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+    $mail->Host = $mailserver_host;  // specify main and backup server
+    $mail1->CharSet = "utf-8";
+	$mail->ContentType = 'text/html';
+      //$name=iconv( "windows-1256","utf-8", $name);  
+	$mail->From = $email;
+	$mail->FromName = $name;
+	$mail->AddAddress($email_contact_email ,$email_contact_name );
+	$mail->AddAddress($email_contact_email1 ,$email_contact_name1 );
+	$mail->AddAddress($email_contact_email2 ,$email_contact_name2 );
+	$mail->IsHTML(true);                    
+
+	$subject="Feedback for research";
+	$mail->Subject = $subject;
+	//$body=iconv( "windows-1256","utf-8", $body);  
+	
+	$body=nl2br($body);
+	$mail->Body = $body;
+	$mail->MsgHTML($body);
+      //  mail($email_contact_email,$subject,$body,$header);
+	if(!$mail->Send())
+          $status="mail_err";
+          
+          
+          `
+    $mail1 = new PHPMailer();
+	$mail1->IsSMTP();                                      // set mailer to use SMTP
+	$mail1->CharSet = "utf-8";
+	$mail->ContentType = 'text/html';
+    $mail1->SMTPAuth=$smtpauth;
+    $mail1->Username=$email_username;
+    $mail1->Password=$email_password;
+    $mail1->Host = $mailserver_host;  // specify main and backup server
+      $mail->host = $mailserver_host;
+	$mail1->From = $email_from;
+	$mail1->FromName = $email_from_name;
+	$mail1->AddAddress($email ,$name );
+	
+	$mail1->IsHTML(true);                    
+   // $subject=mb_convert_encoding($subject, "UTF-8", "auto");  
+	//$body=iconv( "windows-1256","utf-8", $body);  
+	$subject="Feedback for research (TUMS) ";
+	$mail1->Subject = $subject;
+	
+	$body="<b>Dear User<b> <br> Thanks for sending your feedback to us.<br> <b>Regards</b>  ";
+	$mail1->Body = $body;
+      //  mail($email_contact_email,$subject,$body,$header);
+	if(!$mail1->Send())
+          $status="mail_err";
+      
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td width="100%" valign="top" align="center">
+          <br><br><br>
+             <p style="font-family: Tahoma; font-size: 8pt; color: #800000; font-weight: bold">.پيام شما فرستاده شد
+           </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<?
+ }
+ else 
+ {
+ ?>
+
+ <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td width="100%" valign="top" align="center">
+          <br><br><br>
+             <p style="font-family: Tahoma; font-size: 8pt; color: #800000; font-weight: bold">.کد رمز مربوطه را وارد کنيد
+           </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+ <?
+ 	
+ 	
+ }
+  footer_forms();
+
+?>

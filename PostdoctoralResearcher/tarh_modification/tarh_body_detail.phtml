@@ -1,0 +1,128 @@
+<?
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $new_update_zarorat_ejra = $row_fetched["new_update_zarorat_ejra"];
+  $new_update_bayan_masale = $row_fetched["new_update_bayan_masale"];
+  $new_update_taarif_vajeh = $row_fetched["new_update_taarif_vajeh"];
+  $new_update_ahdaf = $row_fetched["new_update_ahdaf"];
+  $new_update_soalat = $row_fetched["new_update_soalat"];
+  $new_update_fehrest_manabea = $row_fetched["new_update_fehrest_manabea"];
+  
+   //echo $query;
+   //echo "<br>";
+  // $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+
+  // $result=mysql_query($query) or die("Error in selecting data from tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<?
+
+    echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    //$row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+   if($new_update_bayan_masale=="1"){
+     		$str="<b>";
+     		$str2="</b>";
+     	}
+     	else{
+     		$str="";
+     		$str2="";
+     	}
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$str.$row_fetched["bayan_masale"].$str2."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">(مقدمه (بيان مساله</td>";
+    echo "</tr>";
+   if($new_update_zarorat_ejra=="1"){
+     		$str="<b>";
+     		$str2="</b>";
+     	}
+   else{
+     		$str="";
+     		$str2="";
+     	}
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$str.$row_fetched["zarorat_ejra"].$str2."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">بررسي متون</td>";
+    echo "</tr>";
+   if($new_update_taarif_vajeh=="1"){
+     		$str="<b>";
+     		$str2="</b>";
+     	}
+   else{
+     		$str="";
+     		$str2="";
+     	}
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$str.$row_fetched["taarif_vajeh"].$str2."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تعريف واژه ها</td>";
+    echo "</tr>";
+    
+     if($new_update_ahdaf=="1"){
+     		$str="<b>";
+     		$str2="</b>";
+     	}
+   else{
+     		$str="";
+     		$str2="";
+     	}
+    //------------------------
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$str.$row_fetched["ahdaf"].$str2."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">اهداف کلي, اختصاصي و کاربردي</td>";
+    echo "</tr>";
+     if($new_update_soalat=="1"){
+     		$str="<b>";
+     		$str2="</b>";
+     	}
+   else{
+     		$str="";
+     		$str2="";
+     	}
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$str.$row_fetched["soalat"].$str2."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">سوالات پژوهشي و فرضيات</td>";
+    echo "</tr>";
+    //--------------------------
+     if($new_update_fehrest_manabea=="1"){
+     		$str="<b>";
+     		$str2="</b>";
+     	}
+   else{
+     		$str="";
+     		$str2="";
+     	}
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"left\" class=\"tahoma1\" dir=\"ltr\">".$str.nl2br($row_fetched["fehrest_manabea"]).$str2."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">فهرست منابع مورد استفاده در اين طرح</td>";
+    echo "</tr>";
+
+    echo "</table>";
+   }
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+ 

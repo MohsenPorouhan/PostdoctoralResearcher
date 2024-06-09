@@ -1,0 +1,527 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+
+  if( $type != 0 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+  
+include("include/print.phtml");
+include("include/styles.phtml");
+
+?>
+<?
+echo "<center>";
+echo "<br>";
+
+$query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  
+  		  $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+		  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+		  $row_fetched_gharardad=mysql_fetch_array($result);
+		  
+		 // $modir_confirm=$row_fetched_gharardad["modir_confirm"];
+	     // $modir_comment=$row_fetched_gharardad["modir_comment"];
+		   if(mysql_num_rows($result) > 0)
+		   {
+  
+  if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   	if(isset($modir_confirm)){
+
+   		$year_date = date("Y") - 1921 ;
+  	   $date = $year."-".$month."-".$day; 
+		  
+  	   	  
+       
+		  $query="update control_gharardad_tarh  set  modir_confirm='$modir_confirm',modir_comment='$modir_comment' where cod_tarh='$cod_tarh'";
+		echo $query;
+	      $result=mysql_query($query) or die("Error in inserting data into tarh #100");
+	      
+	     //$modir_confirm="";
+	    // $modir_comment="";
+	     
+	      
+	      
+          $action="ويرايش کنترل قرارداد طرح با کد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+          // savelog("$admin","add","Add a control_gharardad");
+          
+           //message_show("فرم کنترل قرارداد مربوط به اين طرح ويرايش شد","green");
+		          
+           //footer_forms($admin,$seed);
+          // exit();
+        if(strcmp($modir_confirm,'0')==0){
+           ?>
+        	<script language="javascript">
+           window.location="<? echo "control_gharardad_tarh_list.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script>  
+           <?
+         }
+         else {
+          ?>
+      	   <script language="javascript">
+           window.location="<? echo "send_new_gharardad.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script> 
+           <?
+        }
+
+       // }
+       //  else
+       //   $status="duplicate_entry";
+    }
+  else
+     $status="entry_error";
+  }
+
+}
+?>
+
+  <?
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ 
+   if(mysql_num_rows($result) > 0)
+   {
+   	  
+ $row_f=mysql_fetch_array($result);
+ $id=$row_f["id"];
+ $cod_karshenas=$row_f["cod_karshenas"];
+ $vabastegi=$row_f["vabastegi"];
+ $tarh_type=$row_f["tarh_type"];
+ $tamin_etebar=$row_f["tamin_etebar"];
+ $is_payan_name=$row_f["is_payan_name"];
+ $maghta=$row_f["maghta"];
+ $grant_type=$row_f["grant_type"];
+ $has_tamin_etebar=$row_f["has_tamin_etebar"];
+ $mahale_tamin_etebar=$row_f["mahale_tamin_etebar"];
+ $mablagh_tamin_etebar=$row_f["mablagh_tamin_etebar"];
+ $nahveye_tamin_etebar=$row_f["nahveye_tamin_etebar"];
+ $tarh_moshtarak=$row_f["tarh_moshtarak"];
+ $letter=$row_f["letter"];
+ $letter_no=$row_f["letter_no"];
+ $mablagh_mosharekat=$row_f["mablagh_mosharekat"];
+ $mablagh_tarh=$row_f["mablagh_tarh"];
+ $mablagh_nahaei=$row_f["mablagh_nahaei"];
+ $need_safte=$row_f["need_safte"];
+ $num_safte=$row_f["num_safte"];
+ $mablagh_safte=$row_f["mablagh_safte"];
+ $tarh_takhiri=$row_f["tarh_takhiri"];
+ $tarh_takhiri_no=$row_f["tarh_takhiri_no"];
+ $shora_cond=$row_f["shora_cond"];
+ $commite_akhlagh_confirm=$row_f["commite_akhlagh_confirm"];
+ $letter_no_akhlagh=$row_f["letter_no_akhlagh"];
+ $date=$row_f["date"];  
+ $davar_mali_shorot=$row_f["davar_mali_shorot"];
+ $karshenas=$row_f["karshenas"];
+// echo $karshenas;
+ $nazer_pishnahadi=$row_f["nazer_pishnahadi"];
+ $shorot_gharardad=$row_f["shorot_gharardad"];
+  $etebar_proposal=$row_f["etebar_proposal"];
+   	 
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 0; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo "<b>"."عنوان طرح  : ".$tarh_name."</b>" ;
+
+      ?>
+      </TD>
+     
+    </TR>
+     <TR>
+     <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	    echo "<b>"."کد طرح  : ".$cod_tarh ."</b>";
+
+      ?>
+      </TD>
+  </TR>
+  </table>
+<?
+    $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+    //echo "<br>";
+    echo "<table border=\"1\" width=\"60%\"  cellspacing=\"0\" cellpadding=\"0\" >";
+    $color="PALETURQUOISE";
+       
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$First_mojri_name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نام ثبت کننده طرح</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" height=\"30\" bgcolor=$color align=\"right\" class=\"tahoma1\">"." "."</td>";
+    echo "<td width=\"40%\" height=\"30\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"center\">نام طرف قرارداد</td>";
+    echo "</tr>";
+		
+      if(strcmp($vabastegi,"0")==0)
+			$vabastegi_st="هيات علمي";
+		if(strcmp($vabastegi,"1")==0)
+			$vabastegi_st="کارمند: رسمي";
+		if(strcmp($vabastegi,"2")==0)
+			$vabastegi_st="پيماني";
+		if(strcmp($vabastegi,"3")==0)
+			$vabastegi_st="قراردادي";
+    echo "<tr>";
+	    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">
+	    <input type='radio' name='radio'>هيات علمي<br>
+	    کارمند :
+	    <input type='radio' name='radio'> رسمي
+	    <input type='radio' name='radio'>پيماني
+	    <input type='radio' name='radio'>قراردادي
+	    </td>";
+	    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"center\">وضعيت وابستگي</td>";
+    echo "</tr>";
+    
+		if(strcmp($tarh_type,"1")==0)
+			$tarh_type_st="معمولي";
+		if(strcmp($tarh_type,"2")==0)
+			$tarh_type_st="گرنت";
+		if(strcmp($tarh_type,"3")==0)
+			$tarh_type_st="HSR";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$tarh_type_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نوع طرح</td>";
+    echo "</tr>";
+
+     if(strcmp($tamin_etebar,"0")==0)
+    	$tamin_etebar_st="  ";
+
+    if(strcmp($tamin_etebar,"1")==0)
+    	$tamin_etebar_st=" تامين اعتبار طرح HSR از معاونت پژوهشي يا EDC ";
+
+    if(strcmp($tamin_etebar,"2")==0)
+    	$tamin_etebar_st=" تامين اعتبار از ساير منابع (معاونت ها، دانشکده ها،مراکز تحقيقاتي ,...) ";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$tamin_etebar_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تامين اعتبار</td>";
+    echo "</tr>";
+
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$grant_type."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> نوع گرنت</td>";
+    echo "</tr>";
+
+    if(strcmp($is_payan_name,"1")==0)
+    $payan_name=" نيست ";
+ else 
+     $payan_name="است";
+
+   
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$payan_name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">پايان نامه</td>";
+    echo "</tr>";
+    
+  if(strcmp($maghta,"0")==0)
+    $maghta_st=" ";
+  if(strcmp($maghta,"1")==0)
+    $maghta_st=" عمومي ";
+if(strcmp($maghta,"2")==0)
+    $maghta_st=" تخصص ";
+if(strcmp($maghta,"3")==0)
+    $maghta_st=" ارشد ";
+if(strcmp($maghta,"4")==0)
+    $maghta_st="  فوق تخصص ";
+if(strcmp($maghta,"5")==0)
+    $maghta_st=" Ph.D ";
+if(strcmp($maghta,"6")==0)
+    $maghta_st=" MPH ";
+if(strcmp($maghta,"7")==0)
+    $maghta_st=" PhD By Research ";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$maghta_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مقطع</td>";
+    echo "</tr>";
+//echo $has_tamin_etebar;
+    if(strcmp($has_tamin_etebar,"0")==0)
+    	$has_tamin_e=" دارد ";
+	else 
+    	$has_tamin_e="ندارد";
+
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$has_tamin_e."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تامين اعتبار از ساير سازمانها</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$mahale_tamin_etebar."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">محل تامين اعتبار</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".number_format($mablagh_tamin_etebar)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مبلغ تامين اعتبار</td>";
+    echo "</tr>";
+    
+  if(strcmp($nahveye_tamin_etebar,"0")==0)
+    $nahveye_tamin_e=" ثبت نشده ";
+
+  if(strcmp($nahveye_tamin_etebar,"1")==0)
+    $nahveye_tamin_e=" اعتبار به دانشگاه پرداخت نمي شود ";
+
+ if(strcmp($nahveye_tamin_etebar,"2")==0)
+    $nahveye_tamin_e=" اعتبار به دانشگاه پرداخت مي شود و نامه تامين اعتبار دارد ";
+
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$nahveye_tamin_e."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نحوه تامين اعتبار</td>";
+    echo "</tr>";
+    
+   if(strcmp($tarh_moshtarak,"0")==0)
+   		$tarh_moshtarak_st="مي باشد";
+   		
+   if(strcmp($tarh_moshtarak,"1")==0)
+   		$tarh_moshtarak_st="نمي باشد";
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$tarh_moshtarak_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">طرح مشترک با دانشکده/ مرکز ديگر</td>";
+    echo "</tr>";
+    
+  if(strcmp($letter,"0")==0)
+    $letter_st=" ثبت نشده ";
+  if(strcmp($letter,"1")==0)
+    $letter_st=" دارد ";
+  if(strcmp($letter,"2")==0)
+    $letter_st="  درصورتجلسه دانشکده/ مرکز ذکر شده است ";
+   
+  
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$letter_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نامه</td>";
+    echo "</tr>";
+    
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$letter_no."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">شماره نامه</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".number_format($mablagh_mosharekat)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مبلغ مشارکت مالي</td>";
+    echo "</tr>";
+    
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".number_format($mablagh_tarh)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مبلغ طرح در صورتجلسه امضا شده دانشکده/ مرکز</td>";
+    echo "</tr>";
+    
+      echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$etebar_proposal."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">اعتبار قيد شده در پروپزال</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".number_format($mablagh_nahaei)."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مبلغ نهايي شده در حوزه که هنگام آماده به قرارداد اعلام شده است</td>";
+    echo "</tr>";
+    
+    if(strcmp($need_safte,"0")==0)
+    	$need_safte_st="نياز دارد";
+     if(strcmp($need_safte,"1")==0)
+    	$need_safte_st="نياز ندارد";
+    	
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">
+    نياز دارد<input type='radio' name='radio1'><br>
+    نياز ندارد<input type='radio' name='radio1'><br>
+    </td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"center\">اخذ سفته</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".""."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تعداد سفته اخذ شده</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" border='1' bordercolor='#EEE7F8' class=\"tahoma1\">".""."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">مبلغ سفته اخذ شده</td>";
+    echo "</tr>";
+    
+  if(strcmp($tarh_takhiri,"0")==0)
+    $tarh_takhiri_st=" ثبت نشده ";
+
+  if(strcmp($tarh_takhiri,"1")==0)
+    $tarh_takhiri_st=" دارد و در صورت تاييد مديريت قرارداد بسته خواهد شد ";
+ 
+ if(strcmp($tarh_takhiri,"2")==0)
+    $tarh_takhiri_st=" ندارد ";
+ 
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$tarh_takhiri_st."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">وضعيت مجري از نظر طرح تاخيري</td>";
+    echo "</tr>";
+    
+  if(strcmp($shora_cond,"0")==0)
+    $shora_condition=" ثبت نشده ";
+  if(strcmp($shora_cond,"1")==0)
+    $shora_condition=" نداشته است  ";    
+ if(strcmp($shora_cond,"2")==0)
+    $shora_condition=" داشته است و محقق شده است ";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$shora_condition."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">شروط شوراي پژوهش</td>";
+    echo "</tr>";
+    
+  if(strcmp($commite_akhlagh_confirm,"0")==0)
+    $commite_akhlagh=" ثبت نشده  ";
+
+  if(strcmp($commite_akhlagh_confirm,"1")==0)
+    $commite_akhlagh=" نياز نداشته است ";
+
+ if(strcmp($commite_akhlagh_confirm,"2")==0)
+    $commite_akhlagh=" نياز داشته و داخل حوزه تاييد شده ";
+
+ if(strcmp($commite_akhlagh_confirm,"3")==0)
+    $commite_akhlagh=" نياز داشته وتوسط کميته تخصصي تاييد شده ";
+
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$commite_akhlagh."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تاييديه کميته اخلاق</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$letter_no_akhlagh."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">(شماره نامه(در صورت داشتن تاييديه اخلاق</td>";
+    echo "</tr>";
+ // if(($letter_date_akhlagh)=="")
+ //   	$letter_date_akhlagh='--------';
+ //  else
+ $startyear1 = substr($date,0,4);
+ $startmon1 = substr($date,5,2);
+ $startday1 = substr($date,8,2);
+  $farsistartdate=hijricalender( $startyear1 , $startmon1 , $startday1 );
+  $date = enum2fnum($farsistartdate);
+	
+  
+ // $farsistartdate=hijricalender( $startyear1 , $startmon1 , $startday1 );   
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$date."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تاريخ </td>";
+    echo "</tr>";
+    
+    
+  if(strcmp($davar_mali_shorot,"0")==0)
+    $davar_mali_sh=" ثبت نشده ";
+
+  if(strcmp($davar_mali_shorot,"1")==0)
+    $davar_mali_sh=" داشته و در قرارداد لحاظ خواهد شد ";
+
+  if(strcmp($davar_mali_shorot,"2")==0)
+    $davar_mali_sh=" نداشته است ";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$davar_mali_sh."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">شروط داور مالي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$shorot_gharardad."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> شروط خاصي که بايد در متن قرارداد لحاظ شود</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">
+     	تطابق دارد<input type='radio' name='radio3'><br>
+	    تطابق ندارد<input type='radio' name='radio3'><br>
+    	</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"center\"> مبالغ مراحل با قرارداد</td>";
+    echo "</tr>";
+    
+    $query="select * from control_gharardad_karshenas where id='$karshenas' order by id ";
+    //echo $query;
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $row_fetched=mysql_fetch_array($qresult);
+    $name=$row_fetched["karshenas_name"];
+    $family=$row_fetched["karshenas_family"];
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$name." ".$family."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> نام کارشناس طرح</td>";
+    echo "</tr>";
+    
+   /* echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$nazer_pishnahadi."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">ناظر پيشنهادي کارشناس</td>";
+    echo "</tr>";*/
+    
+    echo "</table>";
+   }
+?>
+
+
+ <!--<table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table>   -->
+<?
+}
+else
+message_show("براي اين طرح فرم کنترل قرارداد ثبت نشده است","green");
+echo "<center>";
+?>
+

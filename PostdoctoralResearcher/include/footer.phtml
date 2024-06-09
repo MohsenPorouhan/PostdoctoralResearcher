@@ -1,0 +1,72 @@
+<?
+include("include/database-connect.phtml");
+
+?>
+</p>
+</td>
+	<td width="3" style="font-size: 8pt; font-family: Tahoma; color: #808080" align="center" valign='top'>&nbsp;
+</td>
+		
+			</tr>
+	      </table>
+          </td>
+          <td height="2" width='202' valign='top' bgcolor="#dfdfff">
+            <table width="202" border="0" cellpadding="0" cellspacing="0" bgcolor="#dfdfff" >
+             <tr>
+		      <td bgcolor="#dfdfff">
+                   <?
+                    include ("include/menu.php");
+ 				   ?>
+                   </td>
+                   </tr>
+                   </table> 
+          </td>
+	  </tr>
+      
+     <?
+	 $time=time();
+	 $an_hour_before = time() - (60 * 60);
+
+     $query="select count(*) as cnt from sessions where  logintime >'$an_hour_before' "; 
+ 	// echo $query;
+	 $rs=mysql_query($query) or die("Error");
+	 $rf_cnt=mysql_fetch_array($rs);
+	 $online_users=$rf_cnt["cnt"];
+	 ?>
+      
+      
+      	<tr>
+		  <td height="34" colspan="2" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" background="img_data/down_td_back.jpg">
+		    <!--DWLayoutTable-->
+		    <tr>
+		      <td width="4" height="34" valign="top"><img src="img_data/down_td_back.jpg" width="2" height="34"></td>
+	          <td width="152" align="center" style="font-size: 8pt; font-family: Tahoma">&nbsp;<font color="#FFFFFF">By: 
+				Peyvandco.com</font></td>
+              <td width="38" valign="top"><img src="img_data/down_td_holder.jpg" width="38" height="34"></td>
+		      <td width="606" align="center" style="font-size: 8pt; font-family: Tahoma; color: #CCFFFF">
+				<span lang="fa" dir='rtl' class='tahoma1'><font color='white'><b><? echo " کاربران برخط : "."$online_users";?></b></font>
+                
+                 <!-- PersianStat -->
+<!-- URL: http://research.tums.ac.ir -->
+<script language='javascript' type='text/javascript' src='http://www.persianstat.com/service/stat.js'></script>
+<script language='javascript' type='text/javascript'>
+persianstat(10136812, 0);
+</script>
+<!-- /PersianStat -->
+                
+                
+                 </span></td>
+		      <td width="38" valign="top"><img src="img_data/down_td_holder.jpg" width="38" height="34"></td>
+		      <td width="187">&nbsp;</td>
+		    </tr>
+	                </table></td>
+	  </tr>
+      
+      	 
+
+	</table>
+
+
+</body>
+
+</html>

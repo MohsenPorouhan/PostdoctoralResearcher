@@ -1,0 +1,249 @@
+<?
+include("include/database-connect.phtml");
+include("include/session.phtml");
+
+include("../sms/sms.phtml");
+
+//----------------------------------------------------------------------
+
+
+function check_value($id,$var_val)
+{
+  	
+  $query="select * from karshenasan_tarh_note where id='$id' ";
+  $result=mysql_query($query) or die("Error in selecting data from admnusers");
+  if(mysql_num_rows($result) > 0)
+  {
+  
+   $row_fetched=mysql_fetch_array($result);
+   $user_level=$row_fetched["user_level"];
+   
+ 
+   $permission_full=$row_fetched["comment_karshenas"];
+   $tok = strtok($permission_full,",");
+   while ($tok) {
+    //if(strcmp($tok,$permission)==0)
+	 // return 1;
+	 // echo $tok."<br>";
+	 $var_len=strlen($var_val);
+	 if(strcmp(substr($tok,$var_len,1),"=")==0)
+	 {
+	  // echo substr($tok,$var_len,1);
+	   if(strcmp($var_val,substr($tok,0,$var_len))==0)
+	   {
+	   	 $tok_len=strlen($tok);
+	   	 $tok_len=$tok_len-($var_len+3);
+	     $return_var=substr($tok,$var_len+2,$tok_len);
+		 return $return_var;
+	     
+	     //exit();
+	   } 
+	 }
+      $tok = strtok(",");
+   }
+   
+   
+  }
+  else
+	return -1;
+ return -1;
+}
+
+//---------------------------------------------------------
+
+
+function send_sms($cell_number,$message)
+{
+   
+  send_user_sms($cell_number,$message,"");
+}
+
+
+
+//---------------------------------------------------------------------------------
+function check_eatebar($eatebar_new,$cod_tarh)
+{
+
+  $color="PALETURQUOISE";
+   $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   $eatebare_sazmanha_pardakht_add=0;
+   if(mysql_num_rows($result) > 0)
+   {
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    $eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+     
+
+   }
+
+   }
+
+
+
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"]*$row_fetched["persons"];
+       $mycount=$mycount+$my_summary;
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+     }
+      $personnel_sum=$mycount;
+   }
+
+   
+   
+   
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='-1' order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='-1' order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='-1' order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"]*$row_fetched["persons_cnt"]*$row_fetched["dafe_safar"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='-1'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+  $sum_sayer=$hazine_digar+$hazine_taksir;
+  
+  $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+  $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_pardakht_add+$eatebar_new;
+  if($eatebare_sazmanha_pardakht_add > $sum_of_all)
+  {
+  	return 0; 
+  }
+  else
+  return 1;
+
+
+
+	
+}
+
+
+//--------------------------------------------------------------------------------------
+
+function savelog($adminuser,$operation,$activity)
+{
+ $op_date=date("Y/m/d");
+ $op_time=date("H:i:s");
+if ( getenv("HTTP_X_FORWARDED_FOR"))
+   $ip = getenv("HTTP_X_FORWARDED_FOR" );
+ else
+   $ip = getenv("REMOTE_ADDR");
+
+ $q1="insert into userlog set  ip='$ip',adminuser='$adminuser', operation='$operation', op_date='$op_date', op_time='$op_time', activity='$activity'";
+//echo $q1;
+ $result=mysql_query($q1) or die("Server error in log saving");
+ if(mysql_affected_rows()>0)
+   return 1;
+ else
+   return 0;
+}
+//------------------------------------------------------------------------------------
+function DBreccount($DBname)
+{
+
+  $query="select count(*) as mycnt from $DBname";
+  $result = mysql_query($query);
+  $row_fetched = mysql_fetch_array($result);
+  return strval($row_fetched["mycnt"]);
+
+}
+
+//---------------------------------------------------------------------------------------
+
+function insert_position($cod_tarh,$position,$admin)
+{
+	
+  $action_date=date("Y-m-d");
+  $query="insert into tarh_position set cod_tarh='$cod_tarh',position='$position',creator='$admin',action_date='$action_date' ";
+
+  $result=mysql_query($query) or die("Error in inserting data into position");
+}
+
+//---------------------------------------------------------------------------------------
+
+function current_position($cod_tarh)
+{
+  $query="select * from  tarh_position where  cod_tarh='$cod_tarh' order by id desc";
+  
+  $result_position=mysql_query($query) or die("Error in selecting data from position");
+  if(mysql_num_rows($result_position) > 0 )
+  {
+  	$row_fetched_position=mysql_fetch_array($result_position);
+  	$position=$row_fetched_position["position"];
+  	return $position;
+  	
+  }
+  else 
+   return -1;  // no r

@@ -1,0 +1,50 @@
+<script>
+function checkit()
+{
+	var key
+	key = window.event.keyCode
+	
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	{
+		if(key!=46)
+	      window.event.returnValue= false;
+	    else  
+	    window.event.returnValue= true
+	}
+
+	  
+}
+</script>
+<script type="text/javascript">
+      function changeTT() {
+        ssSelect = document.getElementById("mojri_code");
+        ttSelect = document.getElementById("persons");
+        ttSelect = document.getElementById("degree");
+        ssValue = ssSelect.options[ssSelect.selectedIndex].value;
+        if (ssValue != "-2") {
+        document.mojri_tarh.persons.disabled="disabled";
+          document.mojri_tarh.degree.disabled="disabled";
+        } else {
+        	  document.mojri_tarh.persons.disabled=null;
+          document.mojri_tarh.degree.disabled=null;
+        
+          
+        }
+      }
+</script>
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+ 
+    include("../tarh_modification/edit_hazine_personnel.phtml");
+
+ 
+ footer_forms($admin,$seed);
+?>
+<script>
+changeTT();
+</script>

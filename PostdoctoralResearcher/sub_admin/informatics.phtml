@@ -1,0 +1,61 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+   $query="select * from  informatics where daneshkade='1' order by id desc";
+
+  
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+     echo "<tr>";    
+	 echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام فايل</td>"; 
+     echo "<td width=\"80%\"  align=\"center\"  class=\"tahoma1\">پيغام</td>";
+     echo "</tr>";
+
+     
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       
+        $id=$row_fetched["id"];
+        $dir_name="../informatics/".$id;
+       if ($dir = @opendir($dir_name))
+       {
+      
+
+      
+        $mydir = dir($dir_name);
+         
+        while($file = $mydir->read())
+        {
+	      if( !(strcmp(trim($file),".")==0 || strcmp(trim($file),"..")==0  || strcmp(trim($file),"Thumbs.db")==0) )
+	      {
+         
+            echo "<td align=\"center\" width=\"20%\"  class=\"tahoma1\"  align='center'><a target=\"_blank\" href=\"../informatics/$id/$file\">".$file."</a></td>";
+         
+	      }
+        }
+        closedir($dir);
+          
+	    }
+	    else
+	      echo "<td  width=\"20%\"  class=\"tahoma1\"  align='center'>بدون فايل همراه</td>";
+      
+     
+      echo "<td align=\"right\" width=\"80%\" dir='rtl'  class=\"tahoma1\" align='center'>".$row_fetched["message"]."</td>";
+      
+       echo "</tr>";
+     }
+     
+     echo "</table>";
+
+   }
+ footer_forms($admin,$seed);

@@ -1,0 +1,623 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+//require("include/class.phpmailer.php");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.smtp.php");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+//require_once('lib/nusoap.php');
+include ("../sms/include/WebServiceSms.php");
+include ("../sms/send_long_sms.php");
+//include("include/print.phtml");
+//require("include/mailserver-statistics.phtml");
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+     
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+if(isset($action))
+{
+  $i=0;
+  if (strcmp($action,"send_karshenas")==0)
+  {
+   for($i==0;$i<330;$i++)
+   {
+    $myvariable="check".$i;
+    $myuser="value_".$i;
+    if (isset($$myvariable))
+    {
+      $myvariable="check".$i;
+      $myuser="value_".$i;
+      $mycodkarshenas = "cod_karshenas_".$i;
+      $myname_family="name_".$i;
+	  $marhale_add="g".$i;
+         $marhale_g=$$$marhale_add;
+      echo $marhale_g;
+
+	 // $i++;
+
+	  $query="select * from karshenasan_tarh where cod_tarh=\"$cod_tarh\" and cod_karshenas=\"".$$mycodkarshenas."\" ";
+	  $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 1");
+	 if ( mysql_num_rows($result)==0 )
+	  {
+	  	$query="select * from karshenasan where  cod_karshenas=\"".$$mycodkarshenas."\"";
+	     $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 2");
+	
+	  		$row_fetch_email=mysql_fetch_array($result);
+	  	$query="insert into karshenasan_tarh set  karshenasan_tarh.admin_confirm='1' ,  send_to_karshenas_date='".date("Y-m-d")."' , karshenasi_type='2' ,cod_tarh=\"$cod_tarh\" , cod_karshenas=\"".$$mycodkarshenas."\",gozaresh_nezarat ='$marhale_g'";
+ //echo $query;
+	  	$result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh 3");
+	    
+	  
+	  	$karshenas_email=$row_fetch_email["karshenas_email"]; 
+	  	$familye=$row_fetch_email["karshenas_family"];
+	  	$mobile=$row_fetch_email["mobile"];
+	    
+	    
+	     $mail = new PHPMailer();
+    $emailbody="";
+    $emailbody=$emailbody."<br><b>You got a Report of proposal '$title_english' <b><br><br>";
+    $emailbody=$emailbody."<br>Please login to your Supervisor area of Pajooheshyar and check it<br>";
+    $emailbody=$emailbody."<br>You can find it in this menu item ==> 'TARH-HAYE-DAR-HALE-EJRA'<br>";
+    
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login/>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Peyvand Co. (Peyvandco.com).</font></center>";
+
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($karshenas_email, $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "Check your box in $url_address (Do not reply this email)";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+    }
+     //send_sms($mobile,"Shoma be onvane nazer tarh ba code $cod_tarh entekhab shodeid ");
+$message_string="پژوهشيار:ناظر محترم، طرح با کد $cod_tarh به محيط نظارت شما ارسال گرديده است.لطفا طرح را مرود ارزيابي قرار دهيد. research.tums.ac.ir";
+		//$message_string=iconv("windows-1256", "UTF-8",$message_string);
+		$subject="ارسال طرح جهت نظارت";
+		$massage_id=send_long_sms($message_string,$mobile,$subject);
+    
+	    
+	    
+	    
+	  }
+	else
+	  {
+	
+
+
+         $query="select * from karshenasan where  cod_karshenas=\"".$$mycodkarshenas."\"";
+	     $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 4");
+	
+		$row_fetch_email=mysql_fetch_array($result);
+	      $query="update karshenasan_tarh set   finished ='0',tarh_new='1', karshenasi_type='2',gozaresh_nezarat ='$marhale_g'   where  cod_tarh=\"$cod_tarh\" and  cod_karshenas=\"".$$mycodkarshenas."\"  ";
+//	    echo $query;
+	    $result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh 5");
+  
+	  
+	  	$karshenas_email=$row_fetch_email["karshenas_email"]; 
+	  	$familye=$row_fetch_email["karshenas_family"];
+	    	$mobile=$row_fetch_email["mobile"];
+	    
+	    
+	     $mail = new PHPMailer();
+   $emailbody="";
+    $emailbody=$emailbody."<br><b>You got a  proposal '$title_english' <b><br><br>";
+    $emailbody=$emailbody."<br>Please login to your Supervisor area of Pajooheshyar and check it<br>";
+    $emailbody=$emailbody."<br>You can find it in this menu item ==> 'TARH-HAYE-DAR-HALE-EJRA'<br>";
+	$emailbody=$emailbody."<br>Tarh Code is : $cod_tarh<br>";
+    $emailbody=$emailbody."<br>You can guide with this link <a href='http://research.tums.ac.ir/sg.pdf' target='_blank'> Guide </a> <br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login/>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Peyvand Co. (Peyvandco.com).</font></center>";
+
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($karshenas_email, $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "Check your box in $url_address (Do not reply this email)";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+    }
+	
+	  $string_nazer="Nazer mohtaram dar mohit nezarat pajoheshyar shoma tarhi baraye nezarat ba code". $cod_tarh ."ersal shode ast (Mohlat zamani 2 hafte)";
+   //send_sms($mobile,$string_nazer);
+ $message_string="پژوهشيار:ناظر محترم، طرح با کد $cod_tarh به محيط نظارت شما ارسال گرديده است.لطفا طرح را مرود ارزيابي قرار دهيد. research.tums.ac.ir";
+		//$message_string=iconv("windows-1256", "UTF-8",$message_string);
+		$subject="ارسال طرح جهت نظارت";
+		$massage_id=send_long_sms($message_string,$mobile,$subject);
+	  
+    // send_sms($mobile,"shoma nazer tarh ba code $cod_tarh  be onvane nazer entekhab shodeid. ");
+	
+	    
+	  }
+	
+    }
+    
+    
+    
+    
+    
+    
+    
+     $del_variable="del_check".$i;
+    $myuser1="value_".$i;
+    if (isset($$del_variable))
+    {
+      $del_variable="del_check".$i;
+      $myuser="value_".$i;
+      $mycodkarshenas = "cod_karshenas_".$i;
+      $myname_family="name_".$i;
+	 
+
+	 // $i++;
+
+	  $query="select * from karshenasan_tarh where cod_tarh=\"$cod_tarh\" and cod_karshenas=\"".$$mycodkarshenas."\"";
+	  $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 8");
+	  if ( mysql_num_rows($result)>0 )
+	  {
+	    $query="delete from  karshenasan_tarh where  cod_tarh=\"$cod_tarh\" and cod_karshenas=\"".$$mycodkarshenas."\"";
+	    //echo $query;
+	    $result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh");
+	  }
+	 
+    }
+    
+    
+    $del_variable="lovely".$i;
+    $myuser1="value_".$i;
+    if (isset($$del_variable))
+    {
+      $del_variable="lovely".$i;
+      $myuser="value_".$i;
+      $mycodkarshenas = "cod_karshenas_".$i;
+      $myname_family="name_".$i;
+	 
+
+	 // $i++;
+
+	  $query="select * from favirite_karshenas where cod_karshenas=\"".$$mycodkarshenas."\" and user=\"".$admin."\"";
+	 // echo $query;
+	  $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 9");
+	  if ( mysql_num_rows($result)<=0 )
+	  {
+	    $query="insert into favirite_karshenas set cod_karshenas=\"".$$mycodkarshenas."\" , user=\"".$admin."\"";
+	    // echo $query;
+	    $result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh");
+	  }
+	   
+	  
+	 
+    }
+    else
+    {
+      $del_variable="lovely".$i;
+      $myuser="value_".$i;
+      $mycodkarshenas = "cod_karshenas_".$i;
+      $myname_family="name_".$i;	
+      $query="delete from favirite_karshenas where  cod_karshenas=\"".$$mycodkarshenas."\" and  user=\"".$admin."\"";
+	    // echo $query;
+	  $result = mysql_query($query) or die ("error in inserting data into karshenas_elmi_tarh 10");
+    }
+  }
+
+  }
+}
+   echo "<br>";
+   
+   
+   if(isset($favorite_no_favorite) && strcmp($favorite_no_favorite,'-1') != 0)
+   {
+   	if(strcmp($favorite_no_favorite,'0') == 0)
+   	 $favorite_rule=" and karshenasan.cod_karshenas in (select cod_karshenas from favirite_karshenas where user='$admin')";
+   	else
+	  if(strcmp($favorite_no_favorite,'1') == 0)
+   	     $favorite_rule=" and karshenasan.cod_karshenas not in (select cod_karshenas from favirite_karshenas where user='$admin')";
+   	   
+   }
+   else
+     $favorite_rule="";
+   
+   if(isset($alaghe_type) && strcmp($alaghe_type,'-1') != 0)
+     $search_string_1="(alaghe_type_list like '%$alaghe_type%' or alaghe_type_list like '%$alaghe_type%')  ";
+   else
+     $search_string_1="1";
+     
+  
+   if(isset($name_e) && strlen($name_e) > 0)
+     $search_string="(karshenas_name like '%$name_e%' or karshenas_family like '%$name_e%')  ";
+   else
+     $search_string="1 ";
+   
+   $query="select * from karshenasan,karshenas_type  where $search_string_1 and $search_string  and karshenasan.karshenas_type=karshenas_type.karshenas_type  $favorite_rule and karshenasan.karshenas_type='8' order by karshenasan.karshenas_family asc"; 
+   //echo $query;
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh 1");
+   $reccount=mysql_num_rows($result);
+   
+   $query="select * from karshenasan,karshenas_type  where $search_string_1 and  $search_string and  karshenasan.karshenas_type=karshenas_type.karshenas_type $favorite_rule and karshenasan.karshenas_type='8' order by karshenasan.karshenas_family "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ; 
+ //  echo $query;
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh 2");
+
+ 
+   if(mysql_num_rows($result) > 0)
+   {
+   	$myascdescpub=$myascdescpub."&name_e=$name_e&alaghe_type=$alaghe_type&favorite_no_favorite=$favorite_no_favorite&cod_tarh=$cod_tarh";
+   	pubshowpages("send_nazer.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+   // echo "<br>";
+
+ 
+    ?>
+
+    <table border="0" width="90%" cellpadding="1" cellspacing="1">
+    
+     
+  <tr>
+    
+    
+   <tr>
+    <td width="100%" bgcolor="#66CCFF"  colspan="11">
+
+      <p align="center" class="tahoma1"><font color="black"><b>ارسال براي داور / ناظر </b></font></td>
+    </tr>
+
+  <tr>
+    <td width="100%" bgcolor="#66CCFF"  colspan="4">
+
+      <p align="center" class="tahoma1"><font color="black"><b>فيلد مورد علاقه براي نظارت</b></font></td>
+       <td width="100%" bgcolor="#66CCFF"  colspan="2">
+
+      <p align="center" class="tahoma1"><font color="black"><b>فيلتر ناظرين مورد علاقه</b></font></td>
+       <td width="100%" bgcolor="#66CCFF"  colspan="6">
+
+      <p align="center" class="tahoma1"><font color="black"><b>جستجو</b></font></td>
+    </tr>
+     <tr>
+     <?
+     echo "<form name=\"change_year\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&name_e=$name_e&favorite_no_favorite=$favorite_no_favorite\">";
+
+
+
+$query="select * from alaghe_type order by alaghe_desc";
+
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td bgcolor=\"#66CCFF\"  align=\"left\" class=\"tahoma1\" colspan=\"3\"><select size=\"1\" name=\"alaghe_type\" onchange=\"JavaScript:document.change_year.submit();\" dir=\"rtl\" class=\"but-small\">";
+ 
+echo "<option  value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if(strcmp($row_fetched["cod_alaghe"],$alaghe_type)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["cod_alaghe"]."\" class=\"tahoma1\">".$row_fetched["alaghe_desc"]."</option>";
+ }
+ 
+?>
+  </select> 
+  </td>
+  </form>
+  
+     <?
+     echo "<form name=\"change_favorite\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&name_e=$name_e&alaghe_type=$alaghe_type\">";
+
+
+
+ echo "<td bgcolor=\"#66CCFF\"  align=\"center\" class=\"tahoma1\" colspan=\"2\"><select size=\"1\" name=\"favorite_no_favorite\" onchange=\"JavaScript:document.change_favorite.submit();\" dir=\"rtl\" class=\"tahoma1\">";
+ 
+ if(strcmp($favorite_no_favorite,'-1')==0)
+   $selected=" selected ";
+ else
+   $selected="";  
+echo "<option $selected value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+ if(strcmp($favorite_no_favorite,'0')==0)
+   $selected=" selected ";
+ else
+   $selected="";  
+echo "<option $selected value=\"0\" class=\"tahoma1\">ناظرين مورد علاقه</option>";
+ if(strcmp($favorite_no_favorite,'1')==0)
+   $selected=" selected ";
+ else
+   $selected="";  
+echo "<option $selected value=\"1\" class=\"tahoma1\">ناظريني  که مورد علاقه نيستند</option>";
+
+ 
+?>
+  </select> 
+  </td>
+  </form>
+  <?
+   echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&alaghe_type=$alaghe_type&favirite_no_favorite=$favorite_no_favorite\">";
+   ?>
+ <td align="right" width="100%" bgcolor="#66CCFF"  colspan="6">
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL value='<? echo trim($name_e); ?>'  >
+ </td>
+ 
+ </tr>
+ </form>
+ <? echo "<form name=\"mojri_tarh_4\" method=\"post\" action=\"$PHP_SELF?action=send_karshenas&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&current=$current\">"; ?>
+
+   
+	<tr>
+	 <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">ناظر مورد علاقه</font></td>
+
+	 <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">باز پس گيري</font></td>
+       <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">گزارش مورد نظارت</font></td>
+	 <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">ارسال</font></td>
+	 <td  bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تعداد طرح در دست ايشان</font></td>
+ <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تعداد طرح داوري /نظارت شده</font></td>
+
+    <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">وضعيت ارسال</font></td>
+
+   <!-- <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">پست الکترونيکي</font></td> -->
+  <!-- <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نوع کارشناس</font></td> -->
+   <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تخصص</font></td>
+
+    <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+        <td  bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+    </tr>
+  <?
+
+ $color=$list_color_1;
+  $i=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ // $cod_tarh=$row_fetched["cod_tarh"];
+  $cod_karshenas=$row_fetched["cod_karshenas"];
+  $query="select * from karshenasan_tarh where cod_karshenas='$cod_karshenas' and cod_tarh='$cod_tarh' and  karshenasi_type='2'";
+  $q1="select count(*) as cnt from karshenasan_tarh where cod_karshenas='$cod_karshenas' and finished ='1'";
+  $res1=mysql_query($q1) or die("Error in selecting data from karshenasan");
+  $rf1=mysql_fetch_array($res1);
+  $cnt_tarh_karshenasi=$rf1["cnt"];
+  
+  $q1="select count(*) as cnt from karshenasan_tarh where cod_karshenas='$cod_karshenas'";
+  $res1=mysql_query($q1) or die("Error in selecting data from karshenasan");
+  $rf1=mysql_fetch_array($res1);
+  $cnt_tarh=$rf1["cnt"];
+  $result1=mysql_query($query);
+  $fetch1=mysql_fetch_array($result1);
+  if(mysql_num_rows($result1) > 0)
+  {
+  	$gozaresh=$fetch1["gozaresh_nezarat"];
+  	if($gozaresh=='0')
+  		$gozaresh="اول";
+  	if($gozaresh=='2')
+  		$gozaresh="دوم";
+  	if($gozaresh=='3')
+  		$gozaresh="سوم";
+  	if($gozaresh=='4')
+  		$gozaresh="چهارم";
+  	if($gozaresh=='5')
+  		$gozaresh="پنجم";
+  	if($gozaresh=='6')
+  		$gozaresh="ششم";
+  	if($gozaresh=='100')
+  		$gozaresh="نهايي";
+     $sended="<b>به اين ناظر براي نظارت گزارش $gozaresh ارسال شده</b>";
+     
+  }
+  else
+  $sended="به اين ناظر ارسال نشده";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+  
+  
+  
+  	  $query="select * from favirite_karshenas where cod_karshenas=\"".$row_fetched["cod_karshenas"]."\" and user=\"".$admin."\"";
+	  $result3=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh 11");
+	  if ( mysql_num_rows($result3)>0 )
+        $checked=" checked ";
+      else
+	     $checked="";  
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\"  $checked name=\"lovely".$i."\"  value=\"ON\"></td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\" name=\"del_check".$i."\"  value=\"ON\"></td>";
+  $q="select * from gozaresh_gharardad where  cod_tarh='$cod_tarh' order by marhale asc";
+  $res=mysql_query($q) or die("Error");
+  $gozaresh_cnt=mysql_num_rows($res);
+  echo "<input type=\"hidden\" name=\"g".$i."\" value=\"marhale".$i."\">";
+  echo "<td bgcolor=$color  align=\"left\" class=\"tahoma1\" ><select size=\"1\" name=\"marhale".$i."\"  dir=\"rtl\" class=\"but-small\">";
+  	
+  while($row_1=mysql_fetch_array($res)){
+  	if($row_1["marhale"]=='0')
+  		$marhale_name="اول";
+  	if($row_1["marhale"]=='2')
+  		$marhale_name="دوم";
+  	if($row_1["marhale"]=='3')
+  		$marhale_name="سوم";
+  	if($row_1["marhale"]=='4')
+  		$marhale_name="چهارم";
+  	if($row_1["marhale"]=='5')
+  		$marhale_name="پنجم";
+  	if($row_1["marhale"]=='6')
+  		$marhale_name="ششم";
+  	if($row_1["marhale"]=='100')
+  		$marhale_name="نهايي";
+  
+  
+  
+  	echo "<option $selected value=\"".$row_1["marhale"]."\" class=\"tahoma1\">".$marhale_name."</option>";
+  }
+  echo " </select> ";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\" name=\"check".$i."\"  value=\"ON\"></td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$cnt_tarh."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$cnt_tarh_karshenasi."</td>";
+
+  echo "<input type=\"hidden\" name=\"value_".$i."\" value=\"".$row_fetched["karshenas_email"]."\">";
+  echo "<input type=\"hidden\" name=\"name_".$i."\" value=\"".$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["kar_tahghigh_family"]."\">";
+  echo "<input type=\"hidden\" name=\"cod_karshenas_".$i."\" value=\"".$row_fetched["cod_karshenas"]."\">";
+  
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$sended."</td>";
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_email"]."</td>";
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_type_desc"]."</td>";
+
+ echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_takhasos"]."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  echo "<td   bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  $mycntr=$i+1;
+  echo "<td  bgcolor=$color align=\"right\" class=\"tahoma1\">".$mycntr."</td>";
+  echo "</tr>";
+  $i++;
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+
+
+echo "</table><br>";
+
+ echo "<br><input type=\"submit\" value=\"ارسال\" name=\"B1\" class=\"but-small\"><br><br>";
+
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ کارشناسي  يافت نشد","red");
+}
+ $query="select * from karshenasan_tarh,karshenasan where karshenasi_type='2' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and cod_tarh='$cod_tarh'  group by karshenasan.cod_karshenas";
+		$result1=mysql_query($query)or die("Error in selecting data from karshenasan");;
+		if(mysql_num_rows($result1) > 0)
+		{
+		
+?>
+ <table border="0" width="90%" cellpadding="1" cellspacing="1">
+ 
+<tr>
+<td width="100%" bgcolor="#66CCFF"  colspan="11">
+
+      <p align="center" class="tahoma1"><font color="black"><b>ليست ناظراني که طرح براي آنها ارسال شده </b></font></td>
+  
+</tr>
+	<tr>
+	 
+
+	 	 <td  bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تعداد طرح در دست ايشان</font></td>
+ <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تعداد طرح داوري /نظارت شده</font></td>
+
+    
+     <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تخصص</font></td>
+
+    <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td   bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+        <td  bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+    </tr>
+   
+    
+   <?php 
+   $j=0;
+    while($row_fetched2=mysql_fetch_array($result1))
+ {
+ 	$cod_karshenas=$row_fetched2["cod_karshenas"];
+ 	 $q1="select count(*) as cnt from karshenasan_tarh where cod_karshenas='$cod_karshenas' and finished ='1'";
+  $res1=mysql_query($q1) or die("Error in selecting data from karshenasan");
+  $rf1=mysql_fetch_array($res1);
+  $cnt_tarh_karshenasi=$rf1["cnt"];
+  
+  $q1="select count(*) as cnt from karshenasan_tarh where cod_karshenas='$cod_karshenas'";
+  $res1=mysql_query($q1) or die("Error in selecting data from karshenasan");
+  $rf1=mysql_fetch_array($res1);
+  $cnt_tarh=$rf1["cnt"];
+   if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+  
+// echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\" name=\"del_check".$i."\"  value=\"ON\"></td>";
+  
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$cnt_tarh."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$cnt_tarh_karshenasi."</td>";
+ 
+  
+ 
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_email"]."</td>";
+//  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_type_desc"]."</td>";
+
+ echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched2["karshenas_takhasos"]."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched2["karshenas_family"]."</td>";
+  echo "<td   bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched2["karshenas_name"]."</td>";
+  $mycntr=$j+1;
+  echo "<td  bgcolor=$color align=\"right\" class=\"tahoma1\">".$mycntr."</td>";
+  echo "</tr>";
+  $j++;
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ 
+  
+  
+ 	
+ }
+		echo "</table>";
+		}else
+ echo "<b>به ناظري جهت نظارت ارسال نشده</b>";
+  ?>
+  
+<?php 
+
+
+echo "</form>";
+footer_forms($admin,$seed);
+?>
+

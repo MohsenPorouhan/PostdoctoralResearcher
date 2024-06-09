@@ -1,0 +1,329 @@
+.clsTopBorder
+{
+	background-image: url(images/topborder.gif);
+	background-repeat: repeat-x;
+}
+.clstopLogo
+{
+	background-image: url(images/top.gif);
+	background-repeat: repeat;
+}
+.clsTable1
+{
+	border-right: #a3b3c0 1px solid;
+	border-left: #a3b3c0 1px solid;
+}
+.clsTableIN
+{
+	border-top: #A8B2BB 1px solid;
+}
+.clstlcol
+{
+	font-weight: 600;
+	font-size: 8pt;
+	background-image: url(images/tlcol.gif);
+	color: #003366;
+	background-repeat: no-repeat;
+	font-family: tahoma;
+}
+.clstrcol
+{
+	background-image: url(images/trcol.gif);
+	background-repeat: no-repeat;
+}
+.bg_title
+{
+	background-image: url(images/menuheader1.gif);
+	background-repeat: no-repeat;
+}
+
+.clsblcol
+{
+	background-image: url(images/blcol.gif);
+	background-repeat: no-repeat;
+}
+.clsbrcol
+{
+	background-image: url(images/brcol.gif);
+	background-repeat: no-repeat;
+}
+.clstlw
+{
+	background-image: url(images/tlw.gif);
+	background-repeat: no-repeat;
+}
+.clstcw
+{
+	font-weight: 600;
+	font-size: 8pt;
+	background-image: url(images/tcw.gif);
+	color: #0066cc;
+	background-repeat: repeat-x;
+	font-family: tahoma;
+}
+.clstcw a
+{
+	font-weight: 600;
+	font-size: 8pt;
+	color: #3366cc;
+	font-family: tahoma;
+	text-decoration: none;
+}
+.clstrw
+{
+	background-image: url(images/tlcol.gif);
+	background-repeat: no-repeat;
+}
+.clsblw
+{
+	background-image: url(images/blw.gif);
+	background-repeat: no-repeat;
+}
+.clsbcw
+{
+	background-image: url(images/bcw.gif);
+	background-repeat: repeat-x;
+}
+.clsbrw
+{
+	background-image: url(images/brw.gif);
+	background-repeat: no-repeat;
+}
+
+.clsMenu a
+{
+	padding-right: 1px;
+	font-size: 9pt;
+	color: #003366;
+	font-family: tahoma;
+	text-decoration: none;
+}
+.clsMenu
+{
+	padding-right: 1px;
+	font-size: 9pt;
+	color: dimgray;
+	font-family: tahoma;
+	text-decoration: none;
+}
+.clsTopMenu a
+{
+	font-weight: 600;
+	font-size: 8pt;
+	color: darkslateblue;
+	font-family: tahoma;
+	text-decoration: none;
+}
+.clsInputfa
+{
+	border-right: #a8b2bb 1px solid;
+	border-top: #a8b2bb 1px solid;
+	font-size: 8pt;
+	border-left: #a8b2bb 1px solid;
+	color: #003366;
+	border-bottom: #a8b2bb 1px solid;
+	font-family: tahoma;
+}
+.clsInputEN
+{
+	border-right: #a8b2bb 1px solid;
+	border-top: #a8b2bb 1px solid;
+	font-size: 8pt;
+	border-left: #a8b2bb 1px solid;
+	color: #003366;
+	direction: ltr;
+	border-bottom: #a8b2bb 1px solid;
+	font-family: tahoma;
+	text-align: left;
+}
+.clsInputnum
+{
+	border-right: #a8b2bb 1px solid;
+	border-top: #a8b2bb 1px solid;
+	font-size: 8pt;
+	border-left: #a8b2bb 1px solid;
+	color: #003366;
+	direction: rtl;
+	border-bottom: #a8b2bb 1px solid;
+	font-family: tahoma;
+	text-align: center;
+}
+.clsButton
+{
+	font-weight: bold;
+	font-size: 7pt;
+	color: #003366;
+	font-family: tahoma;
+	background-color: #a3bfcd;
+	border:1px solid #999999;
+}
+.clsText
+{
+	font-size: 9pt;
+	direction: rtl;
+	font-family: tahoma;
+	text-align: justify;
+	color: #003060;
+}
+.clsTextMed
+{
+	font-size: 8pt;
+	direction: rtl;
+	font-family: tahoma;
+	text-align: justify;
+	color: #003060;
+}
+.clsTextEn
+{
+	font-size: 9pt;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+	color: #003060;
+}
+
+.clstextsmall
+{
+	font-size: 7pt;
+	direction: rtl;
+	line-height: 9pt;
+	font-family: tahoma;
+	text-align: justify;
+	color: #003060;
+}
+.clsText a
+{
+	font-size: 8pt;
+	color: #6969b5;
+	line-height: 14pt;
+	font-family: tahoma;
+	text-align: justify;
+	text-decoration: none;
+}
+.clsTableINEnglish
+{
+	border-top: #A8B2BB 1px solid;
+	font-weight: bold;
+	font-size: 8pt;
+	color: dimgray;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+}
+.clsTableBottom
+{
+	border-right: #a3b3c0 1px solid;
+	border-top: #a3b3c0 1px solid;
+	font-size: 8pt;
+	border-left: #a3b3c0 1px solid;
+	color: #4682B4;
+	border-bottom: #a3b3c0 1px solid;
+	font-family: tahoma;
+}
+.clsTableBottom a
+{
+	font-size: 8pt;
+	color: #0000ff;
+	font-family: tahoma;
+	text-decoration: none;
+}
+.clsdownload a
+{
+	font-weight: bold;
+	font-size: 7pt;
+	color: #0099cc;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+	text-decoration: none;
+}
+.clsAds
+{
+	border-right: darkgray 1px solid;
+	border-top: darkgray 1px solid;
+	font-size: 8pt;
+	border-left: darkgray 1px solid;
+	line-height: 12pt;
+	border-bottom: darkgray 1px solid;
+	font-family: tahoma;
+	background-color: #FFFFFF;
+	text-align: center;
+}
+.clsAds a
+{
+	font-size: 8pt;
+	line-height: 12pt;
+	font-family: tahoma;
+	text-align: center;
+	text-decoration: none;
+}
+.clsdesign
+{
+	font-size: 7pt;
+	color: steelblue;
+	direction: ltr;
+	font-family: verdana,arial;
+	text-align: left;
+}
+.clstextsmall a
+{
+	font-size: 7pt;
+	color: steelblue;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+}
+.clstextsmall a:hover
+{
+	font-size: 7pt;
+	color: steelblue;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+	text-decoration: underline;
+}
+.clsEbooksEn a
+{
+	font-weight: bold;
+	font-size: 8pt;
+	color: #003399;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+	text-decoration:none;
+}
+.clsEbooksEn 
+{
+	font-size: 8pt;
+	color: #003399;
+	direction: ltr;
+	font-family: tahoma;
+	text-align: left;
+}
+.clsDownEn
+{
+	font-size: 8pt;
+	color: #596370;
+	direction: ltr;
+	line-height: 15pt;
+	font-family: tahoma;
+	text-align: left;
+}
+.clsDate
+{
+	font-size: 8pt;
+	color: #596370;
+	direction: ltr;
+	line-height: 15pt;
+	font-family: tahoma;
+	text-align: right;
+}
+.td_linktop {
+	FONT-WEIGHT: normal; FONT-SIZE: 8pt; COLOR: #084055; FONT-FAMILY: tahoma; TEXT-ALIGN: center; TEXT-DECORATION: none
+}
+A.td_linktop:link {
+	FONT-WEIGHT: normal; FONT-SIZE: 8pt; COLOR: #084055; FONT-FAMILY: tahoma; TEXT-ALIGN: center; TEXT-DECORATION: none
+}
+A.td_linktop:hover {
+	FONT-WEIGHT: normal; FONT-SIZE: 8pt; COLOR: #333333; FONT-FAMILY: tahoma; TEXT-ALIGN: center; TEXT-DECORATION: underline
+}

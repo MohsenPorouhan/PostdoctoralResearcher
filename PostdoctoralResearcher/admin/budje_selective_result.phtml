@@ -1,0 +1,162 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+if ( ! isset($current))
+    $current = 1;
+
+$RecPerPage=12;
+$query="select * from daneshkade ";
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+
+
+//$query="select * from daneshkade where 1  "." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+//echo $query;
+//$result=mysql_query($query) or die("Error in selecting data from tarh 2"); 
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>گزارش بودجه درخواستي طرحها<b></td>
+ </tr>
+ </table>
+ 
+<?
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+
+
+}
+if(mysql_num_rows($result) > 0 )
+{
+ $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade";	
+ $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc";
+ //pubshowpages("budje_selective_result.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ تصويب شده توسط ناظر مالي</font></td>        
+
+  <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ قرارداد بسته شده</font></td>
+
+<td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">بودجه مصوب</font></td>
+  
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">بودجه درخواستي ارسال کنندگان</font></td>
+       <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">دانشکده /مرکز</font></td>  
+  
+    </tr>
+  <?
+
+ $color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+ 
+  
+  
+  /* $q="select * from tarh where cod_daneshkade='$cod_daneshkade'";
+  
+  $r=mysql_query($q) or die("error");
+  $sum_dan=0;
+  while($rf=mysql_fetch_array($r))
+  {
+  	$cd=$rf["cod_tarh"];
+  	$sum_dan=$sum_dan+sum_of_hazine($cd,"-1");
+  }
+  
+  */
+  $sum_dan=0;
+  $budje_mosavab=0;
+  $mablagh_aghd_gharardad=0;
+  $mablagh_gharardad=0;
+  $mablagh_nazer=0;
+  for($i=0;$i<$cntr_record;$i++)
+  {
+  	$cod_daneshkade_selected="dan".$i;
+  	$cod_tarh_selected="c".$i;
+  	if(isset($$cod_tarh_selected) && strlen($$cod_tarh_selected) >0 && strcmp($$cod_daneshkade_selected,$cod_daneshkade)==0)
+  	{
+  		
+		$cod_tarh_selected=$$cod_tarh_selected;
+  		
+  		$q="select * from tarh where  tarh.archieved ='0' and cod_tarh='$cod_tarh_selected'";
+  		$r=mysql_query($q) or die("error");
+  		$rf=mysql_fetch_array($r);
+  		$cod_daneshkade_selected=$rf["cod_daneshkade"];  		
+    /*    $mablagh_aghd_gharardad=$rf["mablagh_aghd_gharardad"];
+  		$qt1="select * from jalase_shora_tarh where cod_tarh='$cod_tarh_selected'";
+  		$rt1=mysql_query($qt1) or die("error");
+  		
+  		if(mysql_num_rows($rt1) > 0)
+  		{
+  		 $rft1=mysql_fetch_array($rt1);
+  		 $budje_mosavab_now=$rft1["budjeh"];
+  		
+  		 $budje_mosavab_now=str_replace("/","",$budje_mosavab_now);         
+
+  		 ///////////////////$budje_mosavab=$budje_mosavab+$budje_mosavab_now;
+  		 // echo $cod_tarh_selected.":".$budje_mosavab_now.":".$budje_mosavab."<br>";
+  		 //echo $budje_mosavab;
+		}  
+	*/	
+  		if(strcmp($cod_daneshkade,$cod_daneshkade_selected)==0)
+  		{
+  			str_replace("/","",$budje_mosavab);
+  			$budje_selected="budje".$i;
+  			$budje_selected=str_replace(",","",$$budje_selected);
+  			
+  			$budje_mosavab_selected="mosavab".$i;
+  			$budje_mosavab_selected=str_replace(",","",$$budje_mosavab_selected);
+  			
+  			$mablagh_aghd_selected="aghd".$i;
+  			$mablagh_aghd_selected=str_replace(",","",$$mablagh_aghd_selected);
+  		  
+			$mablagh_nazer_selected="nazer".$i;
+  			$mablagh_nazer_selected=str_replace(",","",$$mablagh_nazer_selected);
+  		  
+			// $sum_dan=$sum_dan+sum_of_hazine($cod_tarh_selected,"-1");
+  		   //$budje_mosavab=$budje_mosavab+$budje_mosavab_now;
+		  // $mablagh_gharardad= $mablagh_gharardad+$mablagh_aghd_gharardad;
+		   $mablagh_nazer=$mablagh_nazer+$mablagh_nazer_selected;
+		   $sum_dan=$sum_dan+$budje_selected;
+  		   $budje_mosavab=$budje_mosavab+$budje_mosavab_selected;
+		   $mablagh_gharardad= $mablagh_gharardad+$mablagh_aghd_selected;
+  		}
+  	}
+  }
+  if(strcmp($sum_dan,"0")!=0)
+  {
+    $sum_dan=number_format($sum_dan);
+    $budje_mosavab=number_format($budje_mosavab);
+    $mablagh_gharardad=number_format($mablagh_gharardad);
+    $mablagh_nazer=number_format($mablagh_nazer);
+    echo "<tr>";
+    echo "<td width=\"25%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mablagh_nazer."</td>";
+    echo "<td width=\"25%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mablagh_gharardad."</td>";
+    echo "<td width=\"25%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$budje_mosavab."</td>";
+    echo "<td width=\"25%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$sum_dan."</td>";
+    echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</td>";
+    echo "</tr>";
+  }
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+?>

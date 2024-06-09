@@ -1,0 +1,192 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+
+
+include("include/styles.phtml");
+ 
+echo "<br>";
+
+
+if( isset($action) && strcmp($action,"set_note")==0)
+{ 
+   $query="select * from karshenas_shora where kar_shora_email='$admin'";
+   //echo $
+   $result=mysql_query($query) or die ("Error in selecting data 1111");
+   $row_fetched=mysql_fetch_array($result);
+   $karshenas_id=$row_fetched["cod_karshenas"];
+   $cod_daneshkade=$row_fetched['cod_daneshkade'];
+   $cod_daneshkade_ozviat=$cod_daneshkade;
+   $query="select * from karshenas_shora_tarh where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'";
+   //echo $
+   $result=mysql_query($query) or die ("Error in selecting data 1111");
+   
+   	$mydate=date("Y-m-d");
+   if(mysql_num_rows($result) > 0)
+      $query="update karshenas_shora_tarh set  notes= '$notes'   where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'";
+   else
+      $query="insert into karshenas_shora_tarh set  notes= '$notes'   ,version='-1', cod_tarh='$cod_tarh' , cod_karshenas='$karshenas_id'";    
+   
+   
+    $result=mysql_query($query) or die ("Error in updating data into user login 1");
+   
+       $action="ارسال نظريه کارشناس طرح براي طرح با شماره ".$cod_tarh;
+    set_log($action,$admin,date("Y-d-m"));
+    
+     ?>
+           <script language="javascript">
+           window.location="<? echo "tarh_list.phtml?admin=$admin&seed=$seed&current=$current&cod_daneshkade_ozviat=$cod_daneshkade_ozviat&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year";  ?>";
+           </script>
+           <?
+}
+   
+ 
+
+
+ $query="select * from  tarh where cod_tarh='$cod_tarh'";
+
+   $result=mysql_query($query) or die ("Error in updating data into user login");
+     if(mysql_num_rows($result) > 0)
+  {
+  	$row_fetched=mysql_fetch_array($result);
+  	$notes=$row_fetched["comment_karshenas_shora"];
+  
+  	
+  	
+  }
+  else
+  {
+    $notes="";
+   
+  }
+
+
+
+
+?>
+<script>
+targetWidth = screen.availWidth;
+targetHeight = screen.availHeight;
+window.resizeTo(targetWidth, targetHeight);
+window.toolbar="no";
+
+
+</script>
+
+<script>
+function refresh_main()
+{
+	 document.user_login.submit();
+     opener.location.reload(true);
+
+}
+</script>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh1222222");
+$row_fetched1=mysql_fetch_array($result1);
+$dastood_shora=$row_fetched1["dastoor_shora"];
+?>
+<br>
+<center>
+<TABLE cellSpacing=0  width="490" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched1["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+<center>
+<body onclose="refresh_main()">
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&current=$current&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="500" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="360" height="19"></td>
+                        <td align="middle" width="140" background="image/notes_title.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="500" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      
+      
+      
+      
+  $query100="select * from karshenas_shora where kar_shora_email='$admin'";
+   //echo $
+  
+  $result100=mysql_query($query100) or die ("Error in selecting data 1111");
+   
+  $row_fetched100=mysql_fetch_array($result100);
+  $karshenas_id=$row_fetched100["cod_karshenas"];
+  
+  $myq1="select * from karshenas_shora_tarh where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'";
+  
+  $rs1=mysql_query($myq1) or die("error");
+  
+  if(mysql_num_rows($rs1) >0)
+  {
+  	$rf1=mysql_fetch_array($rs1);
+  	$mynotes=$rf1["notes"];
+   	  
+  }
+      ?>
+        
+      <tr>
+        <td align="right" width="400"><textarea   rows="8" cols="40" name="notes"  dir=RTL   ><? echo $mynotes; ?></textarea></td>
+        <td class="tahoma1" width="100">نظر شما</td>
+      </tr>
+      
+      
+       
+     
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="button" onclick="refresh_main()" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+</body>
+<br>
+<?
+  footer_forms($admin,$seed);
+?>

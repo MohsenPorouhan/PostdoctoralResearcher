@@ -1,0 +1,144 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+<?
+echo "<br>";
+
+
+
+?>
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"report_rank_yearly_result.phtml?action=add&admin=$admin&seed=$seed\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+  
+  <TR>
+  <TD vAlign=bottom align=right class='tahoma1'>
+جستجوي طرح
+  </TD>
+  </TR>
+  
+</TABLE>
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  ?>
+    <tr>
+      <td width="100%">
+        <div align="center">
+          <table border="0" width="100%" bgcolor="F0F0FF" height="100%" cellpadding="0" cellspacing="0">
+             
+             
+             
+                         <tr>
+<?    
+
+
+
+$query="select left(cod_tarh,5) as tarh_year from tarh group by left(cod_tarh,5) order by  cod_tarh desc";
+
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+
+ 
+
+   echo "<td  align=\"right\"><select size=\"1\" name=\"rank\" class=\"edit-user\" dir=\"rtl\">";
+   
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+         echo "<option value=\"".$row_fetched["tarh_year"]."\" class=\"tahoma1\">".$row_fetched["tarh_year"]."</option>";
+    }
+
+   echo "</select></td>";
+   
+     echo "<td   class=\"tahoma1\" >سال / رنک</td>";
+  
+?>
+ 
+</td>
+   
+              </tr>
+			   <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="radio" name="indoing_finalized"  checked  value="0"></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">در حال اجرا</td>
+            </tr>
+	 <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="radio" name="indoing_finalized"     value="1"></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">خاتمه يافته</td>
+            </tr>
+			
+			<tr>
+  <?
+    $query="select * from tarhtype order by tarh_type_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td   align="right"><select size="1" name="tarh_type" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	// if(strcmp(trim($row_fetched["tarh_type"]),'6')!=0)
+          	echo "<option value=\"".$row_fetched["tarh_type"]."\" class=\"tahoma1\">".$row_fetched["tarh_type_desc"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td  class="tahoma1"><span class="star-message">*</span>نوع </td>
+  </tr>
+            <tr>
+            
+            
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="جستجو" name="submit_tarh"></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+	
+	   
+           
+	
+	
+  </table>
+</form>
+<br>
+<? 
+   footer_forms($admin,$seed);
+?>
+
+
+

@@ -1,0 +1,30 @@
+<?
+//include("include/session.phtml");
+include("include/include.phtml");
+include("include/database-connect.phtml");
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 2 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login.phtml");
+   exit();
+  }
+ }
+ else
+ {
+ 	 header ("Refresh: 0; url=../login.phtml");
+   exit();
+ }
+
+clearsession($admin,$seed);
+header ("Refresh: 0; url=../login.phtml");
+?>

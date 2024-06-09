@@ -1,0 +1,1656 @@
+ <META http-equiv=content-type content=text/html;charset=utf-8>
+
+<style>
+table{
+	border-radius:10em;
+	
+}
+</style>
+
+<?
+if(!isset($username))
+  $username="";
+if(!isset($rand))
+  $rand="";
+
+ $myq="select * from tarh where payannameh='1' and cod_tarh='$cod_tarh'";
+					    $res_user=mysql_query($myq) or die("Error");
+					   
+					    $payan_name_or_tarh =mysql_num_rows($res_user) ;
+   
+ 
+if( $payan_name_or_tarh <= 0)
+  $title_caption=" طرح ";
+else
+  $title_caption=" پايان نامه ";
+  
+ 
+ 
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1' ";
+  
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query_savabet_system="select * from savabetsystem";
+   $savabet_system=mysql_query($query_savabet_system) or die("Error in selectiong data from query_savabet_system");
+   if(mysql_num_rows($savabet_system) > 0 )
+   {
+     $tarhtype_second = mysql_fetch_array($savabet_system);
+     $tarh_type_1 = $tarhtype_second["tarh_type_1"];
+     $tarh_type_2 = $tarhtype_second["tarh_type_2"];
+   }
+   else
+   {
+     $tarh_type_1 = "";
+     $tarh_type_2 = "";
+   }
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1' ";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+    
+	  $q="select * from tarh,user_login where cod_tarh='$cod_tarh' and user_login.email=tarh.creator and version='-1'";
+	 $rs_q=mysql_query($q) or die("error");
+	 $rf_mojri=mysql_fetch_array($rs_q);
+	 $name_family=$rf_mojri["name"]."&nbsp;".$rf_mojri["family"]
+?>
+
+
+ <TABLE cellSpacing=2 width="80%" align=center class="tahoma3"  cellPadding=2 border=1 bordercolor="#333333" >
+ <TR>
+
+      <TH align=center class="tahoma3"  height=19 bgcolor="#EEE7F8" dir="rtl" ><b>
+      <?
+       echo "<font size=\"4\" face=\"B Nazanin\">";
+	   echo "عنوان طرح  : ".$tarh_name.$tarh_select_desc_static[$tarh_select] ;
+	   echo"</font>";
+      ?>
+      </b></TH>
+      <TH align=center class="tahoma3"  height=19 bgcolor="#EEE7F8" dir="rtl"><b>
+      <?
+       echo"<font size=\"4\" face=\"B Nazanin\">";
+	   echo "مجري طرح  : ".$name_family ;
+	   echo "</font>";
+      ?>
+      </b></TH>
+    </TR>
+    
+
+    <TR>
+
+      <TH align=center class="tahoma3"  height=19 bgcolor="#EEE7F8" ><b>
+      <?echo "<font size=\"4\" face=\"B Nazanin\">";
+	   echo " نوع : ". $title_caption;
+	   echo "</font>";
+      ?>
+      </b></TH>
+      <TH align=center class="tahoma3"  height=19 bgcolor="#EEE7F8" ><b>
+      <?
+       echo"<font size=\"4\" face=\"B Nazanin\">";
+	   echo "شماره طرح : ". $cod_tarh ;
+	   echo"</font>";
+      ?>
+      </b></TH>
+    </TR>
+    
+  </table>
+  <br/>
+    
+     
+<?
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1' ";
+  
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+
+  $first_ostad = $row_fetched["first_ostad"];
+  $second_ostad= $row_fetched["second_ostad"];
+  $third_ostad= $row_fetched["third_ostad"];
+  $forth_ostad= $row_fetched["forth_ostad"];
+  
+  
+   $first_ostad_moshaver = $row_fetched["first_ostad_moshaver"];
+   $second_ostad_moshaver = $row_fetched["second_ostad_moshaver"];
+   $third_ostad_moshaver = $row_fetched["third_ostad_moshaver"];
+  $forth_ostad_moshaver = $row_fetched["forth_ostad_moshaver"];
+
+  $query_savabet_system="select * from savabetsystem";
+   $savabet_system=mysql_query($query_savabet_system) or die("Error in selectiong data from query_savabet_system");
+   if(mysql_num_rows($savabet_system) > 0 )
+   {
+     $tarhtype_second = mysql_fetch_array($savabet_system);
+     $tarh_type_1 = $tarhtype_second["tarh_type_1"];
+     $tarh_type_2 = $tarhtype_second["tarh_type_2"];
+   }
+   else
+   {
+     $tarh_type_1 = "";
+     $tarh_type_2 = "";
+   }
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh'   and version='-1' ";
+  
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+     $payan_name = $row_fetched["payan_name"];
+     $payan_name_daraje_elmi = $row_fetched["payan_name_daraje_elmi"];  
+
+
+     if($payan_name==0)
+	   $payan_name="پايان نامه نيست";
+	 if($payan_name==1)
+	   $payan_name="پايان نامه با سقف اعتباري پايان نامه ها";
+ 	 if($payan_name==2)
+	   $payan_name="پايان نامه با سقف اعتباري بالاتر از پايان نامه ها";
+
+	
+	 
+	 
+     
+?>
+   
+<?
+  if($chk_chekide==1)
+   {  ?>
+   
+   <center>
+    <TABLE cellSpacing=0 width="80%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma2"  height=30 bgcolor="#EEE7F8" dir="rtl"><b>
+      چکيده
+      </TD></b>
+    </TR>
+
+  </table>
+   </center>
+   <?
+   	 echo "<center>"; 
+      echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["tarh_title_farsi"]."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">عنوان $title_caption</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["tarh_title_english"]."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">(عنوان $title_caption (انگليسي</td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["kelidvajeh"])."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">کليد واژه ها</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["line"])."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">لاين تحقيقاتي</td>";
+    echo "</tr>";
+
+    $daneshkade=$row_fetched["cod_daneshkade"];
+	$myq="select * from daneshkade where cod_daneshkade='$daneshkade'";
+	$myres=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_daneshkade = mysql_fetch_array($myres);
+	$daneshkade_name=$row_fetched_daneshkade["daneshkade_name"];    
+    echo "<tr>";
+    echo "<td width=\"60%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$daneshkade_name."</td>";
+    echo "<td width=\"40%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">دانشکده / مرکز هدف</td>";
+    echo "</tr>";
+    
+    $cod_group=$row_fetched["cod_group"];
+	$myq="select * from group_daneshkade where cod_group='$cod_group'";
+	
+	$myres=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_group = mysql_fetch_array($myres);
+	$group_name=$row_fetched_group["group_name"];    
+    echo "<tr>";
+    echo "<td width=\"60%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$group_name."</td>";
+    echo "<td width=\"40%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">گروه هدف</td>";
+    echo "</tr>";
+
+	if($row_fetched["tarh_type"]< 10 )
+	  $tarh_type_code =trim($row_fetched["tarh_type"]);
+	else
+	  $tarh_type_code=$row_fetched["tarh_type"];
+    $query="select * from tarhtype where tarh_type='".$tarh_type_code."'";
+    
+    $myresult = mysql_query($query);
+    $my_fetch_array = mysql_fetch_array($myresult);
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">نوع $title_caption</td>";
+    echo "</tr>";
+
+    $query="select * from tarhtype_1 where tarh_type='".$row_fetched["tarh_type_1"]."'";
+    $myresult = mysql_query($query);
+    $my_fetch_array = mysql_fetch_array($myresult);
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">نوع مطالعه</td>";
+    echo "</tr>";
+
+if( $payan_name_or_tarh> 0)
+{
+
+
+    $query="select * from tarhtype_2 where tarh_type='".$row_fetched["tarh_type_2"]."'";
+    $myresult = mysql_query($query);
+    $my_fetch_array = mysql_fetch_array($myresult);
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">$tarh_type_1</td>";
+	echo "</tr>";
+}
+  
+  
+if( $payan_name_or_tarh> 0)
+{
+
+
+    $myq="select * from user_login where email='$first_ostad'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+    echo "<td width=\"20%\"   align=\"center\" class=\"tahoma2\" valign=\"top\">استاد راهنماي اول</td>";
+    echo "</tr>";
+
+  	$query="select * from darajeelmi,tarh where tarh.first_ostad_degree =darajeelmi.darajeelmi and cod_tarh='$cod_tarh' and version='-1' order by darajeelmi_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+    $rf_result=mysql_fetch_array($qresult);
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$rf_result["darajeelmi_desc"]."</td>";
+    echo "<td width=\"20%\"   align=\"center\" class=\"tahoma2\" valign=\"top\">درجه علمي استاد راهنماي اول</td>";
+    echo "</tr>";
+
+
+    $myq="select * from user_login where email='$second_ostad'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">استاد راهنماي دوم</td>";
+    echo "</tr>";
+	
+	 $myq="select * from user_login where email='$third_ostad'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+      echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">استاد راهنماي سوم</td>";
+    echo "</tr>";
+	
+	 $myq="select * from user_login where email='$forth_ostad'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+     echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">استاد راهنماي چهارم</td>";
+   echo "</tr>";
+   
+   
+   
+    $myq="select * from user_login where email='$first_ostad_moshaver'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+    echo "<td width=\"20%\"   align=\"center\" class=\"tahoma2\" valign=\"top\">استاد مشاور اول</td>";
+    echo "</tr>";
+
+
+
+    $myq="select * from user_login where email='$second_ostad_moshaver'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">استاد مشاور دوم</td>";
+    echo "</tr>";
+	
+	 $myq="select * from user_login where email='$third_ostad_moshaver'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+      echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">استاد مشاور سوم</td>";
+    echo "</tr>";
+	
+	 $myq="select * from user_login where email='$forth_ostad_moshaver'";
+	
+	$ostad_res=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_ostad = mysql_fetch_array($ostad_res);
+	$ostad_name=$row_fetched_ostad["name"]."&nbsp".$row_fetched_ostad["family"]; 
+
+
+    echo "<tr>";
+    echo "<td width=\"80%\"   align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$ostad_name."</td>";
+     echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">استاد مشاور چهارم</td>";
+   echo "</tr>";
+   
+   
+  
+
+}
+
+  
+  
+  
+  
+  
+  
+  if( $payan_name_or_tarh <= 0)
+{
+  
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$payan_name."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">آيا طرح پايان نامه است</td>";
+    echo "</tr>";
+ 
+}
+ 
+      $query="select * from maghta_payan_name where maghta_payan_name=$payan_name_daraje_elmi";
+      $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+	if(mysql_num_rows($qresult) > 0)
+	{
+	$rf_payan=mysql_fetch_array($qresult);
+	$desc_payan=$rf_payan["maghta_payan_name_desc"];
+	}
+    
+    echo "<tr>";
+    echo "<td width=\"80%\"  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$desc_payan."</td>";
+    echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">مقطع پايان نامه</td>";
+    echo "</tr>";
+  
+    echo "<tr>";
+     echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>خلاصه ضرورت اجراي طرح</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["zarorat"])."</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+     echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>اهداف کلي , اختصاصي و کاربردي</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["ahdaf"])."</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>سوالات پژوهشي و فرضيات</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["soalat"])."</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>خلاصه روش اجرا و شيوه هاي تحليل</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["shive_ejra"])."</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+    echo "<center>"; 
+   }   
+ ?>
+ <br>
+ <?if($chk_sabt=='1'){?>
+ <center>
+    <table border="1" width="80%"    cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma2"  height=30 bgcolor="#EEE7F8" dir="rtl"><b>
+      <?
+      
+	   echo "ثبت $title_caption" ;
+      ?>
+      </b>
+      </TD>
+  </TR>
+
+</table>
+ 
+ <?   
+    
+    echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+    $color="PALETURQUOISE";
+    //$row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>(مقدمه (بيان مساله</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["bayan_masale"]."</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"20%\"  colspan='2'  align=\"center\" class=\"tahoma2\" valign=\"top\"><b>بررسي متون</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2'  align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["zarorat_ejra"]."</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>تعريف واژه ها</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["taarif_vajeh"]."</td>";
+    
+    echo "</tr>";
+    
+    
+    //------------------------
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>اهداف کلي, اختصاصي و کاربردي</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["ahdaf"]."</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>سوالات پژوهشي و فرضيات</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2' align=\"right\" class=\"tahoma2\" dir=\"rtl\">".$row_fetched["soalat"]."</td>";
+  	echo "</tr>";
+    //--------------------------
+    
+    echo "<tr>";
+    echo "<td width=\"20%\" colspan='2' align=\"center\" class=\"tahoma2\" valign=\"top\"><b>فهرست منابع مورد استفاده در اين طرح</b></td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"80%\" colspan='2'  align=\"justify\" class=\"tahoma2\" dir=\"rtl\">".nl2br($row_fetched["fehrest_manabea"])."</td>";
+    
+    echo "</tr>";
+
+    echo "</table>";
+   }
+   }
+ //-----------------------------------------  mojrian tarh
+  $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"  and mojri_tarh.version='-1' ";
+
+   $result=mysql_query($query) or die("Error in selecting data from mojri_tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+  
+    if($chk_mojrian=='1'){
+    ?>
+    <center>
+    <table border="1" width="80%"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+    <tr>
+    <td width="100%" height=30 bgcolor="#EEE7F8"  colspan="6">
+      <p align="center"  class="tahoma2"><font color="black"><b>مجريان طرح</b></font></td>
+    </tr>
+	<tr>
+ 
+	<td width="3%"  >
+      <p align="center" class="tahoma2"><font color="black">نوع همکاري</font></td>
+    <td width="3%" >
+      <p align="center" class="tahoma2"><font color="black">پست الکترونيکي</font></td>
+  
+    <td width="35%" >
+      <p align="center" class="tahoma2"><font color="black">نام خانوادگي</font></td>
+    <td width="35%"  >
+      <p align="center" class="tahoma2"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color=$list_color_1;
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+  $cod_tarh=$row_fetched["cod_tarh"];
+  
+
+  $hamkari=$row_fetched["mojri_or_hamkar"];
+  if(strcmp(trim($hamkari),"0")==0)
+    $hamkari="مجري";
+  else if(strcmp(trim($hamkari),"1")==0)
+    $hamkari="همکار";
+  else 
+    $hamkari="مجري دوم";
+    $mojri_code =$row_fetched["mojri_code"];
+    
+     $madrak=$myrow_fetched["madrak"];
+    switch($madrak)
+    {
+      case '1':
+      $madrak_string="زير کارشناسي";
+      break;
+      
+       case '2':
+      $madrak_string="کارشناسي";
+      break;
+       case '3':
+      $madrak_string="کارشناسي ارشد";
+      break;
+      
+       case '4':
+      $madrak_string="دکتراي حرفه اي";
+      break;
+      
+       case '5':
+      $madrak_string="PHD";
+      break;
+      
+       case '6':
+      $madrak_string="تخصص";
+      break;
+      
+       case '7':
+      $madrak_string="فوق تخصص";
+      break;
+      
+       case '8':
+      $madrak_string="MPH";
+      break;
+      
+    }
+  echo "<tr>";
+//  	    echo "<td class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$madrak_string."</a></p></td>";
+  echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$hamkari."</a></td>";
+  echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["email"]."</a></td>";
+  //echo "<td width=\"10%\"  align=\"center\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["fax"]."</a></td>";
+  //echo "<td width=\"10%\"  align=\"center\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["telno"]."</a></td>";
+  echo "<td width=\"30%\"  align=\"center\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["family"]."</a></td>";
+  echo "<td width=\"30%\"  align=\"right\" class=\"tahoma2\"><a style=\"text-decoration:none\" href=\"mojri_tarh_detail_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code\">".$row_fetched["name"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+echo"</center>";
+}
+//--------------------------------------------- daneshji
+
+ $query="select * from daneshjo , daneshjo_tarh where daneshjo.cod_daneshjo = daneshjo_tarh.cod_daneshjo and daneshjo_tarh.cod_tarh=\"$cod_tarh\"  and daneshjo_tarh.version='-1'   ";
+
+   $result=mysql_query($query) or die("Error in selecting data from daneshjo");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+    ?>
+   <table border="1" width="80%"    cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+    <tr>
+    <td width="100%" height=30 bgcolor="#EEE7F8" colspan="5">
+      <p align="center" class="verdana1"><font color="black">دانشجويان طرح</font></td>
+    </tr>
+
+	<tr>
+    <td width="3%" >
+      <p align="center" class="tahoma2"><font color="black">پست الکترونيکي</font></td>
+    <td width="10%" >
+      <p align="center" class="tahoma2"><font color="black">فکس</font></td>
+    <td width="10%">
+      <p align="center" class="tahoma2"><font color="black">تلفن</font></td>
+    <td width="35%" >
+      <p align="center" class="tahoma2"><font color="black">نام خانوادگي</font></td>
+    <td width="35%" >
+      <p align="center" class="tahoma2"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color=$list_color_1;
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  $cod_daneshjo=$row_fetched["cod_daneshjo"];
+  echo "<tr>";
+  echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\"  dir=\"rtl\"><a style=\"text-decoration:none\" href=\"daneshjo_tarh_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshjo=$cod_daneshjo\">".$row_fetched["email"]."</a></td>";
+  echo "<td width=\"10%\"  align=\"center\" class=\"tahoma2\"  dir=\"rtl\"><a style=\"text-decoration:none\" href=\"daneshjo_tarh_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshjo=$cod_daneshjo\">".$row_fetched["fax"]."</a></td>";
+  echo "<td width=\"10%\"  align=\"center\" class=\"tahoma2\"  dir=\"rtl\"><a style=\"text-decoration:none\" href=\"daneshjo_tarh_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshjo=$cod_daneshjo\">".$row_fetched["telno"]."</a></td>";
+  echo "<td width=\"30%\"  align=\"center\" class=\"tahoma2\"  dir=\"rtl\"><a style=\"text-decoration:none\" href=\"daneshjo_tarh_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshjo=$cod_daneshjo\">".$row_fetched["family"]."</a></td>";
+  echo "<td width=\"30%\"  align=\"right\" class=\"tahoma2\"  dir=\"rtl\"><a style=\"text-decoration:none\" href=\"daneshjo_tarh_every_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshjo=$cod_daneshjo\">".$row_fetched["name"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+echo " </center>";
+} 
+   }
+
+//---------------------------------------------------------ravesh ejra
+
+ 
+$color="PALETURQUOISE";
+echo "<br>";
+   $query="select * from ravesh_ejra where cod_tarh='$cod_tarh' and version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from tarh");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+   	echo "<center>";
+       echo "<br>";
+ if($chk_ravesh_ejra=='1'){
+     echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     $color="PALETURQUOISE";
+     $row_fetched=mysql_fetch_array($result);
+    
+     echo "<tr>";
+     echo "<td align=\"center\" height=30 bgcolor=\"#EEE7F8\" colspan=\"2\" width=\"100%\"  align=\"left\" class=\"tahoma2\" valign=\"top\"><b>ثوابت روش اجرا</b></td>";
+     echo "</tr>";
+    
+      echo "<tr>";
+      echo "<td width=\"20%\"  colspan=\"2\" align=\"center\" class=\"tahoma2\" valign=\"top\"><b>روش اجرا</b></td>";
+      echo "</tr>";
+       
+     echo "<tr>";
+     echo "<td width=\"80%\"  colspan=\"2\" dir=\"rtl\"  align=\"right\" class=\"tahoma2\"  dir=\"rtl\">".$row_fetched["ravesh_ejra"]."</td>";
+     echo "</tr>";
+
+      
+     echo "<tr>";
+     echo "<td width=\"20%\" colspan=\"2\"  align=\"center\" class=\"tahoma2\" valign=\"top\"><b>مشخصات ابزار جمع آوري اطلاعات و نحوه جمع آوري آن</b></td>";
+     echo "</tr>";
+     
+      echo "<tr>";
+     echo "<td width=\"80%\" colspan=\"2\"  dir=\"rtl\"   align=\"right\" class=\"tahoma2\"  dir=\"rtl\">".$row_fetched["moshakhasat_abzar"]."</td>";
+     echo "</tr>";
+     
+      echo "<tr>";
+      echo "<td width=\"20%\" colspan=\"2\"  align=\"center\" class=\"tahoma2\" valign=\"top\"><b>روش محاسبه حجم نمونه و تعداد آن</b></td>";
+      echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"80%\" colspan=\"2\" dir=\"rtl\"   align=\"right\" class=\"tahoma2\"  dir=\"rtl\">".$row_fetched["ravesh_mohasebe"]."</td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"20%\" colspan=\"2\" align=\"center\" class=\"tahoma2\" valign=\"top\"><b>محدوديتهاي اجرايي طرح و روش کاهش آنها</b></td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"80%\" colspan=\"2\" dir=\"rtl\"   align=\"right\" class=\"tahoma2\"  dir=\"rtl\">".$row_fetched["mahdoudiat_ejra"]."</td>";
+     echo "</tr>";
+
+     echo "</table>";
+     echo "</center>";
+   }
+   }
+?>
+
+
+
+  <?
+ if($chk_variables==1){
+   $query="select * from  jadval_zarayeb where cod_tarh=\"$cod_tarh\" and version='-1' order by name_var ";
+    
+   $result=mysql_query($query) or die("Error in selecting data from jadval zarayeb");
+   if(mysql_num_rows($result) > 0)
+   {
+   	echo "<center>";
+   	 echo "<br>";
+     echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+    
+     echo "<td width=\"80%\" height=30 bgcolor=\"#EEE7F8\"  align=\"center\" class=\"tahoma2\"><b>جدول متغيرها</b></td>";
+      echo "</tr>";
+     echo "<tr>";
+     echo "</table>";
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"80%\" >";
+     
+     echo "<tr>";
+    
+     echo "<td width=\"20%\" rowspan=\"3\" align=\"center\" class=\"tahoma2\">مقياس</td>";
+     echo "<td width=\"20%\" rowspan=\"3\" align=\"center\" class=\"tahoma2\">نحوه اندازه گيري</td>";
+     echo "<td width=\"5%\" rowspan=\"3\" align=\"center\" class=\"tahoma2\">تعريف علمي عملي</td>";
+     echo "<td width=\"26%\" colspan=\"4\" align=\"center\"  class=\"tahoma2\">نوع متغير</td>";
+     echo "<td width=\"14%\" rowspan=\"3\" align=\"center\"  class=\"tahoma2\">نقش متغير</td>";
+     echo "<td width=\"20%\" rowspan=\"3\" align=\"center\"  class=\"tahoma2\">عنوان متغير</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"13%\" align=\"center\" colspan=\"2\"  class=\"tahoma2\">کيفي</td>";
+     echo "<td width=\"13%\" align=\"center\" colspan=\"2\"  class=\"tahoma2\">کمي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"7%\" align=\"center\"  class=\"tahoma2\">رتبه اي</td>";
+     echo "<td width=\"6%\" align=\"center\"  class=\"tahoma2\">اسمي</td>";
+     echo "<td width=\"7%\" align=\"center\"  class=\"tahoma2\">پيوسته</td>";
+     echo "<td width=\"6%\" align=\"center\"  class=\"tahoma2\">گسسته</td>";
+     echo "</tr>";
+
+
+
+     $rownumber=0;
+
+      while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma2\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+      
+  if(strlen(trim($row_fetched["meghyas"])) ==0 )
+         $meghyas="&nbsp;";
+       else
+         $meghyas=$row_fetched["meghyas"];
+       echo "<td align=\"center\"  class=\"tahoma2\" >".$meghyas."</td>";
+
+
+	   if(strlen(trim($row_fetched["ravesh_andaze"])) ==0 )
+         $ravesh_andaze="&nbsp;";
+       else
+         $ravesh_andaze=$row_fetched["ravesh_andaze"];
+
+
+       echo "<td align=\"center\"  class=\"tahoma2\" >".$ravesh_andaze."</td>";
+  if(strlen(trim($row_fetched["taarif_elmi_amali"])) ==0 )
+         $taarif_elmi_amali="&nbsp;";
+       else
+         $taarif_elmi_amali=$row_fetched["taarif_elmi_amali"];
+       echo "<td align=\"center\"  class=\"tahoma2\" >".$taarif_elmi_amali."</td>";
+
+	   /*if(strlen(trim($row_fetched["vahed"])) ==0 )
+         $myvahed="&nbsp;";
+       else
+         $myvahed=$row_fetched["vahed"];
+       echo "<td align=\"center\"  class=\"tahoma2\" >".$myvahed."</td>";
+*/
+       if($row_fetched["var_type"]==0)
+         echo "<td align=\"center\"  class=\"tahoma2\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+
+       if($row_fetched["var_type"]==1)
+         echo "<td align=\"center\"  class=\"tahoma2\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+
+       if($row_fetched["var_type"]==2)
+         echo "<td align=\"center\"  class=\"tahoma2\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+
+       if($row_fetched["var_type"]==3)
+         echo "<td align=\"center\"  class=\"tahoma2\"><img border=\"0\" src=image/tick.gif></td>";
+      else
+         echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+
+       if($row_fetched["naghsh_var"]==0)
+         $naghsh="مستقل";
+       else
+	     $naghsh="وابسته";
+
+       echo "<td align=\"center\"  class=\"tahoma2\" dir=\"rtl\">".$naghsh."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\" dir=\"rtl\">".$row_fetched["name_var"]."</td>";
+       echo "</tr>";
+     }
+
+     echo "</table>";
+	echo "<center>";
+   }
+
+
+ }
+
+
+
+
+
+
+
+
+ 
+//--------------------------------------- view activities 
+?>
+<p style="page-break-after:always">
+<? if($chk_timetable==1){?>
+<center>
+    <TABLE cellSpacing=0 width="85%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma2" height=30  bgcolor="#EEE7F8" dir="rtl" ><b>
+      <?
+	   echo "جدول زمانبندي" ;
+      ?>
+      </TD></b>
+    </TR>
+
+  </table>
+  <?
+ echo "<p style=\"page-break-after:always\">";
+ $q="select max(end_mon) from activities where cod_tarh='$cod_tarh'  and version='-1'";
+
+ $r=mysql_query($q) or die("server error1");
+ if(mysql_num_rows($r)>0)
+ {
+ 	
+  while ($l=mysql_fetch_array($r))
+   $max_mon=$l["max(end_mon)"];
+ }
+ $q="select * from activities where cod_tarh='$cod_tarh'  and version='-1'";
+ $r=mysql_query($q) or die("server error2");
+?>
+<table border="1" dir="ltr" width="80%" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="53%" align="right" valign="top">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  $moncounter=$max_mon;
+  while($moncounter>0)
+   {
+?>
+
+          <td width="50" align="right">
+      <table border="1" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+         echo "<td width=\"50\" align=center>ماه $moncounter</td>";
+//         echo "<td width=\"20\" align=center></td>";
+?>
+        </tr>
+      </table></td>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="31%">
+      <p align="center"><b>
+      <table border="0" width="80" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1">
+  <tr>
+    <td width="100%" align="center">
+	  زمان کل
+    </td>
+  </tr>
+</table>
+	  </b></td>
+    <td width="50%">
+      <p align="center"><b><table border="0" width="80%" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1">
+  <tr>
+    <td width="100%" align="center">
+فعاليتهاي اجرايي
+    </td>
+  </tr>
+</table>
+
+</b></td>
+    <td width="6%">
+      <p align="center"><b>رديف</b></td>
+   
+  </tr>
+<?
+$row_number=1;
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+  {
+   $activity=$l["activity"];
+   $myorder=$l["myorder"];
+   $act_code=$l["act_code"];
+   $start_mon=$l["start_mon"];
+   $start_week=$l["start_week"];
+   $end_mon=$l["end_mon"];
+   $end_week=$l["end_week"];
+   $end_by_week=($end_mon*4)-(4-$end_week);
+//   echo "end by week=$end_by_week    end mon=$end_mon";
+if($start_mon==1)
+   $start_by_week=$start_week-1;
+else
+{
+  $var_week=$start_week-1;
+  $start_by_week=($start_mon*4)-(4-$var_week);
+}
+//   $start_by_week=(($start_mon-1)*4)-($start_week-1);
+//   echo "   start by week=$start_by_week    start mon=$start_mon";
+
+//   $total_time_week=$end_by_week - ($start_by_week-1);
+   $total_time_week=$end_by_week - $start_by_week;
+   $total_mon=(int)($total_time_week/4);
+   $total_week=(int)($total_time_week-$total_mon*4);
+   $weekcounter=$max_mon*4;
+   $moncounter=$max_mon;
+   if($start_by_week<0)
+     $start_by_week=$start_by_week*-1;
+   if($end_by_week<0)
+     $end_by_week=$end_by_week*-1;
+?>
+  <tr>
+    <td width="53%" align="right" valign="middle">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  while($moncounter>0)
+   {
+?>
+
+          <td width="100" align="right">
+      <table border="1"  width="50" height="100%" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+	    $tmp1=$moncounter*4;
+	    $tmp2=($moncounter-1)*4;
+        while (($tmp1>=$weekcounter) && ($tmp2<$weekcounter))
+        {
+       	 if (($weekcounter<=$end_by_week) && ($weekcounter>$start_by_week))
+			$bgcolor="bgcolor=\"blue\"";
+  		 else
+			$bgcolor="";
+//         $real_week=(int)($weekcounter/4)+($weekcounter-($weekcounter/4)*4);
+         echo "<td width=\"25%\" $bgcolor>&nbsp;</td>";
+		 $weekcounter--;
+        }
+?>
+        </tr>
+      </table>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="11%" dir="rtl" align="center">
+	<?
+	 if (($total_mon!=0) && ($total_week!=0))
+	   echo " $total_mon  ماه و  $total_week هفته";
+     else
+     {
+	  if ($total_mon!=0)
+	   echo "$total_mon ماه";
+	  if ($total_week!=0)
+	   echo "$total_week هفته";
+	 }
+	?>
+	</td>
+    <td width="30%" align="center"><? echo $activity; ?></td>
+    <td width="6%" align="center"><? echo $row_number; ?></td>
+    
+  </tr>
+<?
+$row_number++;
+
+   }
+ }
+  }?>
+</table>
+ </center>
+<?
+ 
+ 
+ 
+     
+   $color="PALETURQUOISE";
+   $query="select * from  eatebar_sazmanha where cod_tarh='$cod_tarh'  and version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+   	if($chk_tamin_etebar==1){
+//   	$row_fetched=mysql_fetch_array($result);
+    echo "<br>";
+    echo "<center>";
+    echo "<table width=\"80%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \" >";
+    echo "<tr>";
+    echo "<table width=\"80%\" border=\"1\"  cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \"\"  >";
+    echo "<tr>";
+    echo "<td   colspan=\"6\" height=30 bgcolor='#EEE7F8' height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\"><b>تامين اعتبار از ساير سازمانها<b></p></td>";
+     echo "</tr>";
+
+    echo "<tr>";
+    echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">نحوه پرداخت</p></td>";
+    echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">مبلغ</p></td>";
+    //echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">فکس</p></td>";
+   // echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">شماره تلفن</p></td>";
+  //  echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">آدرس پستي</p></td>";
+    echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">نام موسسه</p></td>";
+    echo "</tr>";
+  $color="PALETURQUOISE";
+  $eatebare_sazmanha_pardakht_add=0;
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    echo "<tr >";
+    
+    $mojri_code = $myrow_fetched["mojri_code"];
+   	$eatebare_sazmanha_value = $myrow_fetched["eatebare_sazmanha_value"]; 
+   	$eatebare_sazmanha_pardakht = $myrow_fetched["eatebare_sazmanha_pardakht"];
+   	$eatebare_sazmanha_fax = $myrow_fetched["eatebare_sazmanha_fax"];
+   	$eatebare_sazmanha_telno= $myrow_fetched["eatebare_sazmanha_telno"];
+   	$eatebare_sazmanha_organ = $myrow_fetched["eatebare_sazmanha_organ"];
+    $eatebare_sazmanha_address = $myrow_fetched["eatebare_sazmanha_address"];
+    $eatebare_sazmanha_pardakht_add=$eatebare_sazmanha_value+$eatebare_sazmanha_pardakht_add;
+    $id_pardakht= $myrow_fetched["id"];
+  
+  	if(strcmp($eatebare_sazmanha_pardakht,'0')==0)
+        $eatebare_sazmanha="اعتبار توسط مجري دريافت مي شود ";
+    if(strcmp($eatebare_sazmanha_pardakht,'1')==0)
+        $eatebare_sazmanha=" اعتبار به دانشگاه پرداخت ميشود تا از طريق قرارداد به مجري پرداخت شود ";
+  
+    //echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td   class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">$eatebare_sazmanha</td>";
+    echo "<td   class=\"tahoma2\" align=\"right\"><p align=\"center\" class=\"tahoma2\">$eatebare_sazmanha_value</td>";
+   /// echo "<td   class=\"tahoma2\" align=\"right\"><p align=\"center\" class=\"tahoma2\">$eatebare_sazmanha_fax</td>";
+   // echo "<td   class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">$eatebare_sazmanha_telno</td>";
+  //  echo "<td   class=\"tahoma2\" align=\"right\"><p align=\"center\" class=\"tahoma2\">$eatebare_sazmanha_address</td>";
+    echo "<td   class=\"tahoma2\" align=\"right\"><p align=\"center\" class=\"tahoma2\">$eatebare_sazmanha_organ</td>";
+    echo "</tr>";
+   }
+   echo "</table>";
+	echo "</center>";
+  }
+   }
+?>
+
+
+
+
+
+
+
+
+
+<?
+  $color="PALETURQUOISE";
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1'";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+   	if($chk_hazine_personeli==1){
+     echo "<br>";
+     echo "<center>";
+     echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" height=30 bgcolor='#EEE7F8' colspan=\"9\" align=\"center\" class=\"tahoma2\"><b>هزينه پرسنلي</b></td>";
+     echo "</tr>";
+    
+     echo "<tr>";
+     echo "<td width=\"15%\"  align=\"center\" class=\"tahoma2\">جمع</td>";
+     echo "<td width=\"15%\"  align=\"center\" class=\"tahoma2\">حق الزحمه در ساعت</td>";
+     echo "<td width=\"5%\"   align=\"center\" class=\"tahoma2\">مجموع ساعات</td>";
+     echo "<td width=\"20%\"   align=\"center\"  class=\"tahoma2\">درجه تحصيلي</td>";
+     echo "<td width=\"10%\"   align=\"center\"  class=\"tahoma2\">تعداد افراد</td>";
+     echo "<td width=\"20%\"   align=\"center\"  class=\"tahoma2\">نوع فعاليت</td>";
+      echo "<td width=\"20%\"   align=\"center\"  class=\"tahoma2\">نام مجري / همکار / ديگر افراي</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       
+       $mojri_code=$row_fetched["mojri_code"];
+       $query1="select distinct user_login.* from user_login  where user_login.email='$mojri_code'";
+       $result1=mysql_query($query1) or die("Error");
+       $mojri_name_family="*";
+       
+       if(mysql_num_rows($result1)>0)		   
+	   {
+	   	
+	   	$myrf=mysql_fetch_array($result1);
+	   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+	   	
+	   }
+	
+       $query2="select distinct mojri.* from  mojri  where mojri.mojri_code= '$mojri_code'";
+       $result2=mysql_query($query2) or die("Error in selecting data from mojri_tarh");
+       
+       if(mysql_num_rows($result2)>0)		   
+	   {
+	   	
+	   	$myrf=mysql_fetch_array($result2);
+	   	$mojri_name_family=$myrf["name"]."&nbsp;".$myrf["family"];
+	   	
+	   }
+	
+       
+       
+//       echo "<td align=\"center\" class=\"tahoma2\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+  //   echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_personnel.phtml&admin=$admin&seed=$seed&action=delete_hazine&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_hazine"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">".number_format($my_summary)."</td>";
+       echo "<td align=\"center\"   class=\"tahoma2\" >".number_format($row_fetched["per_hour"])."</td>";
+       echo "<td align=\"center\"   class=\"tahoma2\" >".number_format($row_fetched["majmoa_saat"])."</td>";
+
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+       echo "<td align=\"center\"   class=\"tahoma2\">".$degree_result."</td>";
+
+
+       echo "<td align=\"center\"   class=\"tahoma2\">".number_format($row_fetched["persons"])."</td>";
+       echo "<td align=\"center\"   class=\"tahoma2\">".$row_fetched["activity_type"]."</td>";
+       echo "<td align=\"center\"   class=\"tahoma2\">".$mojri_name_family."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+     // echo "<td align=\"center\"   class=\"tahoma2\">&nbsp;</td>";
+      echo "<td align=\"center\"   class=\"tahoma2\">".number_format($mycount)."</td>";
+      echo "<td align=\"center\"  colspan=\"6\"  class=\"tahoma2\"><b>مجموع</b></td>";
+      echo "</tr>";
+     echo "</table>";
+	echo "</center>";
+   }
+   }
+
+   }
+
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='-1' order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+   	if($chk_hazine_azmayesh==1){
+     echo "<br>";
+     echo "<center>";
+     echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" height=30 bgcolor='#EEE7F8' colspan=\"9\" align=\"center\" class=\"tahoma2\"><b>هزينه آزمايشات و خدمات تخصصي</b></td>";
+     echo "</tr>";
+
+     echo "<tr>";
+    // echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">حذف</td>";
+     echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\"><b>جمع</b></td>";
+     echo "<td width=\"5%\"   align=\"center\" class=\"tahoma2\">هزينه هر دفعه</td>";
+     echo "<td width=\"26%\"   align=\"center\"  class=\"tahoma2\">تعداد آزمايش</td>";
+     echo "<td width=\"14%\"   align=\"center\"  class=\"tahoma2\">محل انجام</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma2\">نوع آزمايش</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"5%\"   align=\"center\" class=\"tahoma2\">".number_format($my_summary)."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\" >".number_format($row_fetched["hazine_har_bar"])."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\" >".number_format($row_fetched["azmayesh_cnt"])."</td>";
+
+       if (strcmp($row_fetched["azmayesh_center"],'1')==0)
+        $mahall_azmayesh="خصوصي";
+       if (strcmp($row_fetched["azmayesh_center"],'2')==0)
+        $mahall_azmayesh="داخل دانشگاه";
+	   if (strcmp($row_fetched["azmayesh_center"],'3')==0)
+        $mahall_azmayesh="دولتي خارج دانشگاه"; 
+       echo "<td align=\"center\"  class=\"tahoma2\">".$mahall_azmayesh."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\">".$row_fetched["mozoa_azmayesh"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      //echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma2\">".number_format($mycount)."</td>";
+      echo "<td align=\"center\"  colspan=\"5\"  class=\"tahoma2\"><b>مجموع</b></td>";
+      echo "</tr>";
+     echo "</table>";
+	echo "</center>";
+   }
+   }
+
+ $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='-1' order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+   	if($chk_aghlam_kharid==1){
+     echo "<br>";
+	echo "<center>";
+     echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" height=30 bgcolor='#EEE7F8' colspan=\"9\" align=\"center\" class=\"tahoma2\"><b>فهرست وسايل و مواردي که بايد خريداري شود</b></td>";
+     echo "</tr>";
+     //echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">حذف</td>";
+     echo "<td width=\"15%\"  align=\"center\" class=\"tahoma2\">قيمت کل</td>";
+     echo "<td width=\"15%\"   align=\"center\" class=\"tahoma2\">قيمت واحد</td>";
+	 echo "<td width=\"15%\"   align=\"center\" class=\"tahoma2\">مقياس</td>";
+	 echo "<td width=\"10%\"   align=\"center\" class=\"tahoma2\">تعداد يا مقدار</td>";
+     echo "<td width=\"10%\"   align=\"center\" class=\"tahoma2\">مصرفي يا غير مصرفي</td>";
+     echo "<td width=\"20%\"   align=\"center\"  class=\"tahoma2\">Code No</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma2\">شرکت سازنده</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma2\">دستگاه يا ماده مصرفي</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma2\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       //echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=fehrest_kharid.phtml&admin=$admin&seed=$seed&action=delete_fehrest_kharid&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_kharid"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $mycount=$mycount+$row_fetched["count"];
+       $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">".number_format($row_fetched["price"]*$row_fetched["count"])."</td>";
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">".number_format($row_fetched["price"])."</td>";
+	   echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">".$row_fetched["meghyas"]."</td>";
+	   echo "<td align=\"center\"   class=\"tahoma2\" >".number_format($row_fetched["count"])."</td>";
+       if( $row_fetched["usage_unusage"] == "0" )
+         echo "<td align=\"center\"   class=\"tahoma2\" >مصرفي</td>";
+       else
+         echo "<td align=\"center\"  class=\"tahoma2\" >غير مصرفي</td>";
+
+       echo "<td align=\"center\"   class=\"tahoma2\">".$row_fetched["country"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\">".$row_fetched["company"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\">".$row_fetched["name_dastgah"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+     // echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma2\">".number_format($mycount1)."</td>";
+      echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+	  echo "<td align=\"center\"  class=\"tahoma2\">".number_format($mycount)."</td>";
+      $summary_of_vasayel_kharid = $mycount1;
+      echo "<td align=\"center\"   colspan=\"5\"  class=\"tahoma2\"><b>مجموع</b></td>";
+      echo "</tr>";
+     echo "</table>";
+	echo "</center>";
+   }
+   }
+
+
+ $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='-1' order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+   	if($chk_hazine_safar==1){
+     echo "<br>";
+     echo "<center>";
+     echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" height=30 bgcolor='#EEE7F8' colspan=\"9\" align=\"center\" class=\"tahoma2\"><b>هزينه مسافرت</b></td>";
+     echo "</tr>";
+     //echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">حذف</td>";
+     echo "<td width=\"20%\"  align=\"center\" class=\"tahoma2\">هزينه  به ريال</td>";
+     echo "<td width=\"5%\"   align=\"center\" class=\"tahoma2\">تعداد افراد</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma2\">نوع وسيله</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma2\">دفعات مسافرت</td>";
+     //echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma2\">منظور از مسافرت</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma2\">مقصد</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma2\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+//       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_mosaferat.phtml&admin=$admin&seed=$seed&action=delete_hazine_mosaferat&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_hazine_safar"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma2\">".number_format($row_fetched["hazine"])."</td>";
+       //echo "<td align=\"center\"  class=\"tahoma2\" >".$row_fetched["hazine"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\" >".number_format($row_fetched["persons_cnt"])."</td>";
+
+       echo "<td align=\"center\"  class=\"tahoma2\">".$row_fetched["vasile"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\">".number_format($row_fetched["dafe_safar"])."</td>";
+       //echo "<td align=\"center\"  class=\"tahoma2\">".$row_fetched["manzoor_mosaferat"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma2\">".$row_fetched["target"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      //echo "<td align=\"center\"  class=\"tahoma2\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma2\">".number_format($mycount)."</td>";
+      echo "<td align=\"center\"  class=\"tahoma2\">".number_format($mycount1)."</td>";
+      echo "<td align=\"center\"  colspan=\"4\"  class=\"tahoma2\"><b>مجموع</b></td>";
+      echo "</tr>";
+     echo "</table>";
+	echo "</center>";
+   }
+   }
+?>
+
+
+<?
+
+
+   $color="PALETURQUOISE";
+   $query  = "select * from sayer_hazine where cod_tarh=\"$cod_tarh\"  and version='-1'";
+   
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi1212");
+   
+   if(mysql_num_rows($result) > 0)
+   {
+   if($chk_sayer_hazineha==1){
+//   	$row_fetched=mysql_fetch_array($result);
+	echo "<center>";
+    echo "<br>";
+    echo "<table width=\"80%\"  cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \" >";
+    echo "<tr>";
+    echo "<table border=\"1\" width=\"80%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+    echo "<tr>";
+    echo "<td   colspan=\"6\" height=30 bgcolor='#EEE7F8' height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\"><b>ساير هزينه ها<b></p></td>";
+     echo "</tr>";
+
+    echo "<tr>";
+    echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">ساير هزينه ها</p></td>";
+    echo "<td    height=\"20\" class=\"tahoma2\" align=\"center\"><p align=\"center\" class=\"tahoma2\">هزينه تکثير اوراق</p></td>";
+    
+    echo "</tr>";
+  $color="PALETURQUOISE";
+   while($myrow_fetched=mysql_fetch_array($result))
+   {
+   
+    echo "<tr>";
+    
+    $sayer_hazine  = $myrow_fetched["sayer_hazine"];
+    $hazine_taksir = $myrow_fetched["hazine_taksir"];
+    $id= $myrow_fetched["id"];
+  
+    //echo "<td width=\"47\"><p align=\"center\"><a href=\"#\" ><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    
+    echo "<td   class=\"tahoma2\" align=\"right\"><p align=\"center\" class=\"tahoma2\">$sayer_hazine</td>";
+    echo "<td   class=\"tahoma2\" align=\"right\"><p align=\"center\" class=\"tahoma2\">$hazine_taksir</td>";
+    echo "</tr>";
+   }
+   echo "</table>";
+   echo "</center>";
+
+  }
+
+   }
+
+
+
+
+
+   $query="select * from  hazine_personnel where cod_tarh=\"$cod_tarh\"  and version='-1' order by activity_type ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["per_hour"]*$row_fetched["majmoa_saat"];
+       $mycount=$mycount+$my_summary;
+       $query="select * from darajeelmi where darajeelmi = '".$row_fetched["degree"]."'";
+       $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+       if(mysql_num_rows($qresult) > 0 )
+       {
+         $row_degree = mysql_fetch_array($qresult);
+         $degree_result = $row_degree["darajeelmi_desc"];
+       }
+       else
+         $degree_result = "ثبت نشده";
+     }
+      $personnel_sum=$mycount;
+   }
+
+   
+   
+   
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='-1' order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+     }
+      $lab_sum=$mycount;
+   }
+
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='-1' order by name_dastgah";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     //  $mycount=$mycount+$row_fetched["count"];
+      // $mycount1=$mycount1+$row_fetched["price"];
+      $mycount1=$mycount1+$row_fetched["price"]*$row_fetched["count"];
+     }
+      //$vasile_sum=$mycount*$mycount1;
+      $vasile_sum=$mycount1;
+
+   }
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\"  and version='-1' order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+     }
+	  $trip_sum = $mycount;
+   }
+ $query = "select * from sayer_hazine where cod_tarh='$cod_tarh'  and version='-1'";
+ $result = mysql_query($query) or die("Error in selecting data from sayer_hazine ");
+
+$hazine_taksir=0;
+$hazine_digar=0;
+ if(mysql_num_rows($result) > 0 )
+ {
+ 	
+  while($hazine_row_fetched = mysql_fetch_array($result))	
+  {
+    $hazine_taksir = $hazine_taksir+$hazine_row_fetched["hazine_taksir"];
+    $hazine_digar = $hazine_digar+$hazine_row_fetched["sayer_hazine"];
+  }
+ }
+?>
+<br>
+
+<table border="0" width="98%" colspan="0" cellspan="0" align="center">
+
+<tr>
+   <td width="100%" colspan="4" valign="top" align="center">
+   <span <? echo $text_font_style; ?>>
+ <?
+ if($chk_sum_cost==1){
+ $sum_sayer=$hazine_digar+$hazine_taksir;
+    echo "<table border=\"1\" width=\"82%\"    cellspacing=\"0\" cellpadding=\"2\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"40%\" height=30 bgcolor='#EEE7F8'  align=\"center\" class=\"tahoma2\"><b>(مجموع(ريال<b></td>";
+     echo "<td width=\"60%\" height=30  bgcolor='#EEE7F8'  align=\"center\"  class=\"tahoma2\"><b>هزينه<b></td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\">".number_format($personnel_sum)."</td>";
+     echo "<td width=\"60%\"   align=\"center\"  class=\"tahoma2\">جمع هزينه پرسنلي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\">".number_format($lab_sum)."</td>";
+     echo "<td width=\"60%\"    align=\"center\"  class=\"tahoma2\">جمع هزينه هاي آزمايشات وخدمات تخصصي</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\">".number_format($trip_sum)."</td>";
+     echo "<td width=\"60%\"    align=\"center\"  class=\"tahoma2\">جمع هزينه هاي مسافرت</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\">".number_format($vasile_sum)."</td>";
+     echo "<td width=\"60%\"    align=\"center\"  class=\"tahoma2\">جمع هزِينه هاي وسايل</td>";
+     echo "</tr>";
+     echo "<tr>";
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\">".number_format($sum_sayer)."</td>";
+     echo "<td width=\"60%\"    align=\"center\"  class=\"tahoma2\">جمع ساير هزينه ها</td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\">".number_format($eatebare_sazmanha_pardakht_add)."</td>";
+     echo "<td width=\"60%\"    align=\"center\"  class=\"tahoma2\">اعتبار از سازمانهاي ديگر</td>";
+     echo "</tr>";
+
+	 echo "<tr>";
+	 $sum_of_all = $sum_sayer+$vasile_sum+$trip_sum+$lab_sum+$personnel_sum;
+     echo "<td width=\"40%\"    align=\"center\" class=\"tahoma2\"><b>".number_format($sum_of_all)."</b></td>";
+     echo "<td width=\"60%\"    align=\"center\" class=\"tahoma2\"><b>جمع کل</b></td>";
+
+     echo "</tr>";
+
+
+     echo "</table>";
+
+ }
+?>
+</td>
+</tr>
+
+</table>
+
+
+
+<?
+$version='-1';
+ $query="select * from tarh where cod_tarh='$cod_tarh'  and version='$version'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh'  and version='$version' ";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+   	if($chk_akhlagh==1){
+    echo "<br>";
+ 
+    
+      echo "<center>";
+   echo "<table border=\"1\" width=\"80%\" bordercolor=\"#333333\" cellspacing=\"0\" cellpadding=\"2\" style=\"border-style: solid; border-width: 1; \">";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    $moshkelat_akhlaghi = $row_fetched["moshkelat_akhlaghi"];
+    $halle_moshkelat_akhlaghi = $row_fetched["halle_moshkelat_akhlaghi"];
+    $rezayatname = $row_fetched["rezayatname"];
+	$rezayatnamefile = $row_fetched["rezayatname_filename"];
+    if( strcmp(trim($rezayatname),"0")==0 )
+      $rezayatname="دارد";
+    else
+      $rezayatname="ندارد";
+
+    
+    $rezayatnamefile = $row_fetched["rezayatnamefile"];
+     echo "<tr>";
+    echo "<td width=\"80%\" height=30 colspan='2' bgcolor='#EEE7F8'   align=\"center\"  class=\"tahoma2\"><b>ملاحظات اخلاقي</b></td>";
+     echo "</tr>";
+    echo "<tr>";
+    echo "<td width=\"50%\" align=\"center\" class=\"tahoma2\"  dir=\"rtl\">".$moshkelat_akhlaghi."</td>";
+    echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">ملاحظات و مشکلات اخلاقي طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\"  dir=\"rtl\">".$halle_moshkelat_akhlaghi."</td>";
+    echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">راه حل مشکلات اخلاقي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\"  dir=\"rtl\">".$rezayatname."</td>";
+    echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">آيا طرح رضايتنامه اخلاقي دارد</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    $rezayat_file="../rezayatname/".$cod_tarh."/rezayatname.doc";
+    //if(strlen(trim($rezayatnamefile)) > 0 )
+    if (file_exists($rezayat_file))
+    {
+     $rezayat_file="../rezayatname/".$cod_tarh."/rezayatname.doc";
+     echo "<td width=\"50%\" align=\"right\" class=\"tahoma2\"><a href=\"$rezayat_file\" style=\"text-decoration:none\">".$rezayat_file."</a></td>";
+    }
+    else
+     echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\">فايل ضميمه ندارد</td>";
+    echo "<td width=\"50%\"  align=\"center\" class=\"tahoma2\" valign=\"top\">فايل رضايتنامه</td>";
+    
+    echo "</tr>";
+    
+    echo "</table>";
+     echo "</center>";
+   }
+   }
+?>
+
+
+
+ 

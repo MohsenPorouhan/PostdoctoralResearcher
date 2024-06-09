@@ -1,0 +1,117 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched=mysql_fetch_array($result);
+
+?>
+<br>
+<center>
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<?
+/*
+$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+*/
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+if(isset($name_e))
+{
+  $query="select * from  return_daneshkade where cod_tarh='$cod_tarh' ";
+}
+else
+  $query="select * from  return_daneshkade where cod_tarh='$cod_tarh' ";
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 10");
+
+$reccount = mysql_num_rows($result);
+
+ if(isset($name_e))
+{
+  $query="select * from  return_daneshkade where cod_tarh='$cod_tarh'"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select * from  return_daneshkade where cod_tarh='$cod_tarh'"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+
+if(mysql_num_rows($result) > 0 )
+{
+ pubshowpages("reason_of_return.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+
+ 
+    <td width="100%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black"><b>دليل ارجاع</b></font></td>
+  
+  </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $from_letter=$row_fetched["from_letter"];
+  $id=$row_fetched["id"];
+    echo "<td width=\"100%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a href=\"letter_body_show.phtml?admin=$admin&seed=$seed&letterno=$id\">".$row_fetched["comments"]."</a></td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>

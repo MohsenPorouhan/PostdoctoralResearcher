@@ -1,0 +1,424 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+require_once('lib/nusoap.php');
+
+$query="select * from modir_daneshkade where accept_gharardad='on'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$modir_count=mysql_num_rows($result);
+
+$query="select * from modir_daneshkade where modir_username='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+$dastresi=$row_fetched["dastresi"];
+$modir_name=$row_fetched["modir_name"];
+$modir_family=$row_fetched["modir_family"];
+$modir_email=$row_fetched["modir_email"];
+$modir_cod=$row_fetched["cod_modir"];
+
+ if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     { 
+     	echo $accept;
+     	if(isset($accept))
+     	{
+     		$name_family="name_family_nazer".$accept;
+     		$name_family=$$name_family;
+     		$melli_cod="melli_cod".$accept;
+     		$mellicod=$$melli_cod;
+     		$hesab="hesab".$accept;
+     		$hesab=$$hesab;
+     		$sheba="sheba".$accept;
+     		$sheba=$$sheba;
+     		$name_bank="name_bank".$accept;
+     		$name_bank=$$name_bank;
+     		$banksection="banksection".$accept;
+     		$banksection=$$banksection;
+     		$percent_pardakht="percent_pardakht".$accept;
+     		$percent_pardakht=$$percent_pardakht;
+     		echo $accept.$name_family.$mellicod.$hesab;
+     		
+     		  $query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+			  $result1=mysql_query($query) or die("Error10");
+			  if(mysql_num_rows($result1)>0)
+			 {
+			 	$row_fetched1=mysql_fetch_array($result1);
+			 	$zarib_maliat=$row_fetched1["maliat"];
+			 }
+     		$query="select * from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='$accept'";
+ //echo $query;
+			 $result=mysql_query($query) or die("Error101");
+			  if(mysql_num_rows($result)>0)
+			 {
+			 	$row_fetched=mysql_fetch_array($result);
+			 	$marhale=$row_fetched["stepno"];
+			 	$stepamount=$row_fetched["stepamount"];
+			 	$tax=$row_fetched["tax"];
+			    $amount1=$row_fetched["amount1"];
+			 	$amount2=$row_fetched["amount2"];
+			 	$start_date=$row_fetched["paydate"];
+			 	$accept_pardakht=$row_fetched["accept_pardakht"];
+			 	
+			    $exists=1; 	
+			    
+			 } 	
+			 $today= date("Y-m-d");
+			 $year=substr($today,0,4);
+			 $month=substr($today,5,2);
+			 $day=substr($today,8,2);
+			 $accept_pardakht_date=hijricalender( $year , $month , $day );
+			// $accept_pardakht_date=$day."/".$month."/".$year; 
+			
+     		  $amount1_pardakht=$amount1*($percent_pardakht/100);
+			  $mablagh_ghable_pardakht=($amount1_pardakht+$amount2)*(100/(100-$zarib_maliat));
+			  $tax_pardakht=$mablagh_ghable_pardakht*($zarib_maliat/100);
+			  
+     		$query="update marhale_gharardad_hesabdari set accept_pardakht='1',personname='$name_family',personnationalcode='$mellicod',bank='$name_bank',banksection='$banksection',accountno='$hesab',shebano='$sheba',percent_pardakht='$percent_pardakht',amount1_pardakht='$amount1_pardakht',tax_pardakht='$tax_pardakht',mablagh_ghable_pardakht='$mablagh_ghable_pardakht',accept_pardakht_date='$accept_pardakht_date' where stepno='$accept' and researchno='$cod_tarh'";
+     		$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+     	}
+     	else
+     		echo "گزينه تاييد را براي مرحله مورد نظر علامت بزنيد";
+    
+    }
+     	
+       
+      
+      
+echo "<br>";
+
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=confirm_gharardad&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+   
+ $query="select * from tarh_hesabdari where researchno='$cod_tarh'";
+ $result=mysql_query($query) or die("Error100");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$tarh_title_farsi=$row_fetched["researchtitle"];
+ 	$mablagh_aghd_gharardad=$row_fetched["amount"];
+ 	$start_date1=$row_fetched["startdate"];
+    $end_date=$row_fetched["enddate"];
+ 	$mojri_name=$row_fetched["personname"];
+ 	//$mojri_cod_melli=$row_fetched["mojri_cod_melli"];
+ 	$time_month=$row_fetched["time_month"];
+ 	$old_tarh=$row_fetched["old_tarh"];
+ 	//$zarib_maliat=$row_fetched["maliat"];
+    $exists=1; 	
+    
+ } 	
+ $query="select * from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='1'";
+ //echo $query;
+ $result=mysql_query($query) or die("Error101");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$marhale=$row_fetched["stepno"];
+ 	$mablagh_marhale_0=$row_fetched["stepamount"];
+ 	$mablagh_ghable_pardakht_0=$row_fetched["mablagh_ghable_pardakht"];
+ 	$maliat_marhale_0=$row_fetched["tax_pardakht"];
+    $mablagh_khales_mojri_0=$row_fetched["amount1_pardakht"];
+ 	$hagh_ol_zahme_karshenasi_0=$row_fetched["amount2"];
+ 	$start_date=$row_fetched["paydate"];
+ 	$accept_pardakht=$row_fetched["accept_pardakht"];
+ 	$percent_pardakht=$row_fetched["percent_pardakht"];
+ 	$accept_pardakht_date=$row_fetched["accept_pardakht_date"];
+ 	$peyment_date=$row_fetched["peyment_date"];
+ 	$paperno=$row_fetched["paperno"];
+ 	
+    $exists=1; 	
+    
+ } 	
+  ?>
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ <TR>
+
+      <TD align=center  class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <font color="red"><b>مراحل با پس زمينه قرمز قبلا توسط شما براي پرداخت تاييد شده اند</b></font>
+      </TD>
+  </TR>
+
+  <TR>
+
+      <TD align=center  class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_title_farsi ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<?
+
+
+     echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+     $color="PALETURQUOISE";
+     $row_fetched=mysql_fetch_array($result);
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='15'  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>کليه مبالغ به ريال است</b></td>";
+     echo "</tr>";
+     
+     echo "<tr>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ صدور دستور پرداخت توسط شما</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b> شماره ليست دستور پرداخت</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاييد پرداخت</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>درصد پرداخت</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شعبه بانک</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>نام بانک</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شماره شبا</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شماره حساب</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>کد ملي ناظر</b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>نام و نام خانوادگي ناظر</b></td>";
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>حق الزحمه کارشناسي</b></td>";     
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>سهم خالص مجري</b></td>";
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>ماليات</b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ قابل پرداخت</b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ مرحله</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ</b></td>"; 
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مرحله</b></td>";   
+     echo "</tr>";
+     
+    if($accept_pardakht=="1")
+    	$color1="red";
+    if(strcmp($old_tarh,"1")==0){
+    	$query_1="select * from tarh_indoing    where cod_tarh='$cod_tarh' and marhale='0' and submitted='1'";
+    	$result_1=mysql_query($query_1) or die("Error101");
+		if(mysql_num_rows($result_1)>0)
+	    {
+	    	$color1="red";	
+	    }
+ 
+    }
+     echo "<tr>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>".$accept_pardakht_date."</font></b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>"."<br>".$paperno."</font></b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"radio\" class=\"tahoma1\" tabindex=\8\" value=\"1\" name=\"accept\" ></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"7\" name=\"percent_pardakht1\" value=\"$percent_pardakht\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"6\" name=\"banksection1\" value=\"هجرت\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"5\" name=\"name_bank1\" value=\"ملت\" ></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"4\" name=\"sheba1\" value=\"460120020000004462981172\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"3\" name=\"hesab1\" value=\"4462981172\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"2\" name=\"melli_cod1\" value=\"0071153251\" ></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"1\" name=\"name_family_nazer1\" value=\"احمد رضا شمشيري\" ></input></td>";
+	
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($hagh_ol_zahme_karshenasi_0)."</font></b></td>";     
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_khales_mojri_0)."</font></b></td>";
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($maliat_marhale_0)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_ghable_pardakht_0)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_marhale_0)."</font></b></td>";
+     
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>".$start_date."</font></b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>1</font></b></td>";
+     echo "</tr>";
+    
+
+$query="select * from marhale_gharardad_hesabdari  where researchno='$cod_tarh' and stepno!='1' and stepno!='100' order by stepno asc ";
+
+$result1=mysql_query($query) or die("Error");
+$cntr=1;
+$mablagh12=0;
+$color1="";
+while($rf66=mysql_fetch_array($result1))
+{
+// echo $cntr;
+	$color1="";
+  	//$row_fetched=mysql_fetch_array($result1);
+  	$color="PALETURQUOISE";
+ 	$marhale=$rf66["stepno"];
+ 	$mablagh_marhale_n=$rf66["stepamount"];
+ 	$mablagh_ghable_pardakht_n=$rf66["mablagh_ghable_pardakht"];
+ 	$maliat_marhale_n=$rf66["tax_pardakht"];
+    $mablagh_khales_mojri_n=$rf66["amount1_pardakht"];
+ 	$hagh_ol_zahme_karshenasi_n=$rf66["amount2"];
+ 	$start_date=$rf66["paydate"];  
+ 	$accept_pardakht=$rf66["accept_pardakht"]; 
+ 	$percent_pardakht=$rf66["percent_pardakht"];
+ 	$accept_pardakht_date=$rf66["accept_pardakht_date"];
+ 	$peyment_date=$rf66["peyment_date"];
+ 	$paperno=$rf66["paperno"];
+	$cntr++; 
+	
+	$suery_nazer="select * from karshenasan,karshenasan_tarh where cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and karshenasi_type='2' and gozaresh_nezarat='$cntr'";
+	$result_nezarat=mysql_query($suery_nazer) or die("Error");
+	$rf_nezarat=mysql_fetch_array($result_nezarat);
+	$name=$rf_nezarat["karshenas_name"];
+	$family=$rf_nezarat["karshenas_family"];
+	$name_family=$name." ".$family;
+	$melli_cod=$rf_nezarat["melli_code"];
+	$hesab=$rf_nezarat["hesab"];
+	$bank_name=$rf_nezarat["bank_name"];
+	$sheba=$rf_nezarat["sheba"];
+	$bank_section=$rf_nezarat["bank_section"];
+	if($accept_pardakht=="1")
+    	$color1="red";
+	if(strcmp($old_tarh,"1")==0){
+    	$query_1="select * from tarh_indoing    where cod_tarh='$cod_tarh' and marhale='$cntr' and submitted='1'";
+    	$result_1=mysql_query($query_1) or die("Error101");
+		if(mysql_num_rows($result_1)>0)
+	    {
+	    	$color1="red";	
+	    }
+ 
+    }
+    echo "<tr>";
+         echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>".$accept_pardakht_date."</font></b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>"."<br>".$paperno."</font></b></td>";
+    echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"radio\" class=\"tahoma1\" tabindex=\"14\" value=\"$cntr\" name=\"accept\"  ></input></td>";
+    echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"7\" name=\"percent_pardakht$cntr\" value=\"$percent_pardakht\"></input></td>";
+    echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"13\" name=\"banksection$cntr\" value=\"$bank_section\"></input></td>";
+    echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"12\" name=\"name_bank$cntr\" value=\"$bank_name\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"11\" name=\"sheba$cntr\" value=\"$sheba\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"10\" name=\"hesab$cntr\" value=\"$hesab\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"9\" name=\"mello_cod$cntr\" value=\"$melli_cod\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"8\" name=\"name_family_nazer$cntr\" value=\"$name_family\"></input></td>";
+   
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($hagh_ol_zahme_karshenasi_n)."</font></b></td>";
+     
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_khales_mojri_n)."</font></b></td>";
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($maliat_marhale_n)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_ghable_pardakht_n)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_marhale_n)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\"  dir='rtl' valign=\"top\"><b><font color='$color1'>".$start_date."</font></b></td>";
+      echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>$cntr</b></font></td>";
+     echo "</tr>";
+} 
+$color="PALETURQUOISE";
+$color1="";
+$query="select * from marhale_gharardad_hesabdari where researchno='$cod_tarh' and stepno='100'";
+ //echo $query;
+ $result=mysql_query($query) or die("Error101");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$marhale=$row_fetched["stepno"];
+ 	$mablagh_marhale_end=$row_fetched["stepamount"];
+ 	$mablagh_ghable_pardakht_end=$row_fetched["mablagh_ghable_pardakht"];
+ 	$maliat_marhale_end=$row_fetched["tax_pardakht"];
+    $mablagh_khales_mojri_end=$row_fetched["amount1_pardakht"];
+ 	$hagh_ol_zahme_karshenasi_end=$row_fetched["amount2"];
+ 	$start_date=$row_fetched["paydate"];
+ 	$accept_pardakht=$row_fetched["accept_pardakht"];
+ 	$percent_pardakht=$row_fetched["percent_pardakht"];
+ 	$accept_pardakht_date=$row_fetched["accept_pardakht_date"];
+ 	$peyment_date=$row_fetched["peyment_date"];
+ 	$paperno=$row_fetched["paperno"];
+    $exists=1; 	
+    
+ } 	
+ $suery_nazer="select * from karshenasan,karshenasan_tarh where cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and karshenasi_type='2' and gozaresh_nezarat='100'";
+	$result_nezarat=mysql_query($suery_nazer) or die("Error");
+	$rf_nezarat=mysql_fetch_array($result_nezarat);
+	$name=$rf_nezarat["karshenas_name"];
+	$family=$rf_nezarat["karshenas_family"];
+	$name_family=$name." ".$family;
+	$melli_cod=$rf_nezarat["melli_code"];
+	$hesab=$rf_nezarat["hesab"];
+	$bank_name=$rf_nezarat["bank_name"];
+	$sheba=$rf_nezarat["sheba"];
+	$bank_section=$rf_nezarat["bank_section"];
+	if($accept_pardakht=="1")
+    	$color1="red";
+	if(strcmp($old_tarh,"1")==0){
+    	$query_1="select * from tarh_indoing    where cod_tarh='$cod_tarh' and marhale='100' and submitted='1'";
+    	$result_1=mysql_query($query_1) or die("Error101");
+		if(mysql_num_rows($result_1)>0)
+	    {
+	    	$color1="red";	
+	    }
+ 
+    }
+       echo "<tr>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>".$accept_pardakht_date."</font></b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>"."<br>".$paperno."</font></b></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"radio\" class=\"tahoma1\" tabindex=\"21\" value=\"100\" name=\"accept\" ></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"7\" name=\"percent_pardakht100\" value=\"$percent_pardakht\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"20\" name=\"banksection100\" value=\"$bank_section\"></input></td>";      echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"19\" name=\"name_bank100\" value=\"$bank_name\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"18\" name=\"sheba100\" value=\"$sheba\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"17\" name=\"hesab100\" value=\"$hesab\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"16\" name=\"melli_cod100\" value=\"$melli_cod\"></input></td>";
+     echo "<td align=\"center\"  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"text\" class=\"tahoma1\" tabindex=\"15\" name=\"name_family_nazer100\" value=\"$name_family\"></input></td>";
+       
+       
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($hagh_ol_zahme_karshenasi_end)."</font></b></td>";
+     
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_khales_mojri_end)."</font></b></td>";
+     echo "<td align=\"center\"  width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($maliat_marhale_end)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_ghable_pardakht_end)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"10%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b><font color='$color1'>".number_format($mablagh_marhale_end)."</font></b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\" dir='rtl'><b><font color='$color1'>".$start_date."</font></b></td>";
+      echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>نهايي</b></td>";
+     echo "</tr>";
+  //   echo number_format($mablagh_koll); 
+     
+     
+     
+       echo "<tr>";
+       echo "<td align=\"center\" colspan='15'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مبلغ کل قرارداد :".number_format($mablagh_aghd_gharardad)." </b></td>";
+       echo "</tr>";
+     
+      /* echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>امتياز :".number_format($int_emtiaz)." </b></td>";
+       echo "</tr>";*/
+       
+        
+       
+          echo "<tr>";
+       echo "<td align=\"center\" colspan='15'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>تاريخ شروع :".$start_date1." </b></td>";
+       echo "</tr>";
+       
+       echo "<tr>";
+       	echo "<td align=\"center\" colspan='15'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>زمان قرارداد به ماه :".$time_month." </b></td>";
+       echo "</tr>";
+       
+       
+     /*  echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>در صورت تاييد ، طرح به طرحهاي در حال اجرا مي رود</b></td>";
+      echo "</tr>";
+      
+      
+      echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><textarea   rows=\"7\"  name=\"comments\"  class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></textarea></td>";
+      
+      echo "</tr>";
+     
+     echo "<tr>";
+       
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input   type=\"checkbox\"  name=\"sms\" value=\"ON\" class=\"edit-user\"  dir=RTL  \">ارسال sms</td>";
+      echo "</tr>";
+      
+        
+       echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شرايط خاص مورد نظر خود را اعلام فرماييد</b></td>";
+      echo "</tr>";*/
+       
+       
+    
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='15'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"submit\" value=\"تاييد\" name=\"B1\" class=\"but-small\"></td>";
+     echo "</tr>";
+     
+     
+     
+     if(isset($action) && strcmp($action,"confirm_gharardad")==0)
+     {
+       /*$now_date=date('M-y-d');
+       insert_position($cod_tarh,'10',$admin);
+        $query="update tarh set indoing ='1' where cod_tarh='$cod_tarh' and version='-1'";
+        
+       $result=mysql_query($query)  or die("Error");*/
+       
+     }
+     
+     
+     
+     
+     
+     echo "</table>";
+  
+  echo "</form>"; 
+   
+footer_forms($admin,$seed);
+?>
+

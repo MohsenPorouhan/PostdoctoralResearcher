@@ -1,0 +1,75 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/class.smtp.php");
+
+require("include/mailserver-statistics.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+$mydate=date("Y-m-d");
+	    $query="select * from karshenasan where  username=\"".$username."\"";
+	     $result=mysql_query($query) or die("Error in selecting data from karshenas_elmi_tarh");
+	 
+	  		$row_fetch_email=mysql_fetch_array($result);
+
+	     $mobile=$row_fetch_email["mobile"];
+	  	$karshenas_email=$row_fetch_email["karshenas_email"]; 
+	  	$familye=$row_fetch_email["karshenas_family"];
+	  
+	    
+	     $mail = new PHPMailer();
+	 $query_title_tarh="select * from tarh where cod_tarh = '$cod_tarh'";
+	 $result_title_tarh=mysql_query($query_title_tarh);
+	 $rf_title=mysql_fetch_array($result_title_tarh);
+	 $title_english=$rf_title["tarh_title_english"];  
+
+    $emailbody="";
+    if($cod_marhale=='0')
+      $cod_marhale_txt='1';
+   if($cod_marhale=='100')
+      $cod_marhale_txt='Final';
+  
+    $emailbody=$emailbody."<br><b>You got a Report of proposal '$title_english' (MARHALE : $cod_marhale_txt)<b><br><br>";
+    $emailbody=$emailbody."<br>Please login to your Supervisor area of Pajooheshyar and check it<br>";
+    $emailbody=$emailbody."<br>You can find it in this menu item ==> 'TARH-HAYE-DAR-HALE-EJRA'<br>";
+    $emailbody=$emailbody."<br>You can guide with this link <a href='http://research.tums.ac.ir/sg.pdf' target='_blank'> Guide </a> <br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login/>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Peyvand Co. (Peyvandco.com).</font></center>";
+ 
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($karshenas_email, $mailname);
+    $mail->IsHTML(true);
+//	echo $mobile       ;                           // set email format to HTML;
+    //send_sms($mobile,'Check your inbox in pajoheshyar You got a Report',$admin);
+    $mail->Subject = "Check your box in $url_address (Do not reply this email)";
+    $mail->Body    = $emailbody;
+  
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+       echo $status;
+  //      exit();
+    }
+    else
+    {
+        $q="insert into nazer_notify set nazer_username ='$username' , marhale='$cod_marhale',cod_tarh='$cod_tarh', notify_date ='$mydate'";
+     // echo $q;
+        $rs=mysql_query($q) or die("error");
+        	message_show(".يادآوري ارسال شد","green");
+
+    }
+  
+footer_forms($admin,$seed);
+?>

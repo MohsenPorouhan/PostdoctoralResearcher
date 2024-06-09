@@ -1,0 +1,147 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+ //savelog("test2","delete","Delete a user called mohsen");
+if(!isset($state))
+   $state="";
+?>
+<form method="POST" action="<? echo "$PHP_SELF?admin=$admin&seed=$seed"; ?>">
+<input type="hidden" name="state" value="search" size="44" >
+  <table border="0" width="100%" cellspacing="0" cellpadding="0" dir='rtl'>
+   <tr>
+    <td colspan='2' width="4%"  height="32">
+      <p align="center" class='tahoma1'><b>جستجو در فعاليتها</b></p> </td>
+   </tr>  
+    <tr>
+      <td width="27%" align="left"  class='tahoma1'>عمليات</td>
+      <td width="73%"  class='tahoma1' ><select size="1" name="operation" class='edit-user'>
+          <option selected value="Any" <? if($operation=="Any") echo "selected"; ?>>Any</option>
+          <option value="add" <? if($operation=="add") echo "selected"; ?>>Add</option>
+          <option value="edit" <? if($operation=="edit") echo "selected"; ?>>Edit</option>
+          <option value="delete" <? if($operation=="delete") echo "selected"; ?>>Delete</option>
+        </select></td>
+    </tr>
+    <tr>
+      <td width="27%" align="left" class='tahoma1'>شرح فعاليت</td>
+      <td width="73%"><input  type="text" class='edit-user'  value="<? echo $activity; ?>" name="activity" size="44"></td>
+    </tr>
+    <tr>
+      <td width="100%" align="center" colspan="2"><input dir='ltr'  type="submit" class="but-small" value="Submit" name="B1"></td>
+    </tr>
+  </table>
+</form>
+<?
+if($state=="search")
+{
+ $temp_act=str_replace(" ","%",$activity);
+ $user=trim($user);
+ $activity=trim($activity);
+ if($user!="")
+   $user_temp="adminuser='$user'";
+ else
+   $user_temp="";
+   
+ if($activity!="")
+  {
+   if($user!="")
+     $act_temp="and activity like '%$temp_act%' and 1";
+   else
+     $act_temp="activity like '%$temp_act%' and 1";
+  }
+ else
+ {
+   if($user!="")
+     $act_temp="";
+   else
+     $act_temp="1";
+ }
+
+
+  
+
+
+ if($operation=="Any")
+  $q="select * from userlog where adminuser ='$admin'  and $act_temp  order by op_date, op_time";
+ else
+  $q="select * from userlog where adminuser ='$admin' and $act_temp and operation='$operation'  and 1 order by op_date, op_time";
+  $r=mysql_query($q) or die("Server error 1");
+ $reccount=mysql_num_rows($r);
+
+
+ if($operation=="Any")
+  $q="select * from userlog where adminuser ='$admin'  and $act_temp  order by op_date, op_time "." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+ else
+  $q="select * from userlog where adminuser ='$admin' and $act_temp and operation='$operation'  and 1 order by op_date, op_time "." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+ 
+ 
+ $r=mysql_query($q) or die("Server error 1");
+ if(mysql_num_rows($r)>0)
+ {
+ 		$myascdescpub=$myascdescpub."activity=$activity&operation=$operation";
+ 	if(isset($state) and strcmp($state,'search')==0)
+ 	  $myascdescpub=$myascdescpub."&state=$state";
+ 	 pubshowpages("search_log.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%",$title_color);
+
+?>
+<table dir="rtl" border="1" width="100%" style="font-family: Arial; font-size: 8pt; color: #000000" cellspacing="0" cellpadding="0">
+  
+  <tr>
+    <td  bgcolor="#C0C0C0">
+      <p align="center" class='tahoma1'>رديف</b></td>
+    <td   bgcolor="#C0C0C0">
+      <p align="center" class='tahoma1'>كاربر</b></td>
+    <td   bgcolor="#C0C0C0">
+      <p align="center" class='tahoma1'><b>فعاليت</b></td>
+    <td   bgcolor="#C0C0C0">
+      <p align="center" class='tahoma1'><b>شرح فعاليت</b></td>
+    <td   bgcolor="#C0C0C0">
+      <p align="center" class='tahoma1'><b>تاريخ / زمان</b></td>
+       <td   bgcolor="#C0C0C0">
+      <p align="center" class='tahoma1'><b>IP</b></td>
+  </tr>
+<?
+   $i=1;
+   while($l=mysql_fetch_array($r))
+   {
+    $user=$l["adminuser"];
+    $operation=$l["operation"];
+    $activity=$l["activity"];
+    $op_date=$l["op_date"];
+    $op_time=$l["op_time"];
+    $ip=$l["ip"];
+    $startyear = substr($op_date,0,4);
+    $startmon = substr($op_date,5,2);
+    $startday = substr($op_date,8,2);
+    $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+
+?>
+  <tr>
+    <td   align="center" class='tahoma1'><? echo $i; ?></td>
+    <td   align="center" class='tahoma1'><? echo $user; ?></td>
+    <td   align="center" class='tahoma1' dir='rtl'><? echo $operation; ?></td>
+    <td   align="center" class='tahoma1' dir='rtl'><? echo $activity; ?></td>
+    <td   align="center" class='tahoma1' dir='ltr'><? echo $farsistartdate."<br> ".$op_time; ?></td>
+     <td   align="center" class='tahoma1' dir='ltr'><? echo $ip; ?></td>
+  </tr>
+<?
+   $i++;
+   }
+  echo "</table>";
+ }
+}
+footer_forms($admin,$seed);
+?>

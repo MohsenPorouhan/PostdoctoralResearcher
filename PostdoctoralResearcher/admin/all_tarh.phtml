@@ -1,0 +1,124 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+echo "<br>";
+
+$query="select * from tarh where version='-1' and payannameh='0' and confirm_moaven_tarh='1'";
+$result=mysql_query($query) or die("Error in selecting data from tarh2");
+if(mysql_num_rows($result) > 0 )
+{
+	?><table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+   <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد جلسه</font></td>
+  
+  <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">HSR</font></td>
+  
+  
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نوع طرح</font></td>
+  
+  <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ عقد قرارداد</font></td>
+  
+   
+     <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+      
+       <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام مجري</font></td>
+      
+      
+       <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+      
+      <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام مرکز</font></td>
+      
+ 
+      <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد مرکز</font></td>
+ 
+ <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رنک</font></td>
+ 
+ <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">سال</font></td>
+ 
+  </tr>
+  <?php 
+}
+
+ $color="#DADADA";
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ 	$cod_tarh=$row_fetched["cod_tarh"];
+ 	$cod=explode("-",$cod_tarh);
+ 	$year=$cod[0];
+ 	$rank=$cod[1];
+ 	$markaz=$cod[2];
+ 	$cod_tarh2=$cod[3];
+ 	$tarh_title_farsi=$row_fetched["tarh_title_farsi"];
+ 	
+ 	$myq="select * from daneshkade where cod_daneshkade='$markaz'";
+  	$myres=mysql_query($myq);
+  	$myrf=mysql_fetch_array($myres);
+  	$daneshkade=$myrf["daneshkade_name"];
+  	$mablagh_aghd_gharardad = $row_fetched["mablagh_aghd_gharardad"];
+ 	$tarh_type_2 = $row_fetched["tarh_type_2"];
+ 	$query="select * from tarhtype_2 where tarh_type='$tarh_type_2' order by tarh_type_desc ";
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+ 	$qrow_fetched=mysql_fetch_array($qresult);
+ 	$tarh_type=$qrow_fetched["tarh_type_desc"];
+ 	$cod_jalase=$row_fetched["cod_jalase"];
+ 	 $m_tarh_type=$row_fetched["tarh_type"];
+  
+  if(strcmp($m_tarh_type,"6")==0)
+     $hsr="hsr"; 	
+     else 
+     $hsr="";
+ 	
+	 $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+	  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+	  $mojri_tag="1";
+	  if(mysql_num_rows($myresult_mojri) > 0 )
+	  {
+	    $First_mojri = mysql_fetch_array( $myresult_mojri );
+	    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+	  }
+	  else
+	  {
+	    $mojri_tag="0";
+	    $First_mojri_name = "اطلاعات موجود نيست";
+	  }
+ 	
+ 	echo "<tr>";
+ 	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$cod_jalase</td>";
+ 	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$hsr</td>";
+ 	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$tarh_type</td>";
+ 	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$mablagh_aghd_gharardad</td>";
+ 	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">$tarh_title_farsi</td>";
+ 	echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">$First_mojri_name</td>";
+ 	 echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$cod_tarh2</td>";
+ 	 echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$daneshkade</td>";
+ 	  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$markaz</td>";
+ 	   echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$rank</td>";
+ 	    echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">$year</td>";
+ 	    echo "</tr>";
+ 	    if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";
+ }
+
+echo "</table>";
+footer_forms($admin,$seed)
+?>

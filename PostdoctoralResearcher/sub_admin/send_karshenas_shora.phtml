@@ -1,0 +1,156 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+require("include/class.phpmailer.php");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/print.phtml");
+
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade_shora=$myrow_fetched["cod_daneshkade"];
+
+if(isset($action))
+{
+  $i=0;
+  if (strcmp($action,"send_karshenas")==0)
+  {
+   
+   for($i==0;$i<100;$i++)
+   {
+    $myvariable="check".$i;
+    $myuser="value_".$i;
+    $mycodkarshenas = "cod_karshenas_".$i;
+    if (isset($$myvariable))
+    {
+      $myvariable="check".$i;
+      $myuser="value_".$i;
+      $myname_family="name_".$i;
+	  $mail = new PHPMailer();
+	  ob_start();
+	  send_mail_tarh($cod_tarh);
+      $emailbody=ob_get_contents();
+      ob_end_clean();
+      ob_end_flush();
+      $mail->IsSMTP();                                      // set mailer to use SMTP
+      $mail->SMTPAuth=$smtpauth;
+      $mail->Username=$email_username;
+      $mail->Password=$email_password;
+      $mail->Host = $mailserver_host;  // specify main and backup server
+      
+      $mailname=$$myname_family;
+      $mail->From = $email_from;
+	  $mail->FromName = $email_from_name;
+      $mail->AddAddress($$myuser, $mailname);
+      $mail->IsHTML(true);                                  // set email format to HTML
+
+      $mail->Subject = "طرح پژوهشي ارسال شده از طرف مدير سيستم";
+      $mail->Body    = $emailbody;
+      $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+      if(!$mail->Send())
+      {
+          $status="mail_err";
+      }
+      else
+      {
+         /* message_show(".طرح به کارشناس مربوطه ارسال شد","green");
+          footer_forms($admin,$seed);
+          exit();*/
+      }
+
+	  $i++;
+	  $query="select * from karshenas_shora_tarh where cod_tarh=\"$cod_tarh\" and cod_karshenas=\"".$$mycodkarshenas."\"";
+	  $result=mysql_query($query) or die("Error in selecting data from karshenas_shora_tarh ");
+	  if ( mysql_num_rows($result)==0 )
+	  {
+	    $query="insert into karshenas_shora_tarh set cod_tarh=\"$cod_tarh\" , cod_karshenas=\"".$$mycodkarshenas."\"";
+	    $result = mysql_query($query) or die ("error in inserting data into karshenas_shora_tarh");
+	  }
+    }
+  }
+  }
+}
+echo "<br>";
+   $query="select * from karshenas_shora where (cod_daneshkade='$cod_daneshkade_shora' or cod_daneshkade_second='$cod_daneshkade_shora' or cod_daneshkade_third='$cod_daneshkade_shora' or cod_daneshkade_4='$cod_daneshkade_shora' or cod_daneshkade_5='$cod_daneshkade_shora' or cod_daneshkade_6='$cod_daneshkade_shora' or cod_daneshkade_7='$cod_daneshkade_shora' or cod_daneshkade_8='$cod_daneshkade_shora' or cod_daneshkade_9='$cod_daneshkade_shora' or cod_daneshkade_10='$cod_daneshkade_shora')";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas shora");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+
+//    $query="select * from mojri , mojri_tarh where mojri.mojri_code = mojri_tarh.mojri_code and mojri_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+  //  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+
+    ?>
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=send_karshenas&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+    <table border="0" width="90%" cellpadding="1" cellspacing="1">
+    <tr>
+    <td width="100%" bgcolor="#66CCFF"  colspan="5">
+
+      <p align="center" class="tahoma1"><font color="black">ارسال براي کارشناسان شورا</font></td>
+    </tr>
+
+	<tr>
+	<td align="center"  width="3%" bgcolor="#66CCFF">
+     
+		<input type="checkbox" name="checkall" onClick="checkUncheckAll(this);"></td>
+
+    <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">پست الکترونيکي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ $i=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"checkbox\" name=\"check".$i."\" value=\"ON\"></td>";
+  echo "<input type=\"hidden\" name=\"value_".$i."\" value=\"".$row_fetched["kar_shora_email"]."\">";
+  echo "<input type=\"hidden\" name=\"name_".$i."\" value=\"".$row_fetched["kar_shora_name"]."&nbsp;".$row_fetched["kar_shora_family"]."\">";
+  echo "<input type=\"hidden\" name=\"cod_karshenas_".$i."\" value=\"".$row_fetched["cod_karshenas"]."\">";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["kar_shora_email"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["kar_shora_family"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["kar_shora_name"]."</td>";
+  echo "</tr>";
+  $i++;
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+
+
+echo "</table>";
+echo "<br><input type=\"submit\" value=\"ارسال\" name=\"B1\" class=\"but-small\">";
+echo "</form>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ عضوي در شورا يافت نشد","red");
+}
+
+
+
+
+?>
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_karshenas&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="send_karshenas.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

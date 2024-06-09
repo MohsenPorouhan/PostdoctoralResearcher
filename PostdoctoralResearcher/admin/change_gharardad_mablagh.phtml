@@ -1,0 +1,143 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+      $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+   
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+   
+      
+      if ( mysql_num_rows($result) == 1 )
+      {
+		$mablagh=str_replace(",","",$mablagh);
+		$query="update tarh  set mablagh_aghd_gharardad=\"$mablagh\" where  cod_tarh='$cod_tarh' and version='-1'";
+ 
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="تغيير در مبلغ طرح"."<br>".$tarh_name;
+   
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		message_show(".مبلغ طرح تغيير يافت ","green");
+		footer_forms($admin,$seed);
+		exit();		
+      }
+    
+  }
+}
+$qt1="select * from jalase_shora_tarh where cod_tarh='$cod_tarh'";
+  $rt1=mysql_query($qt1) or die("error");
+  $budje_mosavab=0;
+  if(mysql_num_rows($rt1) > 0)
+  {
+  	 $rft1=mysql_fetch_array($rt1);
+  	 $budje_mosavab=$rft1["budjeh"];
+  	 
+  } 
+  $budje_mosavab=str_replace("/","",$budje_mosavab);
+  $budje_mosavab=number_format($budje_mosavab);
+  
+   $budje=sum_of_hazine($cod_tarh,"-1");
+   $budje=number_format($budje);
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $mablagh=number_format($row_fetched["mablagh_aghd_gharardad"]);
+ 
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+ <TD align=right width="100%" class="tahoma1"  >
+    مبلغ قرارداد
+      </TD>  
+	  </TR>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+ <tr>
+    <td width="350" align="right"><input type="text"  value='<? echo $budje ; ?>'  disabled  name="mablagh" class="edit-user"></td>
+    <td width="150" class="tahoma1">بودجه پيشنهادي مجري</td>
+  </tr>
+<tr>
+    <td width="350" align="right"><input type="text"  value='<? echo $budje_mosavab; ?>'  disabled   name="mablagh" class="edit-user"></td>
+    <td width="150" class="tahoma1">بودجه مصوب</td>
+  </tr>
+
+  <tr>
+   
+    <td width="60%" class="tahoma1" valign="top" align="right"><span class="star-message"><input type="text"  onkeyup="MakingMoneyForm(this)" name="mablagh" value="<? echo $mablagh; ?>"  size="20" class="edit-user" ></span></td>
+        <td width="40%" class="tahoma1" valign="top" align="left">مبلغ</td>
+  </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

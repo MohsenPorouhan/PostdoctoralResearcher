@@ -1,0 +1,530 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+echo "<br>";
+ 
+if(isset($action))
+ {
+ if(strcmp($action,"del")==0)
+  {
+  	$query="delete from issn where issn_id='$delete_id'";
+  	//echo $query;
+  //	exit();
+  	$result=mysql_query($query) or die("Error");
+  	
+  }
+
+  if (strcmp($action,"edit_second")==0)
+  {
+  	if(strlen(trim($edit_id)) > 0 )
+  	{
+  		$query="select * from issn where  issn_id=\"$edit_id\"";
+  
+  		$result1=mysql_query($query) or die("Error in query data from tarh-type");
+  
+  		if(mysql_num_rows($result1) > 0)
+  		{
+  			$query="update  issn set p_issn='$p_issn',e_issn='$e_issn',journal_title='$journal_title',impact_factor='$impact_factor',isi='$isi',pubmed='$pubmed',scopus='$scopus',others='$others',non_index='$non_index',top_index='$top_index' where issn_id='$edit_id'";
+  
+  			mysql_query($query) or die ("Error in inserting data in tarh-type1");
+  				
+  			$issn_id="";
+  			$e_issn="";
+  			$p_issn="";
+  			$journal_title="";
+  			$impact_factor="";
+  			$isi="";
+  			$pubmed="";
+  			$scopus="";
+  			$others="";
+  			$non_index="";
+  			$top_index="-1";
+  		}
+  
+  	}
+  }
+  if (strcmp($action,"add")==0)
+  {
+  	if(strlen(trim($p_issn)) > 0 && strlen(trim($journal_title)) > 0 && strcmp($top_index,"-1")==0 )
+  	{
+  		$query="select * from issn where  p_issn=\"$p_issn\"";
+  
+  		$result1=mysql_query($query) or die("Error in query data from tarh-type");
+  
+  		if(mysql_num_rows($result1) <= 0)
+  		{
+  			$query="insert into  issn set p_issn='$p_issn',e_issn='$e_issn',journal_title='$journal_title',impact_factor='$impact_factor',isi='$isi',pubmed='$pubmed',scopus='$scopus',others='$others',non_index='$non_index',top_index='$top_index'";
+  
+  			mysql_query($query) or die ("Error in inserting data in tarh-type1");
+  
+  			$issn_id="";
+  			$e_issn="";
+  			$p_issn="";
+  			$journal_title="";
+  			$impact_factor="";
+  			$isi="";
+  			$pubmed="";
+  			$scopus="";
+  			$others="";
+  			$non_index="";
+  			$top_index="-1";
+  		}
+  	}
+  
+  }
+  
+  
+  if (strcmp($action,"edit")==0)
+  {
+  	if(strlen(trim($edit_id)) > 0 )
+  	{
+  		$query="select * from issn where  issn_id=\"$edit_id\"";
+  
+  		$result_edit=mysql_query($query) or die("Error in query data from tarh-type");
+  		$myrf=mysql_fetch_array($result_edit);
+  		$issn_id=$myrf["issn_id"];
+  		$e_issn=$myrf["e_issn"];
+  		$p_issn=$myrf["p_issn"];
+  		$journal_title=$myrf["journal_title"];
+  		$impact_factor=$myrf["impact_factor"];
+  		$isi=$myrf["isi"];
+  		$pubmed=$myrf["pubmed"];
+  		$scopus=$myrf["scopus"];
+  		$others=$myrf["others"];
+  		$non_index=$myrf["non_index"];
+  		$top_index=$myrf["top_index"];
+
+  	}
+  }
+  else {
+  	$issn_id="";
+  	$e_issnt="";
+  	$p_issn="";
+  	$journal_title="";
+  	$impact_factor="";
+  	$isi="";
+  	$pubmed="";
+  	$scopus="";
+  	$others="";
+  	$non_index="";
+  	$top_index="";
+  }
+  
+  
+ }
+
+$RecPerPage=30;
+//confirm_tarh=1
+if ( ! isset($tarh_type))
+    $tarh_type = '-1';
+ 
+if(strcmp($tarh_type,'-1')!=0 )
+{
+	$tarh_type_caution="tarh.tarh_type = '$tarh_type'";
+}
+else
+   $tarh_type_caution=1;
+    
+if ( ! isset($current))
+    $current = 1;
+
+if(!isset($ascdescfield))
+  $ascdescfield="cod_tarh";
+
+if(!isset($ascdesc))
+  $ascdesc="desc";
+  
+
+if ( ! isset($cod_daneshkade))
+    $cod_daneshkade = '-1';
+
+if(strcmp($cod_daneshkade,'-1')!=0 )
+{
+	$daneshkade_caution="cod_daneshkade = '$cod_daneshkade'";
+}
+else
+   $daneshkade_caution=1;
+   
+$cod_daneshkade_new=$cod_daneshkade;
+if ( ! isset($tarh_year))
+    $tarh_year = '-1';
+
+
+
+
+if(strcmp($tarh_year,'-1')!=0 )
+{
+	$year_caution="cod_tarh like \"$tarh_year".'%'."\"";
+}
+else
+   $year_caution=1;
+   
+
+//echo $tarh_year;
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=10000;
+      $current=1;
+    }
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+if(isset($name_e)  && strlen(trim($name_e))>0)
+{
+  $query="select * from issn where    (p_issn like $myname_search or e_issn like $myname_search or journal_title like $myname_search) order by issn_id asc  ";
+}
+else
+  $query="select * from issn where 1 order by issn_id asc " ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh1");
+$reccount = mysql_num_rows($result);
+ 
+ if(isset($name_e) && strlen(trim($name_e))>0)
+{
+  $query="select * from issn where    (p_issn like $myname_search or e_issn like $myname_search or journal_title like $myname_search) order by issn_id asc  "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select * from issn where  1  order by issn_id asc  "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+$result=mysql_query($query) or die("Error in selecting data from tarh2");
+
+
+
+
+if (strcmp($action,"edit")==0)
+{
+	echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=edit_second&admin=$admin&seed=$seed&edit_id=$edit_id&current=$current\">"; 
+}
+else {
+	echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=add&admin=$admin&seed=$seed\">";
+}?>
+<table border="0"  width="400" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?php 
+if (strcmp($status,"entry_error")==0)
+{
+	echo "<tr>";
+	echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+	echo "</tr>";
+}
+if (strcmp($status,"duplicate_entry")==0)
+{
+	echo "<tr>";
+	echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+	echo "</tr>";
+}
+if (strcmp($status,"delete_error")==0)
+{
+	echo "<tr>";
+	echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">بدليل استفاده از اين نوع ايندکس مقاله ، اين مورد قابل حذف نيست</td>";
+	echo "</tr>";
+}
+?>
+    <tr>
+      <td width="100%">
+        <div align="center">
+          <table border="0" width="100%" bgcolor="F0F0FF" height="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="p_issn" size="48" class="edit-tarh-type" value="<?php echo $p_issn;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>issn</td>
+            </tr>
+            
+			<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="e_issn" size="48" class="edit-tarh-type" value="<?php echo $e_issn;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">e_issn</td>
+            </tr>
+           
+			<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="journal_title" size="48" class="edit-tarh-type" value="<?php echo $journal_title;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>journal title</td>
+            </tr>
+            
+			<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="impact_factor" size="48" class="edit-tarh-type" value="<?php echo $impact_factor;?>"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">impact factor</td>
+            </tr>
+            <?php if(strcmp($isi, "1")==0)
+            			$checked="checked";
+            		else 
+            			$checked="";
+            	?>
+            <tr>
+              <td width="66%" align="right">
+                <p align="right"><input <?php echo $checked;?> type="checkbox" name="isi" size="48" value="1" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">isi</td>
+            </tr>
+             <?php if(strcmp($pubmed, "1")==0)
+            			$checked="checked";
+            		else 
+            			$checked="";
+            	?>
+            <tr>
+              <td width="66%" align="right">
+                <p align="right"><input <?php echo $checked;?> type="checkbox" name="pubmed" size="48" value="1" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">pubmed</td>
+            </tr>
+             <?php if(strcmp($scopus, "1")==0)
+            			$checked="checked";
+            		else 
+            			$checked="";
+            	?>
+             <tr>
+              <td width="66%" align="right">
+                <p align="right"><input <?php echo $checked;?> type="checkbox" name="scopus" size="48" value="1" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">scopus</td>
+            </tr>
+              <?php if(strcmp($others, "1")==0)
+            			$checked="checked";
+            		else 
+            			$checked="";
+            	?>
+            <tr>
+              <td width="66%" align="right">
+                <p align="right"><input <?php echo $checked;?> type="checkbox" name="others" size="48" value="1" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">others</td>
+            </tr>
+              <?php if(strcmp($non_index, "1")==0)
+            			$checked="checked";
+            		else 
+            			$checked="";
+            	?>
+            <tr>
+              <td width="66%" align="right">
+                <p align="right"><input <?php echo $checked;?> type="checkbox" name="non_index" size="48" value="1" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">non_index</td>
+            </tr>
+            
+             <tr>
+              <td width="66%" align="right">
+                <p align="right"><select name="top_index" >
+               
+                	<option value="-1">انتخاب کنيد...</option>
+                	 <?php 
+	                if(strcmp($top_index, "1")==0)
+						$selected="selected";
+	                else 
+	                	$selected="";
+	                ?>
+                	<option <?php echo $selected;?> value="1">isi</option>
+                	 <?php 
+	                if(strcmp($top_index, "2")==0)
+						$selected="selected";
+	                else 
+	                	$selected="";
+	                ?>
+                	<option <?php echo $selected;?> value="2">pubmed</option>
+                	 <?php 
+	                if(strcmp($top_index, "3")==0)
+						$selected="selected";
+	                else 
+	                	$selected="";
+	                ?>
+                	<option <?php echo $selected;?> value="3">scopus</option>
+                	 <?php 
+	                if(strcmp($top_index, "4")==0)
+						$selected="selected";
+	                else 
+	                	$selected="";
+	                ?>
+                	<option <?php echo $selected;?> value="4">others</option>
+                	 <?php 
+	                if(strcmp($top_index, "5")==0)
+						$selected="selected";
+	                else 
+	                	$selected="";
+	                ?>
+                	<option value="5">nonindex</option>
+                </select></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>top index</td>
+            </tr>
+              
+            <tr>
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="اضافه" name="submit_tarh"></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<?php 
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>ليست issn<b></td>
+ </tr>
+ 
+ </table> 
+ 
+ <table  cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+
+ <tr>
+<?    
+
+echo "<td  align=\"left\" class=\"tahoma1\"></td>";
+ 
+ 
+ 
+ echo "<td  align=\"left\" class=\"tahoma1\"> </td>";
+ 
+  
+ 
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&tarh_type=$tarh_type\">";
+
+?>  
+ <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ 
+ </tr>
+
+
+ </table>
+ </form>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ //$myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type";
+ if(isset($name_e))
+  $myascdescpub=$myascdescpub."&name_e=$name_e";	
+	
+ pubshowpages("issn.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%",$title_color);
+?>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">حذف</font></td>
+   <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ويرايش</font></td>
+      <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">Top index</font></td>
+       <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">Index type</font></td>
+       <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">Impact factor</font></td>
+       <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام مجله</font></td>     
+   <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">E_ISSN</font></td>
+     <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ISSN</font></td>
+    <td width="5%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">رديف</font></td>
+  </tr>
+  <?
+
+ $color=$list_color_1;
+ $cntr=1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+	if(strcmp($color,$list_color_1)==0)
+		$color=$list_color_2;
+	else
+		$color=$list_color_1;
+	$cntr=($current-1)*$RecPerPage+$cntr;
+ 	$isi=$row_fetched["isi"];
+ 	if(strcmp($isi,"1")==0)
+ 		$isi="<img border=\"0\" src=\"image/tick.gif\" width=\"11\" height=\"13\" alt=\"هست\" >";
+ 	else 
+ 		$isi="";
+ 	$pubmed=$row_fetched["pubmed"];
+ 	if(strcmp($pubmed,"1")==0)
+ 		$pubmed="<img border=\"0\" src=\"image/tick.gif\" width=\"11\" height=\"13\" alt=\"هست\" >";
+ 	else
+ 		$pubmed="";
+ 	$scopus=$row_fetched["scopus"];
+ 	if(strcmp($scopus,"1")==0)
+ 		$scopus="<img border=\"0\" src=\"image/tick.gif\" width=\"11\" height=\"13\" alt=\"هست\" >";
+ 	else
+ 		$scopus="";
+ 	$others=$row_fetched["others"];
+ 	if(strcmp($others,"1")==0)
+ 		$others="<img border=\"0\" src=\"image/tick.gif\" width=\"11\" height=\"13\" alt=\"هست\" >";
+ 	else
+ 		$others="";
+ 	$non_index=$row_fetched["non_index"];
+ 	if(strcmp($non_index,"1")==0)
+ 		$non_index="<img border=\"0\" src=\"image/tick.gif\" width=\"11\" height=\"13\" alt=\"هست\" >";
+ 	else
+ 		$non_index="";
+   $index_type="<table width='100%' border='0' cellpadding='1' cellspacing='1' class='tahoma1' bgcolor=$color><tr><td bgcolor='$color'>isi</td><td bgcolor='$color'>pubmed</td><td bgcolor='$color'>scopus</td><td bgcolor='$color'>others</td><td bgcolor='$color'>non_index</td></tr><tr><td bgcolor='$color'>$isi</td><td bgcolor='$color'>$pubmed</td><td bgcolor='$color'>$scopus</td><td bgcolor='$color'>$others</td><td bgcolor='$color'>$non_index</td></tr></table>";
+   $top_index=$row_fetched["top_index"];
+   if(strcmp($top_index,"1")==0)
+   	  $top_index="ISI";
+   else if(strcmp($top_index,"2")==0)
+   	  $top_index="PUBMED";
+   else if(strcmp($top_index,"3")==0)
+   		$top_index="SCOPUS";
+   else if(strcmp($top_index,"4")==0)
+   		$top_index="OTHERS";
+   else if(strcmp($top_index,"5")==0)
+   		$top_index="NON_INDEX";
+   	
+  echo "<tr>";
+  echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=issn.phtml&admin=$admin&seed=$seed&action=delete_sms&delete_id=".$row_fetched["issn_id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a</td>";
+  //echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"issn.phtml?action=edit&current=$current&admin=$admin&seed=$seed&edit_id=".$row_fetched["issn_id"]."\><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+  echo "<td bgcolor=$color align=\"center\" class=\"tahoma1\">";
+  echo "<a  href=\"issn.phtml?action=edit&current=$current&admin=$admin&seed=$seed&edit_id=".$row_fetched["issn_id"]."\"> <img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\"></a></td>";
+  
+  echo "<td bgcolor=$color width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$top_index."</td>";
+  echo "<td bgcolor=$color width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$index_type."</td>";
+  echo "<td bgcolor=$color width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["impact_factor"]."</td>";
+  echo "<td bgcolor=$color width=\"25%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["journal_title"]."</td>";
+  echo "<td bgcolor=$color width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["e_issn"]."</td>";
+  echo "<td bgcolor=$color width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["p_issn"]."</td>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"> ".$cntr."</td>";
+ 
+  echo "</tr>";
+  $cntr++;
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show("پيام کوتاهي يافت نشد","red");
+}
+ 
+  
+footer_forms($admin,$seed);
+
+
+?>

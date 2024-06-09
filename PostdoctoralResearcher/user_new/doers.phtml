@@ -1,0 +1,196 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+ ?>
+<script language="JavaScript">
+<!--
+ 
+window.resizeTo(830,600)
+-->
+</script>
+
+<?
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($action) && strcmp($action,"send_doer")==0)
+{
+	?>
+    <script language="javascript">
+	  
+	 window.opener.document.getElementById("<? echo $ostad; ?>").value = <? echo $radio_select;  ?>;
+    </script>
+<?
+	
+}
+/*
+$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+*/
+$RecPerPage=15;
+ if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=7000;
+      $current=1;
+    }
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+if(isset($name_e))
+{
+  $query="select * from user_login  where (name like $myname_search  or family like $myname_search or email like $myname_search)   order by family desc";
+}
+else
+  $query="select * from user_login where 1 order by family desc";
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+
+$reccount = mysql_num_rows($result);
+
+ if(isset($name_e))
+{
+  $query="select * from user_login where (name like $myname_search  or family like $myname_search or email like $myname_search)   order by family desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select * from user_login where 1 order by family desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>مجريان<b></td>
+ </tr>
+ </table>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+
+ <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+
+ </tr>
+ </table>
+ 
+ 
+<?
+}
+echo "</form>";
+ echo "<form name=\"sabt_doer\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&action=send_doer&ostad=$ostad\">";
+
+if(mysql_num_rows($result) > 0 )
+{
+  if(isset($name_e))	
+      $myascdescpub=$myascdescpub."&name_e=$name_e";
+  pubshowpages("doers.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+   <tr>
+     
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">پست الکترونيکي</font></td>
+     <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="25%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+      <td width="25%" bgcolor="#66CCFF">
+     
+     انتخاب
+      <input type="checkbox" name="checkall" onClick="checkUncheckAll(this);">
+       </td>
+  </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ 
+      $hesab=$row_fetched["hesab"];
+		$bank_name=$row_fetched["bank_name"];
+		$shoabe=$row_fetched["shoabe"];
+
+  
+	    $bank_name_desc="";
+		if(strlen(trim($bank_name))>0)
+		{
+ 	$q="select *  from hesab_type where hesab_type ='$bank_name'";
+ 	$rs_bnk=mysql_query($q) or die("error");
+	$rf_bnk=mysql_fetch_array($rs_bnk);
+	
+	$bank_name_desc=$rf_bnk["hesab_type_desc"];
+	}
+		 
+
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $from_letter=$row_fetched["from_letter"];
+  $id=$row_fetched["id"];
+  $email=$row_fetched["email"];
+  $q_user="select * from tarh where creator='$email' and version='-1'";
+  $q_result=mysql_query($q_user);
+  $tarh_cnt=mysql_num_rows($q_result);
+   
+  $position="";
+  if(mysql_num_rows($q_result) > 0)
+  {
+  	while($tarh_rf=mysql_fetch_array($q_result))
+  	{
+  	  $cod_tarh=$tarh_rf["cod_tarh"];
+	  $cod_tarh=$tarh_rf["cod_tarh"];
+      $position_tarh_code=current_position($cod_tarh);
+      $position=$position."<br><br><a href='search_result.phtml?admin=$admin&seed=$seed&name_e=$cod_tarh'>".$position_tarh["$position_tarh_code"].": $cod_tarh"."</a>";
+  	}
+  }
+  else
+  $position='نامعلوم';
+  
+  
+   
+  
+  
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"mojri_detail.phtml?admin=$admin&seed=$seed&mojri_username=".$row_fetched["email"]."\">".$row_fetched["email"]."</a></td>";
+   echo "<td width=\"15%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"mojri_detail.phtml?admin=$admin&seed=$seed&mojri_username=".$row_fetched["email"]."\">".$row_fetched["family"]."</a></td>";
+  echo "<td width=\"15%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a href=\"mojri_detail.phtml?admin=$admin&seed=$seed&mojri_username=".$row_fetched["email"]."\">".$row_fetched["name"]."</a></td>";
+  
+       echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type=\"radio\" name=\"radio_select\"  value=\"$email\"></td>";
+
+  echo "</tr>";
+
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "<input type='submit' value='ارسال'>";
+echo "</form>";
+//footer_forms($admin,$seed);
+
+
+?>

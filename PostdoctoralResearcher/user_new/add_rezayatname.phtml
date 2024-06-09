@@ -1,0 +1,779 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+
+
+header_forms();
+?>
+<style>
+.rezayat_form2{
+display:none;
+}
+.input-icon.right i {
+right: 338px;
+float: right;
+}
+.form-horizontal .control-label{
+	text-align:right;
+}
+</style>
+
+<?php
+include("include/new_menu.php");
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+<style>
+.
+</style>
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                            <h3>مجري محترم</h3>
+                            <p>در تنظيم فرم رضايت آگاهانه پژوهش خود به نکات کلي ذيل توجه کنيد</p>	
+                            <p>1)فرم رضايت آگاهانه بايد منطبق با اطلاعات مربوط به پژوهش و به زبان غير تخصصي و قابل فهم براي سواد حدود پنجم ابتدايي تنظيم شود</p>
+							<p>2) شما در تنظيم فرم ميتوانيد براي مفهوم تر و روانتر شدن متن، جملات از پيش نوشته شده اين فرم را تغيير دهيد اما روال منطقي ارائه اطلاعات به همين ترتيبي است که در بند هاي اين فرم برايتان آورده شده است.</p>
+							<p>3) در خصوص تک تک بند ها به توضيحاتي که به صورت کامنت براي تنظيم بهتر آورده شده است توجه کنيد.</p>
+							<p>4) توصيه ميشود فرم را پس از تنظيم و قبل از ارسال ، به چند نفر ازمردم معمولي بدهيد تا مفهوم بودن محتواي آن را بررسي کنند و اصلاحات لازم براي بهبود متن را اعمال نماييد.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                       <h3 class="page-title">
+                            <small id="page-title">عنوان طرح :</small>
+                            <small><? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="navigator-home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="send-edit" href="tarh_list.phtml">
+                                    ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="rezayatname" href="add_rezayatname.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    فرم رضايت نامه
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="caption-grid" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                             
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                
+                                    <?php 
+                                    $active_id="16";
+                                    include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                    
+                                 <div class="portlet box blue">
+									<div class="portlet-title">
+										<div id="caption_title" class="caption">
+											<i class="fa fa-reorder"></i>  فرم رضايت نامه
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body form">  
+                                  <!-- BEGIN FORM-->
+										
+                                   
+                                    
+                                   <? echo "<form  method=\"post\" action=\"add_rezayatname_sabt.php?action=sabt&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" class=\"form-horizontal rezayat_form\">"; ?>
+                                       
+									
+							              <div class="form-body">
+	                                        <div class="form-group">
+                                            <label class="col-md-5 control-label">آيا پژوهش شما نياز به تکميل فرم رضايت نامه دارد يا خير؟</label>
+		                                           <div id="a0" class="radio-list">
+		                                            <label class="radio-inline">
+		                                                 <input type="radio" name="a0" value="1">بلي</label>
+		                                             
+														 <label class="radio-inline">
+		                                                 <input type="radio" name="a0" value="0" >خير</label>                          	
+		                                            </div>
+                                            </div>
+											</div>
+											<div class="form-actions fluid">
+												<div class="col-md-offset-3 col-md-9">
+													<button id="rezayatname_btn" type="submit" class="btn blue">ذخيره</button>
+													<button type="button" class="btn default">انصراف</button>
+												</div>
+											</div>
+								   </form>
+								   <?php echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"add_rezayatname_sabt.php?action=add_rezayatname&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" class=\"form-horizontal rezayat_form2\">"; ?>
+							         <div class="form-body">
+							         	<div id="alert-danger" class="alert alert-danger display-hide">
+												<button class="close" data-close="alert"></button>
+											    پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+										</div>
+							           <div class="form-group">
+							            <label class="col-md-12">آيا در پژوهش شما سوژه انساني فاقد "صلاحيت قانوني" يا "ظرفيت تصميم گيري" به عنوان مثال(کودک، ناتوان ذهني، بيمار سايکوتيک، بيمار با کاهش سطح هوشياري و ...) جهت اعلام رضايت معتبر وجود دارد؟ </label>
+										<label id="label0" class="col-md-12" style="text-align: right;">با توجه به پاسخ شما به سوال فوق چه کسي فرم رضايت نامه را تکميل مي نمايد؟</label>
+										<div id="rezayatname_type" class="col-md-9 radio-list">
+											<label>
+											<?php 
+											
+											$query="select * from tarh where cod_tarh=\"$cod_tarh\" and version='-1' ";
+											$result=mysql_query($query) or die("Error in updating data into tarh1");
+											$my_row_fetched=mysql_fetch_array($result);
+											$form_rezayatname=$my_row_fetched['form_rezayatname'];
+											
+											$rezayatname_type=$my_row_fetched['rezayatname_taype'];
+											
+											if($rezayatname_type=='1')
+												 	$select="checked='checked'";
+												 	else 
+												 	$select=""; ?>
+											<input type="radio" name="rezayatname_type" <?php echo $select ?> value="1">سوژه پژوهش</label>
+											<label>
+											<?php 
+											if($rezayatname_type=='2')
+											    $select="checked='checked'";
+												else
+											    $select=""; 
+										    ?>
+											
+											<input type="radio" name="rezayatname_type" <?php echo $select ?> value="2">تصميم گيرنده جايگزين(ولي/وکيل قانوني/قيم و ...)</label>
+											<label>
+											<?php 
+											if($rezayatname_type=='3')
+											    $select="checked='checked'";
+												else
+											    $select=""; 
+										    ?>
+											<input type="radio" name="rezayatname_type" <?php echo $select ?> value="3">هر دو</label>
+										</div>
+										</div>
+										
+										<div id="rezayatname_label" class="col-md-offset-0">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label id="label1" data-toggle="tooltip" data-placement="top" title="عين عبارت هدف پروپوزال را کپي نکنيد بلکه با جملاتي که براي مردم قابل فهم باشد هدف را براي شرکت کنندگان توضيح دهيد" class="control-label col-md-12 col-md-push-0">
+			                                            <span class="required">
+																	*
+														</span></label>
+													<div class="col-md-6">
+			                                            
+			                                            <?
+			                                            
+			                                             //echo "form_rez ".$form_rezayatname;
+			                                             $i=check_field_value($form_rezayatname,"a1");
+			                                             if($i=="-1")
+			                                            	$i="";
+			                                            ?>
+			                                            <div class="input-icon right">
+															<i class="fa"></i>
+			                                            <textarea name="a1" class="form-control" rows="3">
+			                                            
+			                                            <?
+			                                             echo $i; 
+			                                            ?>
+			                                            </textarea>
+			                                            </div>
+		                                            </div>
+		                                        </div>
+	                                        </div>
+	                                    </div>
+	                                    <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label2">
+	                                            <span class="required">
+															*
+												</span></label>        
+	                                        </div>
+	                                    </div>
+	                                     <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label3">
+	                                            <span class="required">
+															*
+												</span></label>
+	                                        </div>
+	                                     </div>
+	                                    	<div class="row">
+		                                        <div class="col-md-12">
+		                                        	<div class="form-group">
+		                                        		<label id="label4" class="control-label col-md-12 col-md-push-0" data-toggle="tooltip" data-placement="top" title="در اين بخش بسته به پژوهش خود براي شرکت کنندگان به زبان ساده توضيح دهيد که: چه مداخله اي بر روي آنها صورت ميگيرد چه اطلاعاتي از آنها ميپرسند چه اقدامات پاراکلينيکي بر روي آنها انجام ميشود چه نمونه اي و با چه حجمي و در چند نوبت از آنها ميگيريد همکاري در اين پژوهش چه مدت طول ميکشد در اين مدت چند نوبت مراجعه بايد داشته باشيد و به چه فواصلي هر نوبت مراجعه چقدر وقت آنها را ميگيرد در فواصل مراجعه چه اقداماتي را بايد انجام دهيد چه اقداماتي را در پيگيري آنها انجام ميدهيد اگر بطور رندوم در يکي از گروه هاي درماني قرار ميگيريد اين واقعيت به آنها ذکر شود اگر هزينه صرف وقت و رفت و آمد شرکت کنندگان را نيز جبران خواهيد کرد">
+				                                            <span class="required">
+																		*
+															</span></label>
+			                                        	<div class="col-md-6">
+				                                            
+				                                            <?
+				                                             $i=check_field_value($form_rezayatname,"a2");
+				                                             if($i=="-1")
+				                                             $i="";
+				                                             ?>
+				                                             <div class="input-icon right">
+																<i class="fa"></i>
+				                                            <textarea name="a2" class="form-control" rows="3">
+				                                            <?
+				                                             echo $i;
+				                                            ?>
+				                                            </textarea>
+				                                            </div>
+				                                        </div>
+		                                            </div>
+		                                        </div>
+	                                      	</div>
+	                                       <div class="row">
+		                                        <div class="col-md-12">
+			                                        <div class="form-group">
+					                                        <label id="label5" class="control-label col-md-12 col-md-push-0" data-toggle="tooltip" data-placement="top" title="در اينجا ميتوانيد سود بالقوه اي که شرکت کنندگان ميتوانند از شرکت در اين پژوهش ببرند بنويسيد. اين سود ميتواند شرح احتمال درمان يا تشخيص بهتر بيماريشان،دريافت خدمات سلامت رايگان و يا پرداخت مشوق مالي در ازاي جبران همکاريشان باشد. اگر پژوهش سود مستقيمي براي شرکت کننده ندارد دقيقا به آن اشاره کنيد و ميتوانيد اينکه شرکت آنها در پژوهش ميتواند به بهبود روشهاي تشخيصي و درماني کمک کند را ذکر کنيد.">
+						                                            <span class="required">
+																		*
+															</span></label>
+				                                        <div class="col-md-6">
+				                                            
+				                                            <?
+				                                             $i=check_field_value($form_rezayatname,"a3");
+				                                             if($i=="-1")
+				                                             $i="";
+				                                             ?>
+				                                             <div class="input-icon right">
+																<i class="fa"></i>
+				                                            <textarea name="a3" class="form-control" rows="3">
+				                                            <?
+				                                             echo $i; 
+				                                            ?>
+				                                            </textarea>
+				                                            </div>
+				                                        </div>
+			                                        </div>
+		                                        </div>
+	                                      	</div>
+	                                     	<div class="row">
+		                                        <div class="col-md-12">
+		                                        	<div class="form-group">
+		                                        		 <label id="label6" class="control-label col-md-12 col-md-push-0" data-toggle="tooltip" data-placement="top" title="منظور عوارض و ميزان احتمال بروز آنها در اين پژوهش است">
+				                                            <span class="required">
+																		*
+															</span></label>
+			                                        	<div class="col-md-6">
+				                                           
+				                                            <?
+				                                             $i=check_field_value($form_rezayatname,"a4");
+				                                             if($i=="-1")
+				                                             $i="";
+				                                             ?>
+				                                             <div class="input-icon right">
+																<i class="fa"></i>
+				                                            <textarea name="a4" class="form-control" rows="3">
+				                                            <?
+				                                             echo $i; 
+				                                            ?>
+				                                            </textarea>
+			                                            </div>
+			                                            </div>
+		                                            </div>
+		                                        </div>
+	                                    	</div>
+	                                     	<div class="row">
+		                                        <div class="col-md-12">
+			                                        <div class="form-group">
+			                                        	<label id="label7" class="control-label col-md-12 col-md-push-0" data-toggle="tooltip" data-placement="top" title="براي آنکه شرکت کننده بتواند ارزيابي مناسبي از سود و زيان شرکت در پژوهش شما داشته باشد لازم است بتواند سود و زيان مداخلات معمول و مداخلات اين پژوهش را مقايسه کند. به عنوان مثال ميزان موفقيت و ميزان عوارض هر يک را مقايسه کند.">
+				                                            <span class="required">
+																		*
+															</span></label>
+				                                        <div class="col-md-6">
+				                                            
+				                                             <?
+				                                             $i=check_field_value($form_rezayatname,"a5");
+				                                             if($i=="-1")
+				                                             $i="";
+				                                             ?>
+				                                             <div class="input-icon right">
+																<i class="fa"></i>
+				                                            <textarea name="a5" class="form-control" rows="3">
+				                                            <?
+				                                             echo $i; 
+				                                            ?>
+				                                            </textarea>
+				                                            </div>
+				                                        </div>
+			                                        </div>
+		                                        </div>
+	                                      	</div>
+	                                      <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label8">
+	                                            <span class="required">
+															*
+												</span></label>
+	                                        </div>
+	                                      </div>
+	                                       <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label9">
+	                                            <span class="required">
+															*
+												</span></label>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+		                                        <div class="col-md-12">
+			                                        <div class="form-group">
+			                                        	<label id="label10" class="control-label col-md-12 col-md-push-0" data-toggle="tooltip" data-placement="top" title="تمام اقدامات پژوهشي بايد براي بيمار رايگان باشد و بيمار بداند شامل چه مواردي هستند. در ذيل اين بند اقداماتي که در طي اين پژوهش براي بيمار رايگان انجام ميشود را فهرست کنيد.">
+				                                            <span class="required">
+																		*
+															</span></label>
+				                                        <div class="col-md-6">
+				                                            
+				                                            <?
+				                                             $i=check_field_value($form_rezayatname,"a6");
+				                                             if($i=="-1")
+				                                             $i="";
+				                                             ?>
+				                                             <div class="input-icon right">
+																<i class="fa"></i>
+				                                            <textarea name="a6" class="form-control" rows="3">
+				                                            <?
+				                                             echo $i; 
+				                                            ?>
+				                                            </textarea>
+				                                            </div>
+			                                            </div>
+			                                        </div>
+		                                        </div>
+	                                      </div>
+	                                      
+	                                      <div class="row">
+	                                        <div id="label11" class="col-md-12">
+	                                             <?
+	                                             $i=check_field_value($form_rezayatname,"a7");
+	                                             if($i=="-1")
+	                                             $i="";
+	                                             ?>
+												11.خانم / آقاي 
+												<label style='vertical-align:middle' class='control-label'><input type='text' name="a7" value="<?php echo $i; ?>" class='form-control col-md-2' placeholder=''></label>
+												 جهت پاسخگويي به اينجانب معرفي شد و به من گفته شد تا هر وقت مشکلي يا سوالي در رابطه با شرکت در پژوهش مذکور پيش آمد با ايشان در ميان بگذارم و راهنمايي بخواهم.
+	                                        
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-6">
+	                                            <label>آدرس و شماره تلفن ثابت و همراه ايشان به شرح زير به من ارائه شد.:</label>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-6">
+	                                            <label>آدرس:</label>
+	                                            <?
+	                                             $i=check_field_value($form_rezayatname,"a8");
+	                                             if($i=="-1")
+	                                             $i="";
+	                                             ?>
+	                                            <textarea name="a8" class="form-control" rows="3">
+	                                            <?
+	                                             echo $i; 
+	                                            ?>
+	                                            </textarea>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-6">
+	                                            <label>تلفن ثابت :</label>
+	                                            <?
+	                                             $i=check_field_value($form_rezayatname,"a9");
+	                                             if($i=="-1")
+	                                             $i="";
+	                                             ?>
+	                                            <textarea name="a9" class="form-control" rows="3">
+	                                            <?
+	                                             echo $i; 
+	                                            ?>
+	                                            </textarea>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-6">
+	                                            <label>تلفن همراه:</label>
+	                                            <?
+	                                             $i=check_field_value($form_rezayatname,"a10");
+	                                             if($i=="-1")
+	                                             $i="";
+	                                             ?>
+	                                            <textarea name="a10" class="form-control" rows="3">
+	                                            <?
+	                                             echo $i; 
+	                                            ?>
+	                                            </textarea>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label12"></label>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label13"></label>
+	                                        </div>
+	                                      </div>
+	                                      <div class="row">
+	                                        <div class="col-md-12">
+	                                            <label id="label14"></label>
+	                                        </div>
+	                                      </div>
+	                                      </div>
+	                                     </div>
+											
+											<div class="form-actions fluid">
+												<div class="col-md-offset-3 col-md-9">
+													<button type="button" onclick="sabt();" class="btn blue">ذخيره</button>
+													<button type="reset" id="cancel_rezayatname_form2" class="btn default">انصراف</button>
+												</div>
+											</div>
+								   </form>
+										<!-- END FORM-->
+								  </div>
+								</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script type="text/javascript">
+
+if(language=="en")
+{ 
+	document.getElementById("page-title").innerText="Research Title :";
+	document.getElementById("navigator-home").innerText="Home";
+	document.getElementById("send-edit").innerText="Send / Edit Research";
+	document.getElementById("caption_title").innerText="Ethical Consent ";
+	document.getElementById("rezayatname").innerText="Ethical Consent";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("fa-angle2").className="fa fa-angle-right";
+	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-magic'></i> Wizard";
+	//document.getElementById("label0").innerText="Who will fill this form?";
+}
+
+</script>
+<?php 
+//echo "form_re :".$form_rezayatname." a0 ".check_field_value($form_rezayatname,"a0");
+include("../include/primary_js.phtml");
+?>
+
+<?php
+footer_forms($admin,$seed);
+?>
+ <script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+ <script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+  <script type="text/javascript">
+
+  jQuery('.rezayat_form').submit(function (e) {
+	  debugger;
+	    var postData = $(this).serializeArray();	
+		var	formURL = $(this).attr("action");
+	    //var a0=$("#a0 input:checked").val();
+		
+      $.ajax(
+				{
+					url : formURL,
+					type: "POST",
+					data : postData,
+					success:function(data, textStatus, jqXHR) 
+					{
+						//alert(data);
+						if(data=="1"){
+							  //$(".blue").attr("disabled","disabled");
+							  jQuery('.rezayat_form').fadeOut();
+						      jQuery('.rezayat_form2').fadeIn();
+						      }
+						if(data=="0"){
+							  //jQuery('.rezayat_form').show();
+						      //jQuery('.rezayat_form2').hide();
+						      window.location.href="<? echo "upload_file.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh ";?>";
+						      }
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+						alert("error");
+					}
+				});
+      e.preventDefault();
+  });
+
+  function rezayatname_type(){
+	  var value = "";
+	  $("#rezayatname_type input:checked").each(function () {
+		  value=$(this).val();
+		  switch (value) {
+          case "1": 
+              //$("#nothing").css("visibility", "visible").slideDown();
+              //$("#nothing").css("visibility", "hidden").fadeOut().slideUp();
+              $("#label1").html("1.من مي دانم که اهداف اين پژوهش عبارتند از <span class='required'>*</span>");
+              $("#label2").text("2.من مي دانم شرکت من در اين پژوهش کاملا داوطلبانه است و مجبور به شرکت در اين پژوهش نيستم به من اطمينان داده شد که اگر حاضر به شرکت در اين پژوهش نباشم، از مراقبت هاي معمول تشخيصي و درماني محروم نخواهم شد و رابطه درماني من بامرکز درماني و پرشک معالج دچار اشکال نشود");
+        	  $("#label3").text("3.من مي دانم که حتي پس از موافقت با شرکت در پژوهش مي توانم هر وقت که بخواهم، پس از اطلاع به مجري، از پژوهش خارج شوم و خروج من از پژوهش باعث محروميت از دريافت خدمات درماني معمول براي من نخواهد شد.");
+        	  $("#label4").html("4.نحوه ي همکاري اينجانب در اين پژوهش به اين صورت است: <span class='required'>*</span>");
+        	  $("#label5").html("5.منافع احتمالي شرکت اينجانب در اين پژوهش به شرح زير است: <span class='required'>*</span>");
+        	  $("#label6").html("6.آسيب ها و عوارض احتمالي شرکت در اين پژوهش به اين شرح است <span class='required'>*</span>");
+        	  $("#label7").html("7.در صورت عدم تمايل به شرکت در پژوهش خدمات معمول (درماني، تشخيصي و ...) براي من ارائه خواهد شد که منافع و عوارض آن به اين شرح است: <span class='required'>*</span>");
+        	  $("#label8").text("8.من مي دانم که دست اندرکاران اين پژوهش، کليه اطلاعات مربوط به من را نزد خود به صورت محرمانه نگه داشته و فقط اجازه دارند نتايج کلي و گروهي اين پژوهش را بدون ذکر نام و مشخصات اينجانب منتشر کنند.");
+        	  $("#label9").text("9.مي دانم که کميته اخلاق در پژوهش با هدف نظارت بر رعايت حقوق اينجانب مي تواند به اطلاعات من دسترسي داشته باشيد");
+        	  $("#label10").html("10.من مي دانم که هيچ يک از هزينه هاي انجام اقدامات پژوهشي به شرح ذيل بر عهده من نخواهد بود. <span class='required'>*</span>");
+        	//  $("#label11").text( "11.خانم / آقاي <label style='vertical-align:middle' class='control-label'><input type='text' class='form-control col-md-2' placeholder=''></label> جهت پاسخگويي به اينجانب معرفي شد و به من گفته شد تا هر وقت مشکلي يا سوالي در رابطه با شرکت در پژوهش مذکور پيش آمد با ايشان در ميان بگذارم و راهنمايي بخواهم.");
+        	  $("#label12").text("12.من مي دانم که اگر در حين و بعد از انجام پژوهش هر مشکلي اعم از جسمي و روحي به علت شرکت در اين پژوهش براي من پيش آمد درمان عوارض آن و غرامت مربوطه بر عهده مجري خواهد بود.");
+        	  $("#label13").text("13.من مي دانم اگر اشکال يا اعتراضي نسبت به دست اندرکاران يا روند پژوهش دارم ميتوانم با کميته اخلاق در پژوهش دانشگاه علوم پزشکي تهران به آدرس : تهران، تقاطع بلوار کشاورز و خيابان قدس، ساختمان ستاد مرکزي دانشگاه علوم پزشکي تهران، طبقه ششم، اتاق 605 تماس گرفته و مشکل خود را به صورت شفاهي يا کتبي مطرح نماييم.");
+        	  $("#label14").text("14.اين فرم اطلاعات و رضايت آگاهانه در دو نسخه تهيه شده و پس از امضا يک نسخه در اختيار من و نسخه ديگر در اختيار مجري قرار خواهد گرفت.");
+
+              $("#rezayatname_label").css("visibility", "hidden").fadeOut();
+              $("#rezayatname_label").css("visibility", "visible").fadeIn();
+              
+              break;
+          case "2": 
+        	  $("#label1").html("1.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم که اهداف اين پژوهش عبارتند از:<span class='required'>*</span>");
+        	  $("#label2").text("2.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم شرکت فرد 'تحت قيموميت من'/'موکل من' در اين پژوهش کاملا داوطلبانه است و مجبور به شرکت در اين پژوهش نيست به من به عنوان 'ولي/وکيل قانوني/قيم' اطمينان داده شد که اگر فرد تحت 'قيموميت من'/'موکل من' حاضر به شرکت در اين پژوهش نباشد، از مراقبت هاي معمول تشخيصي و درماني محروم نخواهد شد و رابطه درماني او با مرکز درماني و پرشک معالج دچار اشکال نشود");
+        	  $("#label3").text("3.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم که حتي پس از موافقت با شرکت فرد تحت 'قيموميت من'/'موکل من' در پژوهش، مي توانم هر وقت که بخواهم، پس از اطلاع به مجري،او را از پژوهش خارج کنم و خروج او از پژوهش باعث محروميتش از دريافت خدمات درماني معمول نخواهد شد.");
+        	  $("#label4").html("4.نحوه ي همکاري فرد تحت 'قيموميت من'/'موکل من' در اين پژوهش به اين صورت است: <span class='required'>*</span>");
+        	  $("#label5").html("5.منافع احتمالي شرکت فرد تحت 'قيموميت من'/'موکل من' در اين پژوهش به شرح زير است: <span class='required'>*</span>");
+        	  $("#label6").html("6.آسيب ها و عوارض احتمالي شرکت در اين پژوهش به اين شرح است: <span class='required'>*</span>");
+        	  $("#label7").html("7.در صورت عدم تمايل به شرکت در پژوهش خدمات معمول (درماني، تشخيصي و ...) براي فرد تحت 'قيموميت من'/'موکل من' ارائه خواهد شد که منافع و عوارض آن به اين شرح است: <span class='required'>*</span>");
+        	  $("#label8").text("8.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم که دست اندرکاران اين پژوهش، کليه اطلاعات مربوط به فرد تحت 'قيموميت من'/'موکل من' را نزد خود به صورت محرمانه نگه داشته و فقط اجازه دارند نتايج کلي و گروهي اين پژوهش را بدون ذکر نام و مشخصات منتشر کنند.");
+        	  $("#label9").text("9. من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم که کميته اخلاق در پژوهش با هدف نظارت بر رعايت حقوق فرد تحت 'قيموميت من'/'موکل من' مي تواند به اطلاعاتش دسترسي داشته باشد ");
+        	  $("#label10").html("10.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم که هيچ يک از هزينه هاي انجام اقدامات پژوهشي به شرح ذيل بر عهده فرد تحت 'قيموميت من'/'موکل من' نخواهد بود. <span class='required'>*</span>");
+        	//  $("#label11").text( "11.خانم / آقاي <label style='vertical-align:middle' class='control-label'><input type='text' class='form-control col-md-2' placeholder=''></label> جهت پاسخگويي به اينجانب معرفي شد و به من گفته شد تا هر وقت مشکلي يا سوالي در رابطه با شرکت در پژوهش مذکور پيش آمد با ايشان در ميان بگذارم و راهنمايي بخواهم.");
+        	  $("#label12").text("12.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم که اگر در حين و بعد از انجام پژوهش هر مشکلي اعم از جسمي و روحي به علت شرکت در اين پژوهش براي فرد تحت 'قيموميت من'/'موکل من' پيش آمد درمان عوارض آن و غرامت مربوطه بر عهده مجري خواهد بود.");
+        	  $("#label13").text("13.من به عنوان 'ولي/وکيل قانوني/قيم' مي دانم اگر اشکال يا اعتراضي نسبت به دست اندرکاران يا روند پژوهش دارم ميتوانم با کميته اخلاق در پژوهش دانشگاه علوم پزشکي تهران به آدرس : تهران، تقاطع بلوار کشاورز و خيابان قدس، ساختمان ستاد مرکزي دانشگاه علوم پزشکي تهران، طبقه ششم، اتاق 605 تماس گرفته و مشکل خود را به صورت شفاهي يا کتبي مطرح نماييم.");
+        	  $("#label14").text("14.اين فرم اطلاعات و رضايت آگاهانه در دو نسخه تهيه شده و پس از امضا يک نسخه در اختيار من به عنوان ولي/وکيل قانوني/قيم و نسخه ديگر در اختيار مجري قرار خواهد گرفت.");
+
+        	  $("#rezayatname_label").css("visibility", "hidden").fadeOut();
+              $("#rezayatname_label").css("visibility", "visible").fadeIn();
+              break;
+          case "3": 
+        	  $("#label1").html("1.من مي دانم که اهداف اين پژوهش عبارتند از <span class='required'>*</span>");
+        	  $("#label2").text("2.من مي دانم شرکت من در اين پژوهش کاملا داوطلبانه است و مجبور به شرکت در اين پژوهش نيستم به من اطمينان داده شد که اگر حاضر به شرکت در اين پژوهش نباشم، از مراقبت هاي معمول تشخيصي و درماني محروم نخواهم شد و رابطه درماني من بامرکز درماني و پرشک معالج دچار اشکال نشود");
+        	  $("#label3").text("3.من مي دانم که حتي پس از موافقت با شرکت در پژوهش مي توانم هر وقت که بخواهم، پس از اطلاع به مجري، از پژوهش خارج شوم و خروج من از پژوهش باعث محروميت از دريافت خدمات درماني معمول براي من نخواهد شد.");
+        	  $("#label4").html("4.نحوه ي همکاري اينجانب در اين پژوهش به اين صورت است: <span class='required'>*</span>");
+        	  $("#label5").html("5.منافع احتمالي شرکت اينجانب در اين پژوهش به شرح زير است: <span class='required'>*</span>");
+        	  $("#label6").html("6.آسيب ها و عوارض احتمالي شرکت در اين پژوهش به اين شرح است <span class='required'>*</span>");
+        	  $("#label7").html("7.در صورت عدم تمايل به شرکت در پژوهش خدمات معمول (درماني، تشخيصي و ...) براي من ارائه خواهد شد که منافع و عوارض آن به اين شرح است: <span class='required'>*</span>");
+        	  $("#label8").text("8.من مي دانم که دست اندرکاران اين پژوهش، کليه اطلاعات مربوط به من را نزد خود به صورت محرمانه نگه داشته و فقط اجازه دارند نتايج کلي و گروهي اين پژوهش را بدون ذکر نام و مشخصات اينجانب منتشر کنند.");
+        	  $("#label9").text("9.مي دانم که کميته اخلاق در پژوهش با هدف نظارت بر رعايت حقوق اينجانب مي تواند به اطلاعات من دسترسي داشته باشيد");
+        	  $("#label10").html("10.من مي دانم که هيچ يک از هزينه هاي انجام اقدامات پژوهشي به شرح ذيل بر عهده من نخواهد بود. <span class='required'>*</span>");
+        	//  $("#label11").text( "11.خانم / آقاي <label style='vertical-align:middle' class='control-label'><input type='text' class='form-control col-md-2' placeholder=''></label> جهت پاسخگويي به اينجانب معرفي شد و به من گفته شد تا هر وقت مشکلي يا سوالي در رابطه با شرکت در پژوهش مذکور پيش آمد با ايشان در ميان بگذارم و راهنمايي بخواهم.");
+        	  $("#label12").text("12.من مي دانم که اگر در حين و بعد از انجام پژوهش هر مشکلي اعم از جسمي و روحي به علت شرکت در اين پژوهش براي من پيش آمد درمان عوارض آن و غرامت مربوطه بر عهده مجري خواهد بود.");
+        	  $("#label13").text("13.من مي دانم اگر اشکال يا اعتراضي نسبت به دست اندرکاران يا روند پژوهش دارم ميتوانم با کميته اخلاق در پژوهش دانشگاه علوم پزشکي تهران به آدرس : تهران، تقاطع بلوار کشاورز و خيابان قدس، ساختمان ستاد مرکزي دانشگاه علوم پزشکي تهران، طبقه ششم، اتاق 605 تماس گرفته و مشکل خود را به صورت شفاهي يا کتبي مطرح نماييم.");
+        	  $("#label14").text("14.اين فرم اطلاعات و رضايت آگاهانه در دو نسخه تهيه شده و پس از امضا يک نسخه در اختيار من و نسخه ديگر در اختيار مجري قرار خواهد گرفت.");
+
+        	  $("#rezayatname_label").css("visibility", "hidden").fadeOut();
+              $("#rezayatname_label").css("visibility", "visible").fadeIn();
+             
+                
+              //$("#nothing").css("visibility", "hidden").slideUp();
+          break;
+          default:
+
+      }
+      });
+     }
+  $(document).ready(function(){
+	  
+	  <?php 
+	  if(check_field_value($form_rezayatname,"a0") && check_field_value($form_rezayatname,"a0")!='-1')
+	  {
+	  ?>
+		  jQuery('.rezayat_form').hide();
+		  jQuery('.rezayat_form2').show();
+	  <?php 
+       }
+       else
+       {
+	  ?>
+		  jQuery('.rezayat_form2').hide();
+		  jQuery('.rezayat_form').show();
+	  <?php }?>
+	  $("#rezayatname_label").css("display", "none");
+	  
+	  if($("#rezayatname_type input:checked"))
+		  {
+			 rezayatname_type();
+		  }
+
+	  
+	  $("#rezayatname_type input").change(function () {
+	 		 rezayatname_type();
+	  });
+
+	  
+	  $("#cancel_rezayatname_form2").click(function(){
+			   $('.rezayat_form2').fadeOut();
+			   $('.rezayat_form').fadeIn();
+			   $("#rezayatname_label").css("visibility", "visible");
+			   //$('#rezayatname_type input:radio').attr('checked', false);
+			   $( "body" ).scrollTop(0);
+				
+			  });
+	  $('[data-toggle="tooltip"]').tooltip();
+});
+
+  function sabt()
+  {
+//		debugger;
+		 var form2 = $('.rezayat_form2');
+	        var error2 = $('.alert-danger', form2);
+	        debugger;
+	        form2.validate({
+		        
+	            errorElement: 'span', //default input error message container
+	            errorClass: 'help-block', // default input error message class
+	            focusInvalid: false, // do not focus the last invalid input
+	            ignore: "",
+	            rules:{
+	                a1:{
+	                    required:true
+	                    },
+	  	          	a2:{
+	                    required:true
+	  		          },
+	             	a3:{
+	                    required:true
+	                    },
+	                a4:{
+	                    required:true
+	                    },
+	                a5:{
+	                        required:true
+	                        },
+	      	       a6:{
+	                        required:true
+	      		          }
+	                },
+	                messages:{
+		          	      	a1:{
+		                    required:"پر کردن اين فيلد الزامي مي باشد"
+		              	  },
+		              	  	a2:{
+		                        required:"پر کردن اين فيلد الزامي مي باشد"
+		      		          },
+		                    a3:{
+		                        required:"پر کردن اين فيلد الزامي مي باشد"
+		                        },
+		                    a4:{
+		                        required:"پر کردن اين فيلد الزامي مي باشد"
+		                        },
+		                     a5:{
+		                        required:"پر کردن اين فيلد الزامي مي باشد"
+		                      	  },
+		                     a6:{
+		                        required:"پر کردن اين فيلد الزامي مي باشد"
+		              		 	}
+		                },
+
+	            invalidHandler: function (event, validator) { //display error alert on form submit              
+	                    //success2.hide();
+	                    error2.show();
+	                    App.scrollTo(error2, -200);
+	            },
+
+	            errorPlacement: function (error, element) { // render error placement for each input type
+	                var icon = $(element).parent('.input-icon').children('i');
+	                icon.removeClass('fa-check').addClass("fa-warning");  
+	                icon.attr("data-original-title", error.text()).tooltip();
+	            },
+
+	            highlight: function (element) { // hightlight error inputs
+	                $(element)
+	                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	            },
+
+	            unhighlight: function (element) { // revert the change done by hightlight
+	                
+	            },
+
+	            success: function (label, element) {
+	                var icon = $(element).parent('.input-icon').children('i');
+	                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                icon.removeClass("fa-warning").addClass("fa-check");
+	            },
+// 	            submitHandler: function (form) {
+// 	                success2.show();
+// 	                error2.hide();
+// 	            }
+	           
+	        });
+	        
+
+
+	        if(form2.valid())
+			{
+	        //alert("ثبت با موفقيت انجام شد.");
+		        
+	        	$('.rezayat_form2').submit();
+// 	        	toastr.options.timeOut="5000";
+// 		        toastr.options.positionClass="toast-top-right";
+// 				toastr.success('ثبت با موفقيت انجام شد');
+// 				setInterval(function(){
+			   			 //window.location.href="<? echo "upload_file.phtml?cod_tarh=$cod_tarh ";?>";
+// 					}, 5000);
+			}	
+	
+   }
+
+  
+
+  
+  </script>
+<?php 
+
+?>

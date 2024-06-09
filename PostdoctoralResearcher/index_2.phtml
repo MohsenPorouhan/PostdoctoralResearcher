@@ -1,0 +1,827 @@
+<?php 
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/session.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+if(isset($action))
+{   
+//Start of forget password	
+	if (strcmp($action,"send_email")==0)
+	{
+		
+		    session_start();
+	if ($_POST['code']==$_SESSION['key']) {
+		$cod_error = 1;
+	} else {
+		$cod_error = 0;
+	}
+	//echo $cod_error;
+ if(strcmp($cod_error,'1')==0)
+ {
+  if(strcmp($user_type,'1')==0)  
+  	
+    $query="select * from user_login where email=\"$email\"";
+  
+ 
+  if(strcmp(substr($email,0,2),"09")==0)  
+    $caution="mobile";
+  else
+    $caution="username";  
+    
+  if(strcmp($user_type,'2')==0)
+  
+     $query="select * from karshenasan where $caution=\"$email\""; 
+ 
+  if(strcmp($user_type,'3')==0)
+  
+     $query="select * from group_karshenasan where $caution=\"$email\""; 
+ 
+
+  
+  $result=mysql_query($query);
+  if(mysql_num_rows($result) > 0 )
+  {
+  	
+    $row_fetched=mysql_fetch_array($result);
+     if(strcmp($user_type,'1')==0)
+    {
+      $username=$row_fetched["email"];
+      $password=$row_fetched["password"];
+      $email=$username;
+      $name_e=$row_fetched["name_e"];
+      $family_e=$row_fetched["family_e"];
+	  $mobile_user=$row_fetched["mobile"];
+	  
+    }
+    
+	if(strcmp($user_type,'2')==0) 
+    {
+      $username=$row_fetched["username"];
+      $password=$row_fetched["password"];
+      $email=$row_fetched["karshenas_email"];
+      $name_e=$row_fetched["karshenas_name_e"];
+      $family_e=$row_fetched["karshenas_family_e"];	
+    }
+
+	if(strcmp($user_type,'3')==0) 
+    {
+      $username=$row_fetched["username"];
+      $password=$row_fetched["password"];
+      $email=$row_fetched["karshenas_email"];
+      $name_e=$row_fetched["karshenas_name_e"];
+      $family_e=$row_fetched["karshenas_family_e"];	
+    }
+   
+  $mail = new PHPMailer();
+    $mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->Host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye." ".$name_e;
+    $mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+    $mail->AddAddress($email, $mailname);
+    $mail->IsHTML(true);                                  // set email format to HTML
+
+    $mail->Subject = "Your Username & password in $url_address (Do not reply this email)";
+         $emailbody="";
+    $emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+    $emailbody=$emailbody."<br>For using comprehensive research administration and sending your proposals<br>";
+    $emailbody=$emailbody."<br> using the below username and password<br>";
+    $emailbody=$emailbody."<br>Username: $username<br>Password: $password<br><br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login.phtml>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Peyvand Co. (Peyvandco.com).</font></center>";
+    $mail->Body    = $emailbody;
+    $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+    if(!$mail->Send())
+    {
+        $status="mail_err";
+    }
+    
+    
+   
+	 $message_string="نام کاربري و کلمه عبور به آدرس پست الکترونيکي شما فرستاده شد";
+	  if(strcmp($user_type,'1')==0)
+		   {
+		        $message_string=$message_string."  ضمنا يک پيامک به شماره تلفن همراه شما نيز ارسال شد  ";
+		       
+		        $send_string="Username:$username   Password : $password";
+		        send_sms($mobile_user,$send_string);
+    
+              //  send_sms_user_main("$mobile_user",$send_string);
+           }
+         //message_show($message_string,"green");
+       
+	
+  	}
+  	else{
+  		$status="email_error";
+  	}
+  }
+ else 
+    $status="security_error"; 
+		
+	}
+//End of forget password
+//The condition check for create a new user  
+	if (strcmp($action,"signup")==0)
+	{
+		session_start();
+		if ($_POST['code']==$_SESSION['key']) {
+			$cod_error = 1;
+		} else {
+			$cod_error = 0;
+		}
+	 if(strcmp($cod_error,'1')==0)
+	 {
+	 	if(strlen(trim($daneshjo_no)) > 0 && isset($payan_name) && strcmp($payan_name,"1")==0){
+	 		$query="select * from user_login where  email=\"$email\"  or   melli_code=\"$cod_melli \" or  daneshjo_no=\"$daneshjo_no\"";
+
+	 		$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+	 	}else{
+	 		$query="select * from user_login where  email=\"$email\"  or   melli_code=\"$cod_melli \"";
+
+	 		$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+			}
+			if ( mysql_num_rows($result) <= 0 )
+			{
+				$password=randstring(6);
+				if(strlen(trim($birth_date)) > 13)
+					$birth_date="";
+
+				if(isset($payan_name) && strcmp($payan_name,"1")==0 )
+		   $payan_name_text=" payan_name='1',daneshjo_no='$daneshjo_no', ";
+				else
+		   $payan_name_text="";
+				 
+				$jobplace=$cod_daneshkade;
+				$query  = "insert into user_login set   signup_time='".date("Y-m-d")."', $payan_name_text madrak='$madrak', telno='$telno', jobplace='$jobplace',mobile=\"$mobile\",name=\"$name\" , family=\"$family\", shno = \"$shno\",  birth_date  = \"$birth_date\",  melli_code =\"$cod_melli\", password='$password', email =\"$email\", darajeelmi = $degree , takhasos = \"$takhasos\" ,sex=\"$sex\" , cod_bank=\"$cod_bank\" , bank_name=\"$bank_name\" , shoabe=\"$shoabe\" , hesab=\"$hesab\",cod_daneshkade='$cod_daneshkade'";
+				// $query="insert into user_login set cod_melli='$cod_melli',name='$name' , family='$family', rade_elmi='$rade_elmi',  takhasos  = '$takhasos',  email  ='$email', shenasname='$shenasname' , sal_tavalod='$saltavalod' , fath_name='$nampedar',password='$password',hesab='$hesab',bank_name='$bank_name',shoabe='$shoabe',cod_bank='$cod_bank'";
+				 
+
+				$result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+
+
+				$mail = new PHPMailer();
+
+				$emailbody="";
+				$emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+				$emailbody=$emailbody."<br>Thanks for your registration at $url_address<br>";
+				$emailbody=$emailbody."<br>For using comprehensive research administration and sending your proposals<br>";
+				$emailbody=$emailbody."<br> using the below username and password<br>";
+				$emailbody=$emailbody."<br>Username: $email<br>Password: $password<br><br>";
+				$emailbody=$emailbody."Login Here : <a href=".$url_address."/login.phtml>Here</a>";
+				$emailbody=$emailbody."<center><font face=Arial size=2 color=green><a href=\"".$url_address."\">".$url_address."</a>";
+				$emailbody=$emailbody."<br>Powered by Peyvandco.com .</font></center>";
+
+
+				$mail->IsSMTP();
+				$mail->SMTPAuth=$smtpauth;
+				$mail->Username=$email_username;
+				$mail->Password=$email_password;
+				// set mailer to use SMTP
+				$mail->host = $mailserver_host;  // specify main and backup server
+				$mailname=$familye." ".$name_e;
+				$mail->From = $email_from;
+				$mail->FromName = $email_from_name;
+				$mail->AddAddress($email, $mailname);
+				$mail->IsHTML(true);                                  // set email format to HTML
+
+				$mail->Subject = "Registration in ".$url_address." (Do not reply this email)";
+				$mail->Body    = $emailbody;
+				$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+
+				if(!$mail->Send())
+				{
+					$status="mail_err";
+					 
+				}
+				//send_email($subject,$emailbody,$email_username,$email,$email_from_name,$email_from,$email_password);
+
+				$message_string=".ضمن تشكر از ثبت نام شما شناسه كاربري و رمز عبور شما به آدرس پست الكترونيكي اعلام شده ارسال گرديد";
+
+				$message_string=$message_string."  ضمنا يک پيامک به شماره تلفن همراه شما نيز ارسال شد  ";
+		   
+				$send_string="Username:$email   Password : $password";
+				send_sms($mobile,$send_string);
+				/*
+
+				********************************************************************
+				You shold be set E-mail sending in this place
+				********************************************************************
+
+				*/
+				 
+			}
+			else
+				$status="duplicate_entry";
+
+	 }
+	 else
+	 	$status="security_error";
+
+	}
+
+}
+
+?>
+
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>پژوهشيار - ورود</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/plugins/bootstrap/css/bootstrap-rtl.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="assets/plugins/select2/select2-rtl.css" />
+    <link rel="stylesheet" type="text/css" href="assets/plugins/select2/select2-metronic-rtl.css" />
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <!-- BEGIN THEME STYLES -->
+    <link href="assets/css/style-metronic-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/style-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/style-responsive-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/plugins-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/themes/blue-rtl.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="assets/css/pages/login-soft-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/custom-rtl.css" rel="stylesheet" type="text/css" />
+    <link href="assets/plugins/keyboard/keyboard.css" rel="stylesheet" />
+    <!-- END THEME STYLES -->
+    <link rel="shortcut icon" href="favicon.ico" />
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="login">
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <a href="#">
+            <img src="assets/img/logo-big.png" alt="" />
+        </a>
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+        <!-- BEGIN LOGIN FORM -->
+        <form class="login-form" action="login/midel_2.phtml" method="post">
+            <h3 class="form-title">ورود به حساب کاربري</h3>
+            
+            <div class="alert alert-danger display-hide">
+                <button class="close" data-close="alert"></button>
+                <span>
+                    لطفا نام کاربري و کلمه عبور خود را وارد نماييد.
+                </span>
+            </div>
+             <!-- BEGIN CONFIGURATION MODAL FORM FOR LOGIN ERROR`S MESSAGE-->
+                 <!-- BEGIN PAGE CONTENT-->
+                <div class="row">
+                    <div class="col-md-12">  
+                        <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">
+                                            <i class="fa fa-file-o"></i>
+                                            پيغام خطا
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        نام کاربري يا رمز عبور شما نادرست است.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-check"></i>تاييد</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                 
+                        <a class="btn blue hide" id="login" data-toggle="modal" href="#basic">
+                            
+                        </a>
+                    </div>
+                    <div class="col-md-12">
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+                <!-- END CONFIGURATION MODAL FORM FOR LOGIN ERROR`S MESSAGE-->
+            <div class="form-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">نام کاربري</label>
+                <div class="input-icon">
+                    <i class="fa fa-user"></i>
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="نام کاربري" name="username" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">گذرواژه</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn blue showKeyboard" type="button"><i class="fa fa-keyboard-o"></i></button>
+                    </span>
+
+                    <input class="form-control placeholder-no-fix" type="password" id="password" autocomplete="off" placeholder="گذرواژه" name="password" />
+
+
+                </div>
+
+            </div>
+            <div class="form-group">                          
+                  <select name="user_type" class="form-control" style="width: 300px; height:35px;">
+                       <option value="0">ورود مجري طرح</option>
+                       <option value="11" >متقاضي ثبت پايان نامه</option>
+                       <option value="1">مدير</option>
+                       <option value="2">ادمين دانشکده / مرکز</option>
+                       <option value="5">کارشناس حوزه معاونت</option>
+                       <option value="3">کارشناس پژوهشي/ناظر</option>
+                       <option value="6">عضو شوراي پژوهشي </option>
+                       <option value="8">حسابداري</option>
+                       <option value="9">مديريت پايان نامه ها</option>
+                       <option value="10">معاونت آموزشي</option>
+                       <option value="7">ناظر مالي</option>
+                 </select>
+            </div>
+            <div class="form-actions">
+                <label class="checkbox">
+                    <input type="checkbox" name="remember" value="1" />مرا به خاطر بسپار
+                </label>
+                <button type="submit" class="btn blue pull-right">
+                    ورود <i class="m-icon-swapleft m-icon-white"></i>
+                </button>
+            </div>
+
+            <div class="forget-password">
+                <h4>گذرواژه خود را فراموش کرده ايد؟</h4>
+                <p>
+                    گران نباشيد ،   براي بازنشاني
+                    <a href="javascript:;" id="forget-password">
+                        اينجا
+                    </a>
+                    را کليک کنيد
+                </p>
+            </div>
+            <div class="create-account">
+                <p>
+                    هنوز عضو نشده ايد؟				 &nbsp;
+                    <a href="javascript:;" id="register-btn">
+                        ايجاد حساب کاربري
+                    </a>
+                </p>
+            </div>
+        </form>
+        <!-- END LOGIN FORM -->
+        <!-- BEGIN FORGOT PASSWORD FORM -->
+        <!-- BEGIN CONFIGURATION MODAL FORM FOR FORGET PASSWORD`S MESSAGES-->
+                 <!-- BEGIN PAGE CONTENT-->
+                <div class="row">
+                    <div class="col-md-12">  
+                        <div class="modal fade" id="basic3" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">
+                                            <i class="fa fa-file-o"></i>
+                                            پيغام
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php 
+						                      if(isset($status) && strcmp($status,"security_error")==0)
+											   {
+											  
+											    echo "کد امنيتي صحيح وارد نشد."; 
+											   }
+											   else
+											   if(isset($status) && strcmp($status,"email_error")==0)
+											   {
+											  
+											    echo "چنين کاربري وجود ندارد"; 
+											  
+											   }
+											   else
+											   if(isset($status) && strcmp($status,"mail_err")==0)
+											   {
+											  
+											    echo "خطا در ارسال ايميل. مجددا تلاش نماييد"; 
+											  
+											   }
+											   else {
+											   	echo $message_string;
+											   } 
+						                 ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-check"></i>تاييد</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                 
+                        <a class="btn blue hide" id="forget" data-toggle="modal" href="#basic3">
+                            
+                        </a>
+                    </div>
+                    <div class="col-md-12">
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+                <!-- END CONFIGURATION MODAL FORM FOR FORGET PASSWORD`S MESSAGES-->
+        <form class="forget-form" action="index_2.phtml?action=send_email" method="post">
+            <h3>فراموشي گذرواژه</h3>
+            <p>
+                ايميلي که هنگام ساخت حساب کاربري وارد نموده ايد را وارد نماييد
+            </p>
+            <div class="form-group">
+                <div class="input-icon">
+                    <i class="fa fa-user"></i>
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="نام کاربري" name="email" />
+                </div>
+            </div>
+            <div class="form-group">                          
+                  <select name="user_type" class="form-control" style="width: 300px; height:35px;">
+                       <option value="1">ورود مجري طرح</option>
+                       <option value="3">کارشناس حوزه معاونت</option>
+                       <option value="2">کارشناس پژوهشي/ناظر</option>
+                 </select>
+            </div>
+             <div class="form-group">
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="کد زير را وارد کنيد" name="code" />
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <div>
+	                <? if (!isset($_POST['Submit'])) { ?>
+								<img src="capcha.php">
+								<? } else { ?>
+								&nbsp;
+					<? } ?>
+		        </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" id="back-btn" class="btn">
+                    <i class="m-icon-swapright"></i> بازگشت
+                </button>
+                <button type="submit" class="btn blue pull-right">
+                    تاييد <i class="m-icon-swapleft m-icon-white"></i>
+                </button>
+            </div>
+        </form>
+        <!-- END FORGOT PASSWORD FORM -->
+        <!-- BEGIN REGISTRATION FORM -->
+        <!-- BEGIN CONFIGURATION MODAL FORM FOR CREATE NEW USER`S MESSAGES-->
+                 <!-- BEGIN PAGE CONTENT-->
+                <div class="row">
+                    <div class="col-md-12">  
+                        <div class="modal fade" id="basic2" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">
+                                            <i class="fa fa-file-o"></i>
+                                            پيغام
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php 
+                      if(isset($status) && strcmp($status,"security_error")==0)
+					   {
+					  
+					    echo "کد امنيتي صحيح وارد نشد."; 
+					  
+					   }
+					   else
+					   if(isset($status) && strcmp($status,"email_error")==0)
+					   {
+					  
+					    echo "چنين کاربري وجود ندارد"; 
+					  
+					   }
+					   else
+					   if(isset($status) && strcmp($status,"mail_err")==0)
+					   {
+					  
+					    echo "خطا در ارسال ايميل. مجددا تلاش نماييد"; 
+					  
+					   }
+						else
+					   if(isset($status) && strcmp($status,"duplicate_entry")==0)
+					   {
+					  
+					    echo "چنين کاربري قبلا تعريف شده"; 
+					  
+					   }
+					   else {
+					   	echo $message_string;
+					   }
+					  
+                     ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-check"></i>تاييد</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                 
+                        <a class="btn blue hide" id="reg" data-toggle="modal" href="#basic2">
+                            
+                        </a>
+                    </div>
+                    <div class="col-md-12">
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+                <!-- END CONFIGURATION MODAL FORM FOR CREATE NEW USER`S MESSAGES-->
+        <form class="register-form" action="index_2.phtml?action=signup" method="post">
+            <h3>عضويت</h3>
+            <p>
+                اطلاعات خود را وارد نماييد
+            </p>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">نام</label>
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="نام " name="name" />
+                </div>
+            </div>
+             <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">نام خانوادگي</label>
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="نام خانوادگي" name="family" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">کد ملي</label>
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder=" کد ملي" name="cod_melli" />
+                </div>
+            </div>
+            <?
+			    $query="select * from daneshkade order by daneshkade_name";
+			    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+			    $groupcount = mysql_num_rows($qresult);
+			?>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">محل کار</label>
+                <select name="jobplace" class="select2 form-control" required>
+                   <option value="">محل کار خود را انتخاب کنيد</option>
+                       <?
+						    while($row_fetched=mysql_fetch_array($qresult))
+						    {
+						         echo "<option value=\"".$row_fetched["cod_daneshkade"]."\">".$row_fetched["daneshkade_name"]."</option>";
+						    }
+					    ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">تلفن ثابت</label>
+                <div class="input-icon">
+                    <i class="fa fa-phone-square"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="تلفن ثابت" name="telno" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">تلفن همراه</label>
+                <div class="input-icon">
+                    <i class="fa fa-mobile"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="تلفن همراه" name="mobile" />
+                </div>
+            </div>
+            <?
+			    $query="select * from darajeelmi";
+			    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+			?>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">مدرک تحصيلي</label>
+                <select name="degree" class="select2 form-control">
+                   <option value="">مدرک تحصيلي خود را انتخاب کنيد</option>
+                   <?
+				    while($row_fetched=mysql_fetch_array($qresult))
+				    {
+				      echo "<option value=\"".$row_fetched["darajeelmi"]."\" >".$row_fetched["darajeelmi_desc"]."</option>";
+				    }
+				    ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">مقطع تحصيلي</label>
+                <select name="madrak" class="select2 form-control">
+                    <option value="">مقطع تحصيلي خود را انتخاب کنيد</option>
+                    <option value="1" class="tahoma1">زير کارشناسي</option>
+				    <option value="2" class="tahoma1">کارشناسي</option>
+				    <option value="3" class="tahoma1">کارشناسي ارشد</option>
+				    <option value="4" class="tahoma1">دکتراي حرفه اي</option>
+					<option value="5" class="tahoma1">PHD</option>
+					<option value="6" class="tahoma1">تخصص</option>	
+					<option value="7" class="tahoma1">فوق تخصص</option>	
+					<option value="8" class="tahoma1">MPH</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">تخصص</label>
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="تخصص" name="takhasos" />
+                </div>
+            </div>
+            <div class="form-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">پست الکترونيکي</label>
+                <div class="input-icon">
+                    <i class="fa fa-envelope"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="پست الکترونيکي" name="email" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    در صورتي که صرفا براي ثبت پايان نامه دانشجويي اقدام مي کنيد گزينه زير را تيک بزنيد.
+                  <br>ثبت پايان نامه
+                    <input type="checkbox" name="payan_name" value="1" />
+                </label>
+                <div id="register_tnc_error">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">شماره دانشجويي</label>
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="شماره دانشجويي" name="daneshjo_no" />
+                </div>
+            </div>
+            <?
+			    $query="select * from daneshkade where is_daneshkade='1'order by daneshkade_name";
+			    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+			    $groupcount = mysql_num_rows($qresult);
+			?>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">محل تحصيلي</label>
+                <select name="cod_daneshkade" class="select2 form-control">
+                   <option value="">محل تحصيلي خود را انتخاب کنيد</option>
+                   <?
+					    while($row_fetched=mysql_fetch_array($qresult))
+					    {
+					         echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+					    }
+				    ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">کد زير را وارد کنيد</label>
+                <div class="input-icon">
+                    <i class="fa fa-font"></i>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="کد زير را وارد کنيد" name="code" />
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <div>
+	                <? 
+	                if (!isset($_POST['Submit'])) { 
+	            	?>
+					<img src="capcha.php">
+					<? } else { ?>
+					&nbsp;
+					<? } ?>
+		        </div>
+            </div>
+            <div class="form-actions">
+                <button id="register-back-btn" type="button" class="btn">
+                    <i class="m-icon-swapright"></i> بازگشت
+                </button>
+                <button type="submit" id="register-submit-btn" class="btn blue pull-right">
+                    عضويت <i class="m-icon-swapleft m-icon-white"></i>
+                </button>
+            </div>
+        </form>
+        <!-- END REGISTRATION FORM -->
+    </div>
+    <!-- END LOGIN -->
+    <!-- BEGIN COPYRIGHT -->
+    <div class="copyright">
+        1393 -داده ورز پيوند - پژوهشيار
+    </div>
+    <!-- END COPYRIGHT -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+    <!-- BEGIN CORE PLUGINS -->
+    <!--[if lt IE 9]>
+        <script src="assets/plugins/respond.min.js"></script>
+        <script src="assets/plugins/excanvas.min.js"></script>
+        <![endif]-->
+    <script src="assets/plugins/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="assets/plugins/select2/select2.min.js"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="assets/scripts/core/app.js" type="text/javascript"></script>
+
+    <script src="assets/scripts/custom/login-soft.js" type="text/javascript"></script>
+    <script src="assets/plugins/keyboard/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/keyboard/jquery.keyboard.js" type="text/javascript"></script>
+    
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+        jQuery(document).ready(function () {
+            App.init();
+            Login.init();
+        $(".select2").select2();
+        });
+    </script>
+    <!-- END JAVASCRIPTS -->
+    
+ <!--BEGIN CONFIGURATION MODAL FORM FOR LOGIN ERROR`S MESSAGE-->
+<?php if(isset($msg) && strcasecmp($msg,"loginError")==0)
+{
+	 ?>
+     <script type="text/javascript">
+         $(document).ready(function() {
+             
+        	 $('#login').trigger('click');
+       	});         
+               	
+		</script> 
+		<?php 
+}?>
+<!--END CONFIGURATION MODAL FORM FOR LOGIN ERROR`S MESSAGE-->
+<!--BEGIN CONFIGURATION MODAL FORM FOR CREATE NEW USER`S MESSAGES-->
+<?php 
+if(isset($action))
+{
+  if (strcmp($action,"signup")==0)
+  {
+  	?>
+   
+         <script type="text/javascript">
+         $(document).ready(function() {
+        	
+        	 $('#reg').trigger('click');
+       	});         
+               	
+		</script> 
+		<?php 
+  }
+}
+  
+?>
+<!--END CONFIGURATION MODAL FORM FOR CREATE NEW USER`S MESSAGES-->
+<!-- BEGIN CONFIGURATION MODAL FORM FOR FORGET PASSWORD`S MESSAGES -->
+<?php 
+
+  if (strcmp($action,"send_email")==0)
+  {
+
+  	?>
+   
+         <script type="text/javascript">
+         $(document).ready(function() {
+             
+        	 $('#forget').trigger('click');
+       	});         
+               	
+		</script> 
+		<?php 
+  }
+
+  
+?>
+<!--END CONFIGURATION MODAL FORM FOR FORGET PASSWORD`S MESSAGES  -->
+</body>
+<!-- END BODY -->
+</html>

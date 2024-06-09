@@ -1,0 +1,421 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 3 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=index.phtml");
+   exit();
+  }
+ }
+ 
+include("include/styles.phtml");
+echo "<META http-equiv=content-type content=text/html;charset=utf-8>";
+//header_forms($admin,$seed);
+ 
+
+
+if( isset($action) )
+ if ( strlen(trim($notes)) > 0 )
+ {
+   $query="select * from karshenasan where username='$admin'";
+   $result=mysql_query($query) or die ("Error in selecting data");
+   $row_fetched=mysql_fetch_array($result);
+   $karshenas_id=$row_fetched["cod_karshenas"];
+   $mydate=date("Y-m-d");
+	
+   $notes=str_replace("'","",$notes);
+   $notes=str_replace("\"","",$notes);
+   $notes=str_replace(";","",$notes);
+	 
+   $query="select max(version) as maxver from karshenasan_tarh where cod_tarh='$cod_tarh'";
+
+   $result=mysql_query($query) or die("Error in selecting data from 1");
+
+   $rf1=mysql_fetch_array($result);
+   $maxver=$rf1["maxver"];
+   if($maxver=='-1')
+      $maxver='1';
+   else
+      $maxver=$maxver+1;
+//   if(isset($refered))    
+  //   $query="update karshenasan_tarh set  gant='$gant',variables='$variables',chekide='$chekide',sabt='$sabt',mojrian='$mojrian',daneshjoyan='$daneshjoyan',raveshejra='$raveshejra',hazineha='$hazineha',akhlaghi='$akhlaghi',zamaem='$zamaem',date_send='$mydate',comment_karshenas='$notes'  where cod_tarh='$cod_tarh' and cod_karshenas='$karshenas_id'  ";
+   //else
+   // $query="update karshenasan_tarh set   tarh_new='0' ,marhale_report ='$marhale_report',form_pardakht ='$form_pardakht', comment_pishraft  ='$comment_pishraft', zamanbandi ='$zamanbandi', comment_ravesh_motalee ='$comment_ravesh_motalee', ravesh_motalee='$ravesh_motalee', version='$maxver' where cod_tarh='$cod_tarh' and version='-1' ";
+    
+//	$result=mysql_query($query) or die ("Error in updating data into user login");
+      $comment_pishraft=str_replace("'"," ",$comment_pishraft);
+	    $comment_pishraft=str_replace("\""," ",$comment_pishraft);
+	    $comment_pishraft=str_replace(";"," ",$comment_pishraft);
+	    
+	     $comment_ravesh_motalee=str_replace("'"," ",$comment_ravesh_motalee);
+	    $comment_ravesh_motalee=str_replace("\""," ",$comment_ravesh_motalee);
+	    $comment_ravesh_motalee=str_replace(";"," ",$comment_ravesh_motalee);
+	    
+	     $notes=str_replace("'"," ",$notes);
+	    $notes=str_replace("\""," ",$notes);
+	    $notes=str_replace(";"," ",$notes);
+	    
+    $query="insert into karshenasan_tarh_note set  tarh_new='0' , marhale_report ='$marhale', form_pardakht ='$form_pardakht', comment_pishraft  ='$comment_pishraft', zamanbandi ='$zamanbandi', comment_ravesh_motalee ='$comment_ravesh_motalee', ravesh_motalee='$ravesh_motalee',nazer_form_pardakht='$form_pardakht',note_date='".date("Y-m-d")."',gant='$gant',variables='$variables',chekide='$chekide',sabt='$sabt',mojrian='$mojrian',daneshjoyan='$daneshjoyan',raveshejra='$raveshejra',hazineha='$hazineha',akhlaghi='$akhlaghi',zamaem='$zamaem',date_send='$mydate',comment_karshenas='$notes' , cod_tarh='$cod_tarh' , cod_karshenas='$karshenas_id',version='-1'  ";  
+ 
+    $result=mysql_query($query) or die ("Error in updating data into user login");
+	
+	
+	  $query="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and  cod_tarh='$cod_tarh' and group_karshenasan.karshenas_type='1'";
+      $result123=mysql_query($query) or die("Error 120000");
+	  while($rf=mysql_fetch_array($result123)){
+	  $sms_box=$rf["sms_box"]; 
+	  $startdate =$send_date;
+      $startyear = substr($startdate,0,4);
+      $startmon = substr($startdate,5,2);
+      $startday = substr($startdate,8,2);
+      $send_date=hijricalender( $startyear , $startmon , $startday ); 
+	 
+	  $query="insert into input_sms set sms_from='ADMIN' ,sms_to='$sms_box' , sms_text='nazare nazer  marboot be tarh $cod_tarh  dar tarikh   $send_date  ersal shod'";
+	  $result=mysql_query($query) or die("Error 120000");
+       }        
+  // $action="تغيير کلمه عبور";
+  // set_log($action,$admin,date("Y-d-m"));
+     message_show("نظر شما ثبت شد","green");
+     exit();
+   
+ }
+ else
+   $status="entry_error";
+
+
+
+
+    $notes="";
+    $chekide='0';
+  	$sabt='0';
+  	$mojrian='0';
+  	$daneshjoyan='0';
+  	$raveshejra='0';
+  	$hazineha='0';
+  	$akhlaghi='0';
+  	$zamaem='0';
+  	$gant='0';
+  	$variables='0';
+  
+
+
+
+?>
+<script>
+targetWidth = screen.availWidth;
+targetHeight = screen.availHeight;
+window.resizeTo(targetWidth, targetHeight);
+window.toolbar="no";
+
+
+</script>
+
+<script>
+function refresh_main()
+{
+	 document.user_login.submit();
+     opener.location.reload(true);
+
+}
+</script>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result1=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched1=mysql_fetch_array($result1);
+
+?>
+
+<center>
+<TABLE cellSpacing=0  width="600" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched1["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+ <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo "<br>"."كد طرح  : ".$row_fetched1["cod_tarh"];
+      ?>
+      </TD>
+  </TR>
+<TR>
+
+      <TD   align=center  class="tahoma1"  height=19  >
+      <?
+       $startdate = $row_fetched1["tarh_time"];
+       $startyear = substr($startdate,0,4);
+       $startmon = substr($startdate,5,2);
+       $startday = substr($startdate,8,2);
+       $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+      // $farsistartdate = enum2fnum($farsistartdate);
+	   echo "<br>"."تاريخ شروع  : ".$farsistartdate;
+      ?>
+      </TD>
+  </TR>
+</table>
+</center>
+<center>
+<body onclose="refresh_main()">
+<form  name="user_login" action="<? echo "$PHP_SELF?action=set_note&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&marhale=$marhale_report"; ?>" method="post">
+
+ <table cellSpacing="0" cellPadding="0" border="0" width='700'>
+                    <tbody>
+                      <tr>
+                        <td  width="100%" align='right' height="19" class='tahoma1'><b>نظرات شما</b></td>
+                        
+                      </tr>
+                    </tbody>
+ </table>
+  
+  
+  
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="700" height="80" bgColor="#eee7f8" border="1">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">متن وارد شده خالي است</td>";
+        echo "</tr>";
+      }
+      if($marhale_report==0)
+        $marhale_report='1';
+      if($marhale_report==100)
+        $marhale_report='نهايي';  
+      ?>
+      
+       <tr>
+         <td colspan='2'  class="tahoma1" width="200" valign='top' dir='rtl'><? echo " نظر شما مربوط به گزارش $marhale_report از $marhale_cnt گزارش است ";?></td>
+      </tr>
+       <tr>
+         <td colspan='2'  class="tahoma1" width="200" valign='top'><? echo "<a target='_blank' href=\"rtf.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >"; ?> براي مشاهده فرم قرارداد اينجا را كليك كنيد</a></td>
+      </tr>
+      
+  
+        <tr>
+         <td colspan='2' rowspan='12' class="tahoma1" width="200" valign='top'>از اين فيلد مي توانيد به عنوان فيلد موقتي براي نگهداري قسمتهايي از طرح براي مطالعه استفاده كنيد. اين فيلد ذخيره نمي شود<textarea   rows="30" cols="23" name="comment_ravesh_motalee"  dir=RTL   > </textarea></td>
+      </tr>
+       <tr>
+         <td colspan='2' class='tahoma1' align='center'><b>روش اجرا </b>
+         </td>
+         </tr>
+        <tr>
+        <td align="right" width="400" valign='top'>
+		<select size="1"  name="ravesh_motalee" dir="rtl" class="edit-user">
+		<option value="-1" >انتخاب کنيد</option>
+		<option value="0" >بوده است</option>
+		<option value="1" >تا حدي بوده است</option>
+		<option value="2" >نبوده است</option>	
+		</select>
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='right'>با توجه به گزارش ارائه شده روش مطالعه انجام شده مطابق با روش مطالعه پيش بيني شده در پروپوزال<br><p align=center><b><a target="_blank"  href= <? echo "'ravesh_ejra_savabet_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh' style='text-decoration : none'"; ?>>مشاهده روش اجرا</a><br></b></p></td>
+      </tr>
+      
+      <tr>
+        <td align="right" width="400" valign='top'><textarea   rows="5" cols="40" name="comment_ravesh_motalee"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="300" valign='top' align='right'>توضيح</td>
+      </tr>
+         <tr>
+         <td colspan='2' class='tahoma1' align='center'><b>پيشرفت اجراي  طرح</b>
+         </td>
+         </tr>
+            <tr>
+        <td align="right" width="400" valign='top'>
+		<select size="1"  name="zamanbandi" dir="rtl" class="edit-user">
+		<option value="-1" >انتخاب کنيد</option>
+		<option value="0" >انجام شده است</option>
+		<option value="1" >تا حدي مطابق پيش بيني بوده است</option>
+		<option value="2" >مطابق پيش بيني نبوده است</option>
+		</select>
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='center' align='right'>  با توجه به گزارش ارائه شده توسط مجري ،پيشرفت اجرايي و زمانبندي طرح مطابق پيش بيني جدول گانت انجام شده است ؟<br><p align=center><b><a target="_blank"  href= <? echo "'activity_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh' style='text-decoration : none'"; ?>>مشاهده جدول گانت</a><br></b></p></td>
+      </tr>
+        
+      <tr>
+        <td align="right" width="400" valign='top'><textarea   rows="5" cols="40" name="comment_pishraft"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="300" valign='top' align='right'>توضيح</td>
+      </tr>
+       <tr>
+         <td colspan='2' class='tahoma1' align='center'><b>نظر کلي در مورد اين مرحله</b>
+         </td>
+         </tr>
+       <tr>
+        <td align="right" width="400" valign='top'>
+		<select size="1"  name="form_pardakht" dir="rtl" class="edit-user">
+		<option value="-1" >انتخاب کنيد</option>
+		<option value="0" > در اين مرحله مورد تاييد است</option>
+		<option value="1" > با انحام اصلاحاتي در همين گزارش مورد تاييد است</option>
+		<option value="2" > مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود</option>
+		<option value="3" > به دلايل زير مورد تاييد نمي باشد</option>
+		</select>
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='right'>بر اساس بندهاي فوق اين گزارش </td>
+      </tr>
+      
+      <tr>
+        <td align="right" width="400" valign='top'><textarea   rows="5" cols="40" name="notes"  dir=RTL   ><? echo $notes; ?></textarea></td>
+        <td class="tahoma1" width="300" valign='top' align='right'>نظر شما در مورد اين طرح</td>
+      </tr>
+      
+     
+      <tr>
+        <td width="100%" colSpan="4">
+          <p align="center"><input class="but-small" type="button" onClick="refresh_main()" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+</body>
+<br>
+
+ <br>
+       <?
+      
+     $query="select * from gozaresh_gharardad where  cod_tarh='$cod_tarh'  ";
+     $result1=mysql_query($query) or die("Error");
+     $marhale_cnt=mysql_num_rows($result1);
+      $query="select * from karshenasan_tarh_note where marhale_report='$marhale_num' and cod_tarh='$cod_tarh' order by id desc";
+//	echo $query;
+	$result=mysql_query($query) or die("Error 1"); 
+
+	while($rf=mysql_fetch_array($result))
+	{
+	$ravesh_motalee= $rf["ravesh_motalee"];
+	$comment_ravesh_motalee= $rf["comment_ravesh_motalee"];
+	$zamanbandi= $rf["zamanbandi"]; 
+	$comment_pishraft=  $rf["comment_pishraft"];
+	$form_pardakht= $rf["form_pardakht"];
+	$notes= $rf["comment_karshenas"];
+    $note_date=$rf["note_date"];
+     $startdate = $rf["note_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $note_date=hijricalender( $startyear , $startmon , $startday );
+
+      ?>
+   <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="700" height="80" bgColor="#eee7f8" border="1">
+   
+
+       <tr>
+        <td align="center" colspan='3' width="700" valign='top' class="tahoma1"><b>نظر شما در مورد مرحله <? echo  $marhale_report; ?> از <? echo  $marhale_cnt; ?></b></td>
+        
+        </tr>
+        <tr>
+        <td align="center" colspan='3' width="700" valign='top' class="tahoma1"  dir='rtl'><b>تاريخ ارسال : <? echo $note_date;?></b></td>
+        
+        </tr>
+        <tr>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>توضيحات</b></td>
+        <td align="center" width="100" valign='top' class="tahoma1"><b>نظر</b></td>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>آيتمهاي نظر دهي </b></td>
+        </tr>
+        <tr>
+         <td align="right" width="300" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 <?
+		  if($ravesh_motalee==0)
+		   echo "بوده است";
+		  if($ravesh_motalee==1)
+		   echo "تا حدي بوده است";
+		 if($ravesh_motalee==2)
+		   echo "نبوده است";   
+		 ?>		 	 
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>مطابقت روش مطالعه با پروپوزال</td>
+      </tr>
+      
+    <!--  <tr>
+        <td align="right" width="100" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td class="tahoma1" width="500" valign='top'>توضيح</td>
+      </tr>  -->
+        
+            <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($zamanbandi==0)
+		   echo "انجام شده است";
+		  if($zamanbandi==1)
+		   echo "تا حدي مطابق پيش بيني بوده است";
+		 if($zamanbandi==2)
+		   echo "مطابق پيش بيني نبوده است";   
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>پيشرفت اجرايي طرح مطابق با جدول گانت</td>
+      </tr>
+        
+      <!--<tr>
+        <td align="right" width="100" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td class="tahoma1" width="500" valign='top' align='left'>توضيح</td>
+      </tr>  -->
+      
+       <tr>
+        <td align="right" width="300" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+	 
+		 <?
+		  if($form_pardakht==0)
+		   echo "مورد تاييد است";
+		  if($form_pardakht==1)
+		   echo " با انحام اصلاحاتي در همين گزارش مورد تاييد است";
+		 if($form_pardakht==2)
+		   echo " مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود";  
+		  if($form_pardakht==3)
+		   echo " به دلايل فوق مورد تاييد نمي باشد";    
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>بر اساس بندهاي فوق اين گزارش </td>
+        
+      </tr>
+      
+   
+       
+  
+ 
+       
+     
+  </table>
+  <br>
+    <?
+}
+?>
+  
+  
+  
+  
+<?
+  //footer_forms($admin,$seed);
+?>

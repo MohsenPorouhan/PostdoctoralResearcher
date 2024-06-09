@@ -1,0 +1,323 @@
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+<script type="text/javascript">
+<!--
+
+function addEvent()
+{
+var ni = document.getElementById('myDiv');
+var numi = document.getElementById('theValue');
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "my"+num+"Div";
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+newdiv.innerHTML = "<table border=\"0\" id=\"myTable\" width=\"100%\" bgcolor=\"#EEE7F8\"   cellspacing=\"0\" cellpadding=\"0\"  bordercolor=\"#333333\">"+
+       "<tr>"+
+      "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><input  type=\"text\" name=\"price"+num+"\" size=\"20\" value=\"\" class=\"but-small\" onkeyup=\"MakingMoneyForm(this)\" onkeypress=\"return checkit()\"></td>"+
+      "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><input  type=\"text\" name=\"meghyas"+num+"\" size=\"20\" value=\"\" class=\"but-small\" ></td>"+
+      "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><input  type=\"text\" name=\"count"+num+"\" size=\"20\" value=\"\" class=\"but-small\" onkeyup=\"MakingMoneyForm(this)\" onkeypress=\"return checkit()\"></td>"+
+      "<td width=\"5%\"   align=\"center\" class=\"tahoma1\"><select size=\"1\" name=\"usage_unusage"+num+"\" dir=\"rtl\" class=\"but-small\"><option value=\"0\" class=\"in\">مصرفي</option><option value=\"1\" class=\"in\">غير مصرفي</option></select></td>"+
+      "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\"><input  type=\"text\" name=\"country"+num+"\" size=\"20\" value=\"\" class=\"but-small\"  ></td>"+
+      "<td width=\"14%\"   align=\"center\"  class=\"tahoma1\"><input  type=\"text\" name=\"company"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>"+
+      "<td width=\"20%\"   align=\"center\"  class=\"tahoma1\">&nbsp;<input  type=\"text\" name=\"name_dastgah"+num+"\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>"+
+      "</tr>"+ 
+     "</table><br><a class=\"tahoma0\" href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\')\">حذف</a></tr>";
+ni.appendChild(newdiv);
+}
+
+function removeEvent(divNum)
+{
+var d = document.getElementById('myDiv');
+var olddiv = document.getElementById(divNum);
+d.removeChild(olddiv);
+}
+
+//-->
+</script>
+<?
+$admin_edit=0;
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+   
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"];
+ 
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='9'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}
+
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_vasayel_kharid")==0)
+  {
+
+     	
+    for($i=0;$i<100;$i++)
+    {
+     
+     $nam="name_dastgah".$i;
+	 $var="company".$i;
+     $nag="country".$i;
+     $taa="count".$i;
+     $rav="price".$i;
+     $usg="usage_unusage".$i;
+     $mgh="meghyas".$i;
+     if(strlen(trim($$mgh)) > 0 && strlen(trim($$nam)) > 0 && strlen(trim($$var)) > 0  && strlen(trim($$nag)) > 0 && strlen(trim($$taa)) > 0 && strlen(trim($$rav)) > 0 )
+     {
+      
+       
+      $name_dastgah=$$nam;
+      $company=$$var;
+      $country=$$nag;
+      $count=$$taa;
+      $price=$$rav;
+      $usage_unusage=$$usg;
+      $meghyas=$$mgh;
+      $query="select * from fhrest_vasayel_kharid where  name_dastgah=\"$name_dastgah\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+      	$price=str_replace(",","",$price);
+      	$count=str_replace(",","",$count);
+        $query  = "insert into fhrest_vasayel_kharid set date='".date("Y-m-d")."' ,meghyas=\"$meghyas\", name_dastgah=\"$name_dastgah\",company=\"$company\" , country=\"$country\",usage_unusage=\"$usage_unusage\",count=\"$count\",price=\"$price\",cod_tarh=\"$cod_tarh\"";
+        
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        $action=$activity_type."ثبت فهرست وسايلي که بايد خريداري شود با عنوان"."<br>".$name_dastgah." براي طرح با کد "."<br>".$cod_tarh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+     else
+      if(isset($$nam))
+       $status="entry_error";
+       
+     
+     }  
+  }
+  if (strcmp($action,"delete_fehrest_kharid")==0)
+ {
+    $query="delete from fhrest_vasayel_kharid where cod_kharid = \"$delete_id\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+
+    $result=mysql_query($query) or die("Error in  delete data from hazine azmayesh");
+    $action=$activity_type."حذف فهرست وسايلي که بايد خريداري شود  براي طرح"."<br>".$cod_tarh;
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+ }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_vasayel_kharid&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="100%" cellspacing="0" cellpadding="0" >
+<tr>
+<TD align=left width="20%"   height=19>
+     <a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=right width="80%" class="tahoma1" height=19>فهرست وسايل و موادي که بايد خريداري شوند
+      </TD>
+</tr>
+ 
+</TABLE>
+
+<!-- <table border="0" width="600" id="myTable" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="0"  bordercolor="#333333" style="border-style: solid; border-width: 1; "> -->
+
+<table border="0" id="myTable" width="100%" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"8\">کليه هزينه ها به ريال ميباشد</td>";
+    echo "</tr>";
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td colspan=\"8\" align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td  colspan=\"8\" align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+   echo "<tr>";
+    echo "<td colspan=\"8\" align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\" dir='rtl'>لازم است تا براي مواد يا دستگاه هايي که توليد داخل کشور نيست فيلدهاي شرکت سازنده و  code No را حتما پر نماييد</td>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td  colspan=\"7\" align=\"center\" class=\"error-message\" width=\"100%\" class=\"tahoma1\" colspan=\"2\"><b>مجري محترم ، در وارد کردن کليه هزينه هاي طرح خود از اعداد بدون جدا کننده (, - / ) استفاده کنيد <br></b>  فيلد مقياس فقط براي مواد مصرفي مي باشد.<br>براي مثال<br> 4KG , 3L</td>";
+    echo "</tr>";
+   
+     echo "<tr>";     
+     
+     echo "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><span class=\"star-message\">*</span>قيمت واحد</td>";
+     echo "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><span class=\"star-message\">*</span>مقياس</td>";
+     echo "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><span class=\"star-message\">*</span>تعداد يا مقدار</td>";
+     echo "<td width=\"5%\"   align=\"center\" class=\"tahoma1\">مصرفي يا غير مصرفي</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\"><span class=\"star-message\">*</span>Code No</td>";
+     echo "<td width=\"14%\"   align=\"center\"  class=\"tahoma1\"><span class=\"star-message\">*</span>شرکت سازنده</td>";
+     echo "<td width=\"20%\"   align=\"center\"  class=\"tahoma1\"><span class=\"star-message\">*</span>دستگاه يا ماده مصرفي</td>";
+     echo "</tr>";
+     
+     echo "<tr>";      
+     
+	 echo "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><input  type=\"text\" onkeypress=\"return checkit()\" name=\"price0\" size=\"20\" value=\"\" onkeyup=\"MakingMoneyForm(this)\" class=\"but-small\" ></td>";
+	 echo "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><input  type=\"text\"   name=\"meghyas0\" size=\"20\" value=\"\"   class=\"but-small\" ></td>";
+     echo "<td width=\"20%\"   align=\"center\" class=\"tahoma1\"><input  type=\"text\" onkeypress=\"return checkit()\" name=\"count0\" size=\"20\" value=\"\" onkeyup=\"MakingMoneyForm(this)\" class=\"but-small\"></td>";
+     echo "<td width=\"5%\"   align=\"center\" class=\"tahoma1\"><select size=\"1\" name=\"usage_unusage0\" dir=\"rtl\" class=\"but-small\"><option value=\"0\" class=\"in\">مصرفي</option><option value=\"1\" class=\"in\">غير مصرفي</option></select></td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\"><input  type=\"text\" name=\"country0\" size=\"20\" value=\"\" class=\"but-small\" ></td>";
+     echo "<td width=\"14%\"   align=\"center\"  class=\"tahoma1\"><input  type=\"text\" name=\"company0\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>";
+     echo "<td width=\"20%\"   align=\"center\"  class=\"tahoma1\"><input  type=\"text\" name=\"name_dastgah0\" size=\"20\" value=\"\" class=\"but-small\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>";
+     echo "</tr>";
+     
+     
+     echo "<tr>";
+     echo "<td width=\"100%\" colspan=\"7\" class=\"tahoma0\" align=\"left\">";
+     echo "<input type=\"hidden\" value=\"0\" id=\"theValue\" /><a href=\"javascript:;\" onclick=\"addEvent();\" class=\"tahoma1\">اضافه کردن</a>";
+     echo "<div id=\"myDiv\">";
+     echo "</div>";
+     echo "</td>";
+     echo "</tr>";
+     
+?>
+<tr>
+    <td width="100%"  colspan="7">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+  <?
+   $query="select * from  fhrest_vasayel_kharid where cod_tarh=\"$cod_tarh\"  and version='-1' ";
+
+   $result=mysql_query($query) or die("Error in selecting data from fehrest kharid 2");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"100%\" >";
+     echo "<tr>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">ويرايش</td>";
+     
+	 echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">قيمت کل</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">قيمت واحد</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">مقياس</td>";
+     echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">تعداد يا مقدار</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">مصرفي يا غير مصرفي</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">Code No</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma1\">شرکت سازنده</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نام دستگاه</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">رديف</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     $row=1;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       $cod_kharid=$row_fetched["cod_kharid"];
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=fehrest_kharid.phtml&admin=$admin&seed=$seed&action=delete_fehrest_kharid&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_kharid"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       echo "<td ><p align=\"center\"><a href=\"edit_fehrest_kharid.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_kharid=$cod_kharid\" ><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+       $price_of_every_row=$row_fetched["count"]*$row_fetched["price"];
+       $price_all=$price_all+$price_of_every_row;
+       
+	   echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".number_format($price_of_every_row)."</td>";
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".number_format($row_fetched["price"])."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["meghyas"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".number_format($row_fetched["count"])."</td>";
+       if( $row_fetched["usage_unusage"] == "0" )
+         echo "<td align=\"center\"  class=\"tahoma1\" >مصرفي</td>";
+       else
+         echo "<td align=\"center\"  class=\"tahoma1\" >غير مصرفي</td>";
+
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["country"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["company"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["name_dastgah"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row."</td>";
+       $row++;
+       echo "</tr>";
+     }
+      echo "<tr>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+	  echo "<td align=\"center\"  class=\"tahoma1\">".number_format($price_all)."</td>";
+	  echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      
+      echo "<td align=\"right\" colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+?>
+

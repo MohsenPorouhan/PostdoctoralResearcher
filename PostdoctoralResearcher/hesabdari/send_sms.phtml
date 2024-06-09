@@ -1,0 +1,213 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+//require("include/class.phpmailer.php");
+//require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+
+//if(isset($telno)) 
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if(   strlen(trim($telno))==11)
+{
+   if(strlen($telno)==11)
+   {
+   	
+   	  // $letter_body=arabic2utf($letter_body);
+   	  // $letter_body=$letter_body;
+   	   
+       send_sms("$telno",$letter_body);
+    
+       message_show("پيام شما ارسال شد","green");
+       footer_forms($admin,$seed);
+       exit();
+       
+   }
+    else
+	 $status="mobile_error";   
+       
+}
+
+
+else
+  $status="entry_error";
+
+?>
+
+
+
+
+<? echo "<form name=\"sms\" method=\"post\"  action=\"send_sms.phtml?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=right class="tahoma1" width="100%" align="right"  height=19>
+    ارسال پيام کوتاه  
+	   </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+      if (strcmp($status,"mobile_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">شماره تلفن همراه موجود در پروفايل مجري صحيح نيست</td>";
+    echo "</tr>";
+  }
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  if(isset($telno))
+    $telno=$telno;
+  else  
+  $telno=""; 
+  
+  if(isset($mojri_username)) 
+  {
+  	$query_mojri="select * from user_login where email='$mojri_username'";
+  	$mojri_res=mysql_query($query_mojri) or die("error");
+  	if(mysql_num_rows($mojri_res)>0)
+  	{
+  		$mojri_row_fetch=mysql_fetch_array($mojri_res);
+  		$name_family=$mojri_row_fetch["name"]."&nbsp;".$mojri_row_fetch["family"];
+  	}
+  }
+
+?>
+           <tr>
+              <td colspan="2" align="left">
+                <p align="center" class="tahoma1" dir="rtl">متن ارسالي بايد کمتر از 63 کاراکتر  بوده و شامل   </td>
+            </tr>
+        <?
+        if(mysql_num_rows($mojri_res)>0)
+  	{
+  		?>
+  		<tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" dir="rtl" readonly name="telno" value='<? echo $name_family; ?>' size="48" class="edit-user" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1">نام و نام خانوادگي</td>
+            </tr>
+  		 
+  		<?
+  	}
+        
+        ?>    
+
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="telno" value='<? echo $telno; ?>' size="48" class="edit-user" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>شماره همراه</td>
+            </tr>
+<? 
+$myq="select * from group_karshenasan where username='$admin'";
+$res=mysql_query($myq) or die("Error");
+$rf=mysql_fetch_array($res);
+
+$name_family=$rf["karshenas_name"]."&nbsp;".$rf["karshenas_family"];
+$username=$rf["username"];
+$mobile=$rf["mobile"];
+?>            
+ <tr>
+    <td  width="66%" align="right">
+	<textarea class="edit-user"  name="letter_body" wrap="physical" cols="38" rows="5"
+onKeyDown="textCounter(document.sms.letter_body,document.sms.remLen1,159)"
+onKeyUp="textCounter(document.sms.letter_body,document.sms.remLen1,159)" >Sender : Modiriat Omor Pajohest : Lotfan dar khosos tarh  khod ba karshenas tarh  tamas begirid. </textarea>
+
+<!--	<textarea class="edit-user"  name="letter_body" wrap="physical" cols="38" rows="5"
+onKeyDown="textCounter(document.sms.letter_body,document.sms.remLen1,63)"
+onKeyUp="textCounter(document.sms.letter_body,document.sms.remLen1,63)" ></textarea>
+-->
+	
+ </td>
+    <td width="24%" class="tahoma1" valign="top">متن نامه</td>
+  </tr>
+   <tr>
+         <td width="100%" colspan="2"  >
+
+          <input readonly type="text" name="remLen1" size="3" maxlength="3" value="159">
+          characters left
+  </tr>
+            <tr>
+              <td width="100%" colspan="2" >
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+          </table>
+          
+</form>
+       
+<?
+ $query="select * from sms_user where 1";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+	echo "<tr>";
+	echo "<td width=\"5%\" align='center' class=\"tahoma1\">حذف</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">شماره موبايل</td>";
+ 	echo "<td width=\"10%\" align='center' class=\"tahoma1\">نام خانوادگي</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\">نام</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	 $id=$row_fetched["id"];	
+     $atf_to=$row_fetched["atf_to_letter"];	
+ 	 echo "<tr>";
+    	   	 
+ 	 echo "<td width=\"3%\" align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=send_sms.phtml&admin=$admin&seed=$seed&action=del&delete_id=".$row_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>"; 	 
+ 	 echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\"><a href='send_sms.phtml?admin=$admin&seed=$seed&telno=".$row_fetched["mobile"]."'>".$row_fetched["mobile"]."</a></td>";
+ 	 echo "<td width=\"10%\" align='right' class=\"tahoma1\"><a href='send_sms.phtml?admin=$admin&seed=$seed&telno=".$row_fetched["mobile"]."'>".$row_fetched["family"]."</a></td>";
+ 	 echo "<td width=\"20%\" align='center' class=\"tahoma1\"><a href='send_sms.phtml?admin=$admin&seed=$seed&telno=".$row_fetched["mobile"]."'>".$row_fetched["name"]."</a></td>";
+ 	 echo "</tr>";
+    } 	
+    echo "<tr>";
+ 	echo "<td width=\"20%\" colspan='4' align='center' class=\"tahoma1\"><a href='add_sms_user.phtml?admin=$admin&seed=$seed'>".$row_fetched["name"]."</a></td>";
+ 	echo "</tr>";
+ 	echo "</table>";
+ 	
+ }
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+    echo "<tr>";
+ 	echo "<td width=\"20%\" colspan='4' align='center' class=\"tahoma1\"><a href='add_sms_user.phtml?admin=$admin&seed=$seed'>".$row_fetched["name"]."اضافه کردن مشترک اس ام اس</a></td>";
+ 	echo "</tr>";
+ 	echo "</table>";
+
+   footer_forms($admin,$seed);
+?>

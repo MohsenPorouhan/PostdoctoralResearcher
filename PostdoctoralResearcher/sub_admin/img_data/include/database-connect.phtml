@@ -1,0 +1,16 @@
+<?
+global $HTTP_GET_VARS,$HTTP_POST_VARS,$_SERVER;
+
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($_SERVER))
+$$key = $value;
+
+$result=mysql_connect("localhost","root","789078") or die("Can not connect to mysql server");
+$result=mysql_select_db("pajoheshi") or die("Can not select database");
+
+?>

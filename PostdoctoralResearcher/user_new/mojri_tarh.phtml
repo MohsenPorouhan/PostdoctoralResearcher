@@ -1,0 +1,910 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+
+
+header_forms();
+?>
+
+<link id="select2" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+<link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+<link id="DT_bootstrap" rel="stylesheet"href="../assets/plugins/data-tables/DT_bootstrap_rtl.css" />
+<link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+<link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+<?php
+include("include/new_menu.php");
+
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h3 class="page-title">
+                            <small id="page-title">عنوان طرح : <? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="breadcrumb_home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle-left1" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb_send" href="tarh_list.phtml">
+                                    ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle-left2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb_title" href="mojri_tarh.phtml?cod_tarh=<?php echo $cod_tarh;?>">
+                                    مجريان و همکاران
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="wizard" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                             
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?php  $active_id="3"; include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                       <div class="portlet box blue">
+											<div class="portlet-title">
+												<div class="caption">
+													<i id="portlet_caption" class="fa fa-reorder">مجريان و همکاران</i> 
+												</div>
+												<div class="tools">
+												<a href="javascript:;" class="collapse">
+												</a>
+											    <a id="portlet_config" href="#portlet-config" data-toggle="modal"
+												class="fa fa-info-circle" title="راهنما"
+												style="color: white"> </a>
+										        </div>
+											</div>
+											<div class="portlet-body form-horizontl">
+												<!-- BEGIN FORM-->
+												
+													<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog ">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+							                                        <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                          <h4 id="modal_title" class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                            مجريان و همکاران
+							                                        </h4>
+							                                     </div>
+							                                    <div class="modal-body">
+							                                    
+																		   <!-- BEGIN FORM-->
+															               <!-- <form name="mojri_tarh" id="mojri_tarh_sabt" action="mojri_tarh.php?action=add_mojri&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&mojri_code=$mojri_code" method="POST" class="form-horizontal">-->	
+																	<?php 
+																	//if(strcmp($action,"edit_mojri")!=0) 
+																		   echo "<form name=\"mojri_tarh\" id=\"mojri_tarh_sabt\" method=\"post\" action=\"mojri_tarh_sabt.php?action=add_mojri&admin=$admin&seed=$seed&cod_tarh=$cod_tarh \" class=\"form-horizontal\">";
+																		
+																     ?>
+																   <input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control" value="<?php echo $cod_tarh;?>"> 
+															   	   <input id="mojri_code" name="mojri_code" type="hidden" class="form-control">
+																		<div class="form-body">
+																		<?php 
+																		$mojri_query="select * from user_login,tarh where tarh.cod_tarh='$cod_tarh' and user_login.email=tarh.creator ";
+																		$mojri_result=mysql_query($mojri_query) or die("Error");
+																		$row_fetch_mojri=mysql_fetch_array( $mojri_result );
+																		$mojri_name = $row_fetch_mojri["name"]."&nbsp;".$row_fetch_mojri["family"];
+																		?>
+																		  <!-- <h3 class="form-section">
+																		          <?
+																				  // echo "مجري اصلي طرح  : ".$mojri_name ;
+																			       ?></h3> -->  
+																			<!-- <h3 class="form-section">مشخصات طرح</h3> -->
+																			<div id="alert-danger" class="alert alert-danger display-hide">
+																				<button class="close" data-close="alert"></button>
+																			    پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																		    </div>
+																			<!--  <div class="alert alert-success display-hide">
+																				<button class="close" data-close="alert"></button>
+																				Your form validation is successful!
+																			 </div>-->
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb1" class="control-label col-md-5">نام
+																						<span class="required">
+																							 *
+																						</span>
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input id="name" name="name" type="text" class="form-control input-sm  input-small" placeholder="">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb2" class="control-label col-md-5">نام خانوادگي
+																						<span class="required">
+																							 *
+																						</span>
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input id="family" name="family" type="text" class="form-control input-sm  input-small" placeholder="">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																		                <label id="lb3" class="control-label col-md-5">نوع همکاري
+																						</label>
+																		                <div class="col-md-7">
+																		                    <div id="type_cooperation_label" class="input-icon right">
+																								<i class="fa"></i>
+																				                <select id="mojri_or_hamkar" name="mojri_or_hamkar" class="select2 form-control input-sm  input-small">
+																				                    <option value="0">مجري</option>
+																				                    <option value="1">همکار</option>
+																				                    <option value="2">مجري دوم</option>
+																				                </select>
+																			                </div>
+																		                </div>
+																			        </div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																		                <label id="lb4" class="control-label col-md-5">مرتبه علمي
+																						</label>
+																		                <div class="col-md-7">
+																		                  <div class="input-icon right">
+																								<i class="fa"></i>
+																			                <select id="darajeelmi" name="darajeelmi" class="select2 form-control input-sm  input-small">
+																			                   <option id="option_degree" value="">مرتبه علمي را انتخاب کنيد</option>
+																			                       <?
+																					                        $query="select * from darajeelmi order by darajeelmi_desc ";
+																					                        $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+																										    while($row_fetched=mysql_fetch_array($qresult))
+																										    {
+																										    	//echo"ss:".$row_fetched["darajeelmi"];
+																										    	//echo "<br>bb:".$row_fetched["darajeelmi_desc"];
+																										        
+																												if($la=="en")	
+																										    		echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_english_desc"].$row_fetched["darajeelmi"]."</option>";
+																												else
+																													echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_desc"].$row_fetched["darajeelmi"]."</option>";
+																										    }
+																										    ?>
+																			                </select>
+																		                  </div>
+																		              </div>
+																			        </div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb5" class="control-label col-md-5">تخصص
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input id="takhasos" name="takhasos" type="text" class="form-control input-sm  input-small" placeholder="">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb6" class="control-label col-md-5">پست الکترونيکي
+																						<span class="required">
+																							 *
+																						</span>
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input id="email" name="email" type="text" class="form-control input-sm  input-small" placeholder="">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																			</div>
+																			<div class="row">
+																			<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="lb7" class="control-label col-md-5">تلفن همراه
+																						</label>
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																								<i class="fa"></i>
+																								<input id="mobile" name="mobile" type="text" class="form-control input-sm  input-small" placeholder="">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																			
+																		</div>
+																	
+																	
+																	<!-- END FORM-->
+																	
+							                                     
+							                                    </div>
+							                                      <div class="modal-footer">
+								                                       <button id="btn1" type="submit"  class="btn green input-sm  input-small">ذخيره</button>
+																	   <button id="btn2" type="button" class="btn red input-sm  input-small" data-dismiss="modal"> <i class="fa fa-times"></i>انصراف</button>							                              </div>
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							                      <div class="modal fade " id="delete" tabindex="-1"
+											role="basic" aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal"
+															aria-hidden="true"></button>
+														<h4 class="modal-title">
+															<i class="fa fa-file-o"></i>
+
+														</h4>
+													</div>
+													<div class="modal-body">
+														<!-- BEGIN FORM-->
+
+														<div class="form-body">
+															<h4 id="delete_message" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+														</div>
+														<div class="form-actions fluid">
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="col-md-offset-3 col-md-9">
+																		<button id="btn3" type="submit" class="btn green">بلي</button>
+																		<button id="btn4" type="button" class="btn red"
+																			data-dismiss="modal">
+																			<i class="fa fa-times"></i>خير
+																		</button>
+																	</div>
+																</div>
+																<div class="col-md-6"></div>
+															</div>
+														</div>
+
+														<!-- END FORM-->
+													</div>
+
+												</div>
+												<!-- /.modal-content -->
+											</div>
+											<!-- /.modal-dialog -->
+										</div>
+										</form>
+						                        <a id="new_assistance" class="btn blue btn-sm pull-left" data-toggle="modal" href="#basic">
+						                            ثبت مجري جديد
+						                        </a>
+						                    <!-- <div></div> -->   
+												<!-- END FORM-->
+												<div class="table-responsive">
+												<table class="table table-striped table-bordered table-hover" id="sample_1">
+				                                    <thead>
+				                                        <tr>
+				                                           <th id="th1" class="hidden">
+				                                                کد مجري
+				                                            </th>
+				                                            <th id="th2" class="">
+				                                                نام
+				                                            </th>
+				                                            <th id="th3" class="">
+				                                                نام خانوادگي	
+				                                            </th>
+				                                            <th id="th4" class="">
+				                                                نوع همکاري
+				                                            </th>
+				                                            <th id="th5" class="">
+				                                                مرتبه علمي
+				                                            </th>
+				                                             <th id="th6" class="">
+				                                                 تخصص
+				                                            </th>
+				                                             <th id="th7" class="">
+				                                                 پست الکترونيکي
+				                                            </th>
+				                                             <th id="th8" class="">
+				                                                 موبايل
+				                                            </th>
+				                                            <th id="th9" class="">
+				                                                ويرايش
+				                                            </th>
+				                                            <th id="th10" class="">
+				                                                حذف
+				                                            </th>
+				                                        </tr>
+				                                    </thead>
+				                                   
+			                                	</table>
+			                                	</div>
+											</div>
+										</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+
+<script>
+if(language=="en"){																										    
+debugger;
+document.getElementById("page-title").textContent="Title of Research";
+document.getElementById("breadcrumb_home").textContent="Home";
+document.getElementById("breadcrumb_send").textContent="Send/Edit of Research";
+document.getElementById("breadcrumb_title").textContent="Assistances";
+document.getElementById("wizard").innerHTML="<i class='fa fa-magic'></i>Wizard";
+document.getElementById("portlet_caption").textContent="Assistances";
+document.getElementById("portlet_config").setAttribute("title","Information");
+document.getElementById("fa-angle-left1").setAttribute("class","fa fa-angle-right");
+document.getElementById("fa-angle-left2").setAttribute("class","fa fa-angle-right");
+document.getElementById("alert-danger").textContent="You have some form errors. Please check below.";
+document.getElementById("modal_title").textContent="Assistances";
+document.getElementById("lb1").textContent="First Name *";
+document.getElementById("lb2").textContent="Last Name *";
+document.getElementById("lb3").textContent="Type of Cooperation";
+document.getElementById("type_cooperation_label").innerHTML="<i class='fa'></i><select id='mojri_or_hamkar' name='mojri_or_hamkar' class='select2 form-control input-sm  input-small'><option value='0'>Administrator</option><option value='1'>Assistance</option><option value='2'>Second Administrator</option></select>";
+document.getElementById("lb4").textContent="Degree of Science";
+document.getElementById("option_degree").textContent="Choose your degree of science";
+document.getElementById("lb5").textContent="Expert";
+document.getElementById("lb6").textContent="Email";
+document.getElementById("lb7").textContent="Mobile";
+document.getElementById("btn1").textContent="Save";
+document.getElementById("btn2").textContent="Cancel";
+document.getElementById("delete_message").textContent="Are you sure to remove this item?";
+document.getElementById("btn3").textContent="Yes";
+document.getElementById("btn4").textContent="No";
+document.getElementById("new_assistance").textContent="Enter new assistence";
+document.getElementById("th1").textContent="assistences` number";
+document.getElementById("th2").textContent="First Name";
+document.getElementById("th3").textContent="Last Name";
+document.getElementById("th4").textContent="Type of Cooperation";
+document.getElementById("th5").textContent="Degree of Science";
+document.getElementById("th6").textContent="Expert";
+document.getElementById("th7").textContent="Email";
+document.getElementById("th8").textContent="Mobile";
+document.getElementById("th9").textContent="Edit";
+document.getElementById("th10").textContent="Delete";
+document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+}
+</script>
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+	
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript"src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"src="../assets/plugins/data-tables/DT_bootstrap.js"></script>
+    <script type="text/javascript" language="javascript"src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+    <script type="text/javascript" language="javascript"src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="../assets/scripts/core/app.js"></script>
+	<script src="../assets/scripts/custom/form-samples.js"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+	<script>
+	jQuery(document).ready(function() {    
+	   // initiate layout and plugins
+	  // App.init();
+	  // FormSamples.init();
+	  // $(".select2").select2();
+	});
+	</script>
+	<!-- END JAVASCRIPTS -->
+	
+	<script>
+	function fixControlPosition(){
+		//ja be jayi btn haye table tools (print,copy,....)
+							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+		}
+	$("#mojri_tarh_sabt").submit(function(e){
+		        // for more info visit the official plugin documentation: 
+		            // http://docs.jquery.com/Plugins/Validation
+
+		            var form2 = $('#mojri_tarh_sabt');
+		            var error2 = $('.alert-danger', form2);
+		            var success2 = $('.alert-success', form2);
+					if(language=="en"){
+			            form2.validate({
+			                errorElement: 'span', //default input error message container
+			                errorClass: 'help-block', // default input error message class
+			                focusInvalid: false, // do not focus the last invalid input
+			                ignore: "",
+			                rules:{
+				  	        	  	  name:{
+				  	                  required:true
+				  	                  },
+				  	                  family:{
+				  	                  required:true
+				  			          },
+				  			          email:{
+				  		                  required:true,
+				  		                  email:true
+				  				      },
+				  				      mobile:{
+				  		                  number: true,
+				  		                  rangelength: [11, 11],
+				  				      }
+					  			   },
+	
+			                invalidHandler: function (event, validator) { //display error alert on form submit              
+				                    success2.hide();
+				                    error2.show();
+				                    App.scrollTo(error2, -200);
+			                },
+	
+			                errorPlacement: function (error, element) { // render error placement for each input type
+			                    var icon = $(element).parent('.input-icon').children('i');
+			                    icon.removeClass('fa-check').addClass("fa-warning");  
+			                    icon.attr("data-original-title", error.text()).tooltip();
+			                },
+	
+			                highlight: function (element) { // hightlight error inputs
+			                    $(element)
+			                        .closest('.form-group').addClass('has-error'); // set error class to the control group   
+			                },
+	
+			                unhighlight: function (element) { // revert the change done by hightlight
+			                    
+			                },
+	
+			                success: function (label, element) {
+			                    var icon = $(element).parent('.input-icon').children('i');
+			                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+			                    icon.removeClass("fa-warning").addClass("fa-check");
+			                },
+	
+			                submitHandler: function (form) {
+			                    success2.show();
+			                    error2.hide();
+			                }
+			            });
+	}else
+						{
+							form2.validate({
+					            //errorElement: 'span', //default input error message container
+					            //errorClass: 'help-block', // default input error message class
+					            focusInvalid: false, // do not focus the last invalid input
+					            //ignore: "",
+					            rules:{
+					  	        	  	  name:{
+					  	                  required:true
+					  	                  },
+					  	                  family:{
+					  	                  required:true
+					  			          },
+					  			          email:{
+					  		                  required:true,
+					  		                  email:true
+					  				      },
+					  				      mobile:{
+					  		                  number: true,
+					  		                  rangelength: [11, 11],
+					  				      }
+						  			   },
+						  	            messages:{
+							  	        	  	  name:{
+							  	                  required:"پر کردن اين فيلد الزامي مي باشد"
+							  	            	  },
+							  	            	  family:{
+							  	                      required:"پر کردن اين فيلد الزامي مي باشد"
+							  	    		          },
+							      		          email:{
+							  	                      required:"پر کردن اين فيلد الزامي مي باشد",
+							  	                      email:"لطفا يک ايميل معتبر وارد نماييد."
+							  	    		          },  
+							      		          mobile:{
+							  	                      number: "لطفا عدد وارد نماييد.",
+							  	                      rangelength:"لطفا يک موبايل معتبر وارد نماييد."
+							  	    		          } 
+							  	                  },
+					  	              
+					
+					            invalidHandler: function (event, validator) { //display error alert on form submit              
+					                    success2.hide();
+					                    error2.show();
+					                    App.scrollTo(error2, -200);
+					            },
+					
+					            errorPlacement: function (error, element) { // render error placement for each input type
+					                var icon = $(element).parent('.input-icon').children('i');
+					                icon.removeClass('fa-check').addClass("fa-warning");  
+					                icon.attr("data-original-title", error.text()).tooltip();
+					            },
+					
+					            highlight: function (element) { // hightlight error inputs
+					                $(element)
+					                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+					            },
+					
+					            unhighlight: function (element) { // revert the change done by hightlight
+					                
+					            },
+					
+					            success: function (label, element) {
+					                var icon = $(element).parent('.input-icon').children('i');
+					                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+					                icon.removeClass("fa-warning").addClass("fa-check");
+					            },
+					
+					            submitHandler: function (form) {
+					                success2.show();
+					                error2.hide();
+					            }
+					        });
+					    }
+		    var formURL;
+			var postData = $(this).serializeArray();
+			if(jadvZar_IsNew=="insert")		
+				 formURL = $(this).attr("action");
+			else if(jadvZar_IsNew=="edit")		
+				formURL="mojri_tarh_sabt.php?action=edit_mojri_sabt";
+			else if(jadvZar_IsNew=="delete")	
+				formURL="mojri_tarh_sabt.php?action=delete_mojri";
+
+			if($("#mojri_tarh_sabt").valid() || (jadvZar_IsNew=="delete"))
+			{
+			    $(".green").attr("disabled","disabled");
+				$.ajax(
+				{
+					url : formURL,
+					type: "POST",
+					data : postData,
+					success:function(data, textStatus, jqXHR) 
+					{
+						if(data=="exist"){
+							$("#mojri_tarh_i").switchClass( "fa-times", "fa-check", 1000, "easeInOutQuad" );
+							}
+						else if(data=="notexist"){
+							
+							$("#mojri_tarh_i").switchClass( "fa-check", "fa-times", 1000, "easeInOutQuad" );
+							}
+					
+							jadvZar_IsNew="insert";
+							$("#basic").modal('hide');
+							$("#delete").modal('hide');
+							$("#mojri_tarh_sabt")[0].reset();
+						
+				           $("#sample_1").DataTable().destroy();
+				    		
+				           show_dataTable(); 
+				           $(".green").removeAttr("disabled","disabled");
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+					}
+				});
+         
+				}
+			    e.preventDefault();	//STOP default action
+			});
+				
+			//$("#mojri_tarh_sabt").submit(); //SUBMIT FORM
+	 </script>
+	 <script>
+	$(document).ready(function() {
+		    var detailRows = [];
+		    var dt;
+		    show_dataTable();
+		
+	 });
+	var buttonText;
+	var sButtonText;
+	var info;
+	//var	language="en";
+	if(language=="en"){
+		buttonText="Visibel Columns";
+		sButtonText="Print";
+		sButtonText2="Save";
+		info="view _START_ to _END_ from _TOTAL_ items";
+		sLengthMenu="View Content _MENU_";
+		sZeroRecords="Not Found";
+		sInfoEmpty="Empty";
+		
+		sSearch="Search";
+		sFirst="First";
+		sPrevious="Previous";
+		sNext="Next";
+		sLast="Last";
+		
+		
+	}
+	else
+	{
+		buttonText="ستون هاي قابل نمايش";
+		sButtonText="چاپ";
+		sButtonText2="ذخيره";
+		info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+		sLengthMenu="نمايش محتويات _MENU_";
+		sZeroRecords="موردي يافت نشد";
+		sInfoEmpty="تهي";
+		
+		sSearch="جستجو";
+		sFirst="ابتدا";
+		sPrevious="قبلي";
+		sNext="بعدي";
+		sLast="انتها";
+		
+	}
+	function show_dataTable(){
+	    dt = $('#sample_1').DataTable({
+			 "dom": 'CT<"clearfix">lfrtip',
+		        "tableTools": {
+		            "sRowSelect": "os",
+					 "aButtons": [
+		                 
+						{
+		                    "sExtends": "print",
+		                    "sButtonText": sButtonText
+		                },
+		                
+		                {
+		                    "sExtends":    "collection",
+		                    "sButtonText": sButtonText2,
+		                    "aButtons":    [ 
+												"csv", 
+												"xls"
+											]
+		                }
+		            ],
+		            
+					"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+		        },
+		        "fnInitComplete": function(oSettings, json) {
+					
+					fixControlPosition();
+					
+	                },
+		        "fnDrawCallback": function(oSettings) {
+		            var trs = $("#sample_1 tr");
+		            for (var i = 1; i < trs.length; i++) {
+
+		                var rowId = ($(trs[i]).attr('id'));
+		                $("#" + rowId + " td:last-child").trigger('click');
+
+		            }
+		            $('.edit_btn').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                //var idx = $.inArray(tr.attr('id'), detailRows);
+		                
+		                $('#mojri_code')[0].value = row.data().mojri_code;	
+		                		     
+		                $('#name')[0].value = row.data().name;
+		                $('#family')[0].value = row.data().family;
+		                if(language=="en"){
+				                if(row.data().mojri_or_hamkar=='Administrator'){
+				                	$('#mojri_or_hamkar option[value="0"]').attr("selected", "selected");
+				                }else if(row.data().mojri_or_hamkar=='Assistance'){
+				                	$('#mojri_or_hamkar option[value="1"]').attr("selected", "selected");
+				                }
+				                else if(row.data().mojri_or_hamkar=='Second Administrator'){
+				                	$('#mojri_or_hamkar option[value="2"]').attr("selected", "selected");
+				                }
+		                }
+		                else{
+			                	if(row.data().mojri_or_hamkar=='مجري'){
+				                	$('#mojri_or_hamkar option[value="0"]').attr("selected", "selected");
+				                }else if(row.data().mojri_or_hamkar=='همکار'){
+				                	$('#mojri_or_hamkar option[value="1"]').attr("selected", "selected");
+				                }
+				                else if(row.data().mojri_or_hamkar=='مجري دوم'){
+				                	$('#mojri_or_hamkar option[value="2"]').attr("selected", "selected");
+				                }
+			                }
+		                
+		                  <?
+		                        $query="select * from darajeelmi order by darajeelmi_desc ";
+		                        $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+		                        if($la=="en"){
+									    while($row_fetched=mysql_fetch_array($qresult))
+									    {
+		                        ?>
+		                                     
+		                                      if(row.data().darajeelmi=="<?php echo $row_fetched['darajeelmi_english_desc'] ?>"){
+		                                      	$('#darajeelmi option[value="<?php echo $row_fetched['darajeelmi'] ?>"]').attr("selected", "selected");}
+													        
+																
+								   //  echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_desc"].$row_fetched["darajeelmi"]."</option>";
+		                             <?php
+								    }
+							    }else 
+							    {
+								
+										 while($row_fetched=mysql_fetch_array($qresult))
+										 {
+								     ?>
+		                                     
+		                                      if(row.data().darajeelmi=="<?php echo $row_fetched['darajeelmi_desc'] ?>"){
+		                                      	$('#darajeelmi option[value="<?php echo $row_fetched['darajeelmi'] ?>"]').attr("selected", "selected");}
+													        
+																
+								   //  echo "<option value=\"".$row_fetched["darajeelmi"]."\">".$row_fetched["darajeelmi_desc"].$row_fetched["darajeelmi"]."</option>";
+		                             <?php
+								    }
+								}
+							    ?>
+											    
+						               
+					     $('#takhasos')[0].value = row.data().takhasos;
+						 $('#email')[0].value = row.data().email;
+						 $('#mobile')[0].value = row.data().mobile;
+							    
+		               
+		                $('#takhasos')[0].value = row.data().takhasos;
+		                $('#email')[0].value = row.data().email;
+		                $('#mobile')[0].value = row.data().mobile;
+		                
+		                jadvZar_IsNew="edit";
+		                $("#basic").modal('show');
+		            });
+		            $('.delete_btn').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                $('#mojri_code')[0].value = row.data().mojri_code;
+		                
+		                jadvZar_IsNew="delete";
+		                $("#delete").modal('show');
+	                
+		            });
+		        },
+		        "colVis": {
+			           "buttonText": buttonText,
+			           exclude:[0]
+			       },
+		        
+              "paging": true,
+              'bPaginate': true,
+              "pagingType": "full_numbers",
+              "processing": true,
+              "serverSide": true,
+              "bDestroy": true,
+              "bAutoWidth": false,
+              "language": {
+            		
+            	  "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+                  "sLengthMenu": sLengthMenu,
+                  "sZeroRecords": sZeroRecords,
+                  "info": info,
+                  "sInfoEmpty": sInfoEmpty,
+                 
+                  "sInfoPostFix": "",
+                  "sSearch": sSearch,
+                  "sUrl": "",
+                  "oPaginate" : {
+                      "sFirst": sFirst,
+                      "sPrevious": sPrevious,
+                      "sNext": sNext,
+                      "sLast": sLast
+                  }
+              },
+		        "sAjaxSource": "mojri_tarh_sabt.php?cod_tarh=<?php echo $cod_tarh;?>&action=mojri_tarh_list",
+		        "aoColumns": [
+                    { "data": "mojri_code","sClass": "hidden" },        
+		            { "data": "name" },
+		            { "data": "family" },
+		            { "data": "mojri_or_hamkar" },
+		            { "data": "darajeelmi" },
+		            { "data": "takhasos" },
+		            { "data": "email" },
+		            { "data": "mobile" },
+		            { "data": "edit", "bSortable": false },
+		            { "data": "delete", "bSortable": false}
+		        ]
+
+		    });
+		}
+	var jadvZar_IsNew="insert";
+
+	$('#basic').on('hidden.bs.modal', function () {
+	   // debugger;
+	    jadvZar_IsNew="insert";
+	    $("#mojri_tarh_sabt")[0].reset();
+	    $('#darajeelmi').prop('selectedIndex',"");
+	    //Begin of reset form validation 
+	    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+	    $(".input-icon .fa-check").switchClass("fa-check","fa");
+	    $(".alert-danger").hide();
+	    $('.form-group').removeClass('has-error');
+	    $('.form-group').removeClass('has-success');
+	    //End of reset form validation
+	});
+	$('#delete').on('hidden.bs.modal', function () {
+		    debugger;
+		    jadvZar_IsNew="insert";
+		    $("#mojri_tarh_sabt")[0].reset();
+		    $('#darajeelmi').prop('selectedIndex',"");
+			  //Begin of reset form validation 
+		    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+		    $(".input-icon .fa-check").switchClass("fa-check","fa");
+		    $(".alert-danger").hide();
+		    $('.form-group').removeClass('has-error');
+		    $('.form-group').removeClass('has-success');
+		    //End of reset form validation
+		});	 
+	 </script>
+	
+<?php
+footer_forms($admin,$seed);
+?>
+

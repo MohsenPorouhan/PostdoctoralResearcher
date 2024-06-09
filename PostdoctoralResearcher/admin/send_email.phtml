@@ -1,0 +1,61 @@
+
+
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+//require("include/class.phpmailer.php");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.smtp.php");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+echo "<br>";
+
+echo "helo";
+
+
+    	$mail = new PHPMailer();
+
+	    $emailbody="";
+        $emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+        $emailbody=$emailbody."<br>Thanks for your registration at $url_address<br>";
+        $emailbody=$emailbody."<br>For using comprehensive research administration and sending your proposals<br>";
+        $emailbody=$emailbody."<br> using the below username and password<br>";
+        $emailbody=$emailbody."<br>Username: $email<br>Password: $pass<br><br>";
+        $emailbody=$emailbody."Login Here : <a href=".$url_address."/login.phtml>Here</a>";
+        $emailbody=$emailbody."<center><font face=Arial size=2 color=green><a href=\"".$url_address."\">".$url_address."</a>";
+        $emailbody=$emailbody."<br>Powered by Peyvandco.com .</font></center>";
+
+
+	$mail->IsSMTP();
+	$mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+	                                      // set mailer to use SMTP
+	$mail->host = $mailserver_host;  // specify main and backup server
+    $mailname=$familye." ".$name_e;
+	$mail->From = $email_from;
+	$mail->FromName = $email_from_name;
+	$mail->AddAddress($email, $mailname);
+	$mail->IsHTML(true);                                  // set email format to HTML
+
+	$mail->Subject = "Registration in ".$url_address." (Do not reply this email)";
+	$mail->Body    = $emailbody;
+	$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+	echo $email;
+      if(!$mail->Send())
+    {
+        $status="mail_err";
+         
+    }
+    echo $status;
+     //send_email($subject,$emailbody,$email_username,$email,$email_from_name,$email_from,$email_password);
+ message_show("کد امنيتي را صحيح وارد کنيد","green");
+        footer_forms();
+ 
+    
+
+
+

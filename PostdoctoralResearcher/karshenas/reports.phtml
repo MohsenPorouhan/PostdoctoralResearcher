@@ -1,0 +1,167 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+
+echo "<br>";
+$query="select * from karshenasan where username='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas_tarh");
+$row_fetched=mysql_fetch_array($result);
+$cod_karshenas=$row_fetched["cod_karshenas"];
+
+$query="select * from karshenasan_tarh where cod_tarh=\"$cod_tarh\" and cod_karshenas=\"$cod_karshenas\"";
+$result=mysql_query($query) or die("Error in selecting data from karshenas_tarh");
+$row_fetched=mysql_fetch_array($result);
+$gozaresh_nezarat=$row_fetched["gozaresh_nezarat"];
+//echo $gozaresh_nezarat;
+ 
+
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+$result=mysql_query($query) or die("Error");
+$my_rf=mysql_fetch_array($result);
+$tarh_name=$my_rf["tarh_name"];
+
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=send_indoing&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+   
+    ?>
+    <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="1">
+<tr>
+	<td class="tahoma1" dir="rtl">
+		" براي مشاهده گزارش نهايي هر طرح لازم است اين گزارش توسط ساب ادمين ( يعني مرکز يا دانشکده اي که اين طرح را براي مديريت امور پژوهش فرستاده) تاييد گردد. چنانچه ساب ادمين گزارش را تاييد نکرده باشد امکان مشاهده گزارش نهايي وجود ندارد. در اين موارد مراتب را به کارشناس طرح در حوزه مديريت امور پژوهش اطلاع دهيد."
+	</td>
+</tr>
+</table>
+<br>
+    <?
+    
+    
+     $query="select * from gozaresh_gharardad where  cod_tarh='$cod_tarh' order by marhale asc";
+     $result=mysql_query($query) or die("Error");
+	 
+     echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+     echo "<tr>";
+     echo "<td align=\"center\" colspan='5'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$tarh_name</b></td>";   
+     echo "</tr>";
+     
+     $color="PALETURQUOISE";
+     
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='5'  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>گزارشات</b></td>";
+     echo "</tr>";
+     
+     echo "<tr>";
+     echo "<td width=\"20%\"  align=\"center\" bgcolor=$color class=\"tahoma1\">مشاهده نظرات ثبت شده قبلي شما</td>";
+      echo "<td width=\"20%\"  align=\"center\" bgcolor=$color class=\"tahoma1\">ارسال نظر</td>";
+       echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>وضعيت پرداخت</b></td>";
+   
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مشاهده</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مرحله</b></td>";   
+     echo "</tr>";
+     
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     $id=$row_fetched["id"];	
+     $marhale=$row_fetched["marhale"];	
+     $marhale_txt=$marhale;
+     if(strcmp($marhale,"0")==0)
+       $marhale_txt="1";
+     if(strcmp($marhale,"100")==0)
+       $marhale_txt="نهايي"; 
+       
+        $myq="select * from marhale_report where cod_tarh='$cod_tarh' and marhale='$marhale' ";
+     $res=mysql_query($myq) or die("Error");
+     $submit_subadmin=0;
+	 if(mysql_num_rows($res) > 0)
+     {
+       $report_string="<b>"." مشاهده گزارش "."-"."  فايل گزارش ارسال شده  "."</b>";
+       $rf1=mysql_fetch_array($res);
+       $submit_subadmin=$rf1["submit_subadmin"];
+	 }	   	     
+     else
+       $report_string="فايل گزارش ارسال نشده";
+     echo "<tr>";
+      $q="select * from tarh_indoing where cod_tarh='$cod_tarh' and marhale='$marhale' and submitted='1'";
+      //echo $q;
+     $rs=mysql_query($q) or die('Error');
+     $submitted=0;
+     if(mysql_num_rows($rs) > 0)
+     {
+       $rf=mysql_fetch_array($rs);
+       $submitted=$rf["submitted"];
+      // $id=$rf["id"];
+      // echo $id;
+       $marhale_pardakht="<b>".'پرداخت شده'."</b>";
+     }
+     else
+	   $marhale_pardakht='پرداخت نشده';  
+     echo "<tr>";
+     //your_marhale_notes
+     
+     echo "<td width=\"4%\" align=\"center\" bgcolor=$color class=\"tahoma1\"><a  href=\"nazerin_notes_list.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&marhale_report=$marhale&marhale_cnt=$marhale_cnt\" ><img border=\"0\" src=\"image/view.gif\" alt=\"Your Notes\" ></a></td>";
+      if(strcmp($marhale,'0')==0)
+      {
+      	echo "<td width=\"4%\" align=\"center\" bgcolor=$color class=\"tahoma1\">بر اساس روال معمول مرحله اول ،مرحله انعقاد قرارداد مي باشد و بر اين اساس گزارش تاييد شده است</td>";
+      }
+      else
+      {
+	   if(!$submitted)
+       {
+       	if(strcmp($marhale,$gozaresh_nezarat)==0 || $gozaresh_nezarat=='-1'){
+         if(strcmp($marhale,'100')==0)
+           echo "<td width=\"4%\" align=\"center\" bgcolor=$color class=\"tahoma1\"><a target=\"_blank\" href=\"nazer_note_final.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&marhale_report=$marhale&marhale_cnt=$marhale_cnt\" ><img border=\"0\" src=\"image/notes.gif\" alt=\"Your Notes\" ></a></td>";
+         else		    
+		   echo "<td width=\"4%\" align=\"center\" bgcolor=$color class=\"tahoma1\"><a target=\"_blank\" href=\"nazer_notes.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&marhale_report=$marhale&marhale_cnt=$marhale_cnt\" ><img border=\"0\" src=\"image/notes.gif\" alt=\"Your Notes\" ></a></td>";
+       }
+       else
+       {
+       		 echo "<td width=\"4%\" align=\"center\" bgcolor=$color class=\"tahoma1\">----</td>";
+       	
+       } 	
+       		
+       }
+       else
+           echo "<td width=\"4%\" align=\"center\" bgcolor=$color class=\"tahoma1\">داراي تاييديه</td>";
+      }
+      
+     if($submit_subadmin)
+     {     
+       if(strcmp($marhale,'100')==0)
+	    echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">$marhale_pardakht </td>";
+	  else
+        echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">$marhale_pardakht </td>";
+     }
+     else
+     {
+      if(strcmp($marhale,'100')==0)
+	    echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تاييديه ساب ادمين ندارد</td>";
+	  else
+        echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">$marhale_pardakht </td>";
+     }
+     
+     if($submit_subadmin)
+     { 
+       if(strcmp($marhale,'100')==0)
+	     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> <a href='final_report_view.phtml?admin=$admin&seed=$seed&marhale=$marhale&cod_tarh=$cod_tarh'>$report_string</a> </td>";
+	   else
+         echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> <a href='view_marhale_report.phtml?admin=$admin&seed=$seed&marhale=$marhale&cod_tarh=$cod_tarh'>$report_string</a> </td>";
+     }
+     else
+     {
+       if(strcmp($marhale,'100')==0)
+	     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">تاييديه ساب ادمين ندارد</td>";
+	   else
+          echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> <a href='view_marhale_report.phtml?admin=$admin&seed=$seed&marhale=$marhale&cod_tarh=$cod_tarh'>$report_string</a> </td>";
+	
+     }
+	 echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$marhale_txt</b></td>";
+     echo "</tr>";
+     }
+     echo "</table>";
+  
+  echo "</form>"; 
+   
+footer_forms($admin,$seed);
+?>
+

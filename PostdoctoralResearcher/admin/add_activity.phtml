@@ -1,0 +1,492 @@
+<?
+ include("include/database-connect.phtml");
+ include("include/include.phtml");
+
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+?>
+<center class="tahoma1"><b>
+جدول زمانبندي و مداحل اجراي طرح
+</b>
+</center>
+<?
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  if( $type == 1 )
+    updatesession($admin,$seed);
+  else
+  {
+   header ("Refresh: 0; url=../login.phtml");
+   exit();
+  }
+ }
+?>
+<META http-equiv=content-type content=text/html;charset=utf-8>
+<?
+// header_forms($admin,$seed);
+ include("include/styles.phtml");
+ 
+ echo "<br>";
+?>
+
+<?
+if(strcmp($action,"delete") ==0 )
+{
+   	$query="delete from activities where act_code ='$deleted_item'";
+	$result=mysql_query($query) or die("Error in deleting data from activities");
+	$action="حذف زمانبندي طرح با کد"."<br>".$cod_tarh;
+   
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+
+}
+
+if(strcmp($action,"edit") ==0 )
+{
+ $q="select * from activities where act_code='$edit_item'";
+ $r=mysql_query($q) or die("server error2");
+ while($l=mysql_fetch_array($r))
+ {
+  $start_mon=$l["start_mon"];	
+  $start_week=$l["start_week"];	
+  $end_mon=$l["end_mon"];	
+  $end_week=$l["end_week"];	
+  $act_title=$l["activity"];
+ }
+}
+if(strcmp($action,"edit_submit") ==0 )
+{
+ $q="update activities set activity='$act_title', start_mon='$start_mon', start_week='$start_week', end_mon='$end_mon', end_week='$end_week' where act_code='$edit_item'";
+ $r=mysql_query($q) or die("server error2");
+ $action="ويرايش زمانبندي طرح با کد"."<br>".$cod_tarh;
+   
+ set_log($action,$admin,date("Y-m-d, g:i a"));
+	
+ $act_title="";
+ $start_week="0";
+ $start_mon="0";
+ $end_week="0";
+ $end_mon="0";
+}
+
+if(strcmp($action,"add") ==0 )
+{
+ $title=trim($subject);
+ $q="select max(myorder) from activities where cod_tarh='$cod_tarh'  and version='-1'";
+ $r=mysql_query($q) or die("server Error 1");
+ echo mysql_error();
+ if (mysql_num_rows($r)>0)
+  {
+   while($l=mysql_fetch_array($r))
+   	$myorder=$l["max(myorder)"];
+  }
+ else
+  $myorder=0;
+ $myorder++;
+
+ $q="insert into activities (cod_tarh,activity,start_mon,start_week,end_mon,end_week,myorder) values ('$cod_tarh','$act_title','$start_mon',$start_week,'$end_mon',$end_week,$myorder)";
+ 
+ $r=mysql_query($q) or die("server Error");
+  $action="ثبت زمانبندي طرح با کد"."<br>".$cod_tarh;
+   
+ set_log($action,$admin,date("Y-m-d, g:i a"));
+
+ $act_title="";
+ $start_week="0";
+ $start_mon="0";
+ $end_week="0";
+ $end_mon="0";
+}//end of action==1
+if ((strcmp($action,"edit") ==0 ) or (strcmp($action,"edit_submit") ==0 ))
+{
+  echo "<form name=\"edit_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&action=edit_submit&seed=$seed&cod_tarh=$cod_tarh\">";
+  echo "<input type=\"hidden\" name=\"edit_item\" value=\"$edit_item\">";
+}   
+else
+{
+  echo "<form name=\"add_daneshkade\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&action=add&cod_tarh=$cod_tarh\">";
+
+}
+?>
+<script language="javascript" src="js/farsi.js"></script>
+<?
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched=mysql_fetch_array($result);
+
+echo "<center><span class='tahoma1' dir=\"rtl\"> عنوان طرح : ".$row_fetched["tarh_title_farsi"]."<span></center><br>";
+?>
+
+<br>
+<br>
+<center>
+  <table border="0" width="74%" cellspacing="1" cellpadding="1" style="font-family: Tahoma; font-size: 8pt" dir="ltr">
+    <tr>
+      <td width="66%" align="right"><input type="text" name="act_title" size="57" class="edit-user"  dir=RTL    value="<? echo $act_title; ?>"></td>
+      <td width="34%">عنوان فعاليت</td>
+    </tr>
+  </center>
+    <tr>
+      <td width="66%" align="right">
+        <table border="0" width="74%" cellspacing="0" cellpadding="0" style="font-size: 8pt; font-family: Tahoma">
+          <tr>
+            <td width="55%">
+              <p align="right"><b>هفته</b></td>
+            <td width="45%">
+              <p align="right"><b>ماه</b></td>
+          </tr>
+          <tr>
+            <td width="55%">
+              <p align="right">
+              <select size="1" name="start_week">
+                <option <? if($start_week==0) echo "selected"; ?> value="0"> -- انتخاب کنيد --</option>
+                <option <? if($start_week==1) echo "selected"; ?>value="1">1</option>
+                <option <? if($start_week==2) echo "selected"; ?> value="2">2</option>
+                <option <? if($start_week==3) echo "selected"; ?> value="3">3</option>
+                <option <? if($start_week==4) echo "selected"; ?> value="4">4</option>
+              </select></td>
+            <td width="45%">
+              <p align="right">
+              <select size="1" name="start_mon">
+                <option <? if($start_mon==0) echo "selected"; ?> value="0"> -- انتخاب کنيد --</option>
+                <option <? if($start_mon==1) echo "selected"; ?> value="1">1</option>
+                <option <? if($start_mon==2) echo "selected"; ?> value="2">2</option>
+                <option <? if($start_mon==3) echo "selected"; ?> value="3">3</option>
+                <option <? if($start_mon==4) echo "selected"; ?> value="4">4</option>
+                <option <? if($start_mon==5) echo "selected"; ?> value="5">5</option>
+                <option <? if($start_mon==6) echo "selected"; ?> value="6">6</option>
+                <option <? if($start_mon==7) echo "selected"; ?> value="7">7</option>
+                <option <? if($start_mon==8) echo "selected"; ?> value="8">8</option>
+                <option <? if($start_mon==9) echo "selected"; ?> value="9">9</option>
+                <option <? if($start_mon==10) echo "selected"; ?> value="10">10</option>
+                <option <? if($start_mon==11) echo "selected"; ?> value="11">11</option>
+                <option <? if($start_mon==12) echo "selected"; ?> value="12">12</option>
+                <option <? if($start_mon==13) echo "selected"; ?> value="13">13</option>
+                <option <? if($start_mon==14) echo "selected"; ?> value="14">14</option>
+                <option <? if($start_mon==15) echo "selected"; ?> value="15">15</option>
+                <option <? if($start_mon==16) echo "selected"; ?> value="16">16</option>
+                <option <? if($start_mon==17) echo "selected"; ?> value="17">17</option>
+                <option <? if($start_mon==18) echo "selected"; ?> value="18">18</option>
+                <option <? if($start_mon==19) echo "selected"; ?> value="19">19</option>
+                <option <? if($start_mon==20) echo "selected"; ?> value="20">20</option>
+                <option <? if($start_mon==21) echo "selected"; ?> value="21">21</option>
+                <option <? if($start_mon==22) echo "selected"; ?> value="22">22</option>
+                <option <? if($start_mon==23) echo "selected"; ?> value="23">23</option>
+                <option <? if($start_mon==24) echo "selected"; ?> value="24">24</option>
+                <option <? if($start_mon==25) echo "selected"; ?> value="25">25</option>
+                <option <? if($start_mon==26) echo "selected"; ?> value="26">26</option>
+                <option <? if($start_mon==27) echo "selected"; ?> value="27">27</option>
+                <option <? if($start_mon==28) echo "selected"; ?> value="28">28</option>
+                <option <? if($start_mon==29) echo "selected"; ?> value="29">29</option>
+                <option <? if($start_mon==30) echo "selected"; ?> value="30">30</option>
+                <option <? if($start_mon==31) echo "selected"; ?> value="31">31</option>
+                <option <? if($start_mon==32) echo "selected"; ?> value="32">32</option>
+                <option <? if($start_mon==33) echo "selected"; ?> value="33">33</option>
+                <option <? if($start_mon==34) echo "selected"; ?> value="34">34</option>
+                <option <? if($start_mon==35) echo "selected"; ?> value="35">35</option>
+                <option <? if($start_mon==36) echo "selected"; ?> value="36">36</option>
+                <option <? if($start_mon==37) echo "selected"; ?> value="37">37</option>
+                <option <? if($start_mon==38) echo "selected"; ?> value="38">38</option>
+                <option <? if($start_mon==39) echo "selected"; ?> value="39">39</option>
+                <option <? if($start_mon==40) echo "selected"; ?> value="40">40</option>
+                <option <? if($start_mon==41) echo "selected"; ?> value="41">41</option>
+                <option <? if($start_mon==42) echo "selected"; ?> value="42">42</option>
+                <option <? if($start_mon==43) echo "selected"; ?> value="43">43</option>
+                <option <? if($start_mon==44) echo "selected"; ?> value="44">44</option>
+                <option <? if($start_mon==45) echo "selected"; ?> value="45">45</option>
+                <option <? if($start_mon==46) echo "selected"; ?> value="46">46</option>
+                <option <? if($start_mon==47) echo "selected"; ?> value="47">47</option>
+                <option <? if($start_mon==48) echo "selected"; ?> value="48">48</option>				
+				<option <? if($start_mon==49) echo "selected"; ?> value="49">49</option>
+                <option <? if($start_mon==50) echo "selected"; ?> value="50">50</option>
+                <option <? if($start_mon==51) echo "selected"; ?> value="51">51</option>
+                <option <? if($start_mon==52) echo "selected"; ?> value="52">52</option>
+                <option <? if($start_mon==53) echo "selected"; ?> value="53">53</option>
+                <option <? if($start_mon==54) echo "selected"; ?> value="54">54</option>
+                <option <? if($start_mon==55) echo "selected"; ?> value="55">55</option>
+                <option <? if($start_mon==56) echo "selected"; ?> value="56">56</option>
+                <option <? if($start_mon==57) echo "selected"; ?> value="57">57</option>
+                <option <? if($start_mon==58) echo "selected"; ?> value="58">58</option>
+                <option <? if($start_mon==59) echo "selected"; ?> value="57">59</option>
+                <option <? if($start_mon==60) echo "selected"; ?> value="60">60</option>
+                
+              </select></td>
+          </tr>
+        </table>
+      </td>
+<center>
+      <td width="34%">(زمان شروع (ابتداي ماه / هفته</td>
+    </tr>
+  </center>
+    <tr>
+      <td width="66%" align="right">
+        <table border="0" width="74%" cellspacing="0" cellpadding="0" style="font-size: 8pt; font-family: Tahoma">
+          <tr>
+            <td width="55%">
+              <p align="right"><b>هفته</b></td>
+            <td width="45%">
+              <p align="right"><b>ماه</b></td>
+          </tr>
+          <tr>
+            <td width="55%">
+              <p align="right">
+              <select size="1" name="end_week">
+                <option <? if($end_week==0) echo "selected"; ?> value="0"> -- انتخاب کنيد --</option>
+                <option <? if($end_week==1) echo "selected"; ?>value="1">1</option>
+                <option <? if($end_week==2) echo "selected"; ?> value="2">2</option>
+                <option <? if($end_week==3) echo "selected"; ?> value="3">3</option>
+                <option <? if($end_week==4) echo "selected"; ?> value="4">4</option>
+              </select></td>
+            <td width="45%">
+              <p align="right">
+              <select size="1" name="end_mon">
+                <option <? if($end_mon==0) echo "selected"; ?> value="0"> -- انتخاب کنيد --</option>
+                <option <? if($end_mon==1) echo "selected"; ?> value="1">1</option>
+                <option <? if($end_mon==2) echo "selected"; ?> value="2">2</option>
+                <option <? if($end_mon==3) echo "selected"; ?> value="3">3</option>
+                <option <? if($end_mon==4) echo "selected"; ?> value="4">4</option>
+                <option <? if($end_mon==5) echo "selected"; ?> value="5">5</option>
+                <option <? if($end_mon==6) echo "selected"; ?> value="6">6</option>
+                <option <? if($end_mon==7) echo "selected"; ?> value="7">7</option>
+                <option <? if($end_mon==8) echo "selected"; ?> value="8">8</option>
+                <option <? if($end_mon==9) echo "selected"; ?> value="9">9</option>
+                <option <? if($end_mon==10) echo "selected"; ?> value="10">10</option>
+                <option <? if($end_mon==11) echo "selected"; ?> value="11">11</option>
+                <option <? if($end_mon==12) echo "selected"; ?> value="12">12</option>
+                <option <? if($end_mon==13) echo "selected"; ?> value="13">13</option>
+                <option <? if($end_mon==14) echo "selected"; ?> value="14">14</option>
+                <option <? if($end_mon==15) echo "selected"; ?> value="15">15</option>
+                <option <? if($end_mon==16) echo "selected"; ?> value="16">16</option>
+                <option <? if($end_mon==17) echo "selected"; ?> value="17">17</option>
+                <option <? if($end_mon==18) echo "selected"; ?> value="18">18</option>
+                <option <? if($end_mon==19) echo "selected"; ?> value="19">19</option>
+                <option <? if($end_mon==20) echo "selected"; ?> value="20">20</option>
+                <option <? if($end_mon==21) echo "selected"; ?> value="21">21</option>
+                <option <? if($end_mon==22) echo "selected"; ?> value="22">22</option>
+                <option <? if($end_mon==23) echo "selected"; ?> value="23">23</option>
+                <option <? if($end_mon==24) echo "selected"; ?> value="24">24</option>
+                <option <? if($end_mon==25) echo "selected"; ?> value="25">25</option>
+                <option <? if($end_mon==26) echo "selected"; ?> value="26">26</option>
+                <option <? if($end_mon==27) echo "selected"; ?> value="27">27</option>
+                <option <? if($end_mon==28) echo "selected"; ?> value="28">28</option>
+                <option <? if($end_mon==29) echo "selected"; ?> value="29">29</option>
+                <option <? if($end_mon==30) echo "selected"; ?> value="30">30</option>
+                <option <? if($end_mon==31) echo "selected"; ?> value="31">31</option>
+                <option <? if($end_mon==32) echo "selected"; ?> value="32">32</option>
+                <option <? if($end_mon==33) echo "selected"; ?> value="33">33</option>
+                <option <? if($end_mon==34) echo "selected"; ?> value="34">34</option>
+                <option <? if($end_mon==35) echo "selected"; ?> value="35">35</option>
+                <option <? if($end_mon==36) echo "selected"; ?> value="36">36</option>
+                <option <? if($end_mon==37) echo "selected"; ?> value="37">37</option>
+                <option <? if($end_mon==38) echo "selected"; ?> value="38">38</option>
+                <option <? if($end_mon==39) echo "selected"; ?> value="39">39</option>
+                <option <? if($end_mon==40) echo "selected"; ?> value="40">40</option>
+                <option <? if($end_mon==41) echo "selected"; ?> value="41">41</option>
+                <option <? if($end_mon==42) echo "selected"; ?> value="42">42</option>
+                <option <? if($end_mon==43) echo "selected"; ?> value="43">43</option>
+                <option <? if($end_mon==44) echo "selected"; ?> value="44">44</option>
+                <option <? if($end_mon==45) echo "selected"; ?> value="45">45</option>
+                <option <? if($end_mon==46) echo "selected"; ?> value="46">46</option>
+                <option <? if($end_mon==47) echo "selected"; ?> value="47">47</option>
+                <option <? if($end_mon==48) echo "selected"; ?> value="48">48</option>
+                <option <? if($end_mon==49) echo "selected"; ?> value="49">49</option>
+                <option <? if($end_mon==50) echo "selected"; ?> value="50">50</option>
+                <option <? if($end_mon==51) echo "selected"; ?> value="51">51</option>
+                <option <? if($end_mon==52) echo "selected"; ?> value="52">52</option>
+                <option <? if($end_mon==53) echo "selected"; ?> value="53">53</option>
+                <option <? if($end_mon==54) echo "selected"; ?> value="54">54</option>
+                <option <? if($end_mon==55) echo "selected"; ?> value="55">55</option>
+                <option <? if($end_mon==56) echo "selected"; ?> value="56">56</option>
+                <option <? if($end_mon==57) echo "selected"; ?> value="57">57</option>
+                <option <? if($end_mon==58) echo "selected"; ?> value="58">58</option>
+                <option <? if($end_mon==59) echo "selected"; ?> value="57">59</option>
+                <option <? if($end_mon==60) echo "selected"; ?> value="60">60</option>
+                
+	            </select></td>
+          </tr>
+        </table>
+      </td>
+<center>
+      <td width="34%">(زمان پايان (انتهاي ماه / هفته</td>
+    </tr>
+    <tr>
+      <td width="100%" align="right" colspan="2"><br>
+        <p align="center"><input type="submit" value="ثبت" name="ok" style="border-style: solid; border-width: 1"></td>
+    </tr>
+  </table>
+  </center>
+</form>
+<?
+ $q="select max(end_mon) from activities where cod_tarh='$cod_tarh'  and version='-1'";
+
+ $r=mysql_query($q) or die("server error1");
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+   $max_mon=$l["max(end_mon)"];
+  } 
+//-----------------
+ $q="select * from activities where cod_tarh='$cod_tarh'  and version='-1'";
+ $r=mysql_query($q) or die("server error2");
+?>
+<table border="1" dir="ltr" width="100%" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="53%" align="right" valign="top">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  $moncounter=$max_mon;
+  while($moncounter>0)
+   {
+?>
+
+          <td width="50" align="right">
+      <table border="1" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+         echo "<td width=\"50\" align=center>ماه $moncounter</td>";
+//         echo "<td width=\"20\" align=center></td>";
+?>
+        </tr>
+      </table></td>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="31%">
+      <p align="center"><b>
+      <table border="0" width="150" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1">
+  <tr>
+    <td width="100%" align="center">
+	  زمان کل
+    </td>
+  </tr>
+</table>
+	  </b></td>
+    <td width="50%">
+      <p align="center"><b><table border="0" width="300" cellspacing="0" cellpadding="0" style="font-family: Tahoma; font-size: 8pt; border-style: solid; border-width: 1">
+  <tr>
+    <td width="100%" align="center">
+فعاليتهاي اجرايي
+    </td>
+  </tr>
+</table>
+
+</b></td>
+    <td width="6%">
+      <p align="center"><b>رديف</b></td>
+    <td width="3%">
+      <p align="center"><b>حذف</b></td>
+    <td width="3%">
+      <p align="center"><b>ويرايش</b></td>
+  </tr>
+<?
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+  {
+   $activity=$l["activity"];
+   $myorder=$l["myorder"];
+   $act_code=$l["act_code"];
+   $start_mon=$l["start_mon"];
+   $start_week=$l["start_week"];
+   $end_mon=$l["end_mon"];
+   $end_week=$l["end_week"];
+   $end_by_week=($end_mon*4)-(4-$end_week);
+//   echo "end by week=$end_by_week    end mon=$end_mon";
+if($start_mon==1)
+   $start_by_week=$start_week-1;
+else
+{
+  $var_week=$start_week-1;
+  $start_by_week=($start_mon*4)-(4-$var_week);
+}
+//   $start_by_week=(($start_mon-1)*4)-($start_week-1);
+//   echo "   start by week=$start_by_week    start mon=$start_mon";
+
+//   $total_time_week=$end_by_week - ($start_by_week-1);
+   $total_time_week=$end_by_week - $start_by_week;
+   $total_mon=(int)($total_time_week/4);
+   $total_week=(int)($total_time_week-$total_mon*4);
+   $weekcounter=$max_mon*4;
+   $moncounter=$max_mon;
+   if($start_by_week<0)
+     $start_by_week=$start_by_week*-1;
+   if($end_by_week<0)
+     $end_by_week=$end_by_week*-1;
+?>
+  <tr>
+    <td width="53%" align="right" valign="middle">
+      <table border="0" width="50" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+  while($moncounter>0)
+   {
+?>
+
+          <td width="100" align="right">
+      <table border="1"  width="50" height="100%" style="font-family: Tahoma; font-size: 8pt" cellspacing="0" cellpadding="0">
+        <tr>
+<?
+	    $tmp1=$moncounter*4;
+	    $tmp2=($moncounter-1)*4;
+        while (($tmp1>=$weekcounter) && ($tmp2<$weekcounter))
+        {
+       	 if (($weekcounter<=$end_by_week) && ($weekcounter>$start_by_week))
+			$bgcolor="bgcolor=\"blue\"";
+  		 else
+			$bgcolor="";
+//         $real_week=(int)($weekcounter/4)+($weekcounter-($weekcounter/4)*4);
+         echo "<td width=\"25%\" $bgcolor>&nbsp;</td>";
+		 $weekcounter--;
+        }
+?>
+        </tr>
+      </table>
+<?
+    $moncounter--;
+   }
+?>
+      </td>
+      </tr>
+     </table>
+    </td>
+    <td width="11%" dir="rtl" align="center">
+	<?
+	 if (($total_mon!=0) && ($total_week!=0))
+	   echo " $total_mon  ماه و  $total_week هفته";
+     else
+     {
+	  if ($total_mon!=0)
+	   echo "$total_mon ماه";
+	  if ($total_week!=0)
+	   echo "$total_week هفته";
+	 }
+	?>
+	</td>
+    <td width="30%" align="center"><? echo $activity; ?></td>
+    <td width="6%" align="center"><? echo $myorder; ?></td>
+    <td style="border-style: solid; border-width: 1" width="3%" align="center"><a href=<? echo "add_activity.phtml?deleted_item=$act_code&admin=$admin&seed=$seed&action=delete&cod_tarh=$cod_tarh"; ?> ><img border="0" src="image/button_drop.png"></td>
+    <td style="border-style: solid; border-width: 1" width="3%" align="center"><a href=<? echo "add_activity.phtml?edit_item=$act_code&admin=$admin&seed=$seed&action=edit&cod_tarh=$cod_tarh"; ?> ><img border="0" src="image/button_edit.png"></td>
+  </tr>
+<?
+   }
+ }
+
+?>
+</table>
+<p align="center"><input type="submit" value="تاييد نهايي و بستن فرم" onclick="window.close();" name="ok1" style="border-style: solid; border-width: 1">

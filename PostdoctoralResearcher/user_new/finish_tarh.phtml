@@ -1,0 +1,218 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+include("finish_tarh_sabt.php");
+
+header_forms($admin,$seed);
+
+?>
+<link rel="stylesheet" type="text/css" href="../assets/plugins/bootstrap-toastr/toastr-rtl.min.css"/>
+<?php
+include("include/new_menu.php");
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                               در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                      <h3 class="page-title">
+                            <small id="page-title">عنوان طرح :</small>
+                            <small><? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="navigator-home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="send-edit" href="tarh_list.phtml">
+                                    ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="finish" href="finish_tarh.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    خاتمه طرح
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="caption-grid" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                              
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                
+                                    <?php 
+                                    $active_id="17";
+                                    include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                    
+                                 <div class="portlet box blue">
+									<div class="portlet-title">
+										<div id="caption_title" class="caption">
+											<i class="fa fa-reorder"></i>خاتمه طرح
+										</div>
+										<div class="tools">
+											
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body form">  
+                                  <!-- BEGIN FORM-->
+										
+							            <?  echo "<form method=\"post\" id=\"finish_tarh_form\" action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>  
+							              <div class="form-body">
+							              <div id="content" class="margin-top-20 col-md-offset-0">
+							                 	 <p>در صورت اعلام خاتمه ,طرح/پايان نامه شما به دانشکده يا مرکز مربوطه ارسال شده و از حالت قابل ويرايش خارج مي شود.</p>
+										  </div>
+											</div>
+											<div class="form-actions fluid">
+												 <div class="col-md-offset-0">
+													<button id="btn1" type="submit" class="btn blue">ثبت</button>
+													<!-- <button type="reset" class="btn default">انصراف</button>-->
+												 </div> 
+											</div>
+										</form>
+										<!-- END FORM-->
+								  </div>
+								</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script type="text/javascript"><!--
+
+
+if(language=="en")
+{ 
+	document.getElementById("page-title").textContent="Research Title :";
+	document.getElementById("navigator-home").textContent="Home";
+	document.getElementById("send-edit").textContent="Send / Edit Research";
+	document.getElementById("finish").textContent="Finish Research";
+	document.getElementById("caption_title").textContent="Submission";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("fa-angle2").className="fa fa-angle-right";
+	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-magic'></i> Wizard";
+	document.getElementById("btn1").textContent="submit";
+	document.getElementById("content").textContent="By clicking submit button,you will finalize your propozal submission process,once you submit the project,you will not be able to edit it any more.";
+	
+}
+
+</script>
+<?php 
+include("../include/primary_js.phtml");
+?>
+<script src="../assets/plugins/bootstrap-toastr/toastr.min.js"></script>
+<script>
+jQuery('#finish_tarh_form').submit(function (e) {
+    var postData = $(this).serializeArray();	
+	var	formURL = $(this).attr("action");
+    //var a0=$("#a0 input:checked").val();
+	
+  $.ajax(
+			{
+				url : formURL,
+				type: "POST",
+				data : postData,
+				success:function(data, textStatus, jqXHR) 
+				{
+					//alert(data);
+					if(data=="finish")
+					{
+							toastr.options.timeOut="3000";
+					        toastr.options.positionClass="toast-top-right";
+							toastr.success('ويرايش خاتمه يافت');
+							<?php if(strcmp($daneshjoo,'0')==0){ ?>
+									setInterval(function(){
+											window.location.href="<? echo "tarh_list.phtml";?>";	
+										},3000);
+							<?php }elseif (strcmp($daneshjoo,'1')==0){?>
+									setInterval(function(){
+										window.location.href="<? echo "payan_name_list.phtml";?>";	
+									},3000);
+							<?php }?>
+					}
+					else if(data=="ostad_empty")
+					{
+							toastr.options.timeOut="5000";
+					        toastr.options.positionClass="toast-top-right";
+							toastr.error('خاتمه و ارسال پايان نامه مورد نظر بدليل عدم ثبت استاد راهنماانجام نشد.لطفا پس از وارد کردن استاد راهنما اقدام به خاتمه و ارسال کنيد.');
+							setInterval(function(){
+						   			 window.location.href="<? echo "ostad_rahnama.phtml";?>";
+								}, 5000);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) 
+				{
+							alert("error");
+				}
+			});
+  e.preventDefault();
+});
+$(document).ready(function(){
+
+});
+</script>
+<?php
+footer_forms($admin,$seed);
+?>
+

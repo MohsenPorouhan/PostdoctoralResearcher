@@ -1,0 +1,339 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+echo "<br>";
+
+$status="";
+
+if (strcmp($action,"delete_daneshkade")==0)
+{
+   $query="select * from modir_daneshkade where  cod_daneshkade  = \"$delete_id\"";
+   $result=mysql_query($query) or die("Error in query data from daneshkade");
+   $query="select * from group_daneshkade where  cod_daneshkade  = \"$delete_id\"";
+   $result1=mysql_query($query) or die("Error in query data from daneshkade");
+
+   if( mysql_num_rows($result) <= 0  && mysql_num_rows($result1) <= 0 )
+   {
+     $query="delete from daneshkade where  cod_daneshkade  = \"$delete_id\"";
+     $result=mysql_query($query) or die("Error in delete data from daneshkade");
+   }
+   else
+    $status="del_modir_err";
+
+
+}
+
+
+
+if (strcmp($action,"add")==0)
+{
+  if(strlen(trim($daneshkade_name)) > 0  )
+  {
+
+
+   $query="select * from daneshkade where  daneshkade_name = \"$daneshkade\"";
+
+    $result=mysql_query($query) or die("Error in query data from daneshkade");
+    if(mysql_num_rows($result) <= 0)
+    {
+     $query="insert into daneshkade set top_ekhtiar='$top_ekhtiar',tafviz_ekhtiar='$tafviz_ekhtiar',mosavab='$mosavab', daneshkade_name = '$daneshkade_name', daneshkade_email='$daneshkade_email', daneshkade_tel = '$daneshkade_tel', daneshkade_fax ='$daneshkade_fax',creator='$admin'  ";
+	
+	   mysql_query($query) or die ("Error in inserting data in daneshkade");
+    }
+    else
+    {
+     $status="duplicate";
+    }
+  }
+  else
+  {
+    $status="inputerr";
+  }
+  
+}
+
+
+if (strcmp($action,"edit_first")==0)
+{
+   $query="select * from daneshkade where  cod_daneshkade = \"$id\"";
+   
+   $result=mysql_query($query) or die("Error in selecting data from daneshkade");
+   if( mysql_num_rows($result) > 0)
+   {
+	 $row_fetched=mysql_fetch_array($result);
+	 $daneshkade_name=$row_fetched["daneshkade_name"];
+	 $daneshkade_email=$row_fetched["daneshkade_email"];
+	 $daneshkade_tel=$row_fetched["daneshkade_tel"];
+	 $daneshkade_fax=$row_fetched["daneshkade_fax"];
+	 $mosavab=$row_fetched["mosavab"];
+	 $tafviz_ekhtiar=$row_fetched["tafviz_ekhtiar"];
+	 $top_ekhtiar=$row_fetched["top_ekhtiar"];
+	 
+   
+   }
+   
+
+}
+
+if (strcmp($action,"edit_second")==0)
+{
+   $query="update daneshkade set top_ekhtiar='$top_ekhtiar',tafviz_ekhtiar='$tafviz_ekhtiar',mosavab='$mosavab', daneshkade_name = '$daneshkade_name', daneshkade_email='$daneshkade_email', daneshkade_tel = '$daneshkade_tel', daneshkade_fax ='$daneshkade_fax',creator='$admin' where cod_daneshkade=$id ";
+     mysql_query($query) or die ("Error in inserting data in daneshkade");
+
+      
+	 $daneshkade_name="";
+	 $daneshkade_email="";
+	 $daneshkade_tel="";
+	 $daneshkade_fax="";
+	 $mosavab="";
+	 $tafviz_ekhtiar="";
+	 $top_ekhtiar="";
+
+}
+
+
+
+
+
+if (strcmp($action,"edit_first")==0)
+
+ echo "<form name=\"add_daneshkade\" method=\"post\"  action=\"$PHP_SELF?action=edit_second&admin=$admin&seed=$seed&id=$id\">";
+
+else
+
+ echo "<form name=\"add_daneshkade\" method=\"post\"  action=\"$PHP_SELF?action=add&admin=$admin&seed=$seed\">";
+
+
+ ?>
+<center>
+
+
+<table border="0"  width="450" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="199"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/title-daneshkade.gif"  height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+
+<!-- <table border="0"  width="380"  cellspacing="0" cellpadding="0">
+ <tr >
+ <TD  background="image/title-bg.gif" align=left valign="bottom"  >
+      <IMG src="image/title-left.gif"  >
+ </TD>
+  <TD background="image/title-bg.gif"  valign="bottom" >
+ </TD>
+  <TD  align=right valign="center" align="right" background="image/title-bg.gif" >
+    <IMG src="image/title-right.gif">
+ </TD>
+ </tr>
+</table>  -->
+
+<table border="0" bgcolor="#EEE7F8" width="450"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+<?
+
+if (strcmp($status,"duplicate")==0)
+{
+  echo "<tr>";
+  echo "<td  colspan=\"2\" class=\"error-message\" align=\"center\">اين دانشکده قبلا تعريف شده</td>";
+  echo "</tr>";
+}
+
+?>
+
+<?
+
+if (strcmp($status,"inputerr")==0)
+{
+  echo "<tr>";
+  echo "<td  colspan=\"2\" class=\"error-message\" align=\"center\">ورود مواردي که با ستاره مشخص شده اند الزامي است</td>";
+  echo "</tr>";
+}
+
+
+
+if (strcmp($status,"del_modir_err")==0)
+{
+  echo "<tr>";
+  echo "<td  colspan=\"2\" class=\"error-message\" align=\"center\">براي دانشکده فوق مدير يا گروه تعريف شده و قابل حذف نيست</td>";
+  echo "</tr>";
+}
+
+
+
+
+?>
+
+
+  <tr>
+    <td width="250"><input type="text" name="daneshkade_name" size="20" class="edit-daneshkade" value="<? echo $daneshkade_name;?>" dir=RTL   ></td>
+    <td width="200" class="tahoma1"><span class="star-message">*</span>نام دانشکده/مرکز</td>
+  </tr>
+  
+  <tr>
+    <td width="250"><input type="text" name="daneshkade_email" value="<? echo $daneshkade_email;?>" size="20" class="edit-daneshkade"></td>
+    <td width="200" class="tahoma1">پست الکترونيکي</td>
+  </tr>
+  <tr>
+    <td width="250"><input type="text" name="daneshkade_tel" value="<? echo $daneshkade_tel;?>" size="20" class="edit-daneshkade"></td>
+    <td width="200" class="tahoma1">تلفن</td>
+  </tr>
+  <tr>
+    <td width="250"><input type="text" name="daneshkade_fax" value="<? echo $daneshkade_fax;?>" size="20" class="edit-daneshkade"></td>
+    <td width="200" class="tahoma1">فکس</td>
+  </tr>
+
+<?
+  if(strcmp($mosavab,"1")==0)
+  {
+	$mosavab="checked";
+	$nomosavab="";
+  }
+  else
+  {
+    $mosavab="";
+	$nomosavab="checked";
+  }
+  
+    if(strcmp($tafviz_ekhtiar,"1")==0)
+  {
+	$tafviz_ekhtiar="checked";
+	$notafviz_ekhtiar="";
+  }
+  else
+  {
+    $tafviz_ekhtiar="";
+	$notafviz_ekhtiar="checked";
+  }
+?>
+   <tr>
+    <td width="250" class="tahoma1"  align="right">خير<input type="radio" value="1" <? echo $mosavab; ?> name="mosavab">بلي<input type="radio" value="0" <? echo $nomosavab; ?> name="mosavab"></td>
+    <td width="200" class="tahoma1">مرکز مصوب است</td>
+  </tr>
+  
+  <tr>
+    <td width="250" class="tahoma1" align="right">خير
+	<input type="radio" value="1"   <? echo $tafviz_ekhtiar; ?>  name="tafviz_ekhtiar">
+	بلي
+	<input type="radio" value="0"  <? echo $notafviz_ekhtiar; ?>  name="tafviz_ekhtiar">
+	</td>
+    <td width="200" class="tahoma1">مرکز تفويض اختيار دارد</td>
+  </tr>
+
+  <tr>
+    <td width="250"><input type="text" value="<? echo $top_ekhtiar;?>" name="top_ekhtiar" size="20" class="edit-daneshkade"></td>
+    <td width="200" class="tahoma1">سقف تفويض اختيار</td>
+  </tr>
+  
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="اضافه کردن" name="B3" class="but-small"></td>
+  </tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</center>
+</form>
+
+
+<?
+
+if(DBreccount("daneshkade") > 0)
+{
+
+?>
+<center>
+<table border="0" width="450"  cellspacing="0" cellpadding="0" >
+    <tr>
+    <td width="16" background="image/top-left.gif" height="20" style="background-repeat: no-repeat; background-position: top left"></td>
+    <td width="37" background="image/top-top.gif" height="20" style="background-repeat: repeate-x; background-position: top center" class="tahoma1" align="center"><p align=\"center\" class=\"tahoma1\">حذف</p></td>
+    <td width="50" background="image/top-top.gif" height="20" style="background-repeat: repeate-x; background-position: top center" class="tahoma1" align="center"><p align=\"center\" class=\"tahoma1\">ويرايش</p></td>
+    <td width="80" background="image/top-top.gif" height="20" style="background-repeat: repeate-x; background-position: top center" class="tahoma1" align="center"><p align=\"center\" class=\"tahoma1\">تفويض اختيار</p></td>
+    <td width="87" background="image/top-top.gif" height="20" style="background-repeat: repeate-x; background-position: top center" class="tahoma1" align="center" ><p align=\"center\" class=\"tahoma1\">کاربران دانشکده</p></td>
+    <td width="87" background="image/top-top.gif" height="20" style="background-repeat: repeate-x; background-position: top center" class="tahoma1" align="center" ><p align=\"center\" class=\"tahoma1\">گروهها</p></td>
+    <td width="77" background="image/top-top.gif" height="20" style="background-repeat: repeate-x; background-position: top center" class="tahoma1" align="center"><p align=\"center\" class=\"tahoma1\">دانشکده/مرکز</p></td>
+    <td width="16"  background="image/top-right.gif" height="20" style="background-repeat: no-repeat; background-position: top right"></td>
+    </tr>
+
+
+<?
+
+  $Query=mysql_query("select * from daneshkade order by daneshkade_name desc") or die("Error in selecting tarh-type");
+  $color="#E2E0E0";
+  while($row_fetched=mysql_fetch_array($Query))
+  {
+    if(strcmp($color,"#E2E0E0")==0)
+      $color="#CFCDCD";
+    else
+      $color="#E2E0E0";
+    echo "<tr bgcolor=\"$color\">";
+	$tafviz_ekhtiar=$row_fetched["tafviz_ekhtiar"];
+	if(strcmp(trim($tafviz_ekhtiar),"1")==0)
+	  $tafviz_string="دارد";
+	else
+	  $tafviz_string="ندارد";
+    $cod_daneshkade = $row_fetched["cod_daneshkade"];
+    echo "<tr>";        //#EEE7F8
+    echo "<td width=\"16\" background=\"image/left-left.gif\" height=\"20\"  style=\"background-repeat: repeat-y; background-position: top left\" ><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "<td width=\"37\"  bgcolor=\"$color\">";
+    echo "<p align=\"center\"><a href=\"#\" onclick='window.open(\"del_daneshkade.phtml?mainwindow=add_daneshkade.phtml&admin=$admin&seed=$seed&action=delete_daneshkade&delete_id=".$row_fetched["cod_daneshkade"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"50\"  bgcolor=\"$color\">";
+    echo "<p align=\"center\"><a href=\"#\" ><a href=\"$PHP_SELF?admin=$admin&seed=$seed&id=$cod_daneshkade&action=edit_first\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\"></td>";
+
+
+    echo "<td width=\"80\" bgcolor=\"$color\">";
+    echo "<p align=\"center\" class=\"tahoma1\">$tafviz_string</td>";
+  
+    echo "<td width=\"87\" bgcolor=\"$color\">";
+    echo "<p align=\"center\" class=\"tahoma1\"><a  href=\"admin_daneshkade.phtml?admin=$admin&seed=$seed&daneshkade=".$row_fetched["cod_daneshkade"]."\"><img border=\"0\" src=\"image/button_primary.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+     echo "<td width=\"87\" bgcolor=\"$color\">";
+    echo "<p align=\"center\" class=\"tahoma1\"><a  href=\"groups_daneshkade.phtml?admin=$admin&seed=$seed&daneshkade=".$row_fetched["cod_daneshkade"]."\"><img border=\"0\" src=\"image/button_primary.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+    echo "<td width=\"77\"  bgcolor=\"$color\">";
+    echo "<p align=\"right\"  class=\"tahoma1\"><p align=\"center\" class=\"tahoma1\">".substr($row_fetched["daneshkade_name"],0,55)."</p></td>";
+    echo "<td width=\"16\" background=\"image/right-right.gif\" height=\"20\"  style=\"background-repeat: repeate-y; background-position: top left\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+
+
+    
+  }
+     echo "<tr>";
+    echo "<td width=\"16\" background=\"image/left-bot.gif\" height=\"20\"  style=\"background-repeat: no-repeat; background-position: top left\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "<td width=\"37\" background=\"image/bot-bot.gif\" height=\"20\" style=\"background-repeat: repeat-x; background-position: top center\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"50\" background=\"image/bot-bot.gif\" height=\"20\" style=\"background-repeat: repeat-x; background-position: top center\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"80\" background=\"image/bot-bot.gif\" height=\"20\" style=\"background-repeat: repeat-x; background-position: top center\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"87\" background=\"image/bot-bot.gif\" height=\"20\"  style=\"background-repeat: repeat-x; background-position: top center\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"87\" background=\"image/bot-bot.gif\" height=\"20\"  style=\"background-repeat: repeat-x; background-position: top center\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"77\" background=\"image/bot-bot.gif\" height=\"20\" style=\"background-repeat: repeat-x; background-position: top center\" class=\"tahoma1\" align=\"center\"></td>";
+    echo "<td width=\"16\"  background=\"image/right-bot.gif\" height=\"20\" style=\"background-repeat: no-repeat; background-position: top left\"><p align=\"center\" class=\"tahoma1\">&nbsp;</p></td>";
+    echo "</tr>";
+  echo "</table>";
+}
+else
+{
+
+  echo "<p align=\"center\"  class=\"tahoma1\">با کليک روي گزينه اضافه کردن مي توانيد يک دانشکده اضافه کنيد";
+
+}
+
+ footer_forms($admin,$seed);
+?>

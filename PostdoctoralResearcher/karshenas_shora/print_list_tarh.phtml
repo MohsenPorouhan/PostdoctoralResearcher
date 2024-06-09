@@ -1,0 +1,251 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 1 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=../login/");
+   exit();
+  }
+ }
+
+include("include/vars.inc.phtml");
+
+//header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+echo "<br>";
+
+if ( ! isset($cod_daneshkade))
+    $cod_daneshkade = '-1';
+
+if(strcmp($cod_daneshkade,'-1')!=0 )
+{
+	$daneshkade_caution="cod_daneshkade = '$cod_daneshkade'";
+}
+else
+   $daneshkade_caution=1;
+   
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+/* 
+if(strcmp($admin,"rezaii@tums.ac.ir")==0)
+  $refered_shora=" tarh.refered_shora ='0' ";
+else
+  $refered_shora="1";
+*/   
+$refered_shora="1";
+/*if(isset($name_e))
+{
+  $query="select * from tarh,vaziat_tarh  where  tarh_type!='6' and $daneshkade_caution  and (cod_tarh like $myname_search or  tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and vaziat_tarh.vaziat=tarh.vaziat_moaven and vaziat_tarh.view_or_no='0' and confirm_moaven_tarh='1'  and version='-1'  and $refered_shora  group by cod_tarh order by right(cod_tarh,4) asc" ;
+}
+else*/
+
+
+
+$query="select * from tarh,vaziat_tarh  where  refered_shora='0' and send_karshenas_shora='1' and tarh_type!='6' and   $daneshkade_caution  and vaziat_tarh.vaziat=tarh.vaziat_moaven  and confirm_moaven_tarh='1'   and tarh.version='-1'  and $refered_shora group by cod_tarh order by right(cod_tarh,4) asc" ;
+//$query="select * from tarh,vaziat_tarh  where  send_karshenas_shora='1' and tarh_type!='6' and  $daneshkade_caution  and vaziat_tarh.vaziat=tarh.vaziat_moaven  and confirm_moaven_tarh='1'   and tarh.version='-1'  and $refered_shora group by cod_tarh order by right(cod_tarh,4) desc" ;
+
+//$query="select * from tarh,vaziat_tarh  where   $daneshkade_caution  and vaziat_tarh.vaziat=tarh.vaziat_moaven and vaziat_tarh.view_or_no='0' and confirm_moaven_tarh='1'   and version='-1'   and $refered_shora group by cod_tarh order by right(cod_tarh,4) desc" ;
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+
+ 
+  if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ 
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+//$myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&ascdescfield=$ascdescfield&ascdesc=$ascdesc";	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+ 
+  <?
+
+
+ $color=$list_color_1;
+ $row=0;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+ echo "<table border=\"1\" width=\"90%\" cellpadding=\"1\" cellspacing=\"5\" dir=\"rtl\">";	
+  $row=$row+1;
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+  $mytarh_type = $row_fetched["vaziat"];
+  if($row_fetched["vaziat"]=="0")
+     {
+    if($row_fetched["confirm_tarh"]=="1")
+  	   $mystatus="در دست بررسي";
+  	else   
+       $mystatus="نامعلوم";
+  } 
+  else
+  {
+    $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+    $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+    $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+    $mystatus=$row_fetched_tarh["vaziat_desc"];
+    if($row_fetched_tarh["view_or_no"]=="1")
+       $editable=0;
+    else
+       $editable=1;
+  }
+
+
+
+  
+
+  
+ $mytarh_type = $row_fetched["status"];
+ $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  $myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq);
+  $myrf=mysql_fetch_array($myres);
+  $daneshkade=$myrf["daneshkade_name"];
+  
+  
+  
+  $startdate = $row_fetched["tarh_time"];
+  $rotbe = $row_fetched["rotbe_tarh"];
+  
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  $sum_hazine_pishnahadi=sum_hazine($cod_tarh);
+  
+  $myq="select * from jalase_shora_tarh where cod_tarh='$cod_tarh'";
+  $myres1=mysql_query($myq) or die("Error in jalase_shora_tarh");
+  if(mysql_num_rows($myres1) > 0)
+  {
+    $row_f=mysql_fetch_array($myres1);
+    $hazine_mosavab=$row_f["budjeh"];
+    //$jalase_id=$row_f["jalase_id"];
+  //  $myq1="select max(rotbe_tarh) as max_rotbe from jalase_shora_tarh,jalase_shora where jalase_shora_tarh.shomare_jalase=jalase_shora.shomare_jalase and jalase_shora_tarh.creator=jalase_shora.creator and jalase_shora_tarh.jalase_id='$jalase_id'";
+ //   $myres2=mysql_query($myq) or die("Error in jalase_shora_tarh");
+  //  $rf11=mysql_fetch_array($myres2);
+  //  $max_rotbe=$rf11["max_rotbe"];
+  }
+  else
+  {
+     $hazine_mosavab=0;
+    // $max_rotbe=0;
+  }
+     
+$left_cod=substr($cod_tarh,0,8);
+//left($cod_tarh,8);
+$myq1="select max(rotbe_tarh) as max_rotbe from tarh where cod_daneshkade='$cod_daneshkade' and left(cod_tarh,8)='$left_cod'";
+
+//exit();
+$myres11=mysql_query($myq1) or die("Error ");
+$rf11=mysql_fetch_array($myres11);
+$max_rotbe=$rf11["max_rotbe"];
+
+  
+  echo "<tr>";
+  echo "<td width=\"100%\" colspan=\"2\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\"><b>".$row_fetched["tarh_title_farsi"]."($cod_tarh) </b></font></td>";     
+  
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td width=\"100%\" colspan=\"2\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\"><b>$row ".":رديف "."</b></font></td>";     
+  
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\">رتبه</font></td>";                                                                             //".$max_rotbe." از ".$rotbe."رتبه </td>";     
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\">"." رتبه ".$rotbe." از ".$max_rotbe."</td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\">"."  هزينه مصوب دانشکده / مت "."</font></td>";
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$hazine_mosavab."</td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\">هزينه پيشنهادي</font></td>";  
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".number_format($sum_hazine_pishnahadi)."</td>";
+  echo "</tr>";
+  
+  
+  echo "<tr>";
+  $print_sun1=print_sum_hazine($cod_tarh);
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\">مشروح هزينه پيشنهادي</font></td>";  
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$print_sun1."</td>";
+  echo "</tr>";
+  
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\">تاريخ ارسال</font></td>";    
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir='ltr'>".$farsistartdate."</td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" > <p align=\"center\" class=\"tahoma1\"><font color=\"black\">دانشکده / مرکز</font></td>";    
+  echo "<td width=\"80%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$daneshkade."</td>";
+  echo "</tr>";
+  $cod_tarh_user=$row_fetched["cod_tarh_user"];
+  
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\" valign=\"top\"> <p align=\"center\" class=\"tahoma1\"><font color=\"black\">ضرورت اجرا</font></td>";      
+  echo "<td width=\"80%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["zarorat"])."</td>";
+  echo "</tr>";
+  
+  echo "<tr>";
+  echo "<td width=\"20%\" bgcolor= \"$title_color\"  valign=\"top\"> <p align=\"center\" class=\"tahoma1\"><font color=\"black\">روش اجرا و شيوه هاي تحليل</font></td>";      
+  echo "<td width=\"80%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["shive_ejra"])."</td>";
+  echo "</tr>";
+  
+  echo "</table>";  
+  echo "<p STYLE=\"page-break-before: always\">";
+  
+ }
+
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".در حال حاضر طرح ارسال شده اي به شما وجود ندارد","red");
+}
+echo "</form>";
+//footer_forms($admin,$seed);
+?>
+

@@ -1,0 +1,319 @@
+<?
+include("include/include.phtml");
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+
+
+?>
+<script>
+
+function disableit(id){
+	var check = (id=="a") ? true : false;
+	if(check){
+	document.getElementById('txt_fee_start').disabled=false;
+	document.getElementById('txt_fee_end').disabled=false;
+	
+	}
+	else{
+	document.getElementById('txt_fee_start').disabled=true;
+	document.getElementById('txt_fee_end').disabled=true;
+		
+		}
+	}
+
+checked=false;
+function checkedAll (frm1) {
+	var aa= document.getElementById('frm1');
+	 if (checked == false)
+          {
+           checked = true;
+          }
+        else
+          {
+          checked = false;
+          }
+	for (var i =8; i < aa.elements.length; i++) 
+	{
+	 aa.elements[i].checked = checked;
+	}
+      }
+
+
+</script>
+
+<style type="text/css">
+
+td.chk{
+	position:relative;
+	left:-20px;
+	
+}
+table.hovertable {
+	font-family:tahoma;
+	font-size:12px;
+	color:#333333;
+	border-width: 0px;
+	border-color: #999999;
+	border-collapse: collapse;
+}
+table.hovertable th {
+	background-color:#69C;
+	border-width: 1px;
+	padding: 8px;
+	border-color: #a9c6c9;
+	text-align:center;
+	
+}
+table.hovertable tr {
+	background-color:#d4e3e5;
+}
+table.hovertable td {
+	border-width: 1px;
+	padding: 8px;
+	border-color: #a9c6c9;
+}
+</style>
+
+
+
+<?echo "<form method=\"post\" action=\"report_result.phtml?admin=$admin&seed=$seed\" id=\"frm1\" >";?>
+
+
+
+<table class="hovertable" cellSpacing=2 width="650px" align=center dir="rtl" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 2; ">
+<tr>
+<td  align="center" style=" background-color:#6699cc;height: 10px" colspan="3"><b>موقعيت طرح</b></td>
+</tr>
+
+<tr >
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';" style="width:200px;"><input type="radio" name="radio" value="1" onclick="disableit('b')" checked="checked">طرح هاي جديد</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"  style="width:200px;"><input type="radio" name="radio" value="2" onclick="disableit('b')">طرح هاي قبل از تصويب</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';" style="width:200px;"><input type="radio" name="radio" value="3" onclick="disableit('b')">طرح هاي بعد از تصويب</td>
+</tr>
+<tr >
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="radio" name="radio" value="4" onclick="disableit('a');">طرح هاي آماده به قرارداد</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="radio" name="radio" value="5"  onclick="disableit('a');">طرح هاي در حال اجرا</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="radio" name="radio" value="8" onclick="disableit('b')">طرح هاي در حال اجراي مراکز مستقل</td>
+</tr>
+<tr >
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="radio" name="radio" value="6" onclick="disableit('b')">طرح هاي پايان يافته</td>
+			<td align="right" colspan="2"  onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="radio" name="radio" value="7" onclick="disableit('b')">طرح هاي بايگاني شده</td>
+							
+</tr>
+
+</table>
+<table class="hovertable" cellSpacing=2 width="650px" align=center dir="rtl" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 2; ">
+<tr >
+	<td  align="center" style=" background-color:#6699cc;height: 7px" colspan="4"><input type="checkbox" name='checkall' onclick='checkedAll(frm1);'><b> انتخاب همه</b> </td>
+</tr>		
+<tr >
+			<td onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';" align="right"><input class="chk" type="checkbox" name="a1" value="1">کد طرح</td>
+			<td onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';" align="right"><input class="chk" type="checkbox" name="a2" value="1">عنوان فارسي</td>
+			<td onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';" align="right" ><input type="checkbox" name="a3" value="1">مجري طرح</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a5" value="1">نوع طرح</td>		
+</tr>
+
+<tr >
+			
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a6" value="1">دانشکده/مرکز</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a4" value="1">تاريخ ارسال</td>
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a7" value="1">هزينه ها</td>
+		    <td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a8" value="1" >مبلغ عقد قرارداد</td>
+</tr>
+
+<tr >
+				
+			<td align="right" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a9" value="1">تاريخ عقد قرارداد</td>
+			<td align="right"  onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a10" value="1">ويرايش ها</td>
+			<td align="right" colspan="2"  onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><input type="checkbox" name="a11" value="1">چاپ</td>	
+</tr>
+
+</table>
+
+<table class="hovertable" cellSpacing=2 width="650px" align=center dir="rtl" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 2; ">
+
+	<tr>		<td align="right" valign="top" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><b>تاريخ ارسال :</b><br/><br/>
+			از: <select name="start_day"  style="width:50px;" >
+	  <option value="-1">  روز </option>
+	  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+  	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+      <option >10</option>
+  	  <option >11</option>
+   	  <option >12</option>
+      <option >13</option>
+      <option >14</option>
+      <option >15</option>
+      <option >16</option>
+      <option >17</option>
+      <option >18</option>
+      <option >19</option>
+      <option >20</option>
+      <option >21</option>
+      <option >22</option>
+      <option >23</option>
+      <option >24</option>
+      <option >25</option>
+      <option >26</option>
+      <option >27</option>
+      <option >28</option>
+      <option >29</option>
+      <option >30</option>
+      <option >31</option>
+</select>
+<select name="start_month"  style="width:50px;" >
+	  <option value="-1">  ماه </option>
+	  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+	  <option >10</option>
+	  <option >11</option>
+	  <option >12</option>
+   </select>
+   <select name="start_year"  style="width:50px;" >
+	  <option value="-1">  سال </option>
+	  <option >1380</option>
+	  <option >1381</option>
+	  <option >1382</option>
+	  <option >1383</option>
+	  <option >1384</option>
+	  <option >1385</option>
+	  <option >1386</option>
+	  <option >1387</option>
+	  <option >1388</option>
+	  <option >1389</option>
+	  <option >1390</option>
+	  <option >1391</option>
+	  <option >1392</option>
+   </select>
+   <br/><br/>
+تا: <select name="end_day"  style="width:50px;" >
+  <option value="-1">  روز </option>
+  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+  	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+      <option >10</option>
+  	  <option >11</option>
+   	  <option >12</option>
+      <option >13</option>
+      <option >14</option>
+      <option >15</option>
+      <option >16</option>
+      <option >17</option>
+      <option >18</option>
+      <option >19</option>
+      <option >20</option>
+      <option >21</option>
+      <option >22</option>
+      <option >23</option>
+      <option >24</option>
+      <option >25</option>
+      <option >26</option>
+      <option >27</option>
+      <option >28</option>
+      <option >29</option>
+      <option >30</option>
+      <option >31</option>
+</select>
+<select name="end_month"  style="width:50px;" >
+  <option value="-1">  ماه </option>
+  <option >1</option>
+	  <option >2</option>
+	  <option >3</option>
+	  <option >4</option>
+	  <option >5</option>
+	  <option >6</option>
+	  <option >7</option>
+	  <option >8</option>
+	  <option >9</option>
+	  <option >10</option>
+	  <option >11</option>
+	  <option >12</option>
+   </select>
+   <select name="end_year" style="width:50px;" >
+  <option value="-1">  سال </option>
+  <option >1380</option>
+	  <option >1381</option>
+	  <option >1382</option>
+	  <option >1383</option>
+	  <option >1384</option>
+	  <option >1385</option>
+	  <option >1386</option>
+	  <option >1387</option>
+	  <option >1388</option>
+	  <option >1389</option>
+	  <option >1390</option>
+	  <option >1391</option>
+	  <option >1392</option>
+   </select>
+</td>
+
+<td align="right" valign="top" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><b>مبلغ قرارداد :</b><br/><br/>
+			 از مبلغ (ريال): <input type="text" id="txt_fee_start" name="txt_fee_start" size="20" disabled="disabled"><br/><br/>
+            تا مبلغ (ريال): <input type="text" id="txt_fee_end" name="txt_fee_end" size="20" disabled="disabled">
+            </td>
+            
+<td align="right" valign="top" onmouseover="this.style.backgroundColor='#ffc000';" onmouseout="this.style.backgroundColor='#d4e3e5';"><b> مرتب سازي : <br/> <br/><br/> 
+			  <select name="sort" id="course" style="width:158px;" >
+   <option value="-1">  ---------انتخاب ---------</option>
+   <option value="1">عنوان</option>
+   <option value="2">نام مجري</option>
+   <option value="3">نام دانشکده</option>
+   <option value="4">تاريخ ارسال</option>
+
+</select></td>          
+            
+</tr>
+<tr>
+ <?
+
+
+$query="select * from daneshkade order by  daneshkade_name  desc";
+$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+echo "<td  align=\"center\" class=\"tahoma1\" colspan='3' valign='top' onmouseover='this.style.backgroundColor='#ffc000';' onmouseout='this.style.backgroundColor='#d4e3e5';'><b> دانشکده / مرکز :</b> 
+ <select class='tahoma1' size=\"1\" name=\"cod_daneshkade\"  dir=\"rtl\">";
+echo "<option value=\"-1\" class=\"tahoma1\">همه موارد</option>";
+
+while($row_fetched=mysql_fetch_array($qresult))
+ {
+  	if(strcmp($row_fetched["cod_daneshkade"],$cod_daneshkade)==0)
+   	  $selected=" selected ";
+    else
+	  $selected="";    	  
+    echo "<option $selected value=\"".$row_fetched["cod_daneshkade"]."\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</option>";
+ }
+ 
+?>
+  </select>
+  </td>
+
+</tr>
+
+<tr>
+	<td colspan="3" align="center" bgcolor="#6699cc"><input  class="but-tarh-type" type="submit" value="نمايش" ></td>
+</tr>
+
+</table>
+</form>
+<br/><br/>
+<?  footer_forms($admin,$seed);?>

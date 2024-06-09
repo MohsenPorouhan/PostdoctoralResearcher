@@ -1,0 +1,117 @@
+<?
+include("include/database-connect.phtml");
+include("admin/include/include.phtml");
+include("include/vars.inc.phtml");
+require_once('admin/lib/nusoap.php');
+
+$query="insert into input_sms set sms_from='$from' , sms_to='$to',sms_text='$text'";
+//$text = ereg_replace("[^0-9]", "", $text);
+$result=mysql_query($query) or die("Error");
+/*
+ 
+if(strcmp($text,"PASS")==0 || strcmp($text,"Pass")==0)
+{
+ $myfrom=substr($from,-11);
+ $query="select * from user_login where  mobile='$from' or mobile='$myfrom' ";
+ 
+ 
+ if(mysql_num_rows($rs) > 0)
+ {
+   $rsfmysq_fetch_array($rs);
+   $username=$rf["email"];
+   $password=$rf["password"];
+   $send_string="Username:$username   Password : $password";
+    
+   send_sms("$from",$send_string);
+ }
+ return;
+}
+*/
+
+
+if(strcmp(strtoupper(trim($text)),"PASS")==0)
+{
+ $myfrom="98".$from;
+  $myfrom1=substr($from,2,10);
+
+   $myfrom1= "0".$myfrom1;
+   
+    //  send_user_sms("09133264926",$myfrom1);
+  //send_sms("09133264926",$send_string);
+
+ $query="select * from user_login where  mobile='$from' or mobile='$myfrom' or mobile = '$myfrom1' ";
+ 
+ $rs=mysql_query($query);
+ if(mysql_num_rows($rs) > 0)
+ {
+   $rf=mysql_fetch_array($rs);
+   $username=$rf["email"];
+   $password=$rf["password"];
+   $send_string="Username:$username   Password : $password";
+    
+    send_sms("$myfrom1",$send_string);
+ }
+ 
+ return;
+}
+
+if(strrchr ($text,"@"))
+{
+ $myfrom="+98".$from;
+  $myfrom1=substr($from,3,10);
+
+   $myfrom1= "0".$myfrom1;
+ $query="select * from user_login where  email='$text' ";
+ 
+ $rs=mysql_query($query);
+ if(mysql_num_rows($rs) > 0)
+ {
+   $rf=mysql_fetch_array($rs);
+   $username=$rf["email"];
+   $password=$rf["password"];
+   $send_string="Username:$username   Password : $password";
+    send_sms("$from",$send_string);
+	//  send_sms("09133264926",$from);
+
+ }
+ return;
+}
+
+
+
+
+if(strlen($to)<13 && strlen($text) > 3)
+{
+$text="%".trim($text)."%";
+ $query="select * from tarh_position where  cod_tarh like '$text' order by id desc";
+//$query="select * from tarh where cod_tarh like \"%*".$text."*%\" and version='-1'";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result)>0)
+{
+	
+	$row_fetched=mysql_fetch_array($result);
+	$cod_tarh=$row_fetched["cod_tarh"];
+    
+    $myq1="select * from group_karshenasan,group_karshenasan_tarh where group_karshenasan_tarh.cod_tarh='$cod_tarh' and group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and group_karshenasan.karshenas_type='1'";
+    $myres=mysql_query($myq1) or die("Error");
+  
+    if(mysql_num_rows($myres) > 0)
+    {
+      $myrf=mysql_fetch_array($myres);
+      $name_family_sender=$myrf["karshenas_name"]." ".$myrf["karshenas_family"]." ".$myrf["mobile"];
+    }
+   else
+    {
+  	 $name_family_sender="";
+    }
+  
+	 $position_tarh_code=current_position($cod_tarh);	
+     $position_txt=$position_tarh["$position_tarh_code"];
+     $position_txt=$position_txt."\n کارشناس مربوطه  "."$name_family_sender";
+	//$position_txt=iconv("windows-1256", "UTF-8",$position_txt);
+ 
+    send_sms("$from",$position_txt);
+}
+ 
+}
+?>

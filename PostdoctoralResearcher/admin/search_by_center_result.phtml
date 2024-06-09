@@ -1,0 +1,118 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+if ( ! isset($current))
+    $current = 1;
+
+$RecPerPage=12;
+
+ if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=10000;
+      $current=1;
+    }
+    
+ if(  strcmp($startyear,"-1")==0 || strcmp($startmon,"-1")==0 ||  strcmp($startday,"-1")==0 ||  strcmp($endyear,"-1")==0 ||  strcmp($endmon,"-1")==0 ||  strcmp($endday,"-1")==0 )
+  {
+   ?>
+           <script language="javascript">
+           window.location="<? echo "search_by_center.phtml?admin=$admin&seed=$seed&cod_tarh=$max_cod";  ?>";
+           </script>
+           <?
+    }       
+//-------------------------------------------------------------------------------------------------
+
+ $start_date = $startday."/".$startmon."/".$startyear;
+ $end_date = $endday."/".$endmon."/".$endyear;
+ if($type==0)
+   $submitted=" and submitted_pay=0";
+else   
+ if($type==1)
+   $submitted=" and submitted_pay=1";
+ else
+   $submitted=" "; 
+
+$query="select sum(tarh.mablagh_aghd_gharardad*gozaresh_gharardad.mablagh/100) as summary,  daneshkade_name,daneshkade.cod_daneshkade  from tarh,daneshkade,gozaresh_gharardad  where date_gozaresh > '$start_date' and date_gozaresh < '$end_date' and  tarh.cod_daneshkade=daneshkade.cod_daneshkade and gozaresh_gharardad.cod_tarh=tarh.cod_tarh  and tarh.version='-1'  $submitted group by daneshkade.cod_daneshkade ";
+
+// echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+
+
+$query="select sum(tarh.mablagh_aghd_gharardad*gozaresh_gharardad.mablagh/100) as summary,  daneshkade_name,daneshkade.cod_daneshkade  from tarh,daneshkade,gozaresh_gharardad  where date_gozaresh > '$start_date' and date_gozaresh < '$end_date' and  tarh.cod_daneshkade=daneshkade.cod_daneshkade and gozaresh_gharardad.cod_tarh=tarh.cod_tarh  and tarh.version='-1' $submitted group by daneshkade.cod_daneshkade"." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+//echo $query;
+$result=mysql_query($query) or die("Error in selecting data from tarh 2"); 
+
+
+
+
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>گزارش تعهدات و پرداختي ها <b></td>
+ </tr>
+ </table>
+ 
+<?
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+
+
+}
+if(mysql_num_rows($result) > 0 )
+{
+ $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade";	
+ $myascdescpub=$myascdescpub."&startday=$startday&startmon=$startmon&startyear=$startyear&endday=$endday&endmon=$endmon&endyear=$endyear&type=$type";
+ pubshowpages("search_by_center_result.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ طرح هاي خاتمه يافته</font></td>
+    
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ</font></td>
+       <td width="90%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">دانشگده</font></td>  
+  
+    </tr>
+  <?
+
+ $color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_daneshkade_this=$row_fetched["cod_daneshkade"];
+  
+  
+  $query="select sum(tarh.mablagh_aghd_gharardad*gozaresh_gharardad.mablagh/100) as summary,  daneshkade_name,daneshkade.cod_daneshkade  from tarh,daneshkade,gozaresh_gharardad  where date_gozaresh > '$start_date' and date_gozaresh < '$end_date' and  tarh.cod_daneshkade=daneshkade.cod_daneshkade   and finalized='1' and daneshkade.cod_daneshkade='$cod_daneshkade_this' and gozaresh_gharardad.cod_tarh=tarh.cod_tarh and tarh.version='-1' $submitted  group by daneshkade.cod_daneshkade";
+
+//  $query="select sum(mablagh) as summary,  daneshkade_name,daneshkade.cod_daneshkade  from tarh,daneshkade,tarh_indoing  where time_marhale > '$start_date' and time_marhale < '$end_date' and  tarh.cod_daneshkade=daneshkade.cod_daneshkade and tarh_indoing.cod_tarh=tarh.cod_tarh and daneshkade.cod_daneshkade='$cod_daneshkade_this' and finalized='1' $submitted group by daneshkade.cod_daneshkade";
+
+//  echo $query;
+
+  $result1=mysql_query($query) or die("Error in selecting data from tarh 1");
+  $rf=mysql_fetch_array($result1);
+  $mablagh_finished=$rf["summary"];
+  echo "<tr>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".number_format($mablagh_finished)."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".number_format($row_fetched["summary"])."</td>";
+  echo "<td width=\"90%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["daneshkade_name"]."</td>";
+  echo "</tr>";
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+?>

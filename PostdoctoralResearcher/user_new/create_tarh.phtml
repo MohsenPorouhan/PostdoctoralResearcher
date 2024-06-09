@@ -1,0 +1,153 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+ $result=mysql_query($query) or die("Error in selecting data from rank");
+ $row_fetched = mysql_fetch_array($result);
+ $cod_daneshkade=$row_fetched['cod_daneshkade'];
+ $tarh_title_farsi=$row_fetched["tarh_title_farsi"];
+ $tarh_title_english=$row_fetched["tarh_title_english"];
+ $cod_payanname=$cod_tarh;
+ 
+$query="select * from tarh where payannameh='0' and tarh_title_farsi='$tarh_title_farsi' and tarh_title_english='$tarh_title_english'";
+ $result=mysql_query($query) or die("Error in selecting data from rank");
+ $row_fetched2= mysql_fetch_array($result);
+ 
+ $count=mysql_num_rows($result);
+if(isset($action))
+{
+  if (strcmp($action,"change_status")==0 )
+  {
+  		if($count>0){
+  			message_show("پايان نامه يکبار به طرح تبديل شده.","red");
+  			exit();
+  		}	
+  		
+          $year_date = date("Y") - 1921 ;
+         // if(strcmp($year_tarh,"0")!=0 && strcmp($rank_num,"0")!=0)
+	    //    $year_date=$year_tarh;
+	   
+	      $today=str_replace("/","-",today());
+          $query_rank="select * from rank where '$today' >= start_date and '$today' <= end_date order by end_date desc";
+          
+		  $result=mysql_query($query_rank) or die("Error in selecting data from rank");
+
+		  if(mysql_num_rows($result) > 0)
+		  {
+             $row_fetched=mysql_fetch_array($result);
+             
+             $rank=trim($row_fetched["rank"]);
+			 $year=trim($row_fetched["year"]); 
+             
+		  }
+		  else
+		   $rank="0";
+		   
+		   $query="select maxcode from maxcode ";
+//         $query="select max(right(cod_tarh,3) ) as max_cod from tarh ";
+
+  	     $result=mysql_query($query) or die("Error in selecting data from tarh 145");
+        // if(mysql_num_rows($result) > 0 )
+        // {
+          $row_fetched = mysql_fetch_array($result);
+          $max_cod_tarh = $row_fetched["maxcode"]+1;
+	  //   }
+	    //  else
+	    //   $max_cod_tarh=1+3000;   
+	   //$max_cod_tarh= str_pad($max_cod_tarh,4,0,STR_PAD_LEFT);
+
+          $cod_daneshkade=str_pad($cod_daneshkade,2,0,STR_PAD_LEFT);
+          $rank=str_pad($rank,2,0,STR_PAD_LEFT);
+       
+          $cod_tarh_new=$year."-".$rank."-".$cod_daneshkade."-".$max_cod_tarh;
+          $max_cod=$cod_tarh_new;
+          
+          
+		  $query="update maxcode set maxcode='$max_cod_tarh'";
+          $result=mysql_query($query) or die("Error in selecting data from tarh 122");
+          
+  	create_tarh_from_payanname('tarh',$cod_tarh,$cod_tarh_new,'0');
+  	
+  	
+  	
+  	
+  	
+    $query="update tarh set  payan_name='0',submission_center_status ='0',finished='1',creator='$admin',payannameh='0',is_tarh='1',tarh_time='".date("Y-m-d")."',payanname_cod='$cod_payanname' where cod_tarh='$cod_tarh_new' and version='-1' ";
+    
+    $result=mysql_query($query) or die("Error in updating tarh type in tarh");
+    insert_position($cod_tarh,"2",$admin);
+     ?>
+           <script language="javascript">
+           window.location="<? echo "ostad_payan_name".".phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&action=create_tarh";  ?>";
+           </script>
+           <?
+       
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&main_window=$main_window\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=1>
+  <TBODY>
+    <TR>
+    <TD align=right width="100%"  class="tahoma1" height=19>
+     
+      تبديل پايان نامه به طرح
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+
+ <tr>
+    <td width="100%" colspan="2" class="tahoma1">
+      <p align="center">در اين حالت يک طرح از روي پايان نامه براي شما ايجاد مي گردد</td>
+</tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="javascript:go(-1)" >بازگشت</a></td>
+  </tr>
+</table>
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

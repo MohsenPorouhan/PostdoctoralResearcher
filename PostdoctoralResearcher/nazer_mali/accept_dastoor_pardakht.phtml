@@ -1,0 +1,74 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+require_once('lib/nusoap.php');
+
+
+echo "<br>";
+
+
+ 
+?>
+
+<TABLE cellSpacing=0  width="70%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1" colspan="3"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."کد دستور پرداخت  : ".$paperno ;
+      ?>
+      </TD>
+  </TR>
+
+   	 <tr>
+  <td width="40%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">توضيحات</font></td>
+      <td width="30%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">  تاييد/رد</font></td>
+
+    <td width="30%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black"> نام و نام خانوادگي</font></td>
+      </tr>
+      
+    <?
+     $color=$list_color_1;
+    $query="select * from modir_accept_pardakht where paperno='$paperno'";
+    $result1=mysql_query($query) or die("Error");
+	while($rf66=mysql_fetch_array($result1))
+	{
+	// echo $cntr;
+	  	//$row_fetched=mysql_fetch_array($result1);
+	 	$accept_gharardad=$rf66["accept_pardakht"];
+	 	$modir_comment=$rf66["modir_comment"];
+	 	$modir_name=$rf66["modir_name"];
+	 	$modir_family=$rf66["modir_family"];
+	 	$name=$modir_name."&nbsp;".$modir_family;
+	    if($accept_gharardad=="1"){
+	    	$accept_gharardad1="تاييد";
+	    }
+	    else 
+	    	$accept_gharardad1="رد";
+	 	
+	echo"<tr>";
+      
+       echo "<td width=\"40%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$modir_comment."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$accept_gharardad1."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">$name</td>";
+	 echo "</tr>";
+	  }?>
+	  
+
+</table>
+<br>
+
+<?  
+
+    
+footer_forms($admin,$seed);
+?>
+

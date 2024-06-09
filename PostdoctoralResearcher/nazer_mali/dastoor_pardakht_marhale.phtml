@@ -1,0 +1,328 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+?>
+<script>
+function show_list(){
+	<?
+	
+    echo "window.location=\"dastoor_pardakht_view.phtml?admin=$admin&seed=$seed&paperno=$paperno\"";
+   
+    ?>
+}
+</script>
+<?
+if (strcmp($action,"sabt")==0)
+{
+  
+     for($i=1;$i<=30;$i++)
+     {
+     	$cod='checktarh'.$i;
+	    if(isset($$cod))
+	    {
+	     $cod_tarh=$$cod;
+	     $tarh_hesabdari_id="c".$i;
+         $tarh_hesabdari_id=$$tarh_hesabdari_id;
+         
+	     $marhale_gharardad_hesabdari_id="g".$i;
+         $marhale_gharardad_hesabdari_id=$$marhale_gharardad_hesabdari_id;
+         
+	     $today= date("Y-m-d");
+		 $year=substr($today,0,4);
+		 $month=substr($today,5,2);
+	     $day=substr($today,8,2);
+		$peyment_date=hijricalender( $year , $month , $day );
+	  
+	   
+	   $query="insert into dastoor_pardakht_marhale set marhale_gharardad_id='$marhale_gharardad_hesabdari_id',tarh_hesabdari_id='$tarh_hesabdari_id',paperno='$paperno',peyment_date='$peyment_date'";
+	   $result=mysql_query($query) or die ("Error in inserting data into jalase_shora1");
+	   $query="update marhale_gharardad_hesabdari set paperno='$paperno',peyment_date='$peyment_date' where id='$marhale_gharardad_hesabdari_id'";
+	   $result=mysql_query($query) or die ("Error in inserting data into jalase_shora1");
+	 
+	    }
+
+     }
+     
+     
+ for($i=1;$i<=30;$i++)
+     {
+     	$cod='unchecktarh'.$i;
+	    if(isset($$cod))
+	    {
+	     $cod_tarh=$$cod;
+	     $tarh_hesabdari_id="c".$i;
+         $tarh_hesabdari_id=$$tarh_hesabdari_id;
+         
+	     $marhale_gharardad_hesabdari_id="g".$i;
+         $marhale_gharardad_hesabdari_id=$$marhale_gharardad_hesabdari_id;
+         
+         $stepno_id="s".$i;
+         $stepno_id=$$stepno_id;
+         
+	     $today= date("Y-m-d");
+		 $year=substr($today,0,4);
+		 $month=substr($today,5,2);
+	     $day=substr($today,8,2);
+		$peyment_date=hijricalender( $year , $month , $day );
+	  
+	   
+	    $query="update marhale_gharardad_hesabdari set accept_pardakht='0',accept_pardakht_date='' where stepno='$stepno_id' and researchno='$cod_tarh'";
+        $result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+	 
+	    }
+
+     }
+     
+  
+}
+
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+$query="select * from modir_daneshkade where modir_username ='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir_daneshkade");
+$myrow_fetched = mysql_fetch_array($result);
+$cod_daneshkade=$myrow_fetched["cod_daneshkade"];
+if(isset($rank_jalase) && strcmp($rank_jalase,"-1")!=0)
+{
+	$year_caution="cod_tarh like \"$rank_jalase".'%'."\"";
+}
+else 
+	$year_caution="1";
+	
+	if(strcmp($old,"1")==0){
+		$old_tarh_c=" old_tarh='1'";
+	}
+	else 
+		$old_tarh_c="old_tarh!='1'";
+	
+if(isset($cod_jalase) && strcmp($cod_jalase,"-1")!=0)
+{                                     
+	$cod_jalase_caution="shora_pajohesh_daneshgah.cod_jalase = '$cod_jalase'";
+}
+else 
+	$cod_jalase_caution="1";
+		
+  if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    	
+	
+if(isset($name_e))
+{
+  $query="select tarh.*,vaziat_tarh.* from tarh,vaziat_tarh,shora_pajohesh_daneshgah where  tarh.cod_tarh=shora_pajohesh_daneshgah.cod_tarh and tarh.refered_shora='1' and  $cod_jalase_caution and (tarh.cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search)  and vaziat_tarh.vaziat=tarh.vaziat_moaven and send_moavenat ='1' and (vaziat_tarh.vaziat!='12' or vaziat_tarh.vaziat!='13' or vaziat_tarh.vaziat!='14')   group by tarh.cod_tarh order by tarh_time desc" ;
+}
+else
+  $query="select tarh_hesabdari.*,marhale_gharardad_hesabdari.* from tarh_hesabdari,marhale_gharardad_hesabdari where  tarh_hesabdari.researchno=marhale_gharardad_hesabdari.researchno and  marhale_gharardad_hesabdari.accept_pardakht='1' and paperno='' and $old_tarh_c" ;
+
+ //echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 100");
+
+$reccount = mysql_num_rows($result);
+//echo $reccount;
+
+ if(isset($name_e))
+{
+  $query="select tarh.*,vaziat_tarh.* from tarh,vaziat_tarh,shora_pajohesh_daneshgah where  tarh.cod_tarh=shora_pajohesh_daneshgah.cod_tarh and   tarh.refered_shora='1' and  $cod_jalase_caution and (tarh.cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search)  and vaziat_tarh.vaziat=tarh.vaziat_moaven and send_moavenat ='1' and (vaziat_tarh.vaziat!='12' or vaziat_tarh.vaziat!='13' or vaziat_tarh.vaziat!='14')   group by tarh.cod_tarh order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select tarh_hesabdari.personname as personname_mojri,tarh_hesabdari.accountno as accountno_mojri,tarh_hesabdari.accept_cod as accept_cod,tarh_hesabdari.shebano as shebano_mojri,tarh_hesabdari.id as tarh_hesabdari_id,marhale_gharardad_hesabdari.* from tarh_hesabdari,marhale_gharardad_hesabdari where  tarh_hesabdari.researchno=marhale_gharardad_hesabdari.researchno and  marhale_gharardad_hesabdari.accept_pardakht='1' and paperno='' and $old_tarh_c "." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 200");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&action=sabt&paperno=$paperno&old=$old\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="95%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>تعيين مراحل پرداختي<b><br></td>
+ </tr>
+
+ </table>
+ 
+
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ $myascdescpub=$myascdescpub."paperno=$paperno&old=$old"; 	
+ pubshowpages("dastoor_pardakht_marhale.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%","#66CCFF");
+?>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">حذف تاييد دريافت</font></td>
+   <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black"><input type="checkbox" name="checkall" onClick="checkUncheckAll(this);">تاييد دريافت</font></td>
+   <td width="7%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ماليات مرحله</font></td>  
+   <td width="7%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">سهم ناظر</font></td>  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره شبا ناظر</font></td>  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره حساب ناظر</font></td>  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ناظر اين مرحله</font></td>
+    <td width="7%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">سهم مجري</font></td> 
+      <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ قابل پرداخت</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ مرحله</font></td>
+      <td width="7%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد تاييد قرارداد</font></td>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مرحله قرارداد</font></td> 
+	<td width="13%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره شبا مجري</font></td>
+   <td width="8%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">شماره حساب مجري</font></td>
+    <td width="3%" align="center" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري طرف قرارداد</font></td>
+      <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ صدور دستور پرداخت توسط کارشناس</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+  </tr>
+
+<?
+  
+ $row="1";
+ $doctor_in_list=1;
+ $color=$list_color_1;
+ $k=1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $marhale_gharardad_hesabdari_id=$row_fetched["id"];
+  $tarh_hesabdari_id=$row_fetched["tarh_hesabdari_id"];
+  $cod_tarh=$row_fetched["researchno"];
+  $personname=$row_fetched["personname_mojri"];
+  $accountno=$row_fetched["accountno_mojri"];
+  $shebano=$row_fetched["shebano_mojri"];
+  $stepno=$row_fetched["stepno"];
+  $stepamount=$row_fetched["stepamount"];
+  $mablagh_ghable_pardakht=$row_fetched["mablagh_ghable_pardakht"];
+  $amount1=$row_fetched["amount1_pardakht"];
+  $amount2=$row_fetched["amount2"];
+  $personname_nazer=$row_fetched["personname"];
+  $accountno_nazer=$row_fetched["accountno"];
+  $shebano_nazer=$row_fetched["shebano"];
+  $accept_cod=$row_fetched["accept_cod"];
+  $percent_pardakht=$row_fetched["percent_pardakht"];
+  $accept_pardakht_date=$row_fetched["accept_pardakht_date"];
+  
+  
+  $tax=$row_fetched["tax_pardakht"];
+  //$tax_pardakht=$row_fetched["tax_pardakht"];
+  
+ if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   $q="select tarh_type from tarh where cod_tarh='$cod_tarh' and version='-1'";
+   $r=mysql_query($q) or die("Error in selecting data from modir_daneshkade");
+   $row_f=mysql_fetch_array($r);
+    $m_tarh_type=$row_f["tarh_type"];
+  $color_line="black";
+  if(strcmp($m_tarh_type,"6")==0)
+     $color_line="red";
+  echo "<tr>";
+  $row_cnt=($current-1)*$RecPerPage+$row;
+  
+  $quer="select * from dastoor_pardakht_marhale where paperno='$paperno' and tarh_hesabdari_id='$tarh_hesabdari_id' and marhale_gharardad_id='$marhale_gharardad_hesabdari_id'";
+  $resu=mysql_query($quer) or die("Error in selecting data from modir_daneshkade");
+  if(mysql_num_rows($resu) > 0 ){
+  	$checked="checked=checked";
+  }
+  else
+  	$checked="";
+  	
+ $query0="select * from group_karshenasan,group_karshenasan_tarh where  group_karshenasan_tarh.cod_karshenas=group_karshenasan.cod_karshenas and group_karshenasan_tarh.cod_tarh='$cod_tarh' and group_karshenasan.karshenas_type='1' and group_karshenasan.is_karshenas='1'";
+   $result0=mysql_query($query0) or die("Error in selecting data from mojri_tarh");
+$str="";
+   while($row_fetched0=mysql_fetch_array($result0))
+ {
+  $str=$str. $row_fetched0["karshenas_family"];
+  
+ }
+//echo $str;
+  	
+  echo $checked;
+  echo "<input type=\"hidden\" name=\"c".$k."\" value=\"".$tarh_hesabdari_id."\">";
+  echo "<input type=\"hidden\" name=\"g".$k."\" value=\"".$marhale_gharardad_hesabdari_id."\">";
+   echo "<input type=\"hidden\" name=\"s".$k."\" value=\"".$stepno."\">";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type='checkbox' name=unchecktarh".$k." value='$cod_tarh' $checked ></td>";
+  echo "<td width=\"5%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><input type='checkbox' name=checktarh".$k." value='$cod_tarh' $checked ></td>";  
+  echo "<td width=\"7%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>".number_format($tax)."</font></td>";
+  echo "<td width=\"7%\"  bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>".number_format($amount2)."</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$shebano_nazer</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$accountno_nazer</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$personname_nazer</font></td>";
+  echo "<td width=\"7%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>".number_format($amount1)."</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>".number_format($mablagh_ghable_pardakht)."</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>".number_format($stepamount)."</font></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$accept_cod</font></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$stepno</font></td>";
+  echo "<td width=\"13%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$shebano</font></td>";
+  echo "<td width=\"8%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$accountno</font></td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$personname</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$accept_pardakht_date <br>$str</font></td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$cod_tarh</font></td>";
+  echo "</tr>";
+  $k++;
+  
+ }
+ 
+ 
+
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+
+echo "<table border=\"0\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">";
+echo "<tr>";
+
+
+ 
+ echo "<td width=\"30%\" align=\"center\" colspan=\"9\" class=\"tahoma1\">";
+ echo "<input type=\"submit\" value=\"ثبت\" name=\"submit\" class=\"but-small\"></td>";
+ 
+ echo "<td width=\"30%\" align=\"center\" colspan=\"9\" class=\"tahoma1\">";
+ echo "<input type=\"button\" value=\"خاتمه دستور پرداخت\" name=\"btn\" onclick=\"show_list();\" ></td>";
+ 
+
+echo "</tr>";
+echo "</table>";
+
+echo "</form>";
+footer_forms($admin,$seed);
+
+
+?>
+

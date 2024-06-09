@@ -1,0 +1,297 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+if(isset($action))
+ {
+ if(strcmp($action,"del")==0)
+  {
+    
+     $query="delete from tarh where cod_tarh=\"$delete_id\"";
+     
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from shora_tarh_vaziat where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from sayer_hazine where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from ravesh_ejra where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from mojri_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from letter_to_mojri where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from karshenasan_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from jadval_zarayeb where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hazine_safar where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hazine_personnel where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hazine_azmayesh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from hamkar_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from fhrest_vasayel_kharid where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     $query="delete from daneshjo_tarh where cod_tarh=\"$delete_id\"";
+     $result=mysql_query($query) or die("Error in updating data into tarh");
+     
+     
+  }
+ 
+ 
+  if(strcmp($action,"confirm_tarh")==0)
+  {
+    $query="select * from tarh where cod_tarh=\"$cod_tarh\"";
+    
+    $result=mysql_query($query) or die("Error in updating data into tarh");
+    if(mysql_num_rows($result) > 0)
+    {
+     $my_row_fetched=mysql_fetch_array($result);
+   //  $cod_tarh_user =$my_row_fetched["cod_tarh_user"];
+     
+    
+      $query="update tarh set confirm_tarh='1' where cod_tarh=\"$cod_tarh\"";
+ 
+      mysql_query($query) or die("Error in updating data into tarh");
+      $query="select * from tarh where cod_tarh=\"$cod_tarh\"";
+      $tarh_result=mysql_query($query) or die("Error in selecting data into tarh");
+	  $row_fetched=mysql_fetch_array($tarh_result);
+      $mail = new PHPMailer();
+
+      $emailbody="";
+      $emailbody="<table border=\"0\" width=\"100%\" height=\"100%\" style=\"border-style: solid; border-width: 1; padding-top: 0; padding-bottom: 0\" bgcolor=\"#C0C0C0\">";
+      $emailbody=$emailbody."<tr>";
+      $emailbody=$emailbody."<td width=\"100%\" valign=\"top\" align=\"right\"><font face=\"Tahoma\" size=\"2\">&#1576;&#1575; &#1587;&#1604;&#1575;&#1605;&nbsp;</font>";
+      $emailbody=$emailbody."<p><font face=\"Tahoma\" size=\"2\">&#1591;&#1585;&#1581; &#1588;&#1605;&#1575; &#1576;&#1575; &#1593;&#1606;&#1608;&#1575;&#1606;</font></p>";
+      $emailbody=$emailbody."<p><font face=\"Tahoma\" size=\"2\">".$row_fetched["tarh_title_farsi"]."</font></p>";
+      $emailbody=$emailbody."<p><font face=\"Tahoma\" size=\"2\">&#1583;&#1585;&#1610;&#1575;&#1601;&#1578; &#1588;&#1583;</font></p>";
+      $emailbody=$emailbody."<p align=\"right\"><font face=\"Tahoma\" size=\"2\">&#1607;&#1585; &#1711;&#1608;&#1606;&#1607; &#1575;&#1593;&#1605;&#1575;&#1604; &#1606;&#1592;&#1585; &#1610;&#1575; &#1578;&#1594;&#1610;&#1610;&#1585;&#1575;&#1578; &#1583;&#1585; &#1591;&#1585;&#1581; &#1588;&#1605;&#1575; &#1578;&#1608;&#1587;&#1591; &#1662;&#1587;&#1578; &#1575;&#1604;&#1705;&#1578;&#1585;&#1608;&#1606;&#1610;&#1705;&#1610;  &#1576;&#1607; &#1575;&#1591;&#1604;&#1575;&#1593; &#1588;&#1605;&#1575; &#1582;&#1608;&#1575;&#1607;&#1583; &#1585;&#1587;&#1610;&#1583;</font></p>";
+      $emailbody=$emailbody."</td></tr></table>";
+      $myquery_mojri = "SELECT  * FROM tarh , user_login WHERE user_login.email = tarh.creator and tarh.cod_tarh = '$cod_tarh' ";
+      $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+	  $mojri_result = mysql_fetch_array($myresult_mojri);
+	  $email = $mojri_result["creator"];
+	  $family_e = $mojri_result["family_e"];
+	  $name_e = $mojri_result["name_e"];
+
+      $mail->IsSMTP();                                      // set mailer to use SMTP
+      $mail->SMTPAuth=$smtpauth;
+      $mail->Username=$email_username;
+      $mail->Password=$email_password;
+      $mailname=$familye." ".$name_e;
+  	  $mail->From = $email_from;
+	  $mail->FromName = $email_from_name;
+	  $mail->AddAddress($email, $mailname);
+	  $mail->IsHTML(true);                                  // set email format to HTML
+
+	  $mail->Subject = "Delievery Submit in ".$url_address." (Do not reply this email)";
+	  $mail->Body    = $emailbody;
+	  $mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+	  if(!$mail->Send())
+	  {
+             $status="mail_err";
+	  }
+      else
+      {
+         message_show(".تاييد انجام شد","green");
+         footer_forms($admin,$seed);
+         exit();
+
+      }
+   
+    }
+  }
+ }
+
+
+
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+if(isset($name_e))
+{
+  $query="select * from tarh where (cod_tarh like $myname_search or  tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and confirm_tarh ='0' order by tarh_time desc";
+}
+else
+  $query="select * from tarh where confirm_tarh ='0' order by tarh_time desc";
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$reccount = mysql_num_rows($result);
+ 
+ if(isset($name_e))
+{
+  $query="select * from tarh where  (cod_tarh like $myname_search or tarh_title_farsi like $myname_search or  tarh_title_english like $myname_search) and confirm_tarh ='0' order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+}
+else
+  $query="select * from tarh where confirm_tarh ='0' order by tarh_time desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><b>طرحهاي جديد<b></td>
+ </tr>
+ </table>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+ 
+ <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ 
+ </tr>
+<?
+  if (strcmp($status,"confirm_error")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\"><br>ابتدا به طرح کد بدهيد سپس آنرا تاييد براي بررسي کنيد<br></td>";
+    echo "</tr>";
+  }
+?>
+
+
+ </table>
+<?
+}
+if(mysql_num_rows($result) > 0 )
+{
+ pubshowpages("tarh_list_new.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+    
+    <td width="4%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">چاپ</font></td>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">حذف</font></td>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاييد براي بررسي</font></td>
+    <td width="3%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ويرايش</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">وضعيت طرح</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري اول</font></td>
+    <td width="30%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+  </tr>
+  <?
+
+ $color=$list_color_1;
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+  echo "<tr>";
+  echo "<td width=\"4%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" href=\"print_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/print.gif\" width=\"19\" height=\"19\" alt=\"Print\" ></a></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=tarh_list_new.phtml&admin=$admin&seed=$seed&action=delete_tarh&delete_id=".$row_fetched["cod_tarh"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a</td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"tarh_list_new.phtml?admin=$admin&seed=$seed&action=confirm_tarh&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/tick-mark.gif\" width=\"11\" height=\"13\" alt=\"Confirm\" ></a></td>";
+  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a href=\"sabt_tarh_second.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\"><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+  
+  $editable=1;
+  $mytarh_type = $row_fetched["vaziat"];
+  if($row_fetched["vaziat"]=="0")
+    $mystatus="نامعلوم";
+  else
+  {
+    $query="select * from vaziat_tarh where vaziat='$mytarh_type'";
+    $result_tarhtype=mysql_query($query) or die("Error in selectiong data from tarhtype");
+    $row_fetched_tarh=mysql_fetch_array($result_tarhtype);
+    $mystatus=$row_fetched_tarh["vaziat_desc"];
+    if($row_fetched_tarh["view_or_no"]=="1")
+       $editable=0;
+    else
+       $editable=1;
+  }
+  
+  
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  //$myquery_mojri = "SELECT  * FROM tarh, mojri_tarh, mojri WHERE mojri_tarh.cod_tarh = tarh.cod_tarh AND mojri.mojri_code=mojri_tarh.mojri_code and tarh.cod_tarh = '$cod_tarh'  ORDER  BY mojri.mojri_code";
+  $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$mystatus."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >". $farsistartdate."</a></td>";
+ 
+  if(mysql_num_rows($myresult_mojri) > 0 )
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"first_mojri_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$First_mojri_name."</a></td>";
+  else
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri_name."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$row_fetched["tarh_title_farsi"]."</a></td>";
+
+  $cod_tarh=$row_fetched["cod_tarh"];
+
+  if( strcmp(trim($cod_tarh_user),"0")!=0 )
+     echo "<td width=\"20%\" bgcolor=$color align=\"right\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"sabt_cod_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >".$cod_tarh."</a></td>";
+     
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".طرح ارسال شده  جديدي يافت نشد","red");
+}
+echo "</form>";
+
+footer_forms($admin,$seed);
+
+
+?>

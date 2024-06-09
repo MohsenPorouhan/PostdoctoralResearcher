@@ -1,0 +1,93 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if( isset($action) )
+
+{
+   $query="update tarh set payanname_nomre='$payanname_nomre' where cod_tarh= '$cod_tarh' and version='-1'";
+
+   $result=mysql_query($query) or die ("Error in updating tarh");
+   //message_show(".تغيير کلمه عبور با موفقيت انجام شد","green");
+ //  footer_forms($admin,$seed);
+ //  exit();
+  	?>
+           	<script language="javascript">
+           window.location="<? echo "finished.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script>
+           	<?
+
+ }
+
+
+   $query="select * from  tarh  where cod_tarh= '$cod_tarh'";
+   $result=mysql_query($query) or die ("Error in updating tarh");
+   $row_fetched=mysql_fetch_array($result);
+   $payanname_nomre=$row_fetched["payanname_nomre"];
+
+?>
+
+<br>
+<br>
+<form name="user_login" action="<? echo "$PHP_SELF?action=change&admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>" method="post">
+
+  <table cellSpacing="0" cellPadding="0" width="400" border="0">
+   <tbody>
+
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="260" height="19"></td>
+                        <td align="middle" width="140" background="image/chg_pass.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="400" height="80" bgColor="#eee7f8" border="0">
+    <tbody>
+      <?
+      if (strcmp($status,"entry_error")==0)
+      {
+        echo "<tr>";
+        echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">موارد ستاره دار را به طور کامل پر کنيد</td>";
+        echo "</tr>";
+      }
+      ?>
+      <tr>
+        <td align="right" width="350"><input type="text" class="edit-tarh-type" value='<? echo $payanname_nomre;?>' name="payanname_nomre" size="20"></td>
+        <td class="tahoma1" width="150">نمره پايان نامه</td>
+      </tr>
+
+
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit" value="ثبت" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<br>
+<?
+  footer_forms($admin,$seed);
+?>

@@ -1,0 +1,124 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/class.phpmailer.php");
+include("include/mailserver-statistics.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"change_status")==0)
+  {
+    $query="update tarh_old_desc  set   maghale_darad_nadarad  ='$maghale_darad_nadarad ' where cod_tarh='$cod_tarh'";
+    
+    mysql_query($query) or die("Error in updating tarh type in tarh");
+     $action="تغيير نوع طرح"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+       ?>
+           <script language="javascript">
+           window.location="<? echo "old_tarhs.phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+    
+  }
+
+}
+
+?>
+
+<? echo "<form name=\"change_status\" method=\"post\" action=\"$PHP_SELF?action=change_status&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+ <TABLE cellSpacing=0 width="100%" cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+     <TD align=middle width="100%" align="right" class="tahoma1" height=19>تغيير نوع طرح
+      </TD>
+      
+  </TR>
+  </TBODY>
+  </TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+
+  <tr>
+    <td width="350" align="right">
+              <tr>	
+                            <?  
+							$q="select * from tarh_old_desc  where cod_tarh='$cod_tarh'";
+                            $rss=mysql_query($q) or die("error");
+                            if(mysql_num_rows($rss)>0)
+                             {
+							   $rff=mysql_fetch_array($rss);
+							  $maghale_Desc= trim($rf["maghale_darad_nadarad"]);
+
+							 }  
+							 else
+							 {
+							   $maghale_Desc="";
+							 }   
+  							?>					
+						<td width="80%"  align='right' dir='rtl'><select size="1"    name="maghale_darad_nadarad" class="edit-user" dir="rtl">
+                   
+                    <?
+                        if(strcmp(trim($maghale_Desc),"مقاله ندارد")==0)
+						  $selected=" selected ";
+                       else
+					      $selected="";
+						?>
+
+     <option <?  echo $selected ; ?> value="مقاله ندارد" class="tahoma1">مقاله ندارد</option>
+
+                        <?
+                        if(strcmp(trim($maghale_Desc),"مقاله دارد")==0)
+						  $selected=" selected ";
+                       else
+					      $selected="";
+						?>
+    <option  <?  echo $selected ; ?> value="مقاله دارد" class="tahoma1">مقاله دارد</option>
+
+                        <?
+                        if(strcmp(trim($maghale_Desc),"نياز ندارد")==0)
+						  $selected=" selected ";
+                       else
+					      $selected="";
+						?>
+
+       <option <?  echo $selected ; ?> value="نياز ندارد" class="tahoma1">نياز ندارد</option>
+                     </select>
+                       
+ 						</td>
+                        <td width="20%" class="tahoma1" bgcolor='#f6f6f6'>
+							<label for="name">
+								آيا طرح مقاله دارد ؟
+							</label>
+						</td>
+					</tr>
+    
+      
+   </tr>
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+ 
+<?
+
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

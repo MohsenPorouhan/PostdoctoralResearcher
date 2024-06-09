@@ -1,0 +1,160 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+if(!isset($version))
+  $version="-1";
+
+echo "<br>";
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' and tarh.version='$version' ";
+  
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+
+  $query_savabet_system="select * from savabetsystem";
+   $savabet_system=mysql_query($query_savabet_system) or die("Error in selectiong data from query_savabet_system");
+   if(mysql_num_rows($savabet_system) > 0 )
+   {
+     $tarhtype_second = mysql_fetch_array($savabet_system);
+     $tarh_type_1 = $tarhtype_second["tarh_type_1"];
+     $tarh_type_2 = $tarhtype_second["tarh_type_2"];
+   }
+   else
+   {
+     $tarh_type_1 = "";
+     $tarh_type_2 = "";
+   }
+
+
+   $query="select * from tarh where cod_tarh='$cod_tarh' and tarh.version='$version' ";
+   $result=mysql_query($query) or die("Error in selecting data from karshenas elmi");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+?>
+    <TABLE cellSpacing=0 width="98%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo "عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?
+    echo "<br>";
+    echo "<table border=\"0\" width=\"98%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+    $color="PALETURQUOISE";
+    $row_fetched=mysql_fetch_array($result);
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["tarh_title_farsi"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">عنوان طرح</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["tarh_title_english"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">(عنوان طرح (انگليسي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["kelidvajeh"])."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">کليد واژه ها</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["line"])."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">لاين تحقيقاتي</td>";
+    echo "</tr>";
+
+    $daneshkade=$row_fetched["cod_daneshkade"];
+	$myq="select * from daneshkade where cod_daneshkade='$daneshkade'";
+	$myres=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_daneshkade = mysql_fetch_array($myres);
+	$daneshkade_name=$row_fetched_daneshkade["daneshkade_name"];    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$daneshkade_name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">دانشکده / مرکز هدف</td>";
+    echo "</tr>";
+    
+    $cod_group=$row_fetched["cod_group"];
+	$myq="select * from group_daneshkade where cod_group='$cod_group'";
+	
+	$myres=mysql_query($myq) or die("Error in selecting daneshkade");
+	$row_fetched_group = mysql_fetch_array($myres);
+	$group_name=$row_fetched_group["group_name"];    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$group_name."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">گروه هدف</td>";
+    echo "</tr>";
+
+	if($row_fetched["tarh_type"]< 10 )
+	  $tarh_type_code =trim($row_fetched["tarh_type"]);
+	else
+	  $tarh_type_code=$row_fetched["tarh_type"];
+    $query="select * from tarhtype where tarh_type='".$tarh_type_code."'";
+    
+    $myresult = mysql_query($query);
+    $my_fetch_array = mysql_fetch_array($myresult);
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نوع طرح</td>";
+    echo "</tr>";
+
+    $query="select * from tarhtype_1 where tarh_type='".$row_fetched["tarh_type_1"]."'";
+    $myresult = mysql_query($query);
+    $my_fetch_array = mysql_fetch_array($myresult);
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">نوع مطالعه</td>";
+    echo "</tr>";
+
+    $query="select * from tarhtype_2 where tarh_type='".$row_fetched["tarh_type_2"]."'";
+    $myresult = mysql_query($query);
+    $my_fetch_array = mysql_fetch_array($myresult);
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$my_fetch_array["tarh_type_desc"]."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">$tarh_type_1</td>";
+	echo "</tr>";
+  
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["zarorat"])."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">ضرورت اجراي طرح به اختصار</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["ahdaf"])."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">اهداف کلي و اختصاصي</td>";
+    echo "</tr>";
+
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["soalat"])."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">سوالات پژوهشي و فرضيات</td>";
+    echo "</tr>";
+    
+    echo "<tr>";
+    echo "<td width=\"60%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".nl2br($row_fetched["shive_ejra"])."</td>";
+    echo "<td width=\"40%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\">روش اجرا و شيوه هاي تحليل</td>";
+    echo "</tr>";
+    
+    echo "</table>";
+   }
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

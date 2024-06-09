@@ -1,0 +1,199 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+ include("include/styles.phtml");
+
+echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />";
+
+echo "<br>";
+
+$query="select * from modir_daneshkade where modir_username='$admin'";
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+
+if(strcmp($row_fetched["modir_type"],'4') ==0 )
+  $modir_caution=" 1 ";
+else
+  $modir_caution='1';  
+  
+if ( ! isset($tarh_type))
+    $tarh_type = '-1';
+ 
+if(strcmp($tarh_type,'-1')!=0 )
+{
+	$tarh_type_caution="tarh.tarh_type = '$tarh_type'";
+}
+else
+   $tarh_type_caution=1;
+  
+if(!isset($ascdescfield))
+  $ascdescfield="cod_tarh";
+
+if(!isset($ascdesc))
+  $ascdesc="desc";
+  
+
+if ( ! isset($current))
+    $current = 1;
+
+
+
+if ( ! isset($cod_daneshkade))
+    $cod_daneshkade = '-1';
+
+if(strcmp($cod_daneshkade,'-1')!=0 )
+{
+	$daneshkade_caution="cod_daneshkade = '$cod_daneshkade'";
+}
+else
+   $daneshkade_caution=1;
+   
+$cod_daneshkade_new=$cod_daneshkade;
+if(strcmp($tarh_year,'-1')!=0 )
+{
+	$year_caution="cod_tarh like \"$tarh_year".'%'."\"";
+}
+else
+   $year_caution=1;
+  
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+
+ if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+ 
+  $query="select * from tarh  where tarh.finalized ='0' and  indoing='1'         and version='-1' and ready_gharardad='1' group by cod_tarh order by tarh_time desc";
+
+ 
+
+$result=mysql_query($query) or die("Error in selecting data from tarh1");
+$reccount = mysql_num_rows($result);
+
+
+ 
+  $query="select * from tarh  where tarh.finalized ='0'  and indoing='1'       and version='-1'  group by cod_tarh order by tarh_time desc" ;
+
+
+
+$result=mysql_query($query) or die("Error in selecting data from tarh2");
+ //echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ 
+if(mysql_num_rows($result) > 0 )
+{
+	
+ $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade";
+ $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc&tarh_type=$tarh_type";
+ if(isset($name_e))
+   $myascdescpub=$myascdescpub."&name_e=$name_e";
+ //pubshowpages("in_doing.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%","#66CCFF");
+?>
+
+<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+  <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طھط§ط±غŒط® طھطµظˆغŒط¨</font></td>  
+     
+   <td bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ط¯ط§ظ†ط´ع©ط¯ظ‡ /ظ…ط±ع©ط²</font></td>  
+        
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طھط§ط±ظٹط® ط§ط±ط³ط§ظ„</font></td>
+   <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ط§غŒظ…غŒظ„</font></td>
+ 
+   <td  bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ظ†ط§ظ… ط®ط§ظ†ظˆط§ط¯ع¯غŒ</font></td>
+ 
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ظ†ط§ظ…</font></td>
+   <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black"> ط¹ظ†ظˆط§ظ† ظپط§ط±ط³ظٹ </font></td>
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black"> ع©ط¯ ط·ط±ط­ </font></td>
+  </tr>
+  <?
+
+ $color=$list_color_1;
+ 
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  $position_tarh_code=current_position($cod_tarh);
+   $ttype_2=$row_fetched["tarh_type_2"];
+  $color_line="black";
+  
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  $myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq);
+  $myrf=mysql_fetch_array($myres);
+  $daneshkade=$myrf["daneshkade_name"];
+  $startdate = $row_fetched["tarh_time"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+  $farsistartdate = enum2fnum($farsistartdate);
+  $q="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+  $rs_time=mysql_query($q) or die("error");
+  if(mysql_num_rows($rs_time) > 0 )
+  {
+	  $rf_time=mysql_fetch_array($rs_time);
+	  $submit_time=$rf_time["start_time"];
+  }
+  else
+  $submit_time="";
+  echo "<tr>";
+  
+  
+    echo "<td  bgcolor=$color align=\"center\" class=\"tahoma1\"> <font color=$color_line>".$submit_time."</font> </td>";
+
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"> <font color=$color_line>".$daneshkade."</font> </td>";
+  
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"> <font color=$color_line>".$farsistartdate."</font> </td>";
+ // $myquery_mojri = "SELECT  * FROM tarh, mojri_tarh, mojri WHERE mojri_tarh.cod_tarh = tarh.cod_tarh AND mojri.mojri_code=mojri_tarh.mojri_code and tarh.cod_tarh = '$cod_tarh' ORDER  BY mojri.mojri_code";
+  //$myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+	$email=$First_mojri["creator"];
+  }
+  else
+    $First_mojri_name = "ط§ط·ظ„ط§ط¹ط§طھ ظ…ظˆط¬ظˆط¯ ظ†ظٹط³طھ";
+	
+     echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$email."</td>";
+
+	      echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri["family"]."</td>";
+     echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri["name"]."</td>";
+
+  echo "<td  bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\"> ".$row_fetched["tarh_title_farsi"]." </td>";
+  echo "<td   bgcolor=$color align=\"right\" class=\"tahoma1\"> ".$row_fetched["cod_tarh"]." </td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+ 
+
+?>

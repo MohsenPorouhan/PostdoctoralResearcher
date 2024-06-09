@@ -1,0 +1,72 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+//$karshenasi_koll_1=mablagh_karshenasi($cod_tarh);
+
+echo "<br>";
+$query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+$result=mysql_query($query) or die("Error");
+$my_rf=mysql_fetch_array($result);
+$tarh_name=$my_rf["tarh_name"];
+
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=send_indoing&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+   
+     $query="select * from gozaresh_gharardad where  cod_tarh='$cod_tarh' order by marhale asc";
+     $result=mysql_query($query) or die("Error");
+	 
+     echo "<table border=\"0\" width=\"90%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+     echo "<tr>";
+     echo "<td align=\"center\" colspan='5'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$tarh_name</b></td>";   
+     echo "</tr>";
+     
+     $color="PALETURQUOISE";
+     
+     echo "<tr>";
+       echo "<td align=\"center\" colspan='5'  width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مشاهده گزارش</b></td>";
+     echo "</tr>";
+     
+     echo "<tr>";
+      
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مشاهده</b></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>مرحله</b></td>";   
+     echo "</tr>";
+     
+     while($row_fetched=mysql_fetch_array($result))
+     {
+     $id=$row_fetched["id"];	
+     $marhale=$row_fetched["marhale"];	
+     $marhale_txt=$marhale;
+     if(strcmp($marhale,"0")==0)
+       $marhale_txt="1";
+     if(strcmp($marhale,"100")==0)
+       $marhale_txt="نهايي"; 
+        $myq="select * from marhale_report where cod_tarh='$cod_tarh' and marhale='$marhale' ";
+     $res=mysql_query($myq) or die("Error");
+     if(mysql_num_rows($res) > 0)
+       $report_string="<b>"." مشاهده گزارش "."-"."  فايل گزارش ارسال شده  "."</b>";	   	     
+     else
+       $report_string="فايل گزارش ارسال نشده";
+     echo "<tr>";
+      $q="select * from tarh_indoing where cod_tarh='$cod_tarh' and marhale='$marhale' and submitted='1'";
+     $rs=mysql_query($q) or die('Error');
+     if(mysql_num_rows($rs) > 0)
+       $marhale_pardakht="<b>".'پرداخت شده'."</b>";
+     else
+	   $marhale_pardakht='پرداخت نشده';  
+     echo "<tr>";
+     if(strcmp($marhale,'100')==0)
+	 echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"> <a href='final_report_view.phtml?admin=$admin&seed=$seed&marhale=$marhale&cod_tarh=$cod_tarh'>$report_string</a> </td>";
+	 else
+     echo "<td align=\"center\"   width=\"20%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><a href='view_marhale_report.phtml?admin=$admin&seed=$seed&marhale=$marhale&cod_tarh=$cod_tarh'>$report_string</a></td>";
+     echo "<td align=\"center\"   width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>$marhale_txt</b></td>";
+     echo "</tr>";
+     }
+     echo "</table>";
+  
+  echo "</form>"; 
+   
+footer_forms($admin,$seed);
+?>
+

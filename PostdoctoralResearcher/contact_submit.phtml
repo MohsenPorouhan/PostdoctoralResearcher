@@ -1,0 +1,128 @@
+<?
+$title="Feedback";
+include("include/include.phtml");
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+include("soap-email/send_email.php");
+  
+require("include/mailserver-statistics.phtml");
+
+
+  session_start();
+	if ($_POST['code']==$_SESSION['key'])
+	 {
+		$cod_error = 1;
+	} else {
+		$cod_error = 0;
+	}
+	
+ if(strcmp($cod_error,'1')==0)
+ {	
+	
+
+$url=$HTTP_REFERER;
+//echo "-->$url";
+if(!strstr($url,$domain_name))
+ {
+ echo "<br><br><br><br><center><h1>You are not allowed to use this!!! :D</h1></center>";
+ exit();
+ }
+   if(getenv("HTTP_X_FORWARDED_FOR"))
+      $ip=getenv("HTTP_X_FORWARDED_FOR");
+   else
+      $ip=getenv("REMOTE_ADDR");
+
+/*   if( !strstr(getenv("REMOTE_ADDR"),"80.191.144.0"))
+    {
+     echo "<br><br><br><br><br><br><br><h1>You are not Autorized to do this!!!</h1>";
+     exit();
+    }*/
+?>
+<?
+$linevar = ereg_replace("<br>","n",$linevar); 
+
+//$date = date("l, F dS, Y - h:i:s A"); 
+
+//  include("include/class.phpmailer.php");
+
+  $subject = "Your Username & password in $url_address (Do not reply this email)";
+  $subject="Feedback for research";
+ 	    $emailbody=nl2br($body);
+
+ 	   // $send_email=send_email($subject,$emailbody,$email_username,$email_contact_email,$name,$email,$email_password);    
+
+
+	$mail = new PHPMailer();
+	$mail->IsSMTP();                                      // set mailer to use SMTP
+    $mail->SMTPAuth=$smtpauth;
+    $mail->Username=$email_username;
+    $mail->Password=$email_password;
+    $mail->Host = $mailserver_host;  // specify main and backup server
+       $mail1->CharSet = 'UTF-8'; 
+	$mail->ContentType = 'text/html';
+   //$name=iconv("windows-1256", "UTF-8", $name);
+   //$name = str_replace ( "&#1740", "ي", $name );
+   //$name = str_replace ( "&#1740;", "ي", $name );
+   
+	
+	$mail->From = $email;
+	$mail->FromName = $name;
+	$mail->AddAddress($email_contact_email ,$email_contact_name );
+	$mail->AddAddress($email_contact_email1 ,$email_contact_name1 );
+	$mail->AddAddress($email_contact_email2 ,$email_contact_name2 );
+	$mail->AddAddress($email_contact_email3 ,$email_contact_name3 );
+	$mail->IsHTML(true);                    
+
+	$subject="Pajooheshyar Feedback";
+	$mail->Subject = $subject;
+	$body=nl2br($body);
+	// $subject=iconv("utf-8", "windows-1256", $subject);
+	//$body=iconv("utf-8", "windows-1256", $body);
+	//$body=iconv("windows-1256", "UTF-8",$body);
+	//$body = str_replace ( "&#1740", "ي", $body );
+	//$body = str_replace ( "&#1740;", "ي", $body );
+	$mail->Body = $body;
+      //  mail($email_contact_email,$subject,$body,$header);
+	if(!$mail->Send())
+          $status="mail_err";
+
+          
+    $mail1 = new PHPMailer();
+	$mail1->IsSMTP();                                      // set mailer to use SMTP
+    $mail1->SMTPAuth=$smtpauth;
+    $mail1->Username=$email_username;
+    $mail1->Password=$email_password;
+    $mail1->Host = $mailserver_host;  // specify main and backup server
+      $mail->host = $mailserver_host;
+	$mail1->From = $email_from;
+	$mail1->FromName = $email_from_name;
+	$mail1->AddAddress($email ,$name );
+	
+	$mail1->IsHTML(true);                    
+   // $subject=iconv("utf-8", "windows-1256", $subject);
+	//$body=iconv("utf-8", "windows-1256", $body);
+	$subject="pajooheshyar Feedback";
+	$mail1->Subject = $subject;
+	$body="<b>Dear User<b> <br> Thanks for sending your feedback to us.<br> <b>Regards</b>  ";
+	$mail1->Body = $body;
+      //  mail($email_contact_email,$subject,$body,$header);
+	if(!$mail1->Send()){
+          $status="mail_err";
+          $masage="اشکال در ارسال ايميل. لطفا مجددا تلاش کنيد";
+	}
+	else{
+		$masage="پيام شما دريافت شد.";
+	}
+      
+	?>
+	
+	<?
+ }
+ else 
+ {
+	$masage="کد امنيتي صحيح وارد نشده";
+ }
+?>
+           <script language="javascript">
+           window.location="<? echo "feedback.phtml?masage=$masage";  ?>";
+           </script>

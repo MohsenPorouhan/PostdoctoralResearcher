@@ -1,0 +1,783 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+?>
+ <link id="select2" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+ <link id="select2-metronic" rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+ <link id="DT_bootstrap" rel="stylesheet" href="../assets/plugins/data-tables/DT_bootstrap_rtl.css"/>
+   <!--  <link href="../assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet" />-->
+  <!--  <link href="../assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet" />-->
+  <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.colVis.css" rel="stylesheet" />
+  <link href="../assets/advanced-datatable/extensions/TableTools/css/dataTables.tableTools.css" rel="stylesheet" />
+  <link href="../assets/plugins/persian-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+
+<?php
+$menu_id="2";
+$sub_menu_id="1";
+include("include/new_menu.php");
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                               در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                      <h3 class="page-title">
+                            <small id="page-title">عنوان طرح :</small>
+                            <small><? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="navigator-home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="send-edit" href="tarh_list.phtml">
+                                    ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="etebar_sazmanha" href="sazmanhayedigar.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    اعتبار از سازمان هاي ديگر
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="caption-grid" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                               
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?php  $active_id="12"; include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                       <div class="portlet box blue">
+											<div class="portlet-title">
+												<div id="caption_title" class="caption">
+													<i class="fa fa-reorder"></i>اعتبار از سازمان هاي ديگر
+												</div>
+												<div class="tools">
+													<a href="javascript:;" class="collapse">
+													</a>
+												    <a href="#portlet-config" data-toggle="modal"
+													class="fa fa-info-circle" title="راهنما"
+													style="color: white"></a>
+												</div>
+											</div>
+											<div class="portlet-body form-horizontal">
+											
+												<!-- BEGIN FORM-->
+												<form name="sazmanhayedigar_form" id="sazmanhayedigar_form" action="sazmanhayedigar_serverside.php?action=sabt" method="POST" class="form-horizontal">
+												<input id="cod_tarh" name="cod_tarh" type="hidden" class="form-control"  value="<?php echo $cod_tarh;?>">
+												<input id="id" name="id" type="hidden" class="form-control" >
+												
+													<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                  <div class="modal-header bg-blue">
+							                                        <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                       <h4 id="modal_title" class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                            ثبت اعتبار از سازمان هاي ديگر
+							                                        </h4>
+							                                     </div>
+							                                    <div class="modal-body">
+							                                    
+							                                   		<div class="form-body">
+																		 <div  id="alert_danger" class="alert alert-danger display-hide">
+																			<button class="close" data-close="alert"></button>
+																			پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+																		 </div>
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="label1" class="control-label col-md-5">نام موسسه
+																						<span class="required">
+																							 *
+																						</span>
+																						</label>
+																						
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																									<i class="fa"></i>
+																								<input id="eatebare_sazmanha_organ" name="eatebare_sazmanha_organ" type="text" class="form-control input-sm  input-small" placeholder="" tabindex="1">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="label2" class="control-label col-md-5">شماره نامه ابلاغ اعتبار </label>
+																						<div class="col-md-7">
+																							<input name="letter_number" id="letter_number" type="text" class="form-control input-sm  input-small" placeholder="" tabindex="2">
+																						</div>
+																					</div>
+																				</div>
+																				
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			<div class="row">
+																				<div class="col-md-6">
+																					 <div class='form-group'>
+												                                        <label id="label3" class='control-label col-md-5'>تاريخ نامه:</label>
+												                                          
+												                                        	<div class="col-md-7">
+												                                        		<input type="text" id="datepicker0" name="letter_date" class="form-control input-sm  input-small" tabindex="3"/>
+												                                         	</div>
+												                                     </div>
+																				</div>
+																				<!--/span-->
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="label4" class="control-label col-md-5">مبلغ
+																						<span class="required">
+																							 *
+																						</span>
+																						</label>
+																						
+																						<div class="col-md-7">
+																							<div class="input-icon right">
+																									<i class="fa"></i>
+																								<input name="eatebare_sazmanha_value" id="eatebare_sazmanha_value" type="text" class="form-control input-sm  input-small" placeholder="" tabindex="4">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				
+																				<!--/span-->
+																			</div>
+																			<!--/row-->
+																			<div class="row">
+																			
+																			<!--/span-->
+																				
+																				<div class="col-md-6">
+																					<div class="form-group">
+																						<label id="label5" class="control-label col-md-5">نحوه پرداخت
+																						<span class="required">
+																							 *
+																						</span>
+																						</label>
+																						
+																						<div id="payment" class="col-md-7">
+																						<!--<div class="input-icon right">
+																									<i class="fa"></i>  -->	
+																								<select  name="eatebare_sazmanha_pardakht" id="eatebare_sazmanha_pardakht" class="select2 form-control input-sm  input-small" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="5">
+																									<option value="">انتخاب کنيد</option>
+																								    <option value="0">اعتبار توسط مجري دريافت مي شود</option>
+																								    <option value="1">اعتبار به دانشگاه پرداخت ميشود تا از طريق قرارداد به مجري پرداخت شود</option>
+																								   																							        
+																								</select>
+																						<!--	</div>  -->
+																						</div>
+																					</div>
+																				</div>
+																				<!--/span--> 
+																																								
+																			</div>
+																			
+																		
+																			
+																		</div>
+																																			
+																	<!-- END FORM-->
+																								                                     
+							                                    </div>
+							                                      <div class="modal-footer">
+							                                        <button type="submit"  id="btn1" class="btn green input-sm  input-small" tabindex="6">ذخيره</button>
+																	<button type="button"  id="btn2" class="btn red input-sm  input-small" data-dismiss="modal"><i class="fa fa-times" tabindex="7"></i>انصراف</button>
+							                                    </div>
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+							                      
+							                      <div class="modal fade " id="delete"  tabindex="-1" role="basic" aria-hidden="true">
+							                            <div class="modal-dialog">
+							                                <div class="modal-content">
+							                                    <div class="modal-header">
+							                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							                                        <h4 class="modal-title">
+							                                            <i class="fa fa-file-o"></i>
+							                                       
+							                                        </h4>
+							                                    </div>
+							                                    <div class="modal-body">
+							                                        <!-- BEGIN FORM-->
+																	
+																		<div class="form-body">
+																			<h4 id="delete_q" class="form-section">آيا از حذف اين آيتم اطمينان داريد؟</h4>
+																		</div>
+																		<div class="form-actions fluid">
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="col-md-offset-3 col-md-9">
+																						<button id="delete_yes" type="submit"  class="btn green">بلي</button>
+																						<button id="delete_no" type="button" class="btn red" data-dismiss="modal" ><i class="fa fa-times"></i>خير</button>
+																					</div>
+																				</div>
+																				<div class="col-md-6">
+																				</div>
+																			</div>
+																		</div>
+																	
+																	<!-- END FORM-->
+							                                    </div>
+							                                    
+							                                </div>
+							                                <!-- /.modal-content -->
+							                            </div>
+							                            <!-- /.modal-dialog -->
+							                      </div>
+						                     </form>
+						                        <a id="title_basic"  class="btn blue btn-sm pull-left" data-toggle="modal" href="#basic">
+						                           ثبت اعتبار از سازمان هاي ديگر
+						                        </a>
+												<!-- END FORM-->
+												<table class="table table-striped table-bordered table-hover" id="sample_1">
+				                                    <thead>
+				                                        <tr>
+				                                            <th id="th1">
+				                                                نام موسسه
+				                                            </th>
+				                                            <th id="th2">
+				                                                شماره نامه ابلاغ اعتبار
+				                                            </th>
+				                                            <th id="th3" class="">
+				                                                تاريخ نامه
+				                                            </th>
+				                                            <th id="th4" class="">
+				                                                مبلغ
+				                                            </th>
+				                                            <th id="th5" class="">
+				                                            	نحوه پرداخت
+				                                            </th>
+				                                            <th id="th6" class="">
+				                                                ويرايش
+				                                            </th>
+				                                            <th id="th7" class="">
+				                                                حذف
+				                                            </th>
+				                                            <th class="hidden">
+				                                                حذف
+				                                            </th>
+				                                        </tr>
+				                                    </thead>
+				                                   
+			                                	</table>
+											</div>
+										</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script type="text/javascript">
+
+
+if(language=="en")
+{ 
+	document.getElementById("page-title").textContent="Project Title :";
+	document.getElementById("navigator-home").textContent="Home";
+	document.getElementById("send-edit").textContent="Send / Edit Project";
+	document.getElementById("etebar_sazmanha").textContent="Budget from other organizations";
+	document.getElementById("caption_title").textContent="Budget from other organizations";
+	document.getElementById("title_basic").textContent="Budget Registration";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("fa-angle2").className="fa fa-angle-right";
+	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-magic'></i> Wizard";
+	document.getElementById("modal_title").innerHTML="<i class='fa fa-file-o'></i>Budget from other organizations";
+	document.getElementById("delete_q").textContent="Are you sure to delete?";
+	document.getElementById("delete_yes").textContent="Yes";
+	document.getElementById("delete_no").textContent="No";
+	document.getElementById("alert_danger").innerHTML="<button class='close' data-close='alert'></button> Fill required fields";
+	document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+	document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+	document.getElementById("select2").href="../assets/plugins/select2/select2.css";
+
+	document.getElementById("label1").innerHTML="Organization Name <span class='required'>*</span>";
+	document.getElementById("label2").textContent="Issued Letter Number";
+	document.getElementById("label3").textContent="Date of the letter";
+	document.getElementById("label4").innerHTML="Amount <span class='required'>*</span>";
+	document.getElementById("label5").innerHTML="Method of Remittance  <span class='required'>*</span>";
+	document.getElementById("payment").innerHTML="<select  name='eatebare_sazmanha_pardakht' id='eatebare_sazmanha_pardakht' class='select2 form-control input-sm  input-small' data-placeholder='يک دسته بندي انتخاب کنيد' tabindex='5'><option value=''>--Select--</option><option value='0'>The budget will be received by the supervisor</option><option value='1'>The budget will be initially received by Tums and then will be given to the supervisor</option></select>";
+	
+	document.getElementById("btn1").textContent="Save";
+	document.getElementById("btn2").textContent="Cancel";
+	
+	document.getElementById("th1").textContent="Organization Name";
+	document.getElementById("th2").textContent="Issued Letter Number";
+	document.getElementById("th3").textContent="Date of the letter";
+	document.getElementById("th4").textContent="Amount";
+	document.getElementById("th5").textContent="Method of Remittance";
+	document.getElementById("th6").textContent="Edit";
+	document.getElementById("th7").textContent="Delete";
+
+	
+}
+
+</script>
+<?php 
+include("../include/primary_js.phtml");
+?>
+
+	
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../assets/advanced-datatable/media2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/data-tables/DT_bootstrap.js"></script> 
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.colVis.js"></script>
+	<script type="text/javascript" language="javascript" src="../assets/advanced-datatable/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="../assets/scripts/core/app.js"></script>
+	<script src="../assets/scripts/custom/form-samples.js"></script>
+	<script src="../assets/persian-datepicker/jquery.ui.datepicker-cc.all.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function () {
+        // حالت پيشفرض
+        $('#datepicker0').datepicker({
+            dateFormat: 'yy/mm/dd'
+            	
+
+        });
+
+        //-----------------------------------
+    });
+    </script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+	<script>
+	jQuery(document).ready(function() {    
+	   // initiate layout and plugins
+	 //  App.init();
+	   //FormSamples.init();
+	   //$(".").select2();
+		 $('body').addClass(" page-sidebar-closed");
+	});
+	</script>
+	
+	
+	<!-- END JAVASCRIPTS -->
+	<script>
+	function fixControlPosition(){
+		//ja be jayi btn haye table tools (print,copy,....)
+							$(".DTTT_button_collection,.DTTT_button_csv,.DTTT_button_xls,.DTTT_button_print,.DTTT_button_copy,.ColVis_Button").addClass("btn blue btn-sm");
+							$(".DTTT_container").insertBefore(".dataTables_wrapper");
+							$('#sample_1_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+							$('#sample_1_wrapper .dataTables_length select').addClass("form-control input-small"); // modify table per page dropdown
+							$('#sample_1_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+							$("#sample_1_filter").append('<div class="clearfix" > </div>');//firefox problem
+		}
+	$("#sazmanhayedigar_form").submit(function(e)
+			{
+		 var form2 = $('#sazmanhayedigar_form');
+         var error2 = $('.alert-danger', form2);
+         var success2 = $('.alert-success', form2);
+
+         form2.validate({
+             errorElement: 'span', //default input error message container
+             errorClass: 'help-block', // default input error message class
+             focusInvalid: false, // do not focus the last invalid input
+             ignore: "",
+             rules:{
+        	 				eatebare_sazmanha_organ:{
+	  	                  required:true
+	  	                  },
+		  	                eatebare_sazmanha_value:{
+			  	                number: true,
+	  	                  		required:true
+	  			          },
+		  			        eatebare_sazmanha_pardakht:{
+	  		                  required:true
+	  				      }
+	  				    
+	  	              },
+		  	            messages:{
+		  	            			eatebare_sazmanha_organ:{
+			  	                  required:"پر کردن اين فيلد الزامي مي باشد"
+			  	            	  },
+				  	            	eatebare_sazmanha_value:{
+				  	            		number: "لطفا عدد وارد نماييد.",
+			  	                  		required:"پر کردن اين فيلد الزامي مي باشد"
+			  	    		          },
+				  	    		    eatebare_sazmanha_pardakht:{
+			  	                  required:"پر کردن اين فيلد الزامي مي باشد"
+			  	    		          }
+			      		          
+			  	              },
+	  	              
+
+             invalidHandler: function (event, validator) { //display error alert on form submit              
+	                    success2.hide();
+	                    error2.show();
+	                    App.scrollTo(error2, -200);
+             },
+
+             errorPlacement: function (error, element) { // render error placement for each input type
+                 var icon = $(element).parent('.input-icon').children('i');
+                 icon.removeClass('fa-check').addClass("fa-warning");  
+                 icon.attr("data-original-title", error.text()).tooltip();
+             },
+
+             highlight: function (element) { // hightlight error inputs
+                 $(element)
+                     .closest('.form-group').addClass('has-error'); // set error class to the control group   
+             },
+
+             unhighlight: function (element) { // revert the change done by hightlight
+                 
+             },
+
+             success: function (label, element) {
+                 var icon = $(element).parent('.input-icon').children('i');
+                 $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                 icon.removeClass("fa-warning").addClass("fa-check");
+             },
+
+             submitHandler: function (form) {
+                 success2.show();
+                 error2.hide();
+             }
+         });
+		//dicision for edit or add
+		debugger;
+				var formURL;
+				var postData = $(this).serializeArray();
+				if(jadvZar_IsNew=="insert")		
+					 formURL = $(this).attr("action");
+				else if(jadvZar_IsNew=="edit")		
+					formURL="sazmanhayedigar_serverside.php?action=edit";
+				else if(jadvZar_IsNew=="delete")		
+					formURL="sazmanhayedigar_serverside.php?action=delete";
+
+				if($("#sazmanhayedigar_form").valid() || (jadvZar_IsNew=="delete"))
+				{
+				    $(".green").attr("disabled","disabled");
+				$.ajax(
+				{
+					url : formURL,
+					type: "POST",
+					data : postData,
+					success:function(data, textStatus, jqXHR) 
+					{
+
+					if(data=="exist"){
+						$("#sazmanhayedigar_i").switchClass( "fa-times", "fa-check", 1000, "easeInOutQuad" );
+						}
+					else if(data=="notexist"){
+						
+						$("#sazmanhayedigar_i").switchClass( "fa-check", "fa-times", 1000, "easeInOutQuad" );
+						}
+					//alert(data);
+					jadvZar_IsNew="insert";
+					$("#basic").modal('hide');
+					$("#delete").modal('hide');
+					$("#sazmanhayedigar_form")[0].reset();
+					//Begin of reset form validation 
+				    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+				    $(".input-icon .fa-check").switchClass("fa-check","fa");
+				    $(".alert-danger").hide();
+				    $('.form-group').removeClass('has-error');
+				    $('.form-group').removeClass('has-success');
+				    //End of reset form validation
+					
+				    	//debugger;
+				            var uniSelect = $("#uniSelect");
+				            var temp = $("#temp");
+				            uniSelect.appendTo(temp);
+				    		
+				            $("#sample_1").DataTable().destroy();
+							show_dataTable();
+				        
+					},
+					error: function(jqXHR, textStatus, errorThrown) 
+					{
+					}
+				}).always( $(".green").removeAttr("disabled","disabled"));
+			}
+			    e.preventDefault();	//STOP default action
+			  //  $("#jadval_zarayeb_form").submit(); //SUBMIT FORM
+			});
+				
+	
+	 </script>
+	 <script>
+
+	 var buttonText;
+	 var sButtonText;
+	 var info;
+	 if(language=="en"){
+			buttonText="Visibel Columns";
+			sButtonText="Print";
+			sButtonText2="Save";
+			info="view _START_ to _END_ from _TOTAL_ items";
+			sLengthMenu="View Content _MENU_";
+			sZeroRecords="Not Found";
+			sInfoEmpty="Empty";
+			sInfoFiltered="(Filtered From _MAX_ Items)";
+			sSearch="Search";
+			sFirst="First";
+			sPrevious="Previous";
+			sNext="Next";
+			sLast="Last";
+			
+			
+		}
+		else
+		{
+			buttonText="ستون هاي قابل نمايش";
+			sButtonText="چاپ";
+			sButtonText2="ذخيره";
+			info="نمايش _START_ تا _END_ از مجموع _TOTAL_ مورد";
+			sLengthMenu="نمايش محتويات _MENU_";
+			sZeroRecords="موردي يافت نشد";
+			sInfoEmpty="تهي";
+			sInfoFiltered="(فيلتر شده از مجموع _MAX_ مورد)";
+			sSearch="جستجو";
+			sFirst="ابتدا";
+			sPrevious="قبلي";
+			sNext="بعدي";
+			sLast="انتها";
+			
+		}
+		
+	 $(document).ready(function() {
+		    var detailRows = [];
+		show_dataTable();
+
+	 });
+	
+	function show_dataTable()
+	{
+	    var dt;				
+		
+	    dt = $('#sample_1').DataTable({
+			"dom": 'CT<"clearfix">lfrtip',
+	        "tableTools": {
+	            "sRowSelect": "os",
+				 "aButtons": [
+	               
+					{
+	                    "sExtends": "print",
+	                    "sButtonText": sButtonText
+	                },
+	                
+	                {
+	                    "sExtends":    "collection",
+	                    "sButtonText": sButtonText2,
+	                    "aButtons":    [ 
+											"csv", 
+											"xls"
+										]
+		                }
+		            ],
+		            
+					"sSwfPath": "../assets/advanced-datatable/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+		        },
+		        "fnInitComplete": function(oSettings, json) {
+					
+					fixControlPosition();
+					
+	                },
+		        "fnDrawCallback": function(oSettings) {
+		            var trs = $("#sample_1 tr");
+		            for (var i = 1; i < trs.length; i++) {
+
+		                var rowId = ($(trs[i]).attr('id'));
+		                $("#" + rowId + " td:last-child").trigger('click');
+
+		            }
+		            $('.edit_buttun').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                //var idx = $.inArray(tr.attr('id'), detailRows);
+		                $('#eatebare_sazmanha_organ')[0].value = row.data().eatebare_sazmanha_organ;
+		                $('#letter_number')[0].value = row.data().letter_number;
+		                $('#id')[0].value = row.data().id;
+		                $('#datepicker0')[0].value = row.data().letter_date;
+		                $('#eatebare_sazmanha_value')[0].value = row.data().eatebare_sazmanha_value;
+
+		                if(language=='en'){
+		                	if(row.data().eatebare_sazmanha_pardakht=='The budget will be received by the supervisor'){
+			                	$('#eatebare_sazmanha_pardakht option[value="0"]').attr("selected", "selected");
+			                }else if(row.data().eatebare_sazmanha_pardakht=='The budget will be initially received by Tums and then will be given to the supervisor'){
+			                	$('#eatebare_sazmanha_pardakht option[value="1"]').attr("selected", "selected");
+			                }
+			                else
+			                {
+			                	$('#eatebare_sazmanha_pardakht option[value=""]').attr("selected", "selected") ;
+			                }
+		                }
+		                else{
+			                if(row.data().eatebare_sazmanha_pardakht=='اعتبار توسط مجري دريافت مي شود'){
+			                	$('#eatebare_sazmanha_pardakht option[value="0"]').attr("selected", "selected");
+			                }else if(row.data().eatebare_sazmanha_pardakht=='اعتبار به دانشگاه پرداخت ميشود تا از طريق قرارداد به مجري پرداخت شود'){
+			                	$('#eatebare_sazmanha_pardakht option[value="1"]').attr("selected", "selected");
+			                }
+			                else
+			                {
+			                	$('#eatebare_sazmanha_pardakht option[value=""]').attr("selected", "selected") ;
+			                }
+		                }
+		              //  $('#naghsh_var')[0].value=row.data().naghsh_var;
+		                jadvZar_IsNew="edit";
+		                $("#basic").modal('show');
+//		                if (row.child.isShown()) {
+//		                    tr.removeClass('details');
+//		                    row.child.hide();
+//
+//		                    // Remove from the 'open' array
+//		                    detailRows.splice(idx, 1);
+//		                } else {
+//		                    tr.addClass('details');
+//		                    row.child(format(row.data())).show();
+//
+//		                    // Add to the 'open' array
+//		                    if (idx === -1) {
+//		                        detailRows.push(tr.attr('id'));
+//		                    }
+//		                }
+		            });
+		            $('.delete_buttun').on('click', function() {
+		                debugger;
+		                var tr = $(this).closest('tr');
+		                var row = dt.row(tr);
+		                $('#id')[0].value = row.data().id;
+		                
+		                jadvZar_IsNew="delete";
+		                $("#delete").modal('show');
+	                
+		            });
+		        },
+		        "colVis": {
+		        	"buttonText": buttonText,
+			       exclude:[7]
+		       },
+		        
+		       "paging": true,
+               'bPaginate': true,
+               "pagingType": "full_numbers",
+               "processing": true,
+               "serverSide": true,
+               "bDestroy": true,
+               "bAutoWidth": false,
+				"language": {
+           		
+                   "sProcessing": "<img src='image/ajax-loader-white.gif'>",
+                   "sLengthMenu": sLengthMenu,
+                   "sZeroRecords": sZeroRecords,
+                   "info": info,
+                   "sInfoEmpty": sInfoEmpty,
+                   "sInfoFiltered": sInfoFiltered,
+                   "sInfoPostFix": "",
+                   "sSearch": sSearch,
+                   "sUrl": "",
+                   "oPaginate" : {
+                       "sFirst": sFirst,
+                       "sPrevious": sPrevious,
+                       "sNext": sNext,
+                       "sLast": sLast
+                    }
+                },
+		        "sAjaxSource": "sazmanhayedigar_serverside.php?admin=<?php echo $admin;?>&seed=<?php echo $seed;?>&cod_tarh=<?php echo $cod_tarh;?>&action=sazmanhayedigar_list" ,
+		        "aoColumns": [
+		            { "data": "eatebare_sazmanha_organ" },
+				    { "data": "letter_number" },
+	                { "data": "letter_date" },
+	                { "data": "eatebare_sazmanha_value" },
+	                { "data": "eatebare_sazmanha_pardakht" },
+			        { "data": "edit", "bSortable": false  },
+				    { "data": "delete", "bSortable": false },
+				    { "data": "id","sClass": "hidden"}
+		        ]
+
+		    });
+	}
+	
+		var jadvZar_IsNew="insert";
+
+		$('#basic').on('hidden.bs.modal', function () {
+		   // debugger;
+		    jadvZar_IsNew="insert";
+		    $("#sazmanhayedigar_form")[0].reset();
+		    $('#eatebare_sazmanha_pardakht').prop('selectedIndex',"");
+			//Begin of reset form validation 
+		    $(".input-icon .fa-warning").switchClass("fa-warning","fa");
+		    $(".input-icon .fa-check").switchClass("fa-check","fa");
+		    $(".alert-danger").hide();
+		    $('.form-group').removeClass('has-error');
+		    $('.form-group').removeClass('has-success');
+		    //End of reset form validation
+		});
+		$('#delete').on('hidden.bs.modal', function () {
+			   // debugger;
+			    jadvZar_IsNew="insert";
+			    $("#sazmanhayedigar_form")[0].reset();
+			    $('#eatebare_sazmanha_pardakht').prop('selectedIndex',"");
+			});
+			 
+	 </script>
+
+<?php
+footer_forms($admin,$seed);
+?>
+

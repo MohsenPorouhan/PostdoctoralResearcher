@@ -1,0 +1,46 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/vars.inc.phtml");
+include("include/styles.phtml");
+
+$query="select * from savabetsystem";
+$rs=mysql_query($query) or die("error");
+
+$rf=mysql_fetch_array($rs);
+$subadmin_comment=$rf["subadmin_comment"];
+?>
+<script>
+function change_target()
+{
+ <?
+
+ echo "window.location=\"jalase_shora.phtml?admin=$admin&seed=$seed\";";
+ 
+ ?>
+}
+</script> 
+<style>
+<!--
+ p.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	text-align:right;
+	direction:rtl;
+	unicode-bidi:embed;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0cm; margin-right:0cm; margin-top:0cm}
+-->
+</style>
+</head>
+
+<body>
+<br><br>
+<p class="MsoNormal" dir="RTL"><span lang="FA" style="font-family: Zar"> <? echo nl2br($subadmin_comment); ?></p>
+<p class="MsoNormal" dir="RTL"><span dir="LTR">&nbsp;</span></p>
+<center> <input type="button"   value="شروع تعريف صورتجلسه " name="finish"  onclick="change_target()"> </center>
+<?
+  footer_forms($admin,$seed);
+?>

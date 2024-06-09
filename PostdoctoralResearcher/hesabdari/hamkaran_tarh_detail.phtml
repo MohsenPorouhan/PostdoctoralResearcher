@@ -1,0 +1,76 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+  $query="select * from hamkaran , hamkar_tarh where hamkaran.hamkar_code = hamkar_tarh.hamkar_code and hamkar_tarh.cod_tarh=\"$cod_tarh\"   order by  family ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hamkaran tarh");
+   if(mysql_num_rows($result) > 0)
+   {
+    echo "<br>";
+
+
+    ?>
+    <table border="0" width="90%" cellpadding="1" cellspacing="1">
+    <tr>
+    <td width="100%"   colspan="5">
+      <p align="center" class="verdana1"><font color="black">همکاران طرح</font></td>
+    </tr>
+
+	<tr>
+    <td width="3%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">پست الکترونيکي</font></td>
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">فکس</font></td>
+    <td width="10%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">تلفن</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="35%" bgcolor="#66CCFF">
+      <p align="center" class="tahoma1"><font color="black">نام</font></td>
+    </tr>
+  <?
+
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+
+  echo "<tr>";
+    echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["email"]."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["fax"]."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["telno"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["family"]."</td>";
+  echo "<td width=\"30%\" bgcolor=$color align=\"right\" class=\"tahoma1\">".$row_fetched["name"]."</td>";
+  echo "</tr>";
+ /* if (strcmp($color,"#DADADA")==0)
+    $color="#EFEFEF";
+  else
+    $color="#DADADA";*/
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+
+
+
+
+?>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><a style="text-decoration:none" href="view_tarh_form.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+</tr>
+
+</table>
+<?
+footer_forms($admin,$seed);
+?>
+

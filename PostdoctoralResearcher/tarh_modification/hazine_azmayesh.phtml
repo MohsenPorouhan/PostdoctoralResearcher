@@ -1,0 +1,334 @@
+<script type="text/javascript">
+<!--
+
+function addEvent()
+{
+var ni = document.getElementById('myDiv');
+var numi = document.getElementById('theValue');
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "my"+num+"Div";
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+newdiv.innerHTML = "<table border=\"0\" width=\"100%\" bgcolor=\"#EEE7F8\"   cellspacing=\"0\" cellpadding=\"0\"  bordercolor=\"#333333\" style=\"border-style: solid; border-width: 0; \">"+
+  "<tr>"+  
+ 
+       "<td width=\"10%\" align=\"right\"><input type=\"text\"  onkeyup=\"MakingMoneyForm(this)\"  name=\"hazine_har_bar"+num+"\" size=\"20\" value=\"\" class=\"edit-small-2\" ></td>"+
+   "<td width=\"20%\" class=\"tahoma1\"><span class=\"star-message\">*</span>هزينه براي هر دفعه</td>"+
+   
+   
+   "<td width=\"10%\" align=\"right\"><input type=\"text\" onkeyup=\"MakingMoneyForm(this)\" name=\"azmayesh_cnt"+num+"\" size=\"20\" value=\"\" class=\"edit-small-2\" ></td>"+
+    "<td width=\"20%\" class=\"tahoma1\" ><span class=\"star-message\">*</span>تعداد آزمايش</td>"+  
+
+     "<td width=\"10%\" align=\"right\">"+
+    "<select size=\"1\" name=\"azmayesh_center"+num+"\" class=\"edit-small-2\" dir=\"rtl\">"+
+    "<option value=\"-1\" class=\"tahoma1\">انتخاب کنيد</option>"+
+    "<option value=\"1\" class=\"tahoma1\">خصوصي</option>"+
+    "<option value=\"2\" class=\"tahoma1\">داخل دانشگاه</option>"+
+    "<option value=\"3\" class=\"tahoma1\">دولتي خارج دانشگاه</option>"+
+	"</select></td>"+
+   "<td width=\"20%\" class=\"tahoma1\" ><span class=\"star-message\">*</span>محل انجام آزمايش</td>"+  
+     "<td width=\"10%\" align=\"right\"><input type=\"text\" name=\"mozoa_azmayesh"+num+"\" size=\"20\" value=\"\" class=\"edit-small-2\" dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>"+
+    "<td width=\"20%\" class=\"tahoma1\"><span class=\"star-message\">*</span>نوع آزمايش</td>"+  
+ 
+ "</tr>"+  
+"</table>"+
+"<a class=\"tahoma0\" href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\')\">حذف</a></tr>";
+ni.appendChild(newdiv);
+}
+
+function removeEvent(divNum)
+{
+var d = document.getElementById('myDiv');
+var olddiv = document.getElementById(divNum);
+d.removeChild(olddiv);
+}
+
+//-->
+</script>
+<?
+echo "<br>";
+
+$admin_edit=0;
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+   
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"];
+ 
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='8'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}
+
+
+if(isset($action))
+{
+  if (strcmp($action,"add_hazine_azmayesh")==0)
+  {
+
+
+  	
+  	
+  	for($i=0;$i<100;$i++)
+    {
+     $mozoa="mozoa_azmayesh".$i;     
+	 $centr="azmayesh_center".$i;
+	 $count="azmayesh_cnt".$i;
+	 $har_bar="hazine_har_bar".$i;
+	 
+     
+     
+    
+     if(strlen(trim($$mozoa)) > 0  && strlen(trim($$centr)) > 0 && strlen(trim($$count)) > 0 && strlen(trim($$har_bar)) > 0  )
+     {
+     	$mozoa_azmayesh=$$mozoa;
+     	$azmayesh_center=$$centr;
+     	$azmayesh_cnt=$$count;
+     	$hazine_har_bar=$$har_bar;
+     	
+     	$azmayesh_cnt=str_replace(",","",$azmayesh_cnt);
+      	$hazine_har_bar=str_replace(",","",$hazine_har_bar);
+      	//$persons=str_replace(",","",$persons);
+     	 
+     	
+     	$query  = "insert into hazine_azmayesh set mozoa_azmayesh=\"$mozoa_azmayesh\",azmayesh_center=\"$azmayesh_center\" , azmayesh_cnt=\"$azmayesh_cnt\",hazine_har_bar=\"$hazine_har_bar\",cod_tarh=\"$cod_tarh\"";
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        $action=" ثبت هزينه آزماِشات  براي طرح با کد ".$cod_tarh."<br> با عنوان ".$mozoa_azmayesh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+        $query  = "insert into hazine_safar set manzoor_mosaferat=\"$manzoor_mosaferat\", target=\"$target\",dafe_safar=\"$dafe_safar\", vasile=\"$vasile\",persons_cnt=\"$persons_cnt\",hazine=\"$hazine\",cod_tarh=\"$cod_tarh\"";
+	
+	
+        
+      }
+     else
+       $status="entry_error";
+    }
+  	/*
+  	if(strlen(trim($mozoa_azmayesh)) > 0 && strlen(trim($azmayesh_center)) > 0 && strlen(trim($azmayesh_cnt)) > 0 && strlen(trim($hazine_har_bar)) > 0  )
+     {
+      $query="select * from hazine_azmayesh where  mozoa_azmayesh=\"$mozoa_azmayesh\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+      $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+      if ( mysql_num_rows($result) <= 0 )
+      {
+        $query  = "insert into hazine_azmayesh set mozoa_azmayesh=\"$mozoa_azmayesh\",azmayesh_center=\"$azmayesh_center\" , azmayesh_cnt=\"$azmayesh_cnt\",hazine_har_bar=\"$hazine_har_bar\",cod_tarh=\"$cod_tarh\"";
+        $result = mysql_query($query) or die("Error in inserting data into jadval zarayeb");
+        $action=" ثبت هزينه آزماِشات  براي طرح با کد ".$cod_tarh."<br> با عنوان ".$mozoa_azmayesh;
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+
+      }
+      else
+       {
+        $status="duplicate_entry";
+       }
+     }
+     else
+       $status="entry_error";
+       */
+  }
+ if (strcmp($action,"delete_hazine_azmayesh")==0)
+ {
+    $query="delete from hazine_azmayesh where cod_azmayesh = \"$delete_id\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+
+    $result=mysql_query($query) or die("Error in  delete data from hazine azmayesh");
+    $action=" حذف هزينه آزماِشات  براي طرح با کد ".$cod_tarh;
+    set_log($action,$admin,date("Y-m-d, g:i a"));
+
+ }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_hazine_azmayesh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="100%" cellspacing="0" cellpadding="0" >
+
+<tr>
+<TD align=left width="10%"   height=19>
+     <a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+  <TD width="90%"  align="right" class="tahoma1" height=19>
+      هزينه آزمايشات و خدمات تخصصي
+      
+</td>
+</tr>
+
+
+  
+</TABLE>
+
+<table border="0" width="100%" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="0"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"8\">کليه هزينه ها به ريال ميباشد</td>";
+    echo "</tr>";
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"8\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"8\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+   <tr>
+    <td width="100%"  colspan='2' class="tahoma1" align="middle"><b>مجري محترم ، در وارد کردن کليه هزينه هاي طرح خود از اعداد بدون جدا کننده (, - / ) استفاده کنيد <br></b></td>
+  </tr> 
+
+  <tr>
+  
+  
+  
+   <td width="10%" align="right"><input type="text" tabindex="4" onkeyup="MakingMoneyForm(this)"  name="hazine_har_bar0" size="20" value="" class="edit-small-2" ></td>
+   <td width="20%" class="tahoma1"><span class="star-message">*</span>هزينه براي هر دفعه</td>
+   
+   
+   
+       <td width="10%" align="right"><input type="text" tabindex="3" onkeyup="MakingMoneyForm(this)" name="azmayesh_cnt0" size="20" value="" class="edit-small-2" ></td>
+    <td width="20%" class="tahoma1" ><span class="star-message">*</span>تعداد آزمايش</td>
+  
+   
+    <td width="10%" align="right">
+    <select size="1" name="azmayesh_center0" tabindex="2" class="edit-small-2" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <option value="1" class="tahoma1">خصوصي</option>
+    <option value="2" class="tahoma1">داخل دانشگاه</option>
+    <option value="3" class="tahoma1">دولتي خارج دانشگاه</option>
+	</select></td>
+    <td width="20%" class="tahoma1" ><span class="star-message">*</span>محل انجام آزمايش</td>
+  
+
+   
+    <td width="10%" align="right"><input type="text" tabindex="1" name="mozoa_azmayesh0" size="20" value="" class="edit-small-2" dir=RTL   ></td>
+    <td width="20%" class="tahoma1"><span class="star-message">*</span>نوع آزمايش</td>
+  
+ </tr>
+<?
+
+   echo "<tr>";
+     echo "<td width=\"100%\" colspan=\"8\" class=\"tahoma0\" align=\"left\">";
+     echo "<input type=\"hidden\" value=\"0\" id=\"theValue\" /><a href=\"javascript:;\" onclick=\"addEvent();\" class=\"tahoma1\">اضافه کردن</a>";
+     echo "<div id=\"myDiv\">";
+     echo "</div>";
+     echo "</td>";
+     echo "</tr>";
+     ?>
+  <tr>
+    <td width="100%" colspan="8">
+      <p align="center"><input type="submit" tabindex="5" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+
+
+  <?
+   $query="select * from  hazine_azmayesh where cod_tarh=\"$cod_tarh\"  and version='-1' order by mozoa_azmayesh ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"100%\" >";
+     echo "<tr>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">ويرايش</td>";
+     echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">جمع</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">هزينه هر دفعه</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">تعداد آزمايش</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma1\">محل انجام</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">نوع آزمايش</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       $cod_azmayesh=$row_fetched["cod_azmayesh"];
+//       echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_azmayesh.phtml&admin=$admin&seed=$seed&action=delete_hazine_azmayesh&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_azmayesh"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       echo "<td ><p align=\"center\"><a href=\"edit_hazine_azmayesh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh&cod_azmayesh=$cod_azmayesh\" ><img border=\"0\" src=\"image/button_edit.png\" width=\"11\" height=\"13\" alt=\"Edit\" ></a></td>";
+       $my_summary = $row_fetched["azmayesh_cnt"]*$row_fetched["hazine_har_bar"];
+       $mycount=$mycount+$my_summary;
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".number_format($my_summary)."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".number_format($row_fetched["hazine_har_bar"])."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".number_format($row_fetched["azmayesh_cnt"])."</td>";
+
+       if (strcmp($row_fetched["azmayesh_center"],'1')==0)
+        $mahall_azmayesh="خصوصي";
+       if (strcmp($row_fetched["azmayesh_center"],'2')==0)
+        $mahall_azmayesh="داخل دانشگاه";
+	   if (strcmp($row_fetched["azmayesh_center"],'3')==0)
+        $mahall_azmayesh="دولتي خارج دانشگاه"; 
+       echo "<td align=\"center\"  class=\"tahoma1\">".$mahall_azmayesh."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["mozoa_azmayesh"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">".number_format($mycount)."</td>";
+      echo "<td align=\"right\" colspan=\"5\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+?>
+

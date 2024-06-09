@@ -1,0 +1,28 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   
+      $query="select * from tarh where cod_tarh='$cod_tarh' ";
+
+      $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+      
+      if ( mysql_num_rows($result) >0   )
+      {
+    	  $query="update karshenasan_tarh set  finished='0' where cod_tarh='$cod_tarh' and cod_karshenas='$cod_karshenas'  ";
+	 //echo $query;	
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+       
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		
+      }
+    
+  }
+}
+
+?>

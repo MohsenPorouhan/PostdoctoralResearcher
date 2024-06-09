@@ -1,0 +1,136 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms();
+?>
+
+<?php
+include("include/new_menu.php");
+$query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+$result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+$row_fetched=mysql_fetch_array($result);
+$tarh_name = $row_fetched["tarh_title_farsi"];
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">Modal title</h4>
+                            </div>
+                            <div class="modal-body">
+                                Widget settings form goes here
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn blue">Save changes</button>
+                                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                         <h3 class="page-title">
+                            <small id="page-title">عنوان طرح : </small>
+                            <small><? echo $tarh_name;?></small>
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="navigator-home"  href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="send-edit" href="tarh_list.phtml">
+                                   ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="edit-tarh" href="sabt_tarh_second.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    ويرايش طرح
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="caption-grid"  class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                               
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                
+                                    <?php 
+                                    $active_id="0";
+                                    include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <div class="note note-info">
+                                        <p id="txt1">طرح شما براي ويرايش باز ميباشد</p>
+                                        <p id="txt2">براي ويرايش هر قسمت از منو سمت راست صفحه مربوطه را باز کنيد</p>
+                                        <p id="txt3">منوهايي که قابل انتخاب کردن نباشند توسط مديريت براي ويرايش باز نشده اند</p>
+                                    </div>
+</div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script>
+if(language=="en")
+	{
+	document.getElementById("page-title").textContent="Research Title :";
+	document.getElementById("navigator-home").textContent="Home";
+	document.getElementById("send-edit").textContent="Send / Edit Research";
+	document.getElementById("edit-tarh").textContent="Edit Research";
+	document.getElementById("fa-angle").className="fa fa-angle-right";
+	document.getElementById("fa-angle2").className="fa fa-angle-right";
+	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-magic'></i> Wizard";
+	document.getElementById("txt1").textContent="Your research proposal is already editable";
+	document.getElementById("txt2").textContent="For editing each part open the related page from the left side menu";
+	document.getElementById("txt3").textContent="You are not allowed to edit disabled parts by the administrator";
+	}
+
+
+</script>
+
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+
+<?php
+footer_forms($admin,$seed);
+?>
+  <script src="assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="assets/scripts/custom/login-soft.js" type="text/javascript"></script>

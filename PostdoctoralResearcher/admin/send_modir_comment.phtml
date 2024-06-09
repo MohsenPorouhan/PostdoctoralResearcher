@@ -1,0 +1,140 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+ $query="select * from tarh where cod_tarh='$cod_tarh'  ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  
+  		  $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+		  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+		  $row_fetched_gharardad=mysql_fetch_array($result);
+		  
+		 // $modir_confirm=$row_fetched_gharardad["modir_confirm"];
+	     // $modir_comment=$row_fetched_gharardad["modir_comment"];
+		   if(mysql_num_rows($result) > 0)
+		   {
+  
+  if(isset($action))
+{
+  if (strcmp($action,"finish")==0)
+  {
+   	if(isset($modir_confirm)){
+
+   		$year_date = date("Y") - 1921 ;
+  	   $date = $year."-".$month."-".$day; 
+		  
+  	   	  
+       
+		  $query="update control_gharardad_tarh  set  modir_confirm='$modir_confirm',modir_comment='$modir_comment' where cod_tarh='$cod_tarh'";
+		echo $query;
+	      $result=mysql_query($query) or die("Error in inserting data into tarh #100");
+	      
+	     //$modir_confirm="";
+	    // $modir_comment="";
+	     
+	      
+	      
+          $action="ويرايش کنترل قرارداد طرح با کد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+          // savelog("$admin","add","Add a control_gharardad");
+          
+           //message_show("فرم کنترل قرارداد مربوط به اين طرح ويرايش شد","green");
+		          
+           //footer_forms($admin,$seed);
+          // exit();
+        if(strcmp($modir_confirm,'0')==0){
+           ?>
+        	<script language="javascript">
+           window.location="<? echo "tarh_list_new_after_submit.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script>  
+           <?
+         }
+         else {
+          ?>
+      	   <script language="javascript">
+           window.location="<? echo "send_new_gharardad.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+           </script> 
+           <?
+        }
+
+       // }
+       //  else
+       //   $status="duplicate_entry";
+    }
+  else
+     $status="entry_error";
+  }
+
+}
+?>
+
+   <TABLE cellSpacing=0 width="60%"  cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+    <TR>
+
+      <TD align=center class="tahoma1"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+    </TR>
+
+  </table>
+<?  
+ $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+		  $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+		  $row_fetched_gharardad=mysql_fetch_array($result);
+		  
+		  $modir_confirm=$row_fetched_gharardad["modir_confirm"];
+	      $modir_comment=$row_fetched_gharardad["modir_comment"];
+	      
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=finish&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&unarch=$unarch\">"; ?>
+
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+ 
+ <tr>
+ 	<td width="50%" align="center" class="tahoma1"  >
+	    <input type="radio" value="2"  name="modir_confirm" <? if(strcmp($modir_confirm,"2")==0) echo "checked"  ;?> > تاييد مشروط
+     </td>
+    
+    <td width="50%" align="center" class="tahoma1" >
+	     <input type="radio" value="1"  name="modir_confirm" <? if(strcmp($modir_confirm,"1")==0) echo "checked"  ;?> >تاييد
+     </td>
+     
+      <td width="50%" align="center" class="tahoma1"  >
+	    <input type="radio" value="0"  name="modir_confirm" <? if(strcmp($modir_confirm,"0")==0) echo "checked"  ;?> >  رد
+     </td>
+   
+	     
+ </tr>
+
+   <tr>
+    <td width="80%" align="center" colspan='3'><textarea   rows="7"  name="modir_comment"  class="edit-user"  dir=RTL   ><? echo $modir_comment;?></textarea></td>
+    <td width="20%" class="tahoma1" valign="top">نظر مدير</td>
+  </tr>
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table> 
+<?
+}
+else
+message_show("براي اين طرح فرم کنترل قرارداد ثبت نشده است","green");
+footer_forms($admin,$seed);
+?>

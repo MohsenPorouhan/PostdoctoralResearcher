@@ -1,0 +1,145 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+if ( ! isset($current))
+    $current = 1;
+
+$RecPerPage=12;
+$query="select * from group_karshenasan   where 1 order by karshenas_name desc ";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+
+
+$query="select * from group_karshenasan   where karshenas_type='1' order by karshenas_name desc "." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+ 
+$result=mysql_query($query) or die("Error in selecting data from tarh 2"); 
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><br><b>گزارش فعاليت کارشناسان ستادي<b></td>
+ </tr>
+ </table>
+ 
+<?
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+
+
+}
+if(mysql_num_rows($result) > 0 )
+{
+// $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade";	
+// $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc";
+ //pubshowpages("group_karshenasan_activity.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي خاتمه يافته</font></td>
+   <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي رد شده</font></td>
+  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي بايگاني شده</font></td>
+   
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي در حال اجرا</font></td>
+   
+  <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي آماده به قرارداد</font></td>   
+   	<td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي کارشناسي شده</font></td>
+  
+  
+   	<td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">طرح هاي در حال کارشناسي</font></td>
+   
+	<td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تعداد طرحهاي ارجاع شده  مدير گروه کارشناسي</font></td>
+   
+    <td width="60%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کارشناس</font></td>  
+  
+    </tr>
+  <?
+
+ $color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $creator=	$row_fetched["username"];
+  $cod_karshenas=$row_fetched["cod_karshenas"];	
+  
+   $myq="select * from tarh,group_karshenasan_tarh where  group_karshenasan_tarh.tarh_new='1' and  group_karshenasan_tarh.finished='0' and group_karshenasan_tarh.cod_karshenas='$cod_karshenas'  and tarh.cod_tarh=group_karshenasan_tarh.cod_tarh     and tarh.version='-1'  group by tarh.cod_tarh  order by tarh.cod_tarh desc";
+    $res=mysql_query($myq) or die("Error4");
+  $tarh_new=mysql_num_rows($res);
+ 
+    
+ // $myq="select * from group_karshenasan_tarh,tarh where tarh.cod_tarh=group_karshenasan_tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas' group by tarh.cod_tarh";
+ // $res=mysql_query($myq) or die("Error1");
+//  $erja_be_group_karshenas=mysql_num_rows($res);
+   
+   
+  $myq="select * from group_karshenasan_tarh,tarh where  tarh.ready_gharardad='1'  and tarh.version='-1' and tarh.indoing='0' and tarh.finalized ='0' and group_karshenasan_tarh.cod_tarh=tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas' group by tarh.cod_tarh";
+  $res=mysql_query($myq) or die("Error2");
+  $amade_be_gharardad=mysql_num_rows($res);
+ 
+  $myq="select * from group_karshenasan_tarh,tarh where tarh.indoing='1' and tarh.finalized ='1' and group_karshenasan_tarh.cod_tarh=tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas'  group by tarh.cod_tarh";
+  $res=mysql_query($myq) or die("Error3");
+  $finished=mysql_num_rows($res);
+ 
+  $myq="select * from group_karshenasan_tarh,tarh where tarh.indoing='1' and tarh.finalized ='0' and group_karshenasan_tarh.cod_tarh=tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas'  group by tarh.cod_tarh";
+  $res=mysql_query($myq) or die("Error3");
+  $indoing=mysql_num_rows($res);
+ 
+   
+   $myq="select * from tarh,group_karshenasan_tarh where  group_karshenasan_tarh.tarh_new='0' and  group_karshenasan_tarh.finished='0' and group_karshenasan_tarh.cod_karshenas='$cod_karshenas'  and tarh.cod_tarh=group_karshenasan_tarh.cod_tarh     and tarh.version='-1'  group by tarh.cod_tarh  order by tarh.cod_tarh desc";
+    $res=mysql_query($myq) or die("Error4");
+  $dar_karshenasi=mysql_num_rows($res);
+ 
+   $myq="select * from tarh,group_karshenasan_tarh where  group_karshenasan_tarh.tarh_new='0' and  group_karshenasan_tarh.finished='1' and group_karshenasan_tarh.cod_karshenas='$cod_karshenas'  and tarh.cod_tarh=group_karshenasan_tarh.cod_tarh     and tarh.version='-1'  group by tarh.cod_tarh  order by tarh.cod_tarh desc";
+    $res=mysql_query($myq) or die("Error4");
+  $finish_karshenasi=mysql_num_rows($res);
+  
+   $myq="select * from group_karshenasan_tarh,tarh where  tarh.archieved ='1'  and tarh.version='-1' and tarh.indoing='0' and tarh.finalized ='0' and group_karshenasan_tarh.cod_tarh=tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas' group by tarh.cod_tarh";
+  $res=mysql_query($myq) or die("Error2");
+  $archeved=mysql_num_rows($res);
+  
+   $myq="select * from group_karshenasan_tarh,tarh where  (tarh.vaziat_moaven ='6' or tarh.vaziat_moaven ='14' or tarh.vaziat ='6' or tarh.vaziat ='14')  and tarh.version='-1'  and group_karshenasan_tarh.cod_tarh=tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas' group by tarh.cod_tarh";
+  $res=mysql_query($myq) or die("Error2");
+  $rad_shode=mysql_num_rows($res);
+ 
+
+  $erja_be_group_karshenas=$tarh_new+ $dar_karshenasi+  $finish_karshenasi;
+  echo "<tr>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$finished."</td>";
+
+
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$rad_shode."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$archeved."</td>";
+  
+
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$indoing."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$amade_be_gharardad."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$finish_karshenasi."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$dar_karshenasi."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$erja_be_group_karshenas."</td>";
+  echo "<td width=\"60%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["karshenas_family"]."</td>";
+  echo "</tr>";
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+?>

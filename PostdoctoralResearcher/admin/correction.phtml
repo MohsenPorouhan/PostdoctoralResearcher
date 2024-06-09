@@ -1,0 +1,263 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+ 
+
+$row_fetched=mysql_fetch_array($result);
+$tarh_name=$row_fetched["tarh_title_farsi"];
+
+
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if(  strlen(trim($letter_subject))>0)
+{
+	$mydate=date("Y-m-d");
+	$to_letter=$row_fetched["creator"];
+	$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	$q="select max(id) as max_id from correction where cod_tarh='$cod_tarh'";
+	$r=mysql_query($q);
+	$rf=mysql_fetch_array($r);
+	$max_l_no = $rf["max_id"]+1;
+	$letter_no=$cod_tarh."-".$max_l_no; 
+	
+	$letter_body=str_replace("'","",$letter_body);
+    $letter_body=str_replace("\"","",$letter_body);
+    $letter_body=str_replace(";","",$letter_body);
+
+	$letter_subject=str_replace("'","",$letter_subject);
+    $letter_subject=str_replace("\"","",$letter_subject);
+    $letter_subject=str_replace(";","",$letter_subject);
+ 
+    $query="insert into correction set admin_confirm='1',from_letter='$admin',to_letter='$to_letter',cod_daneshkade='$cod_daneshkade',cod_tarh='$cod_tarh' , letter_no='$letter_no' , letter_subject='$letter_subject' , letter_body='$letter_body' , letter_date='$mydate'";    
+    $result=mysql_query($query) or die("error in inserting data");
+    
+    
+    
+    
+  
+    
+    
+  	
+}
+else
+  $status="entry_error";
+
+if(isset($action))
+ if(strcmp($action,"del")==0)
+ {
+ 	$query="delete from correction where id='$delete_id' ";
+ 	
+ 	$result=mysql_query($query) or die("Error in deleting from correction");
+ }
+
+
+?>
+
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"correction.phtml?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+ 
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+      if (strcmp($status,"mobile_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">شماره تلفن همراه موجود در پروفايل مجري صحيح نيست</td>";
+    echo "</tr>";
+  }
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  
+
+?>
+           <tr>
+              <td colspan="2" align="left">
+                <p align="center" class="tahoma1" dir="rtl"><? echo "ارسال اشکال يا تغيير در نرم افزار"?></td>
+            </tr>
+           <!-- <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="letter_no" size="48" class="edit-user" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>شماره نامه</td>
+            </tr> -->
+            
+           
+ <!-- <tr>
+    <td width="70%" align="right">
+    
+    	   <select size="1" dir="rtl"  name="mojavezyear" class="combo-date">
+          <option selected value="-1">سال</option>
+          <option value="1381">1381</option>
+          <option value="1382">1382</option>
+          <option value="1383">1383</option>
+          <option value="1384">1384</option>
+          <option value="1385">1385</option>
+	  	  <option value="1386">1386</option>
+	      <option value="1387">1387</option>
+	      <option value="1388">1388</option>
+	      <option value="1389">1389</option>
+	      <option value="1390">1390</option>
+
+        </select>
+             <select size="1" dir="rtl"  name="mojavezmon"  class="combo-date">
+         <option selected value="-1">ماه</option>
+          <option value="01">فروردين</option>
+          <option value="02">ارديبهشت</option>
+          <option value="03">خرداد</option>
+          <option value="04">تير</option>
+          <option value="05">مرداد</option>
+          <option value="06">شهريور</option>
+          <option value="07">مهر</option>
+          <option value="08">آبان</option>
+          <option value="09">آذر</option>
+          <option value="10">دي</option>
+          <option value="11">بهمن</option>
+          <option value="12">اسفند</option>
+        </select>
+
+        <select size="1" dir="rtl"  name="mojavezday"  class="combo-date">
+          <option selected value="-1">روز</option>
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+		  <option value="22">22</option>
+		  <option value="23">23</option>
+		  <option value="24">24</option>
+		  <option value="25">25</option>
+		  <option value="26">26</option>
+		  <option value="27">27</option>
+		  <option value="28">28</option>
+		  <option value="29">29</option>
+		  <option value="30">30</option>
+		  <option value="31">31</option>
+        </select>
+ 
+    </td>
+    <td width="30%" class="tahoma1">تاريخ </td>
+  </tr>
+-->
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="letter_subject" size="48" class="edit-user"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>موضوع</td>
+            </tr>
+ <tr>
+    <td width="66%" align="right"><textarea   rows="7"  name="letter_body"  class="edit-user"  dir=RTL   ></textarea></td>
+    <td width="66%" class="tahoma1" valign="top">متن اشکال</td>
+  </tr>
+       
+           
+            <tr>
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+          </table>
+          
+</form>
+       <br>   
+ <?
+ $query="select * from correction where cod_tarh='$cod_tarh' order by id desc";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+	echo "<tr>";
+	echo "<td   align='center' class=\"tahoma1\">حذف</td>";
+ echo "<td   align='center' class=\"tahoma1\">توضيحات</td>";
+ 
+	echo "<td   align='center' class=\"tahoma1\">متن </td>";
+ 	echo "<td   align='center' class=\"tahoma1\">عنوان </td>";
+ 	// "<td   align='center' class=\"tahoma1\">شماره</td>";
+ 	echo "<td   align='center' class=\"tahoma1\">تاريخ</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	 echo "<tr>";
+     $atf_to=$row_fetched["atf_to_letter"];
+	 if(strlen(trim($atf_to)) > 0)	  
+	    $letter_type="پاسخ مجري";	  
+	  else
+	    $letter_type="نامه به مجري";
+	  
+	  $letter_date=$row_fetched["letter_date"];
+	  $letteryear = substr($letter_date,0,4);
+	  $lettermon = substr($letter_date,5,2);
+	  $letterday = substr($letter_date,8,2);
+	  $letterdate=hijricalender( $letteryear , $lettermon , $letterday );  
+	  $letter_date1= enum2fnum($letterdate);
+			   	 
+ 	 echo "<td    align=\"center\" class=\"tahoma1\"><a href=\"#\" onclick='window.open(\"delete_or_apply.phtml?mainwindow=correction.phtml&admin=$admin&seed=$seed&action=delete_tarh&cod_tarh=$cod_tarh&delete_id=".$row_fetched["id"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+ 	 //echo "<td   align='right' class=\"tahoma1\" dir=\"rtl\">".$letter_type."</td>";
+ 	 echo "<td   align='right' class=\"tahoma1\" dir=\"rtl\"><a href='comment_edit_soft.phtml?admin=$admin&seed=$seed&id=$id'>-".$row_fetched["comment_admin"]."-</a></td>";
+ 	 echo "<td   align='right' class=\"tahoma1\" dir=\"rtl\">".$row_fetched["letter_body"]."</td>";
+ 	 echo "<td   align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["letter_subject"]."</td>";
+ 	// echo "<td   align='right' class=\"tahoma1\">".$row_fetched["letter_no"]."</td>";
+ 	 echo "<td   align='center' class=\"tahoma1\">$letter_date1</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ ?>
+  
+
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

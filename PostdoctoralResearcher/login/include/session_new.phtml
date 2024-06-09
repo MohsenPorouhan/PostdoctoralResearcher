@@ -1,0 +1,116 @@
+<?
+
+//-----------------------------------------------------------------------
+
+function startsession_new($admuser,$seed,$usertype,$la,$payan_name)
+{
+	//echo $admuser;
+	
+			session_register('admin');//user id
+			session_register('seed');//user password
+			session_register('logintime');
+			session_register('usertype');
+			session_register('ip');
+			session_register('la');
+			session_register('cod_karshenas');
+			session_register('cod_karshenas_shora');
+			session_register('daneshjoo');
+			
+			
+	$_SESSION["admin"]=$admuser;
+	$_SESSION["seed"]=$seed;
+	$_SESSION["logintime"]=time();
+	$_SESSION["usertype"]=$usertype;
+	$_SESSION["la"]=$la;
+	$_SESSION["daneshjoo"]=$payan_name;
+	
+	if ( getenv("HTTP_X_FORWARDED_FOR"))
+	   $ip = getenv("HTTP_X_FORWARDED_FOR" );
+	else
+	   $ip = getenv("REMOTE_ADDR");
+	
+	$_SESSION["ip"]=$ip;
+	//echo $admuser;
+	//echo $_SESSION["admin"];
+	$query="select * from karshenasan where karshenas_email ='$admuser'";
+	$result=mysql_query($query) or die("Error in selecting data from karshenas_tarh");
+	if(mysql_num_rows($result)>0)
+	{
+		$row_fetched=mysql_fetch_array($result);
+		$cod_karshenas=$row_fetched["cod_karshenas"];
+		$_SESSION["cod_karshenas"]=$cod_karshenas;
+	}
+	else 
+		session_unregister('cod_karshenas');
+		
+	$query="select * from karshenas_shora where kar_shora_email ='$admuser'";
+	$result=mysql_query($query) or die("Error in selecting data from karshenas_tarh");
+	if(mysql_num_rows($result)>0)
+	{
+		$row_fetched=mysql_fetch_array($result);
+		$cod_karshenas=$row_fetched["cod_karshenas"];
+		$_SESSION["cod_karshenas_shora"]=$cod_karshenas;
+	}
+	else 
+		session_unregister('cod_karshenas_shora');
+
+}
+
+//-------------------------------------------------------
+
+function updatesession_new($admuser,$seed)
+{
+
+	$_SESSION["logintime"]=time();
+}
+
+//-------------------------------------------------------
+
+function checksession_new($admuser,$seed)
+{
+
+ if ( getenv("HTTP_X_FORWARDED_FOR"))
+   $ip = getenv("HTTP_X_FORWARDED_FOR" );
+ else
+   $ip = getenv("REMOTE_ADDR");
+	
+   $time=$_SESSION["logintime"];
+   $ip_session=$_SESSION["ip"];
+    if((time() > ($time+2400)) || (strcmp(trim($ip_session) , trim($ip)) <> 0 ))
+       return 0;	
+
+ else
+      return -1;
+
+
+}
+
+//-------------------------------------------------------
+
+function clearsession_new($admuser,$seed)
+{
+ 	@session_start();
+			session_unregister('admin');//user id
+			session_unregister('seed');//user password
+			session_unregister('logintime');
+			session_unregister('usertype');
+			session_unregister('ip');
+}
+
+//-------------------------------------------------------
+
+function randString_new ($pass_len = 50)
+{
+ $allchars = 'abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLNMOPQRSTUVWXYZ0123456789';
+ $string = '';
+ mt_srand ((double) microtime() * 1000000);
+ for ($i = 0; $i < $pass_len; $i++)
+ {
+  $string .= $allchars{mt_rand (0,strlen($allchars))};
+ }
+ return $string;
+}
+
+//-------------------------------------------------------
+
+?>

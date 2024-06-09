@@ -1,0 +1,263 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+    
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+$query="select * from tarh where cod_tarh='$cod_tarh'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+$row_fetched=mysql_fetch_array($result);
+
+?>
+<center>
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD dir="rtl" align=center  class="tahoma1"  height=19  dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$row_fetched["tarh_title_farsi"];
+      ?>
+      </TD>
+  </TR>
+
+</table>
+</center>
+<?
+$query="select * from group_karshenasan_tarh where cod_tarh='$cod_tarh'" ;
+$query="select * from group_karshenasan,group_karshenasan_tarh where cod_tarh='$cod_tarh' and group_karshenasan.cod_karshenas=group_karshenasan_tarh.cod_karshenas and karshenas_type='1' ";
+						  
+
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس در مورد قسمتهاي طرح</font></td>
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کاربري</font></td>
+	<td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام </font></td>
+    
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+ 
+ 
+ $string="";
+ $note_submitted=$row_fetched["note_submitted"];
+ if(strcmp($note_submitted,"1")==0)
+ {
+ 	$cnt=$row_fetched["chekide"];
+ 	$string=$string."  چکيده : ".$table[$cnt];
+ 	$cnt=$row_fetched["sabt"];
+ 	$string=$string."<br>"." ثبت : ".$table[$cnt];
+ 	$cnt=$row_fetched["mojrian"];
+ 	$string=$string."<br>"." مجريان : ".$table[$cnt];
+ 	$cnt=$row_fetched["daneshjoyan"];
+ 	$string=$string."<br>"." دانشجويان : ".$table[$cnt];
+ 	$cnt=$row_fetched["raveshejra"];
+ 	$string=$string."<br>"." روش اجرا : ".$table[$cnt];
+ 	$cnt=$row_fetched["hazineha"];
+ 	$string=$string."<br>"."  هزينه ها : ".$table[$cnt];
+ 	$cnt=$row_fetched["akhlaghi"];
+ 	$string=$string."<br>"." ملاحظات اخلاقي : ".$table[$cnt];
+ 	 $cnt=$row_fetched["zamaem"];
+ 	$string=$string."<br>"." ضمائم : ".$table[$cnt];
+ 	$cnt=$row_fetched["gant"];
+ 	$string=$string."<br>"." جدول زمانبندي : ".$table[$cnt];
+ 	$cnt=$row_fetched["variables"];
+ 	$string=$string."<br>"." جدول متغيرها : ".$table[$cnt];
+	
+ 	
+ }
+ else
+   $string="نظر ايشان ثبت نشده";
+ 
+ 
+  if(strcmp($note_submitted,"1")==0) 
+    $comment_note=$row_fetched["comment_karshenas"];
+  else
+  	$comment_note="نظر ايشان ثبت نشده"; 
+
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"rtl\">".$comment_note."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["username"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  
+
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".نظر ي وجود ندارد","red");
+}
+echo "</form>";
+
+
+$query="select * from karshenasan_tarh where cod_tarh='$cod_tarh'" ;
+$query="select * from karshenasan,karshenasan_tarh where  cod_tarh='$cod_tarh' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas";
+						  
+//echo $query;
+$result=mysql_query($query) or die("Error in selecting data from group_karshenasan_tarh");
+
+
+
+if(mysql_num_rows($result) > 0 )
+{
+	
+ //pubshowpages("tarh_list.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%",$title_color);
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+<tr>
+    <td width="50%" colspan="5" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس در مورد قسمتهاي طرح</font></td>
+  
+  </tr>
+  <tr>
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس در مورد قسمتهاي طرح</font></td>
+    <td width="50%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نظر کارشناس</font></td>
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کاربري</font></td>
+	<td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام خانوادگي</font></td>
+    <td width="20%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام </font></td>
+    
+  </tr>
+  <?
+
+
+ $color=$list_color_1;
+ $table = array();
+ $table[0] = "بدون اشکال";
+ $table[1] = "عدم وجود اطلاعات";
+ $table[2] = "بايد اصلاح شود";
+ $table[3] = "ناقص";
+
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $cod_tarh=$row_fetched["cod_tarh"];
+  echo "<tr>";
+//  echo "<td width=\"3%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><img border=\"0\" src=\"image/e-mail.gif\" width=\"10\" height=\"10\" alt=\"E-mail\" ></td>";
+  if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+   
+ $editable=1;
+ 
+ 
+ $string="";
+ $note_submitted=$row_fetched["refered"];
+ if(strcmp($note_submitted,"1")==0)
+ {
+ 	$cnt=$row_fetched["chekide"];
+ 	$string=$string."  چکيده : ".$table[$cnt];
+ 	$cnt=$row_fetched["sabt"];
+ 	$string=$string."<br>"." ثبت : ".$table[$cnt];
+ 	$cnt=$row_fetched["mojrian"];
+ 	$string=$string."<br>"." مجريان : ".$table[$cnt];
+ 	$cnt=$row_fetched["daneshjoyan"];
+ 	$string=$string."<br>"." دانشجويان : ".$table[$cnt];
+ 	$cnt=$row_fetched["raveshejra"];
+ 	$string=$string."<br>"." روش اجرا : ".$table[$cnt];
+ 	$cnt=$row_fetched["hazineha"];
+ 	$string=$string."<br>"."  هزينه ها : ".$table[$cnt];
+ 	$cnt=$row_fetched["akhlaghi"];
+ 	$string=$string."<br>"." ملاحظات اخلاقي : ".$table[$cnt];
+ 	$cnt=$row_fetched["zamaem"];
+ 	$string=$string."<br>"." ضمائم : ".$table[$cnt];
+ 	$cnt=$row_fetched["gant"];
+ 	$string=$string."<br>"." جدول زمانبندي : ".$table[$cnt];
+ 	$cnt=$row_fetched["variables"];
+ 	$string=$string."<br>"." جدول متغيرها : ".$table[$cnt];
+ }
+ else
+   $string="نظر ايشان ثبت نشده";
+ 
+ 
+  if(strcmp($note_submitted,"1")==0) 
+    $comment_note=$row_fetched["comment_karshenas"];
+  else
+  	$comment_note="نظر ايشان ثبت نشده"; 
+
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\" dir=\"ltr\">".$string."</td>";
+  
+  echo "<td width=\"50%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$comment_note."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\">".$row_fetched["username"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_family"]."</td>";
+  echo "<td width=\"20%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."</td>";
+  
+
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".نظر ي وجود ندارد","red");
+}
+
+footer_forms($admin,$seed);
+
+
+?>
+

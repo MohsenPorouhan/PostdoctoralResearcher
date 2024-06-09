@@ -1,0 +1,411 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+global $HTTP_GET_VARS,$HTTP_POST_VARS;
+while(list($key, $value) = each($HTTP_GET_VARS))
+$$key = $value;
+
+while(list($key, $value) = each($HTTP_POST_VARS))
+$$key = $value;
+
+
+ if(!isset($admin))
+  $admin="";
+ if(!isset($seed))
+  $seed="";
+ if(isset($admin) && isset($seed))
+ {
+  $type = checksession($admin,$seed);
+  
+  if( $type == 1 )
+    updatesession($username,$rand);
+  else
+  {
+   header ("Refresh: 0; url=index.phtml");
+   exit();
+  }
+ }
+ echo "<META http-equiv=content-type content=text/html;charset=utf-8>";
+ 
+?>
+
+
+<br>
+       <?
+      
+     $query="select * from gozaresh_gharardad where  cod_tarh='$cod_tarh'  ";
+     $result1=mysql_query($query) or die("Error");
+     $marhale_cnt=mysql_num_rows($result1);
+      $query="select * from karshenasan_tarh where marhale_report='$marhale_num' and cod_tarh='$cod_tarh' order by id desc";
+    $query="select * from karshenasan_tarh_note where id='$id' and  marhale_report !='100'";
+
+ 	///echo $query;
+	$result=mysql_query($query) or die("Error 122"); 
+
+	 $rf=mysql_fetch_array($result);
+ 
+	$ravesh_motalee= $rf["ravesh_motalee"];
+	$comment_ravesh_motalee= $rf["comment_ravesh_motalee"];
+	$zamanbandi= $rf["zamanbandi"]; 
+	$comment_pishraft=  $rf["comment_pishraft"];
+	$form_pardakht= $rf["form_pardakht"];
+	$notes= $rf["comment_karshenas"];
+    $note_date=$rf["note_date"];
+     $startdate = $rf["note_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $note_date=hijricalender( $startyear , $startmon , $startday );
+
+      ?>
+   <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="700" height="80" bgColor="#eee7f8" border="1">
+   
+
+       <tr>
+        <td align="center" colspan='3' width="700" valign='top' class="tahoma1"><b>نظر شما در مورد مرحله <? echo  $marhale_report; ?> از <? echo  $marhale_cnt; ?></b></td>
+        
+        </tr>
+        <tr>
+        <td align="center" colspan='3' width="700" valign='top' class="tahoma1"  dir='rtl'><b>تاريخ ارسال : <? echo $note_date;?></b></td>
+        
+        </tr>
+        <tr>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>توضيحات</b></td>
+        <td align="center" width="100" valign='top' class="tahoma1"><b>نظر</b></td>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>آيتمهاي نظر دهي </b></td>
+        </tr>
+        <tr>
+         <td align="right" width="300" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 <?
+		  if($ravesh_motalee==0)
+		   echo "بوده است";
+		  if($ravesh_motalee==1)
+		   echo "تا حدي بوده است";
+		 if($ravesh_motalee==2)
+		   echo "نبوده است";   
+		 ?>		 	 
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>مطابقت روش مطالعه با پروپوزال</td>
+      </tr>
+      
+    <!--  <tr>
+        <td align="right" width="100" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td class="tahoma1" width="500" valign='top'>توضيح</td>
+      </tr>  -->
+        
+            <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($zamanbandi==0)
+		   echo "انجام شده است";
+		  if($zamanbandi==1)
+		   echo "تا حدي مطابق پيش بيني بوده است";
+		 if($zamanbandi==2)
+		   echo "مطابق پيش بيني نبوده است";   
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>پيشرفت اجرايي طرح مطابق با جدول گانت</td>
+      </tr>
+        
+      <!--<tr>
+        <td align="right" width="100" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td class="tahoma1" width="500" valign='top' align='left'>توضيح</td>
+      </tr>  -->
+      
+       <tr>
+        <td align="right" width="300" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+	 
+		 <?
+		  if($form_pardakht==0)
+		   echo " در اين مرحله مورد تاييد است";
+		  if($form_pardakht==1)
+		   echo "  با انحام اصلاحاتي در همين گزارش مورد تاييد است";
+		 if($form_pardakht==2)
+		   echo "مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود";  
+		  if($form_pardakht==3)
+		   echo "  به دلايل زير مورد تاييد نمي باشد";    
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>بر اساس بندهاي فوق اين گزارش </td>
+        
+      </tr>
+      
+   
+       
+  
+ 
+       
+     
+  </table>
+  <br>
+    <?
+ exit();
+?>
+  
+
+    
+      <?
+      
+      
+      $query="select * from karshenasan_tarh where marhale_report='100' and id='$id' order by id desc";
+ 	//echo $query;
+	$result=mysql_query($query) or die("Error 1"); 
+
+	while($rf=mysql_fetch_array($result))
+	{
+	$ravesh_motalee= $rf["ravesh_motalee"];
+	$comment_ravesh_motalee= $rf["comment_ravesh_motalee"];
+	$zamanbandi= $rf["zamanbandi"]; 
+	$comment_pishraft=  $rf["comment_pishraft"];
+	$form_pardakht= $rf["form_pardakht"];
+	$notes= $rf["comment_karshenas"];
+    $mali= $rf["nazer_submit_mali"];
+    $comment_mali= $rf["nazer_submit_mali_comment"];
+    $nazer_amval_masrafi= $rf["nazer_amval_masrafi"];
+      ?>
+      <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="700" height="80" bgColor="#eee7f8" border="1">
+  
+        <tr>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>توضيحات</b></td>
+        <td align="center" width="100" valign='top' class="tahoma1"><b>نظر</b></td>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>آيتمهاي نظر دهي </b></td>
+        </tr>
+        <tr>
+         <td align="right" width="300" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 <?
+		  if($ravesh_motalee==0)
+		   echo "بوده است";
+		  if($ravesh_motalee==1)
+		   echo "تا حدي بوده است";
+		 if($ravesh_motalee==2)
+		   echo "نبوده است";   
+		 ?>		 	 
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>مطابقت روش مطالعه با پروپوزال</td>
+      </tr>
+      
+    <!--  <tr>
+        <td align="right" width="100" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td class="tahoma1" width="500" valign='top'>توضيح</td>
+      </tr>  -->
+        
+            <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($zamanbandi==0)
+		   echo "انجام شده است";
+		  if($zamanbandi==1)
+		   echo "تا حدي مطابق پيش بيني بوده است";
+		 if($zamanbandi==2)
+		   echo "مطابق پيش بيني نبوده است";   
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>پيشرفت اجرايي طرح مطابق با جدول گانت</td>
+      </tr>
+        
+          <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" > <? echo $comment_mali; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($mali==0)
+		   echo "خير";
+		  if($mali==1)
+		   echo "بلي";
+		 
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>آيا گزارش نهايي از نظر مالي مورد تاييد است</td>
+      </tr>  
+        
+         <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" >----</td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($nazer_amval_masrafi==0)
+		   echo "خير";
+		  if($nazer_amval_masrafi==1)
+		   echo "بلي";
+		 if($nazer_amval_masrafi==2)
+		   echo "شرط خاصي نداشته است";
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>اجراي شرط خاص</td>
+      </tr> 
+      <!--<tr>
+        <td align="right" width="100" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td class="tahoma1" width="500" valign='top' align='left'>توضيح</td>
+      </tr>  -->
+      
+       <tr>
+        <td align="right" width="300" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+	 
+		 <?
+		  if($form_pardakht==0)
+		   echo "مورد تاييد است";
+		  if($form_pardakht==1)
+		   echo " با انحام اصلاحاتي در همين گزارش مورد تاييد است";
+		 if($form_pardakht==2)
+		   echo " مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود";  
+		  if($form_pardakht==3)
+		   echo " به دلايل فوق مورد تاييد نمي باشد";    
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>بر اساس بندهاي فوق اين گزارش </td>
+        
+      </tr>
+      
+    <!--  <tr>
+        <td align="right" width="100" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td class="tahoma1" width="500" valign='top' align='left'>نظر شما در مورد اين طرح</td>
+      </tr>  -->
+        </table>
+        <br>
+    <?
+}
+?>
+ 
+  
+      <?
+      
+      
+      $query="select * from karshenasan_tarh where isnull(marhale_report) and id='$id' order by id desc";
+ //	echo $query;
+	$result=mysql_query($query) or die("Error 1"); 
+
+	while($rf=mysql_fetch_array($result))
+	{
+	$ravesh_motalee= $rf["ravesh_motalee"];
+	$comment_ravesh_motalee= $rf["comment_ravesh_motalee"];
+	$zamanbandi= $rf["zamanbandi"]; 
+	$comment_pishraft=  $rf["comment_pishraft"];
+	$form_pardakht= $rf["form_pardakht"];
+	$notes= $rf["comment_karshenas"];
+    $mali= $rf["nazer_submit_mali"];
+    $comment_mali= $rf["nazer_submit_mali_comment"];
+    $nazer_amval_masrafi= $rf["nazer_amval_masrafi"];
+      ?>
+      <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="700" height="80" bgColor="#eee7f8" border="1">
+  
+        <tr>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>توضيحات</b></td>
+        <td align="center" width="100" valign='top' class="tahoma1"><b>نظر</b></td>
+        <td align="center" width="300" valign='top' class="tahoma1"><b>آيتمهاي نظر دهي </b></td>
+        </tr>
+        <tr>
+         <td align="right" width="300" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 <?
+		  if($ravesh_motalee==0)
+		   echo "بوده است";
+		  if($ravesh_motalee==1)
+		   echo "تا حدي بوده است";
+		 if($ravesh_motalee==2)
+		   echo "نبوده است";   
+		 ?>		 	 
+		
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>مطابقت روش مطالعه با پروپوزال</td>
+      </tr>
+      
+    <!--  <tr>
+        <td align="right" width="100" valign='top' class="tahoma1"><? echo $comment_ravesh_motalee; ?></td>
+        <td class="tahoma1" width="500" valign='top'>توضيح</td>
+      </tr>  -->
+        
+            <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($zamanbandi==0)
+		   echo "انجام شده است";
+		  if($zamanbandi==1)
+		   echo "تا حدي مطابق پيش بيني بوده است";
+		 if($zamanbandi==2)
+		   echo "مطابق پيش بيني نبوده است";   
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>پيشرفت اجرايي طرح مطابق با جدول گانت</td>
+      </tr>
+        
+          <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" > <? echo $comment_mali; ?></td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($mali==0)
+		   echo "خير";
+		  if($mali==1)
+		   echo "بلي";
+		 
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>آيا گزارش نهايي از نظر مالي مورد تاييد است</td>
+      </tr>  
+        
+         <tr>
+            <td align="right" width="300" valign='top' class="tahoma1" >----</td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+		 
+		 <?
+		  if($nazer_amval_masrafi==0)
+		   echo "خير";
+		  if($nazer_amval_masrafi==1)
+		   echo "بلي";
+		 if($nazer_amval_masrafi==2)
+		   echo "شرط خاصي نداشته است";
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>اجراي شرط خاص</td>
+      </tr> 
+      <!--<tr>
+        <td align="right" width="100" valign='top' class="tahoma1" > <? echo $comment_pishraft; ?></td>
+        <td class="tahoma1" width="500" valign='top' align='left'>توضيح</td>
+      </tr>  -->
+      
+       <tr>
+        <td align="right" width="300" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td align="right" width="100" valign='top' class="tahoma1">
+	 
+		 <?
+		  if($form_pardakht==0)
+		   echo "مورد تاييد است";
+		  if($form_pardakht==1)
+		   echo " با انحام اصلاحاتي در همين گزارش مورد تاييد است";
+		 if($form_pardakht==2)
+		   echo " مورد تاييد است ولي لازم است در گزارشات بعدي لحاظ شود";  
+		  if($form_pardakht==3)
+		   echo " به دلايل فوق مورد تاييد نمي باشد";    
+		 ?>
+		</td>
+        <td class="tahoma1" width="300" valign='top' align='left'>بر اساس بندهاي فوق اين گزارش </td>
+        
+      </tr>
+      
+    <!--  <tr>
+        <td align="right" width="100" valign='top' class="tahoma1" align='right' > <? echo $notes; ?> </td>
+        <td class="tahoma1" width="500" valign='top' align='left'>نظر شما در مورد اين طرح</td>
+      </tr>  -->
+        </table>
+        <br>
+    <?
+}
+?>
+ 
+ <?
+footer_forms($admin,$seed);
+
+
+?>

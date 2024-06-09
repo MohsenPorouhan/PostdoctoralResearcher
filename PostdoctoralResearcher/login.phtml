@@ -1,0 +1,221 @@
+ 
+<?php 
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>پژوهشيار - ورود / عضويت</title>
+
+    <!-- Bootstrap -->
+    <link href="new_css/bootstrap.css" rel="stylesheet">
+    <link href="new_css/style-login.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="login-body">
+    <!-- modal -->
+    <div class="modal fade" id="notify">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">اطلاع رساني</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                   
+                      <!--   با سلام خدمت پژوهشگران محترم          ثبت نام در سيستم پژوهشيار به صورت اتوماتيك بوده و براي همه آزاد ميباشد          شما براي ورود به سيستم نياز به نام كاربري و رمز عبور داريد:<br />
+                        1-نام كاربري همان آدرس ايميل ميباشد كه در ثبت نام وارد ميكنيد دقت نماييد در هنگام ثبت نام از آدرس ايميلي استفاده كنيد كه فعال باشد تا بتوانيد براي گرفتن رمز ورود و اطلاع رساني از طريق آن مطلع شويد.<br />
+                        2-رمز عبور به صورت اتوماتيك بعد از ثبت نام به صورت ايميل به ايميلي كه به هنگام ثبت نام وارد كرده ايد، فرستاده ميشود اين ايميل را ميتوانيد در inbox  و در صورت عدم وجود در inbox  در فولدرهاي trash و يا spam و يا bulk  پيدا كنيد. اين اقدام حداكثر ظرف مدت چند دقيقه بعد از ثبت نام صورت ميگيرد (مگر آنكه مراكز ارسال كننده ايميل مشكلي داشته باشند). در صورتيكه رمز عبور به هيچكدام از فولدرهاي ايميل، ارسال نشده بود بعد از اطمينان از اينكه ايميل شما فعال ميباشد ، اين آدرس ايميل را به شماره 30007912000012 پيامك بزنيد.(و يا با شماره تلفن 81633619-20تماس بگيريد)<br />
+                        توجه :به هنگام ورود نام كاربري بايد حتما آدرس كامل ايميل را وارد كنيد و اين آدرس ايميل بايد همان آدرس ايميلي باشد كه به هنگام ثبت نام وارد كرده ايد مثلا اگر آدرس ايميل شما از ايميل سيناي دانشگاه ميباشد و شما هم به هنگام ثبت نام آدرس كامل يعني  با sina وارد كرده ايد نام كاربري بايد  با sina  وارد باشد و  اگر نام كاربري را بدون sina به كار برده ايد به هنگام ورود آدرس را بدون sina به كار ببريد.              نمونه هاي غلط:      1- reza-jafari@tums.ac.ir    ( که درست آن reza_jafari@tums.ac.ir بوده است2-rezaii@sina.tums.ac.ir( كه درست آن rezaii@tums.ac.ir بوده است)3-rezaii @tums.ac.ir( كه درست آن rezaii@tums.ac.ir بوده است.در تمامي حالتهاي فوق آدرس ايميل درست نبوده و ايميل &#1740;ا پيامك ارسال نخواهد شد.<br />
+                        نكته : بعد از ورود اگر پروفايل خود را كامل وارد نكرده باشيد پروفايل براي شما باز ميشود و لازم است حتما موارد ستاره دار را كامل كنيد وگرنه سيستم به شما اجازه كار با منوهاي برنامه پژوهشيار را نميدهد<br />
+
+ -->
+                    
+                       <?php 
+                       	$query="select * from  news  order by id desc";
+                       	  $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+                       	  while($row_fetched=mysql_fetch_array($result))
+					     {
+					         $id=$row_fetched["id"];
+						     $startdate = $row_fetched["news_time"];
+							  $startyear = substr($startdate,0,4);
+							  $startmon = substr($startdate,5,2);
+							  $startday = substr($startdate,8,2);
+							  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+							  $farsistartdate = enum2fnum($farsistartdate);
+							  $body=$row_fetched["body"];
+							  echo "<font color='green'> ( $farsistartdate) ".$row_fetched["title"]."</font>";
+							  echo "<br>". nl2br( $row_fetched["body"])."<hr><br>";
+							  
+					     }
+;
+                      
+                       ?>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">تاييد</button>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    
+    
+        <div class="modal fade" id="error">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">پيغام خطا</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                   نام کاربري يا رمز عبور شما نادرست است
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">تاييد</button>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!--login-->
+
+    <div class="panel-login-wrapper">
+        <div class="login-border">
+            <img src="img/tums_logo.png" alt="login heading" class="login-heading-logo" />
+            <img src="img/login-heading.png"  alt="login heading" class="login-heading-title" />
+            <img src="img/user.png" class="login-heading-img" alt="کاربر" />
+            <div class="panel panel-login">
+                <div class="panel-heading login-heading">
+
+
+                    <h3 class="panel-title">ورود</h3>
+                    <a href="#" data-toggle="modal" data-target="#notify" class="pull-left login-notify">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        اطلاع رساني
+                    </a>
+                    
+                     <a href="feedback.phtml" class="pull-left login-notify">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        ارتباط با ما
+                    </a>
+                    <div id="result">
+                    <a href="#" data-toggle="modal" data-target="#error" class="pull-left login-notify">
+                    </a></div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <h4>قابل توجه کاربران</h4>
+                        <p>
+                            براي استفاده  از اين سيستم  نياز به شناسه و  رمز عبور اختصاصي است . چنانچه  براي اولين  بار از اين سيستم استفاده مي کنيد،لطفا در اين قسمت ثبت نام کرده و شناسه و رمز کاربري خود را دريافت نماييد.
+                        </p>
+                        <div class="ltr">
+                            <a href="signup.phtml">
+                                ثبت نام جديد
+                            </a>
+                        </div>
+                        <h4>چنانچه قبلا اين کار را انجام داده ايد از طريق قسمت زير وارد سيستم شويد</h4>
+                        <form name="user_login" action="login/midel.phtml" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label">نام کاربري</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="admuser" class="form-control" id="username" placeholder="نام کاربري" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword3" class="col-sm-2 control-label">گذرواژه</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="admpassword" class="form-control" id="inputPassword3" placeholder="گذرواژه" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword3" class="col-sm-2 control-label">نوع ورود</label>
+                                <div class="col-sm-10">
+                                    <select name="user_type" class="form-control">
+                                        <option value="0">ورود مجري طرح</option>
+                                        <option value="11" >متقاضي ثبت پايان نامه</option>
+                                        <option value="1">مدير</option>
+                                        <option value="2">ادمين دانشکده / مرکز</option>
+                                        <option value="5">کارشناس حوزه معاونت</option>
+                                        <option value="3">کارشناس پژوهشي/ناظر</option>
+                                        <option value="6">عضو شوراي پژوهشي </option>
+                                        <option value="8">حسابداري</option>
+                                        <option value="9">مديريت پايان نامه ها</option>
+                                        <option value="10">معاونت آموزشي</option>
+                                        <option value="7">ناظر مالي</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <a href="send_pass.phtml">کلمه عبور را فراموش کرده ام</a>
+                                    <button type="submit" class="btn btn-info">ورود</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.login-->
+	<script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!--<script src="js/jquery.js"></script>-->
+    <script type="text/javascript" language="javascript" src="assets/advanced-datatable/media/js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
+    <script src="js/jquery.scrollTo.min.js"></script>
+    <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
+    <script type="text/javascript" language="javascript" src="assets/advanced-datatable/media/js/jquery.dataTables.js"></script>
+    <script src="js/respond.min.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <script src="js/respond.min.js"></script>
+
+
+    <script src="js/common-scripts.js"></script>
+    <!--script for this page-->
+    <script src="js/form-validation-script.js"></script>
+    <?php 
+    if(isset($msg) && strcasecmp($msg,"loginerror_user")==0)
+{
+
+	 ?>
+     <script type="text/javascript">
+         $(document).ready(function() {
+             
+       	  $('#result').find('a').trigger('click');
+       	});         
+               	
+		</script> 
+		<?php 
+}
+    ?>
+
+</body>
+</html>

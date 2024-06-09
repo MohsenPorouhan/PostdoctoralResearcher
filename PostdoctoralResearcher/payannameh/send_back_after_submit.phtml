@@ -1,0 +1,87 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+
+ require_once('lib/nusoap.php');
+
+  if(isset($action) && strcmp($action,"send_indoing")==0)
+     {
+       $now_date=date('M-y-d');
+       insert_position($cod_tarh,'10',$admin);
+        $query="update tarh set payanname_new_gharardad=\"0\" where cod_tarh='$cod_tarh' and version='-1'";
+         
+       $result=mysql_query($query)  or die("Error");
+       ?>
+           <script language="javascript">
+           window.location="<? echo "tarh_list_new_after_submit.phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+     }
+	 
+echo "<br>";
+$color=$list_color_1;
+echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=send_indoing&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+   
+ 
+  $query="select * from tarh where cod_tarh='$cod_tarh' and version='-1'";
+ 
+  $result=mysql_query($query) or die("Error10");
+  if(mysql_num_rows($result)>0)
+ {
+ 	$row_fetched=mysql_fetch_array($result);
+ 	$tarh_name=$row_fetched["tarh_title_farsi"];
+  
+ } 	
+  
+ 
+ //$start_time="1385-02-12";
+// $time_month="15";
+
+ ?>
+
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center  class="tahoma1" dir="rtl"  height=19 bgcolor="#EEE7F8" dir="rtl">
+      <?
+	   echo ""."عنوان طرح  : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<TABLE cellSpacing=0  width="90%" cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+<br>
+ <?
+       echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>در صورت تاييد ، پايان نامه به پايان نامه هاي پس از تصويب مي رود</b></td>";
+      echo "</tr>";
+      
+        
+       echo "<tr>";
+       echo "<td align=\"center\"  colspan='6' width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><b>شرايط خاص مورد نظر خود را اعلام فرماييد</b></td>";
+      echo "</tr>";
+        echo "<tr>";
+       echo "<td align=\"center\" colspan='6'  width=\"5%\" bgcolor=$color align=\"left\" class=\"tahoma1\" valign=\"top\"><input type=\"submit\" value=\"تاييد\" name=\"B1\" class=\"but-small\"></td>";
+     echo "</tr>";
+     
+     
+     
+   
+     
+     
+     
+     
+     
+     echo "</table>";
+  
+  echo "</form>"; 
+   
+footer_forms($admin,$seed);
+?>
+

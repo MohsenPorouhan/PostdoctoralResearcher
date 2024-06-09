@@ -1,0 +1,277 @@
+<?
+echo "<br>";
+$admin_edit=0;
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"]; 
+   $first_letter=$row_fetched["first_letter"];
+
+if(strcmp($first_letter,'1')==0)
+{
+	$admin_edit=1;
+}  
+   
+$query="select * from modir_daneshkade where    modir_username='$admin' and (modir_type='1' or modir_type='4')   ";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+
+
+
+$query="select * from modir_daneshkade,tarh where   ( modir_username='$admin' and tarh.cod_daneshkade=modir_daneshkade.cod_daneshkade )";
+$result=mysql_query($query) or die("Error");
+if(mysql_num_rows($result) >0)
+{
+	$admin_edit=1;
+}
+
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+$finished=$row_fetched["finished"];
+ 
+if($admin_edit==0)
+if(strcmp($finished,'0')==0)
+{
+ $query="select * from edit_field where cod_tarh='$cod_tarh' and cod_edit_part='4'";
+ $result=mysql_query($query) or die("Error");
+ if(mysql_num_rows($result) <=0 )
+  {
+  	 
+  	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+  	 
+  }	
+}
+else
+{
+	 message_show("اين قسمت از طرح در حالت قفل مي باشد","red");
+     footer_forms($admin,$seed);
+     
+     exit();
+	
+}
+
+if(isset($action) )
+{
+  if (strcmp($action,"add_tarh")==0)
+  {
+		$query = "select * from ravesh_ejra where cod_tarh = \"$cod_tarh\"  and version='-1'";
+        $result=mysql_query($query) or die ("Error in selecting data from ravesh_ejra");
+		if(mysql_num_rows($result) > 0 )
+		{
+			$row_fetched=mysql_fetch_array($result);
+		  $ravesh_ejra1 = $row_fetched["ravesh_ejra"];
+		  $moshakhasat_abzar1 = $row_fetched["moshakhasat_abzar"];
+		  $ravesh_mohasebe1 = $row_fetched["ravesh_mohasebe"];
+		  $molahezat_akhlaghi1 = $row_fetched["molahezat_akhlaghi"];
+		  $mahdoudiat_ejra1 = $row_fetched["mahdoudiat_ejra"];
+		  $fehrest_manabea1 = $row_fetched["new_update_fehrest_manabea"];
+		  
+		  if(strcasecmp($ravesh_ejra1,$ravesh_ejra)!=0)
+		  		$new_update_ravesh_ejra='1';
+		  else
+		  		$new_update_ravesh_ejra='0';
+		  		
+		  if(strcasecmp($moshakhasat_abzar1,$moshakhasat_abzar)!=0)
+		  		$new_update_moshakhasat_abzar='1';
+		  else
+		  		$new_update_moshakhasat_abzar='0';
+		  	
+		  if(strcasecmp($ravesh_mohasebe1,$ravesh_mohasebe)!=0)
+		  		$new_update_ravesh_mohasebe='1';
+		  else
+		  		$new_update_ravesh_mohasebe='0';
+				
+		  if(strcasecmp($molahezat_akhlaghi1,$molahezat_akhlaghi)!=0)
+		  		$new_update_molahezat_akhlaghi='1';
+		  else
+		  		$new_update_molahezat_akhlaghi='0';
+
+		  if(strcasecmp($mahdoudiat_ejra1,$mahdoudiat_ejra)!=0)
+		  		$new_update_mahdoudiat_ejra='1';
+		  else
+		  		$new_update_mahdoudiat_ejra='0';
+		  		
+
+		  $ravesh_ejra=str_replace("'","\'",$ravesh_ejra);
+	      $ravesh_ejra=str_replace("\"","\'",$ravesh_ejra);
+	      $ravesh_ejra=str_replace(";","\;",$ravesh_ejra);
+	  
+	      $moshakhasat_abzar=str_replace("'","\'",$moshakhasat_abzar);
+	      $moshakhasat_abzar=str_replace("\"","\'",$moshakhasat_abzar);
+	      $moshakhasat_abzar=str_replace(";","\;",$moshakhasat_abzar);
+	
+	      $ravesh_mohasebe=str_replace("'","\'",$ravesh_mohasebe);
+	      $ravesh_mohasebe=str_replace("\"","\'",$ravesh_mohasebe);
+	      $ravesh_mohasebe=str_replace(";","\;",$ravesh_mohasebe);
+	  
+	      $molahezat_akhlaghi=str_replace("'","\'",$molahezat_akhlaghi);
+	      $molahezat_akhlaghi=str_replace("\"","\'",$molahezat_akhlaghi);
+	      $molahezat_akhlaghi=str_replace(";","\;",$molahezat_akhlaghi);
+	  
+	      $mahdoudiat_ejra=str_replace("'","\'",$mahdoudiat_ejra);
+	      $mahdoudiat_ejra=str_replace("\"","\'",$mahdoudiat_ejra);
+	      $mahdoudiat_ejra=str_replace(";","\;",$mahdoudiat_ejra);
+           $query="update ravesh_ejra  set ravesh_ejra=\"$ravesh_ejra\",moshakhasat_abzar=\"$moshakhasat_abzar\", ravesh_mohasebe=\"$ravesh_mohasebe\" ,molahezat_akhlaghi =\"$molahezat_akhlaghi\",mahdoudiat_ejra=\"$mahdoudiat_ejra\",new_update_ravesh_ejra=$new_update_ravesh_ejra,new_update_moshakhasat_abzar=$new_update_moshakhasat_abzar,new_update_ravesh_mohasebe='$new_update_ravesh_mohasebe',new_update_molahezat_akhlaghi='$new_update_molahezat_akhlaghi',new_update_mahdoudiat_ejra='$new_update_mahdoudiat_ejra' where creator  =\"$admin\" and cod_tarh=\"$cod_tarh\"  and version='-1'";
+
+          $result=mysql_query($query) or die("Error in updating data into ravesh_ejra");
+          $action="ويرايش روش اجرا با عنوان"."<br>".$tarh_name;
+          set_log($action,$admin,date("Y-m-d, g:i a"));
+
+          ?>
+          <script language="javascript">
+          window.location="<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+          <?
+		}
+		else
+		{
+			$ravesh_ejra=str_replace("'","\'",$ravesh_ejra);
+  	        $ravesh_ejra=str_replace("\"","\'",$ravesh_ejra);
+	        $ravesh_ejra=str_replace(";","\;",$ravesh_ejra);
+	  
+	        $moshakhasat_abzar=str_replace("'","\'",$moshakhasat_abzar);
+	        $moshakhasat_abzar=str_replace("\"","\'",$moshakhasat_abzar);
+	        $moshakhasat_abzar=str_replace(";","\;",$moshakhasat_abzar);
+	
+	        $ravesh_mohasebe=str_replace("'","\'",$ravesh_mohasebe);
+	        $ravesh_mohasebe=str_replace("\"","\'",$ravesh_mohasebe);
+	        $ravesh_mohasebe=str_replace(";","\;",$ravesh_mohasebe);
+	  
+	        $molahezat_akhlaghi=str_replace("'","\'",$molahezat_akhlaghi);
+	        $molahezat_akhlaghi=str_replace("\"","\'",$molahezat_akhlaghi);
+	        $molahezat_akhlaghi=str_replace(";","\;",$molahezat_akhlaghi);
+	  
+	        $mahdoudiat_ejra=str_replace("'","\'",$mahdoudiat_ejra);
+	        $mahdoudiat_ejra=str_replace("\"","\'",$mahdoudiat_ejra);
+	        $mahdoudiat_ejra=str_replace(";","\;",$mahdoudiat_ejra);
+	
+		  $query="insert into ravesh_ejra  set ravesh_ejra=\"$ravesh_ejra\",moshakhasat_abzar=\"$moshakhasat_abzar\", ravesh_mohasebe=\"$ravesh_mohasebe\" ,molahezat_akhlaghi =\"$molahezat_akhlaghi\",mahdoudiat_ejra=\"$mahdoudiat_ejra\" , creator  =\"$admin\" , cod_tarh=\"$cod_tarh\",version='-1'";
+
+          $result=mysql_query($query) or die("Error in inserting data into tarh");
+          $action="اضافه کردن روش اجرا با عنوان"."<br>".$tarh_name;
+          set_log($action,$admin,date("Y-m-d, g:i a"));
+
+          ?>
+          <script language="javascript">
+          window.location="<? echo "ravesh_ejra.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+          <?
+
+		}
+
+
+  }
+ }
+
+
+ 
+
+ 
+ 
+  $query="select * from ravesh_ejra where cod_tarh='$cod_tarh'  and version='-1'";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+
+  $ravesh_ejra = $row_fetched["ravesh_ejra"];
+  $moshakhasat_abzar = $row_fetched["moshakhasat_abzar"];
+  $ravesh_mohasebe = $row_fetched["ravesh_mohasebe"];
+  
+  $molahezat_akhlaghi = $row_fetched["molahezat_akhlaghi"];
+  $mahdoudiat_ejra=$row_fetched["mahdoudiat_ejra"];
+  
+?>
+
+<center>
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_tarh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="sabt_tarh_second.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+      <TD align=middle width="251"  background="image/ravesh_ejra.gif"  height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+
+
+<table border="0" bgcolor="#EEE7F8" width="500"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+ <tr>
+    <td width="350" align="right">
+	<textarea   rows="8"  name="ravesh_ejra" class="edit-user"  dir=RTL   ><? echo $ravesh_ejra ; ?></textarea></td>	
+    <td width="150" class="tahoma1" valign="top">روش اجرا</td>
+  </tr>
+   <tr>
+    <td width="350" align="right"><textarea   rows="3"  name="moshakhasat_abzar" class="edit-user"  dir=RTL   ><? echo $moshakhasat_abzar ; ?></textarea></td>
+    <td width="150" class="tahoma1" valign="top"  valign="top">مشخصات ابزار جمع آوري اطلاعات و نحوه جمع آوري</td>
+  </tr>
+
+<tr>
+    <td width="350" align="right"><textarea   rows="3"  name="ravesh_mohasebe" class="edit-user"  dir=RTL   ><? echo $ravesh_mohasebe ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">روش محاسبه حجم نمونه و تعداد آن</td>
+  </tr>
+  
+  
+   <tr>
+    <td width="350" align="right"><textarea   rows="3"  name="mahdoudiat_ejra" class="edit-user"  dir=RTL   ><? echo $mahdoudiat_ejra ; ?></textarea></td>
+    <td width="150" class="tahoma1"  valign="top">محدوديتهاي اجرايي طرح و روش کاهش آنها</td>
+  </tr>
+  
+  <tr>    
+    <td width="500" colspan="2"  valign="top" align="center" class="star-message"><b>.فرمول حجم نمونه را مي توانيد با استفاده از فايلهاي ضميمه در قسمت ضمائم اضافه کنيد</b></td>
+  </tr>
+<tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+<br>
+ <table border="0" bgcolor="#EEE7F8" width="500"  cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <tr>
+    <td colspan="2" width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "jadval_zarayeb.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>">جدول متغيرها</a></td>
+  </tr>
+
+ <tr>
+    <td colspan="2" width="500" class="tahoma1" align="middle"><a style="text-decoration: none" href="<? echo "add_activity.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh"; ?>" target="_BLANK" >جدول زمانبندي مراحل اجراي طرح</a></td>
+  </tr>
+
+</table>
+
+</div>
+</td>
+</tr>
+</table>
+</center>
+ 
+
+</form>
+
+
+

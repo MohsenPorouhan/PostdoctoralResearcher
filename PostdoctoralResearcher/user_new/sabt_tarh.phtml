@@ -1,0 +1,921 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+?>
+ <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-rtl.css" />
+ <link rel="stylesheet" type="text/css" href="../assets/plugins/select2/select2-metronic-rtl.css" />
+
+<?php
+include("include/new_menu.php");
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 id="modal_title_guide" class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد
+                            </div>
+                            <div class="modal-footer">
+                              
+                                <button id="modal_guide_btn" type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li id="breadcrumb1">
+                                <i class="fa fa-home"></i>
+                                <a href="home.php">
+                                    خانه
+                                </a>
+                                <i class="fa fa-angle-left"></i>
+                            </li>
+                            <li id="breadcrumb2">
+                                <a href="send_tarh_select.phtml">
+                                   ارسال طرح تحقيقاتي
+                                </a>
+                                   <i class="fa fa-angle-left"></i>
+                            </li>
+                            <li id="breadcrumb3">
+                                <a href="sabt_tarh.phtml">
+                                    ثبت چکيده
+                                </a>
+                            </li>
+                            
+                            
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="wizard" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                               
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?php  $active_id="1"; include("include/wizard.php");
+                                    $myq="select * from user_login where email='$admin'";
+									$res_user=mysql_query($myq) or die("Error");
+								    $rf_user=mysql_fetch_array($res_user);
+									$payan_name =$rf_user["payan_name"] ;
+									
+                                    ?>
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                       <div class="portlet box blue">
+									<div class="portlet-title">
+										<div id="portlet_caption" class="caption">
+											<i class="fa fa-reorder"></i>چکيده
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a id="portlet_tools" href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body form">
+										<!-- BEGIN FORM-->
+									   <?
+									   echo "<form name=\"sabt_tarh\" id=\"sabt_tarh\" action=\"sabt_tarh.php?admin=$admin&seed=$seed&tarh_select=$tarh_select&action=add_tarh\" method=\"post\" class=\"form-horizontal\">";?>
+											
+											<div class="form-body">
+											<div id="alert_danger" class="alert alert-danger display-hide">
+											<button class="close" data-close="alert"></button>
+											پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+											</div>
+												<h3 id="project_description" class="form-section">مشخصات طرح</h3>
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="project_title" class="control-label col-md-5">عنوان طرح
+															<span class="required">
+															 *
+															</span>
+															</label>
+															<div class="col-md-7">
+															<div class="input-icon right">
+															  <i class="fa"></i>
+																<input id="tarh_name" name="tarh_name" type="text"  class="form-control input-sm" placeholder="" tabindex="1">
+															</div>
+																
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													<?
+													
+													if(strcasecmp($tarh_select,"10")!=0)
+                                                    {?>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="project_title_english" class="control-label col-md-5">عنوان انگليسي طرح
+															<span class="required">
+															*
+															</span></label>
+															<div class="col-md-7">
+																<div class="input-icon right">
+																<i class="fa"></i>
+																	<input id="tarh_name_e" name="tarh_name_e" type="text" class="form-control input-sm" placeholder=""  tabindex="2">
+																 </div>
+															</div>
+														</div>
+													</div>
+													
+													<!--/span-->
+												</div>
+												<!--/row-->
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="key_word" class="control-label col-md-5">کليد واژه ها
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+															  <div class="input-icon right">
+															  <i class="fa"></i>
+																<input id="kelid_vaje" name="kelid_vaje" type="text" class="form-control input-sm" placeholder="" tabindex="3">
+															  </div>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													
+													<?
+                                                   
+													if(strcmp(trim($payan_name),'0')==0){?>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="research_field" class="control-label col-md-5">لاين تحقيقاتي</label>
+															<div class="col-md-7">
+																<input name="line_tahgig" type="text" class="form-control input-sm" placeholder="" tabindex="4">
+															</div>
+														</div>
+													</div>
+													<?}?>
+													<!--/span-->
+												</div>
+												<!--/row-->
+												<?php  if(strcmp(trim($payan_name),'0')==0){?>
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="school_center" class="control-label col-md-5">دانشکده/مرکز هدف
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+															  <div class="input-icon right">
+																<i class="fa"></i>
+															 <?
+															    $query="select * from daneshkade order by daneshkade_name  ";
+															    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+															    $groupcount = mysql_num_rows($qresult);
+															  ?>
+																<select id="cod_daneshkade" name="cod_daneshkade" onchange="redirect();" class="select2_category form-control input-sm" data-placeholder="يک دانشکده را انتخاب کنيد" tabindex="5">
+																	<option id="choose_school" value="" >انتخاب کنيد...</option>
+																	<?
+																	if($la=="en"){
+																	    while($row_fetched=mysql_fetch_array($qresult))
+																	    {
+																	     echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" >".$row_fetched["daneshkade_english_name"]."</option>";
+																	    }
+																    }else {
+																		while($row_fetched=mysql_fetch_array($qresult))
+																		{
+																			echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" >".$row_fetched["daneshkade_name"]."</option>";
+																		}
+																	}
+																    ?>
+																    <?
+														               echo "<script>";
+														               echo "var group=new Array(".$groupcount.");";
+														               echo "for (i=0; i<".$groupcount."; i++)";
+														               echo "group[i]=new Array();";
+														               $query="select * from daneshkade order by daneshkade_name";
+														               $result = mysql_query($query) or die("Error in searchform1");
+														               $cntr = 0;
+														               while($myrow_fetched=mysql_fetch_array($result))
+														               {
+														                $query1="select * from group_daneshkade where group_daneshkade.cod_daneshkade = '".$myrow_fetched["cod_daneshkade"]."' order by group_name ";
+														                
+														                $result1 = mysql_query($query1) or die("Error in searchform2");
+														                $cntr1=0;
+														                if (mysql_num_rows($result1)>0)
+														                {   
+																			if($la=="en")            
+																				echo "group[".$cntr."][0]=new Option(\"-1\",\"Choose\");";  
+																			else
+																				echo "group[".$cntr."][0]=new Option(\"-1\",\"انتخاب کنيد\");";
+														                  $cntr1++;
+														                  while($myrow_fetched1=mysql_fetch_array($result1))
+														                  {
+														                   echo "group[".$cntr."][".$cntr1."]=new Option(\"".$myrow_fetched1["cod_group"]."\",\"".$myrow_fetched1["group_name"]."\");";
+														                   $cntr1++;
+														                  }
+														                }
+														                else
+														                 {
+																		   if($la=="en")
+														                   		echo "group[".$cntr."][0]=new Option(\"-1\",\"Choose\");";
+																		   else 
+																		   		echo "group[".$cntr."][0]=new Option(\"-1\",\"انتخاب کنيد\");";
+														                  }
+														                $cntr++;
+														               }
+														               echo "</script>";
+														             ?>
+  
+																</select>
+															  </div>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="school_center_2" class="control-label col-md-5">دانشکده/مرکز هدف دوم</label>
+															<div class="col-md-7">
+																<?
+															    $query="select * from daneshkade order by daneshkade_name  ";
+															    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+															    $groupcount = mysql_num_rows($qresult);
+															  ?>
+																<select class="select2_category form-control input-sm"  name="second_cod_daneshkade" data-placeholder="يک دانشکده را انتخاب کنيد" tabindex="6">
+																	<option id="choose_school_2" value="-1" >انتخاب کنيد...</option>
+																	<?
+																	if($la=="en"){
+																	    while($row_fetched=mysql_fetch_array($qresult))
+																	    {
+																	     echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" >".$row_fetched["daneshkade_english_name"]."</option>";
+																	    }
+																	}else{
+																		while($row_fetched=mysql_fetch_array($qresult))
+																		{
+																			echo "<option value=\"".$row_fetched["cod_daneshkade"]."\" >".$row_fetched["daneshkade_name"]."</option>";
+																		}
+																	}
+																    ?>
+																    </select>
+															</div>
+														</div>
+													</div>
+													
+												</div>
+													<!--/span-->
+													<!--/row-->
+													<?}
+													else{?>
+													<div class="row">
+														<div class="col-md-6">
+														<div class="form-group">
+															<label id="assign_thesis" class="control-label col-md-5">ارجاع پايان نامه به</label>
+															<div class="col-md-7">
+																<?
+																	$myq="select * from user_login where email='$admin'";
+																	$res_user=mysql_query($myq) or die("Error");
+																	$rf_user=mysql_fetch_array($res_user);
+
+																	$cod_daneshkade_danshjoo =$rf_user["cod_daneshkade"] ;
+																	
+															    	echo "<input  type=\"hidden\" name=\"cod_daneshkade\"  value='$cod_daneshkade_danshjoo' >";
+   																	$q1="select * from modir_daneshkade where cod_daneshkade='$cod_daneshkade_danshjoo' and moaven_or_daneshjoyee='1'";
+   																	$qresult1=mysql_query($q1) or die("Error in selecting data from daraje elmi");
+															  ?>
+																<select name="modir_payanname" class="select2_category form-control input-sm"   data-placeholder="يک دانشکده را انتخاب کنيد" tabindex="7">
+																	<option id="assign_thesis_choose" value="-1" >انتخاب کنيد...</option>
+																	<?
+																    while($row_modir_daneshkade=mysql_fetch_array($qresult1))
+																    {
+																     echo "<option value=\"".$row_modir_daneshkade["cod_modir"]."\">".$row_modir_daneshkade["modir_payanname_name"]."</option>";
+																    }
+																    ?>
+																    </select>
+															</div>
+														</div>
+													</div>
+													
+												  </div>
+												<?}?>
+													
+												<div class="row">
+												<?
+												if(strcmp(trim($payan_name),'0')==0)
+												{
+												?>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="department" class="control-label col-md-5">گروه</label>
+															<div class="col-md-7">
+																<select name="cod_group" class="select2_category form-control input-sm" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="8">
+																	<option id="department_choose" value="0" >انتخاب کنيد</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													  <script>
+													  document.sabt_tarh.cod_daneshkade.options[0].selected=true;
+													
+													  document.sabt_tarh.cod_group.options[0].selected=true;
+													 
+													</script>
+													<?}
+												}
+												if(strcmp($tarh_select,"10")==0)
+													  {
+													  	echo "<input type=\"hidden\" name=\"cod_daneshkade\" value=\"159\"></input>";
+													  }
+												?>
+												
+													<!--/span-->
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="type_research" class="control-label col-md-5">نوع طرح
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+															  <div class="input-icon right">
+															  <i class="fa"></i>
+																<?
+																   if($tarh_select=="10"){
+																		$servicing="1";
+																	}
+																	else{
+																		$servicing="0";
+																	}
+																    $query="select * from tarhtype where servicing='$servicing'  order by tarh_type_desc ";
+																    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+																?>
+																	<select id="tarh_type" name="tarh_type" class="select2_category form-control input-sm" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="9">
+																		<option id="type_research_choose" value="" >انتخاب کنيد</option>
+																		<?
+																		if($la=="en")
+																		{
+																		    while($row_fetched=mysql_fetch_array($qresult))
+																		    {
+																		      echo "<option value=\"".$row_fetched["tarh_type"]."\">".$row_fetched["tarh_type_english_desc"]."</option>";
+																		    }
+																	    }else{
+																			while($row_fetched=mysql_fetch_array($qresult))
+																			{
+																				echo "<option value=\"".$row_fetched["tarh_type"]."\">".$row_fetched["tarh_type_desc"]."</option>";
+																			}
+																		}
+																	    ?>
+																	</select>
+															  </div>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													<!--/row-->
+													</div>
+												<div class="row">
+												<?if(strcasecmp($tarh_select,"10")!=0)
+  												{?>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="type_study" class="control-label col-md-5">نوع مطالعه</label>
+															<div class="col-md-7">
+															<?
+															$query="select * from tarhtype_1 order by tarh_type_desc ";
+    														$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+															?>
+																<select name="tarh_type_1" class="select2_category form-control input-sm" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="10">
+																	<option id="type_study_choose" value="-1">انتخاب کنيد</option>
+																	<?
+																	if($la=="en")
+																	{
+																		while($row_fetched=mysql_fetch_array($qresult))
+																	    {
+																	      echo "<option value=\"".$row_fetched["tarh_type"]."\">".$row_fetched["tarh_type_english_desc"]."</option>";
+																	    }
+																    }else{
+																		while($row_fetched=mysql_fetch_array($qresult))
+																		{
+																			echo "<option value=\"".$row_fetched["tarh_type"]."\">".$row_fetched["tarh_type_desc"]."</option>";
+																		}
+																	}
+																	?>
+																</select>
+															</div>
+														</div>
+													</div>
+													 <?
+													  }
+													?>
+													<!--/span-->
+													
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="funded" class="control-label col-md-5">نحوه تامين اعتبار</label>
+															<div class="col-md-7">
+															<?
+															$query="select * from tarhtype_2 order by tarh_type_desc ";
+    														$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+															?>
+																<select name="payan_name_2" class="select2_category form-control input-sm" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="11">
+																	<option id="funded_choose" value="-1">انتخاب کنيد</option>
+																	<?
+																	if($la=="en")
+																	{
+																			while($row_fetched=mysql_fetch_array($qresult))
+																		    {
+																		      echo "<option value=\"".$row_fetched["tarh_type"]."\">".$row_fetched["tarh_type_english_desc"]."</option>";
+																		    }
+																    }else{
+																			while($row_fetched=mysql_fetch_array($qresult))
+																			{
+																				echo "<option value=\"".$row_fetched["tarh_type"]."\">".$row_fetched["tarh_type_desc"]."</option>";
+																			}
+																	}
+																	?>
+																</select>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+												</div>
+													<!--/row-->
+												<div class="row">
+												<?
+												if(strcasecmp($tarh_select,"10")!=0)
+												  {
+												if(strcmp(trim($payan_name),'0')==0)
+												{
+												?>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="upshot" class="control-label col-md-5">طرح محصول پايان نامه است؟
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+															   <div class="input-icon right">
+															   <i class="fa"></i>
+																<select id="payan_name1" name="payan_name1" class="select2_category form-control input-sm" onchange=visible(this); data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="12">
+																	<option value="">انتخاب کنيد</option>
+																    <option value="0">پايان نامه نيست</option>
+																    <option value="1">پايان نامه با سقف اعتباري پايان نامه ها</option>
+																    <option value="2">پايان نامه با سقف اعتباري بالاتر از پايان نامه ها</option>    
+																</select>
+															  </div>
+															</div>
+														</div>
+													</div>
+													<?}?>
+													<!--/span-->
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="level" class="control-label col-md-5">مقطع پايان نامه</label>
+															<div class="col-md-7">
+															<?
+															$query="select * from maghta_payan_name ";
+    														$qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+															?>
+																<select name="payan_name_daraje_elmi" class="select2_category form-control input-sm" data-placeholder="يک دسته بندي انتخاب کنيد" tabindex="13">
+																	<option id="level_choose" value="-1">انتخاب کنيد</option>
+																	<?
+																	if($la=="en")
+																	{
+																		while($row_fetched=mysql_fetch_array($qresult))
+																	    {
+																	      echo "<option value=\"".$row_fetched["maghta_payan_name"]."\">".$row_fetched["maghta_payan_name_english_desc"]."</option>";
+																	    }
+																    }else{
+																		while($row_fetched=mysql_fetch_array($qresult))
+																		{
+																			echo "<option value=\"".$row_fetched["maghta_payan_name"]."\">".$row_fetched["maghta_payan_name_desc"]."</option>";
+																		}
+																	}
+																	?>
+																</select>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													<?}?>
+												</div>
+												<h3 id="project_brief" class="form-section">خلاصه طرح</h3>
+												<!--/row-->
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="rational_background" class="control-label col-md-5">خلاصه ضرورت اجراي طرح
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+																<div class="input-icon right">
+																<i class="fa"></i>
+																	<textarea id="zarorat"  name="zarorat"  class="form-control" rows="3" tabindex="14"></textarea>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="method" class="control-label col-md-5">خلاصه روش اجرا وشيوه هاي تحليل
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+																<div class="input-icon right">
+																<i class="fa"></i>
+																	<textarea id="raveshejra" name="raveshejra" class="form-control" rows="3" tabindex="15"></textarea>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<?
+												if(strcasecmp($tarh_select,"10")!=0)
+												  {
+												?>
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="objective" class="control-label col-md-5">اهداف کلي , اختصاصي و کاربردي
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+																<div class="input-icon right">
+																<i class="fa"></i>
+																	<textarea id="ahdaf" name="ahdaf" class="form-control" rows="3" tabindex="16"></textarea>
+																 </div>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													<div class="col-md-6">
+														<div class="form-group">
+															<label id="hythesis" class="control-label col-md-5">سوالات پژوهشي و فرضيات
+															<span class="required">
+															 *
+															</span></label>
+															<div class="col-md-7">
+																<div class="input-icon right">
+																<i class="fa"></i>
+																	<textarea id="soalat" name="soalat" class="form-control" rows="3" tabindex="17"></textarea>
+																</div>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+												</div>
+												<?}?>
+											</div>
+											<div class="form-actions fluid">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="col-md-offset-3 col-md-9">
+															<button id="save_btn" type="button" onclick="sabt();" class="btn green" tabindex="18">ذخيره</button>
+															
+														</div>
+													</div>
+													<div class="col-md-6">
+													</div>
+												</div>
+											</div>
+										</form>
+										<!-- END FORM-->
+									</div>
+								</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script>
+if(language=="en"){																										    
+	debugger;
+	document.getElementById("modal_title_guide").textContent="Guide";
+	document.getElementById("modal_guide_btn").textContent="Close";
+	document.getElementById("breadcrumb1").innerHTML="<i class='fa fa-home'></i><a href='home.php'>Home</a><i class='fa fa-angle-right'></i>";
+	document.getElementById("breadcrumb2").innerHTML="<a href='send_tarh_select.phtml'>Send Research</a><i class='fa fa-angle-right'></i>";
+	document.getElementById("breadcrumb3").innerHTML="<a href='sabt_tarh.phtml'>Abstract Entry</a>";
+	document.getElementById("wizard").innerHTML="<i class='fa fa-magic'></i>Wizard";
+	document.getElementById("portlet_caption").innerHTML="<i class='fa fa-reorder'></i>Abstract";
+ 	document.getElementById("portlet_tools").setAttribute("title","Guide");
+ 	document.getElementById("alert_danger").innerHTML="<button class='close' data-close='alert'></button>You have some form error.Please check form below.";
+ 	document.getElementById("project_description").textContent="Project Description";
+ 	document.getElementById("project_title").innerHTML="Project Title<span class='required'>*</span>";
+	<?php if(strcasecmp($tarh_select,"10")!=0) { ?>
+		document.getElementById("project_title_english").innerHTML="Project Title English<span class=required>*</span>";
+		document.getElementById("key_word").innerHTML="Key Words<span class='required'>*</span>";
+	<?php if(strcmp(trim($payan_name),'0')==0){?>
+		document.getElementById("research_field").textContent="Research Field";
+	<?php } ?>
+	<?php if(strcmp(trim($payan_name),'0')==0){?>
+		document.getElementById("school_center").innerHTML="School/Center<span class='required'>*</span>";
+		document.getElementById("school_center_2").textContent="School/Center Second";
+		document.getElementById("choose_school").textContent="Choose...";
+		document.getElementById("choose_school_2").textContent="Choose...";
+	<?php } else { ?>
+		document.getElementById("assign_thesis").textContent="Assign thesis to";
+		document.getElementById("assign_thesis_choose").textContent="Choose...";
+	<?php } if(strcmp(trim($payan_name),'0')==0){?>
+		document.getElementById("department").textContent="Department";
+		document.getElementById("department_choose").textContent="Choose...";
+	<?php }} ?>
+	
+	document.getElementById("type_research").innerHTML="Type of Research<span class='required'>*</span>";
+	document.getElementById("type_research_choose").textContent="Choose...";
+	<?if(strcasecmp($tarh_select,"10")!=0) {?>
+		document.getElementById("type_study").textContent="Type of Study";
+		document.getElementById("type_study_choose").textContent="Choose...";
+	<?php } ?>
+	document.getElementById("funded").textContent="Will dunded through";
+	document.getElementById("funded_choose").textContent="Choose...";
+	<?
+	if(strcasecmp($tarh_select,"10")!=0)
+	{
+			if(strcmp(trim($payan_name),'0')==0)
+			{
+		?>
+				document.getElementById("upshot").innerHTML="Is this project an upshot of a thesis?<span class='required'>*</span>";
+				document.getElementById("payan_name1").innerHTML="<option value=''>Choose...</option><option value='0'>Is not thesis</option><option value='1'>پايان نامه با سقف اعتباري پايان نامه ها</option><option value='2'>پايان نامه با سقف اعتباري بالاتر از پايان نامه ها</option> ";
+		<?php } ?>
+		document.getElementById("level").textContent="Level";
+		document.getElementById("level_choose").textContent="Choose...";
+	<?php } ?>
+	document.getElementById("project_brief").textContent="Project in brief";
+	document.getElementById("rational_background").innerHTML="Rational & Backgrounds<span class='required'>*</span>";
+	document.getElementById("method").innerHTML="Research design & Methods<span class='required'>*</span>";
+	<?php if(strcasecmp($tarh_select,"10")!=0) { ?>
+		document.getElementById("objective").innerHTML="Objectives & Goals<span class='required'>*</span>";
+		document.getElementById("hythesis").innerHTML="Research questions & hythesis<span class='required'>*</span>";
+	<?php } ?>
+	document.getElementById("save_btn").textContent="Save";
+}
+</script>
+
+
+<?php 
+include("../include/primary_js.phtml");
+?>
+<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+	
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="../assets/scripts/core/app.js"></script>
+	<script src="../assets/scripts/custom/form-samples.js"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+	<script>
+	
+			function sabt(){
+				debugger;
+				 var form2 = $('#sabt_tarh');
+			        var error2 = $('.alert-danger', form2);
+			        //var success2 = $('.alert-success', form2);
+			        if(language=="en"){
+					        form2.validate({
+					            errorElement: 'span', //default input error message container
+					            errorClass: 'help-block', // default input error message class
+					            focusInvalid: false, // do not focus the last invalid input
+					            ignore: "",
+					            rules:{
+					                tarh_name:{
+					                    required:true
+					                    },
+					  	          tarh_name_e:{
+					                    required:true
+					  		          },
+					                kelid_vaje:{
+					                    required:true
+					                    },
+					                cod_daneshkade:{
+					                    required:true
+					                    },
+					                tarh_type:{
+					                        required:true
+					                        },
+					      	       payan_name1:{
+					                        required:true
+					      		          },
+					                 zarorat:{
+					                        required:true
+					                        },
+					                raveshejra:{
+					                        required:true
+					                        },
+					                ahdaf:{
+					                            required:true
+					                            },
+					                soalat:{
+					                            required:true
+					                            }
+					                },
+				
+					            invalidHandler: function (event, validator) { //display error alert on form submit              
+					                  //  success2.hide();
+					                    error2.show();
+					                    App.scrollTo(error2, -200);
+					            },
+				
+					            errorPlacement: function (error, element) { // render error placement for each input type
+					                var icon = $(element).parent('.input-icon').children('i');
+					                icon.removeClass('fa-check').addClass("fa-warning");  
+					                icon.attr("data-original-title", error.text()).tooltip();
+					            },
+				
+					            highlight: function (element) { // hightlight error inputs
+					                $(element)
+					                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+					            },
+				
+					            unhighlight: function (element) { // revert the change done by hightlight
+					                
+					            },
+				
+					            success: function (label, element) {
+					                var icon = $(element).parent('.input-icon').children('i');
+					                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+					                icon.removeClass("fa-warning").addClass("fa-check");
+					            }
+				
+					           
+					        });
+			        }else{
+			        	form2.validate({
+				            errorElement: 'span', //default input error message container
+				            errorClass: 'help-block', // default input error message class
+				            focusInvalid: false, // do not focus the last invalid input
+				            ignore: "",
+				            rules:{
+				                tarh_name:{
+				                    required:true
+				                    },
+				  	          tarh_name_e:{
+				                    required:true
+				  		          },
+				                kelid_vaje:{
+				                    required:true
+				                    },
+				                cod_daneshkade:{
+				                    required:true
+				                    },
+				                tarh_type:{
+				                        required:true
+				                        },
+				      	       payan_name1:{
+				                        required:true
+				      		          },
+				                 zarorat:{
+				                        required:true
+				                        },
+				                raveshejra:{
+				                        required:true
+				                        },
+				                ahdaf:{
+				                            required:true
+				                            },
+				                soalat:{
+				                            required:true
+				                            }
+				                },
+				                messages:{
+					          	      tarh_name:{
+					                    required:"پر کردن اين فيلد الزامي مي باشد"
+					              	  },
+					              	  tarh_name_e:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					      		          },
+					                    kelid_vaje:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                        },
+					                    cod_daneshkade:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                        },
+					                     tarh_type:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                      	  },
+					                     payan_name1:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					              		          },
+					                     zarorat:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                                },
+					                     raveshejra:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                                },
+					                     ahdaf:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                                    },
+					                     soalat:{
+					                        required:"پر کردن اين فيلد الزامي مي باشد"
+					                          }
+					                        
+					                },
+			
+				            invalidHandler: function (event, validator) { //display error alert on form submit              
+				                  //  success2.hide();
+				                    error2.show();
+				                    App.scrollTo(error2, -200);
+				            },
+			
+				            errorPlacement: function (error, element) { // render error placement for each input type
+				                var icon = $(element).parent('.input-icon').children('i');
+				                icon.removeClass('fa-check').addClass("fa-warning");  
+				                icon.attr("data-original-title", error.text()).tooltip();
+				            },
+			
+				            highlight: function (element) { // hightlight error inputs
+				                $(element)
+				                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+				            },
+			
+				            unhighlight: function (element) { // revert the change done by hightlight
+				                
+				            },
+			
+				            success: function (label, element) {
+				                var icon = $(element).parent('.input-icon').children('i');
+				                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+				                icon.removeClass("fa-warning").addClass("fa-check");
+				            }
+			
+				           
+				        });
+				        }
+			        debugger
+			        if(form2.valid())
+					{
+			        	$('#sabt_tarh').submit();
+					}
+			}
+			        
+			
+	</script>
+	<!-- END JAVASCRIPTS -->
+	<script>
+		function visible(t){				
+				if(t.options[t.selectedIndex].value==-1 || t.options[t.selectedIndex].value==0)
+					document.sabt_tarh.payan_name_daraje_elmi.disabled=true;
+				else
+					document.sabt_tarh.payan_name_daraje_elmi.disabled=false;			
+			}
+            var temp=document.sabt_tarh.cod_group;     
+            function redirect()
+            {            
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null;
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex;
+                myselecteditem--;
+                if( myselecteditem<0 )
+                  return
+               
+                for (i=0;i<group[myselecteditem].length;i++)
+                {                	
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }           
+	 </script>
+<?php
+footer_forms($admin,$seed);
+?>
+

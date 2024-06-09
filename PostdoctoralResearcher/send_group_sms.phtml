@@ -1,0 +1,155 @@
+<?
+include("admin/include/database-connect.phtml");
+include("admin/include/include.phtml");
+ //header_forms($admin,$seed);
+include("admin/include/styles.phtml");
+include("admin/include/vars.inc.phtml");
+require("admin/include/class.phpmailer.php");
+require("admin/include/mailserver-statistics.phtml");
+require_once('admin/lib/nusoap.php');
+
+echo "<br>";
+
+//if(isset($telno)) 
+if(isset($action))
+{
+if(strcmp($crypt_code,'675543290')==0)
+{
+if(strcmp($action,"send_email")==0)
+   {
+   	   //$letter_body = iconv("windows-1256", "UTF-8", $letter_body);
+
+   	  // $letter_body=arabic2utf($letter_body);
+   	  //$letter_body=iconv("windows-1256", "UTF-8",$letter_body);
+   	   $letter_body=$letter_body;
+   	   
+       $return_sms=send_group_sms( $letter_body,$mobile_no,$shno);
+       if(!strcmp($return_sms,'-4')==0)
+         message_show("پيام شما ارسال شد","green");
+       else
+	     message_show(".ارسال پيام با خطا متوقف شد","green");  
+       
+       exit();
+       
+   }
+    else
+	 $status="mobile_error";   
+       
+}
+}
+?>
+
+
+
+
+<? echo "<form name=\"sms\" method=\"post\"  action=\"send_group_sms.phtml?action=send_email&admin=$admin&seed=$seed&cod_shora=$cod_shora\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=right class="tahoma1" width="100%" align="right"  height=19>
+    ارسال پيام گروهي  
+	   </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+      if (strcmp($status,"mobile_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">شماره تلفن همراه موجود در پروفايل مجري صحيح نيست</td>";
+    echo "</tr>";
+  }
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  if(isset($telno))
+    $telno=$telno;
+  else  
+  $telno=""; 
+  
+ 
+?>
+           <tr>
+              <td colspan="2" align="left">
+                <p align="center" class="tahoma1" dir="rtl">متن ارسالي حداکثر 200 کاراکتر است</td>
+            </tr>
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="crypt_code" size="48" class="edit-user"  dir=RTL   ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>کد رمز</td>
+            </tr>
+     
+            
+ <tr>
+    <td  width="66%" align="right">
+	<textarea class="edit-user"  name="letter_body" wrap="physical" cols="38" rows="5"></textarea>
+
+	
+ </td>
+    <td width="24%" class="tahoma1" valign="top">متن نامه</td>
+  </tr>
+  
+   
+    <td  width="66%" align="right">
+	<textarea class="edit-user"  name="mobile_no" wrap="physical" cols="38" rows="5"></textarea>
+ 
+	
+ </td>
+    <td width="24%" class="tahoma1" valign="top" dir='rtl'>شماره موبايلها ( با کاما از هم جدا شوند)</td>
+  </tr>
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="shno" size="48" class="edit-user" value="30007912000049"></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>شماره ارسال کننده</td>
+            </tr>
+  <tr>
+   <tr>
+         <td width="100%" colspan="2"  >
+
+          <input readonly type="text" name="remLen1" size="3" maxlength="3" value="130">
+          characters left
+  </tr>
+            <tr>
+              <td width="100%" colspan="2" >
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+          </table>
+          
+</form>
+
+<?
+  // footer_forms($admin,$seed);
+?>
+
+
+
+

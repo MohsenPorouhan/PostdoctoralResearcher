@@ -1,0 +1,9 @@
+<?
+  include("include/include.phtml");
+  include("include/styles.phtml");
+  header_forms($admin,$seed);
+
+echo "<iframe src=\"aggrement.html\" height=\"80%\" width=\"100%\" border=\"0\"> </iframe>";
+echo "<p align=\"right\" class=\"tahoma1\">کليه موارد فوق را قبول دارم<input type=\"checkbox\" name=\"C1\" onclick=\"javascript:document.location='send_tarh_select.phtml?admin=$admin&seed=$seed'\" value=\"ON\"> </p>";
+  footer_forms($admin,$seed);
+?>

@@ -1,0 +1,396 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms();
+?>
+
+<?php
+include("include/new_menu.php");
+  $query="select * from tarh where cod_tarh='$cod_tarh'  and version='-1' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+  $ahdaf=$row_fetched["ahdaf"];
+  $soalat=$row_fetched["soalat"];
+  $finished=$row_fetched["finished"];
+?>
+
+ <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">راهنما</h4>
+                            </div>
+                            <div class="modal-body">
+                                در حال تکمیل می باشد.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn default red" data-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h3 class="page-title">
+                            <small id="page-title">عنوان طرح : <? echo $tarh_name;?></small>
+                            
+                        </h3>
+                        <ul class="page-breadcrumb breadcrumb">
+
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a id="breadcrumb_home" href="home.php">
+                                    خانه
+                                </a>
+                                <i id="fa-angle-left1" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb-send" href="tarh_list.phtml">
+                                   ارسال/ويرايش طرح
+                                </a>
+                                <i id="fa-angle-left2" class="fa fa-angle-left"></i>
+                            </li>
+                            <li>
+                                <a id="breadcrumb-entry" href="tarh_body.phtml?cod_tarh=<?php echo $cod_tarh; ?>">
+                                    ثبت
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+               <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div id="portlet-title-wizard" class="caption">
+                                    <i class="fa fa-magic"></i>ويزارد
+                                </div>
+                                                               
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                
+                                    <?php 
+                                    $active_id="2";
+                                    include("include/wizard.php");?>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                    
+                                 <div class="portlet box blue">
+									<div class="portlet-title">
+										<div id="portlet-title" class="caption">
+											<i class="fa fa-reorder"></i>ثبت
+										</div>
+										<div class="tools">
+											<a href="javascript:;" class="collapse">
+											</a>
+											<a id="icon-modal-title" href="#portlet-config" data-toggle="modal"
+											class="fa fa-info-circle" title="راهنما"
+											style="color: white">
+											</a>
+										</div>
+									</div>
+									<div class="portlet-body form">  
+                                  <!-- BEGIN FORM-->
+										<?
+                                        
+										echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"tarh_body_sabt.php?action=add_tarh&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" class=\"form-horizontal\" id=\"sabt_tarh\">"; ?>
+							              <div class="form-body">
+							              <div id="alert-danger" class="alert alert-danger display-hide">
+											<button class="close" data-close="alert"></button>
+											پر کردن فيلدهاي ستاره دار اجباري مي باشد.
+											</div>
+	                                        <div class="form-group">
+	                                            <label id="lb1" class="col-md-4 control-label" >مقدمه-بيان مساله
+												<span class="required">
+												 *
+												</span></label>
+	                                             <div class="col-md-8">
+	                                             <div class="input-icon right">
+													<i id="warning1" class="fa"></i>
+	                                                <textarea class="form-control" rows="3" name="bayan_masale1" tabindex="1"><?php echo $bayan_masale ?></textarea>
+	                                             </div>
+	                                             </div>
+	                                        </div>
+	                                         <div class="form-group">
+	                                            <label id="lb2" class="col-md-4 control-label">بررسي متون
+	                                            <span class="required">
+												 *
+												</span></label>
+	                                            <div class="col-md-8">
+	                                            <div class="input-icon right">
+													<i class="fa"></i>
+	                                                <textarea class="form-control" rows="3" name="zarorat_ejra1" tabindex="2" ><?php echo $zarorat_ejra ?></textarea>
+	                                            </div>
+	                                            </div>
+	                                         </div>
+	                                         <div class="form-group">
+	                                            <label id="lb3" class="col-md-4 control-label">تعريف واژه ها</label>
+	                                            <div class="col-md-8">
+	                                                <textarea class="form-control" rows="3" name="taarif_vajeh1" tabindex="3" ><?php echo $taarif_vajeh ?></textarea>
+	                                            </div>
+	                                         </div>
+	                                         <div class="form-group">
+	                                            <label id="lb4" class="col-md-4 control-label">اهداف کلي, اختصاصي و کاربردي
+												<span class="required">
+												 *
+												</span></label>
+	                                            <div class="col-md-8">
+	                                            <div class="input-icon right">
+													<i class="fa"></i>
+	                                                <textarea class="form-control" rows="3" name="ahdaf1" tabindex="4"><?php echo $ahdaf; ?></textarea>
+	                                            </div>
+	                                            </div>
+	                                         </div>
+	                                         <div class="form-group">
+	                                            <label id="lb5" class="col-md-4 control-label">سوالات پژوهشي و فرضيات
+	                                            <span class="required">
+												 *
+												</span>
+	                                            </label>
+	                                            <div class="col-md-8">
+	                                            <div class="input-icon right">
+													<i class="fa"></i>
+	                                                <textarea id="test" class="form-control" rows="3" name="soalat1" tabindex="5"><?php echo $soalat ?></textarea>
+	                                            </div>
+	                                            </div>
+	                                         </div>
+	                                         <div class="form-group">
+	                                            <label id="lb6" class="col-md-4 control-label">فهرست منابع مورد استفاده در اين طرح</label>
+	                                            <div class="col-md-8">
+	                                                <textarea class="form-control" rows="3" name="fehrest_manabea1" tabindex="6"><?php echo $fehrest_manabea ?></textarea>
+	                                            </div>
+	                                         </div>
+	
+											</div>
+											<div class="form-actions fluid">
+												<div class="col-md-offset-3 col-md-9">
+													<button id="btn1" type="button" onclick="sabt();" class="btn blue"  tabindex="7">ذخيره</button>
+													
+												</div>
+											</div>
+										</form>
+										<!-- END FORM-->
+								  </div>
+								</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT-->
+</div>
+</div>
+<!-- END CONTENT -->
+<script>
+if(language=="en"){
+	
+	debugger;
+	document.getElementById("page-title").textContent="Title of Research";
+ 	document.getElementById("breadcrumb_home").textContent="Home";
+ 	document.getElementById("breadcrumb-send").textContent="Send/Edit of Research";
+ 	document.getElementById("breadcrumb-entry").textContent="Entry";
+ 	document.getElementById("portlet-title-wizard").textContent="Wizard";
+ 	document.getElementById("portlet-title").textContent="Entry";
+ 	document.getElementById("icon-modal-title").setAttribute("title","Information");
+ 	document.getElementById("fa-angle-left1").setAttribute("class","fa fa-angle-right");
+ 	document.getElementById("fa-angle-left2").setAttribute("class","fa fa-angle-right");
+ 	document.getElementById("alert-danger").textContent="You have some form errors. Please check below.";
+ 	document.getElementById("lb1").textContent="Introduction - Statement of the Problem*";
+ 	document.getElementById("lb2").textContent="Check Texts*";
+ 	document.getElementById("lb3").textContent="Definition of Words";
+ 	document.getElementById("lb4").textContent="General,Specific,Practical Goals*";
+ 	document.getElementById("lb5").textContent="Assumptions and Researches Questions*";
+ 	document.getElementById("lb6").textContent="Lists of item of sources that use this research";
+ 	document.getElementById("btn1").textContent="Save";
+ 	//document.getElementsByClassName("fa fa-warning")[0].setAttribute("data-original-title","This field is required");
+//  	document.getElementsByClassName("fa fa-warning")[1].dataset.originalTitle="This field is required";
+//  	document.getElementsByClassName("fa fa-warning")[2].dataset.originalTitle="This field is required";
+//  	document.getElementsByClassName("fa fa-warning")[3].dataset.originalTitle="This field is required";
+// 	document.getElementById("warning1").setAttribute("data-original-title","This field is required");
+ 	// 	document.getElementById("fa-angle").className="fa fa-angle-right";
+//	document.getElementById("DT_bootstrap").href="../assets/plugins/data-tables/DT_bootstrap.css";
+//    document.getElementById("select2-metronic").href="../assets/plugins/select2/select2-metronic.css";
+// 	document.getElementById("caption-grid").innerHTML="<i id='caption-grid' class='fa fa-globe'></i> All Researches";
+}
+</script>
+<?php 
+include("../include/primary_js.phtml");
+?>
+
+<script src="../assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="../assets/plugins/select2/select2.min.js"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="../assets/scripts/core/app.js"></script>
+	<script src="../assets/scripts/custom/form-samples.js"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+jQuery(document).ready(function() {    
+	   // initiate layout and plugins
+
+	   //$(".").select2();
+	});
+function sabt(){
+	debugger;
+	 var form2 = $('#sabt_tarh');
+        var error2 = $('.alert-danger', form2);
+        if(language=="en"){
+			        form2.validate({
+			            errorElement: 'span', //default input error message container
+			            errorClass: 'help-block', // default input error message class
+			            focusInvalid: false, // do not focus the last invalid input
+			            ignore: "",
+			            rules:{
+			        			bayan_masale1:{
+			                    required:true
+			                    },
+			                    zarorat_ejra1:{
+			                    required:true
+			  		          	},
+				  		        ahdaf1:{
+			                    required:true
+			                    },
+			                    soalat1:{
+				                    required:true
+				                }
+				               
+			                },
+			                
+		
+			            invalidHandler: function (event, validator) { //display error alert on form submit              
+			                  //  success2.hide();
+			                    error2.show();
+			                    App.scrollTo(error2, -200);
+			            },
+		
+			            errorPlacement: function (error, element) { // render error placement for each input type
+			                var icon = $(element).parent('.input-icon').children('i');
+			                icon.removeClass('fa-check').addClass("fa-warning");  
+			                icon.attr("data-original-title", error.text()).tooltip();
+			            },
+		
+			            highlight: function (element) { // hightlight error inputs
+			                $(element)
+			                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+			            },
+		
+			            unhighlight: function (element) { // revert the change done by hightlight
+			                
+			            },
+		
+			            success: function (label, element) {
+			                var icon = $(element).parent('.input-icon').children('i');
+			                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+			                icon.removeClass("fa-warning").addClass("fa-check");
+			            }
+			        });
+}
+        else {
+	        form2.validate({
+	            errorElement: 'span', //default input error message container
+	            errorClass: 'help-block', // default input error message class
+	            focusInvalid: false, // do not focus the last invalid input
+	            ignore: "",
+	            rules:{
+	        			bayan_masale1:{
+	                    required:true
+	                    },
+	                    zarorat_ejra1:{
+	                    required:true
+	  		          	},
+		  		        ahdaf1:{
+	                    required:true
+	                    },
+	                    soalat1:{
+		                    required:true
+		                }
+		               
+	                },
+	                
+	            messages:{
+	                	bayan_masale1:{
+	                    	required:"پر کردن اين فيلد الزامي مي باشد"
+	              	  	},
+		              	zarorat_ejra1:{
+	                        required:"پر کردن اين فيلد الزامي مي باشد"
+	      		        },
+		      		    ahdaf1:{
+	                        required:"پر کردن اين فيلد الزامي مي باشد"
+	                    },
+	                    soalat1:{
+	                        required:"پر کردن اين فيلد الزامي مي باشد"
+	                    }
+	                },
+
+	            invalidHandler: function (event, validator) { //display error alert on form submit              
+	                  //  success2.hide();
+	                    error2.show();
+	                    App.scrollTo(error2, -200);
+	            },
+
+	            errorPlacement: function (error, element) { // render error placement for each input type
+	                var icon = $(element).parent('.input-icon').children('i');
+	                icon.removeClass('fa-check').addClass("fa-warning");  
+	                icon.attr("data-original-title", error.text()).tooltip();
+	            },
+
+	            highlight: function (element) { // hightlight error inputs
+	                $(element)
+	                    .closest('.form-group').addClass('has-error'); // set error class to the control group   
+	            },
+
+	            unhighlight: function (element) { // revert the change done by hightlight
+	                
+	            },
+
+	            success: function (label, element) {
+	                var icon = $(element).parent('.input-icon').children('i');
+	                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+	                icon.removeClass("fa-warning").addClass("fa-check");
+	            }
+	        });
+            }
+			        if(form2.valid())
+					{
+			        	$('#sabt_tarh').submit();
+									
+					}
+			        		        
+}
+
+</script>
+
+<?php
+footer_forms($admin,$seed);
+?>
+ 

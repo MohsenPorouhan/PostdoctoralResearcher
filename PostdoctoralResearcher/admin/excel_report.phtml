@@ -1,0 +1,39 @@
+<?php 
+session_start();
+function setHeader($excel_file_name)//this function used to set the header variable
+	{
+		
+		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");//A MIME attachment with the content type "application/octet-stream" is a binary file.
+		//Typically, it will be an application or a document that must be opened in an application, such as a spreadsheet or word processor. 
+		header("Content-type:   application/x-msexcel; charset=utf-8");
+		header("Content-Disposition: attachment; filename=$excel_file_name");//with this extension of file name you tell what kind of file it is.
+		header("Pragma: no-cache");//Prevent Caching
+		header("Expires: 0");//Expires and 0 mean that the browser will not cache the page on your hard drive
+		 if(isset($_SESSION['str'])){
+		 	$body=$_SESSION['str'];
+		 	
+		 }
+		 echo $body;
+		 unset($_SESSION['str']); 
+		 session_destroy();
+		 	?>
+         <script language="javascript">
+        
+        window.location="<? echo "jalase_shora_excel.phtml?admin=$admin&seed=$seed";  ?>";
+        </script>
+         
+        <?
+	
+	}
+        
+      
+       // echo $body;
+      // $body="ok";
+        setHeader("inventory.xls");
+         message_show(".طرح ارسال شده  جديدي يافت نشد","red");
+       echo "<a href=\"jalase_shora_excel.phtml?admin=$admin&seed=$seed\"> بازگشت</a>";
+        
+  		
+        
+      
+       ?>

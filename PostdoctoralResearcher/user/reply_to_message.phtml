@@ -1,0 +1,124 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+echo "<br>";
+
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+echo "<br>";
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if( strlen(trim($letter_body))>0 && strlen(trim($letter_subject))>0)
+{
+	//$query="select max(right(cod_tarh,3) ) as max_cod from letter_to_mojri where left(cod_tarh,2) = '$year_date'";
+
+	$letter_no=substr($cod_tarh,0,8);
+	$mydate=date("Y-m-d");
+	$to_letter=$row_fetched["creator"];
+	$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	
+	
+    $query="insert into letter_to_mojri set from_letter='$admin',to_letter='$to_letter',cod_daneshkade='$cod_daneshkade',cod_tarh='$cod_tarh' , letter_no='$letter_no' , letter_subject='$letter_subject' , letter_body='$letter_body' , letter_date='$mydate'";
+    
+    $result=mysql_query($query) or die("error in inserting data");
+  	$status="letter_sent";
+}
+else
+  $status="entry_error";
+
+
+$query="select * from modir_daneshkade where  modir_username = '$admin'";
+$result=mysql_query($query);
+$row_fetched=mysql_fetch_array($result);
+$cod_daneshkade=$row_fetched["cod_daneshkade"];
+
+$query="select * from letter_to_mojri where  id='$letterno'";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh");
+
+ 
+ if(mysql_num_rows($result) > 0)
+ {
+   $row_fetched=mysql_fetch_array($result);
+   $body_letter=$row_fetched["letter_body"];
+   $subject=$row_fetched["letter_subject"];
+   $query="update letter_to_mojri set visited='1' where id='$letterno'";
+   $result=mysql_query($query) or die("Error in selecting data from letter_to_mojri");
+ ?>
+ <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="1">
+ <tr>
+ <td align="center" class="tahoma1" width="60%" bgcolor="cyan"><b>متن نامه با عنوان :<? echo $subject; ?><b></td>
+ </tr>
+ <tr>
+
+    <td width="10%" >
+      <p align="center" class="tahoma1"><font color="black"><? echo $body_letter; ?></font></td>
+  </tr>
+ </table>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table>
+<?
+}
+echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh&\">"; 
+  echo "<table border=\"0\" width=\"60%\"  cellspacing=\"1\" cellpadding=\"1\" >";
+  if(strcmp($status,"letter_sent")==0)
+  {
+    echo "<tr>";  
+    echo "<td colspan=\"2\" class=\"tahoma1\" valign=\"top\" align=\"center\"><b>نامه به مجري ارسال شد</b></td>";
+    echo "</tr>";
+  }
+  
+  echo "<tr>";  
+  echo "<td colspan=\"2\" class=\"tahoma1\" valign=\"top\" align=\"center\"><b>ارسال نظرات شما به مجري</b></td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo"<td width=\"66%\" align=\"right\">";
+  echo "<p align=\"right\"><input type=\"text\" name=\"letter_subject\" size=\"48\" class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></td>";
+  echo "<td width=\"24%\" align=\"left\">";
+  echo "<p align=\"left\" class=\"tahoma1\"><span class=\"star-message\">*</span>موضوع</td>";
+  echo "</tr>";
+  echo "<tr>";
+  echo "<td    align=\"center\"><textarea   rows=\"7\"  name=\"letter_body\"  class=\"edit-user\"  dir=RTL  onkeydown=\"return FarsiKeyDown()\" onkeypress=\"return FarsiKeyPress()\"></textarea></td>";  
+  echo "<td width=\"24%\" align=\"left\">";
+  echo "<p align=\"left\" class=\"tahoma1\" valign=\"top\"><span class=\"star-message\">*</span>متن نامه</td>";
+  
+  echo "</tr>";
+ 
+   
+?>
+  <tr>
+   <td width="100%" colspan="2" height="32">
+   <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+ </tr>
+ </table>
+ <table border="0" width="500">
+<tr>
+    <td width="100%"  align="center" class="tahoma1"><A HREF="javascript:history.go(-1)"> بازگشت</a></td>
+</tr>
+
+</table>
+</form>
+<?
+footer_forms($admin,$seed);
+
+
+?>

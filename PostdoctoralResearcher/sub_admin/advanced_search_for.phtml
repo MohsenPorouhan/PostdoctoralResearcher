@@ -1,0 +1,190 @@
+<?
+$title="Search For";
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+?>
+
+<br>
+<br>
+<form name="advanced_search" action=<? echo "\"advanced_search_result.phtml?admin=$admin&seed=$seed\""; ?> method="post">
+  <table cellSpacing="0" cellPadding="0" width="550" border="0">
+    <tbody>
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="410" height="19"></td>
+                        <td align="middle" width="140" background="image/advanced_search.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+
+
+<table dir="rtl" style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="550" height="100" bgColor="#eee7f8" border="0">
+
+
+  <tr bgColor="#eee7f8" nowrap>
+    <td vAlign="center" noWrap align="left" width="30%"></td>
+    <td noWrap align="left" width="70%"></td>
+  </tr>
+
+  <tr bgColor="#eee7f8" nowrap>
+    <td vAlign="center" noWrap align="left" width="30%" class="tahoma1">&#1580;&#1587;&#1578;&#1580;&#1608;:</td>
+    <td vAlign="center" noWrap align="right" width="70%" class="tahoma1">
+    <input maxLength="50" size="30" name="field1"  class="edit-user-advanced-search" dir=RTL   >
+     &nbsp;&nbsp;&nbsp;&#1580;&#1587;&#1578;&#1580;&#1608;
+      &#1583;&#1585;: 
+      <select name="FLD1" class="advanced-search-combo">
+        <option value="-1" selected>انتخاب کنيد</option>
+        <option value="tarh_title_farsi">عنوان طرح</option>
+        <option value="mojri_name">نام مجري</option>
+        <option value="hamkar_name">نام همکار</option>
+        <option value="daneshjo_name">نام دانشجو</option>
+        <option value="kelidvajeh">کليد واژه ها</option>
+        <option value="line">لاين تحقيقاتي</option>
+        <option value="zarorat">ضرورت اجراي طرح</option>
+        <option value="hadaf_kolli">اهداف کلي</option>
+        <option value="soalat_pajoheshi">سوالات  و فرضيات</option>
+        <option value="shive_ejra">روش اجرا و تحليل</option>
+        
+      </select>
+       <select name="BOOL1" class="advanced-search-combo">
+        <option value="0" selected>کلمه</option>
+        <option value="2">عبارت</option>
+      </select>
+	  </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  <tr bgColor="#eee7f8" nowrap>
+    <td noWrap align="center" width="100%" colspan="2" dir="ltr" class="tahoma1">
+    <input type="radio" CHECKED value="AND" name="GRP1" >AND
+      &nbsp; 
+      <input type="radio" value="OR" name="GRP1">OR &nbsp; 
+      <input type="radio" value="NOT" name="GRP1">NOT</td>
+  </tr>
+  
+  <tr bgColor="#eee7f8" nowrap>
+    <td vAlign="center" noWrap align="left" width="30%" class="tahoma1">
+    &nbsp;&#1580;&#1587;&#1578;&#1580;&#1608;:</td>
+    <td vAlign="center" noWrap align="right" width="70%" class="tahoma1">
+    <input maxLength="50" size="30" name="field2" class="edit-user-advanced-search" dir=RTL   >
+    
+	      &nbsp;&nbsp;&#1580;&#1587;&#1578;&#1580;&#1608; &#1583;&#1585;:
+      <select name="FLD2" class="advanced-search-combo">
+        <option value="-1" selected>انتخاب کنيد</option>
+        <option value="tarh_title_farsi">عنوان طرح</option>
+        <option value="mojri_name">نام مجري</option>
+        <option value="hamkar_name">نام همکار</option>
+        <option value="daneshjo_name">نام دانشجو</option>
+        <option value="kelidvajeh">کليد واژه ها</option>
+        <option value="line">لاين تحقيقاتي</option>
+        <option value="zarorat">ضرورت اجراي طرح</option>
+        <option value="hadaf_kolli">اهداف کلي</option>
+        <option value="soalat_pajoheshi">سوالات  و فرضيات</option>
+        <option value="shive_ejra">روش اجرا و تحليل</option>
+      
+      </select>
+       <select name="BOOL2" class="advanced-search-combo">
+        <option value="0" selected>کلمه</option>
+        <option value="2">عبارت</option>
+     </select>
+	</td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  
+  <tr bgColor="#eee7f8" nowrap>
+    <td noWrap align="center" width="100%" colspan="2" dir="ltr" class="tahoma1">
+    <input type="radio" CHECKED value="AND" name="GRP2">AND
+      &nbsp; <input type="radio" value="OR" name="GRP2">OR &nbsp; 
+    <input type="radio" value="NOT" name="GRP2">NOT</td>
+  </tr>
+  
+  <tr bgColor="#eee7f8" nowrap>
+    <td vAlign="center" noWrap align="left" width="30%" class="tahoma1">
+    &nbsp;&#1580;&#1587;&#1578;&#1580;&#1608;:</td>
+
+	<td vAlign="center" noWrap align="right" width="70%" class="tahoma1">
+       <input maxLength="50" size="30" name="field3" class="edit-user-advanced-search" dir=RTL   >
+       
+       </select> &nbsp;&nbsp;&nbsp;&#1580;&#1587;&#1578;&#1580;&#1608;
+      &#1583;&#1585;: 
+      <select name="FLD3" class="advanced-search-combo">
+        <option value="-1" selected>انتخاب کنيد</option>
+        <option value="tarh_title_farsi">عنوان طرح</option>
+        <option value="mojri_name">نام مجري</option>
+        <option value="hamkar_name">نام همکار</option>
+        <option value="daneshjo_name">نام دانشجو</option>
+        <option value="kelidvajeh">کليد واژه ها</option>
+        <option value="line">لاين تحقيقاتي</option>
+        <option value="zarorat">ضرورت اجراي طرح</option>
+        <option value="hadaf_kolli">اهداف کلي</option>
+        <option value="soalat_pajoheshi">سوالات  و فرضيات</option>
+        <option value="shive_ejra">روش اجرا و تحليل</option>
+       
+        
+      </select>
+<select name="BOOL3" class="advanced-search-combo">
+        <option value="0" selected>کلمه</option>
+        <option value="2">عبارت</option>
+
+	  </td>
+  </tr>
+  
+  
+  
+  
+  
+  
+  
+  <tr bgColor="#eee7f8" nowrap>
+    <td vAlign="center" noWrap align="left" width="30%"></td>
+    <td noWrap align="left" width="70%"></td>
+  </tr>
+</table>
+
+    <table cellSpacing="0" cellPadding="0" width="550"  border="0" bgColor="#FFFFFF">
+     
+        <tr>
+          <td vAlign="center" noWrap align="middle" width="100%" bgColor="#FFFFFF">
+            <div align="center">
+              <input type="hidden" value="1" name="HIST">
+			  <input type="reset" value="پاک کردن" class="but-small">
+              <input type="submit" value="جستجو" class="but-small">
+            </div>
+          </td>
+        </tr>
+     
+    </table>
+
+  </form>
+<?
+    footer_forms($admin,$seed);
+?>

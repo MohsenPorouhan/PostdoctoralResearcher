@@ -1,0 +1,108 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+if ( ! isset($current))
+    $current = 1;
+
+$RecPerPage=12;
+$query="select * from group_karshenasan   where 1 order by karshenas_name desc ";
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+$reccount = mysql_num_rows($result);
+
+
+$query="select * from group_karshenasan   where karshenas_type='1' order by karshenas_name desc "." limit ".($current-1)*$RecPerPage.",".$RecPerPage;
+//echo $query;
+$result=mysql_query($query) or die("Error in selecting data from tarh 2"); 
+ if(mysql_num_rows($result) > 0)
+ {
+ ?>
+ <table cellSpacing="0" cellPadding="0" width="100%" bgColor="white" border="0">
+ <tr>
+ <td align="center" class="tahoma1" width="60%"><br><b>گزارش فعاليت کارشناسان ستادي<b></td>
+ </tr>
+ </table>
+ 
+<?
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+
+
+}
+if(mysql_num_rows($result) > 0 )
+{
+// $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade";	
+// $myascdescpub=$myascdescpub."&cod_daneshkade=$cod_daneshkade&tarh_year=$tarh_year&ascdescfield=$ascdescfield&ascdesc=$ascdesc";
+ //pubshowpages("group_karshenasan_activity.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+?>
+
+<table border="0" width="90%" cellpadding="1" cellspacing="1">
+  <tr>
+  
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تعداد طرحهاي بازگشتي از اپيدميولوژيست</font></td>
+   
+    <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تعداد طرحهاي ارجاعي کارشناس به کارشناس اپيدميولوژيست</font></td>
+   
+  <td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تعداد طرحهاي برگشت داده شده به مدير گروه کارشناسي</font></td>   
+
+	<td width="10%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تعداد طرحهاي ارجاع شده  مدير گروه کارشناسي</font></td>
+   
+    <td width="60%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نام کارشناس</font></td>  
+  
+    </tr>
+  <?
+
+ $color=$list_color_1;
+ while($row_fetched=mysql_fetch_array($result))
+ {
+  $creator=	$row_fetched["username"];
+  $cod_karshenas=$row_fetched["cod_karshenas"];	
+  
+  $myq="select distinct cod_tarh from group_karshenasan_tarh where  group_karshenasan_tarh.cod_karshenas='$cod_karshenas'";
+  $res=mysql_query($myq) or die("Error1");
+  $erja_be_group_karshenas=mysql_num_rows($res);
+   
+  $myq="select distinct cod_tarh from group_karshenasan_tarh where cod_karshenas='$cod_karshenas' and finished='1'";
+  $res=mysql_query($myq) or die("Error4");
+  $return_from_group_karshenas=mysql_num_rows($res);
+
+
+  $myq="select * from karshenasan,karshenasan_tarh,group_karshenasan_tarh where group_karshenasan_tarh.cod_tarh=karshenasan_tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas ";
+  
+  //eho $myq;
+  $res1=mysql_query($myq) or die("Error2");
+  $erja_be_epidemi=mysql_num_rows($res1);
+
+  $myq="select * from karshenasan,karshenasan_tarh,group_karshenasan_tarh where group_karshenasan_tarh.cod_tarh=karshenasan_tarh.cod_tarh and group_karshenasan_tarh.cod_karshenas='$cod_karshenas' and karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and karshenasan_tarh.finished='1'";
+  //$myq="select * from karshenasan,karshenasan_tarh where karshenasan.cod_karshenas=karshenasan_tarh.cod_karshenas and karshenasan_tarh.refered='1' and karshenasan.creator='$creator'";
+  $res1=mysql_query($myq) or die("Error3");
+  $return_from_epidemi=mysql_num_rows($res1);
+
+
+  
+  echo "<tr>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$return_from_epidemi."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$erja_be_epidemi."</td>";
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$return_from_group_karshenas."</td>";
+ 
+  echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$erja_be_group_karshenas."</td>";
+  echo "<td width=\"60%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$row_fetched["karshenas_name"]."&nbsp;".$row_fetched["karshenas_family"]."</td>";
+  echo "</tr>";
+ }
+echo "</table>";
+}
+else // if reccount of tarh  < =0
+{
+ message_show(".هيچ موردي يافت نشد","red");
+}
+echo "</form>";
+footer_forms($admin,$seed);
+?>

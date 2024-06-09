@@ -1,0 +1,42 @@
+<?
+include("include/styles.phtml");
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+echo "<br>";
+ echo $name_e;
+if(strlen($name_e)> 0){
+	echo "hi";
+	echo $name_e;
+	 $query="select * from log where action like '%$name_e%'";
+	
+	 echo $query;
+	$result=mysql_query($query) or die("Error");
+	while($rf=mysql_fetch_array($result))
+	{
+		$cod_tarh=$rf["action"];
+		echo $cod_tarh." ".$rf["date"]."<br>";
+			//$query="update tarh set  finished='1' where cod_tarh like '%$cod_tarh%' and version='-1' ";
+		//	$rs=mysql_query($query) or die("error");
+		//echo $query."<br>";
+	}
+}
+
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed\">";
+
+?>  
+ <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+ 
+ </tr>
+
+
+ </table>
+<?
+ echo "</form>";
+
+
+ footer_forms($admin,$seed);
+?>

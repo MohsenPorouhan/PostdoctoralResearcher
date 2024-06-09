@@ -1,0 +1,42 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+$color=$list_color_1;
+echo "<br>";
+ $query="select * from  karshenas_shora_tarh where cod_tarh=\"$cod_tarh\"  ";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine personnel");
+   if(mysql_num_rows($result) > 0)
+   {
+     echo "<br>";
+     echo "<table width=\"98%\" cellPadding=1 border=0 bordercolor=\"#333333\" style=\"border-style: solid; border-width: 1; \">";
+     echo "<tr>";
+     echo "<td width=\"100%\" bgcolor=$color colspan=\"2\" align=\"center\" class=\"tahoma1\"><b>نظر کارشناسان</b></td>";
+     echo "</tr>";
+
+     echo "<tr>";
+     
+     echo "<td width=\"80%\"  bgcolor=$color align=\"center\"  class=\"tahoma1\">نظر</td>";
+     echo "<td width=\"20%\" bgcolor=$color  align=\"center\"  class=\"tahoma1\">کد کارشناس</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+ 
+       echo "<td align=\"justify\"  bgcolor=$color class=\"tahoma1\" dir='rtl'>".nl2br($row_fetched["notes"])."</td>";
+       echo "<td align=\"center\"  bgcolor=$color class=\"tahoma1\">".$row_fetched["cod_karshenas"]."</td>";
+       echo "</tr>";
+     }
+       
+     echo "</table>";
+
+   }
+footer_forms($admin,$seed);
+?>

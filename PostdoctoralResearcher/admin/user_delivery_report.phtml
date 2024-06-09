@@ -1,0 +1,423 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+if(isset($action) and strcmp($action,'add')==0)
+{
+  // $pay_status==1  پرداخت شده
+  //sum( mablagh_aghd_gharardad * mablagh / 100  ) as cnt
+  $daneshkade1=$daneshkade;
+     $cnt=0;      
+         while (list($key, $val) = each($daneshkade)) 
+		 {
+  				if($cnt==0)	
+  		 		 $cod_alaghe_analyse=$cod_alaghe_analyse."( tarh. cod_daneshkade ='$val'  ";
+  				else
+		  		$cod_alaghe_analyse=$cod_alaghe_analyse."or tarh. cod_daneshkade ='$val' ";  
+				$cnt++;  
+			 
+    
+  	 	 }
+  	 	  if(array_count_values($daneshkade) >0)
+  	         $cod_alaghe_analyse=$cod_alaghe_analyse.")";
+  	      else
+			$cod_alaghe_analyse=$cod_alaghe_analyse."1 ";  
+  
+  if($pay_status==1 )
+  {
+  	 $start_time=$year."-".$month."-".$day;
+  	 $end_time=$year_end."-".$month_end."-".$day_end;
+  	 $query="SELECT * FROM gozaresh_gharardad, tarh WHERE  $cod_alaghe_analyse and  tarh.cod_tarh = gozaresh_gharardad.cod_tarh AND concat( gozaresh_gharardad.cod_tarh, marhale )   IN ( SELECT concat( cod_tarh, marhale )   FROM  `tarh_indoing` where  submitted='1'  ) and gozaresh_gharardad.date_gozaresh >='$start_time' and   gozaresh_gharardad.date_gozaresh <='$end_time' ";
+  //	 echo $query;
+	   $result=mysql_query($query) or die("ERror 1 "); 
+  	 //$rf=mysql_fetch_array($result);
+  	 $cnt=0;
+	 while($rf=mysql_fetch_array($result))
+  	 {
+  	 	$mablagh_aghd=$rf["mablagh_aghd_gharardad"];
+  	 	$marhale_percent=$rf["mablagh"];
+  	    
+  	 	$cnt=$cnt+(($mablagh_aghd*$marhale_percent) /100);
+  	 	
+  	 }
+  	 $cnt_all=number_format($cnt);
+  	 
+  	 //$cnt=number_format($rf["cnt"]);
+  	 
+	 
+	 
+	      
+         while (list($key, $val) = each($daneshkade1)) 
+		 {
+  			 
+  		 		 $cod_alaghe_analyse="  tarh. cod_daneshkade ='$val'  ";
+  
+			 
+			    $start_time=$year."-".$month."-".$day;
+  	 			$end_time=$year_end."-".$month_end."-".$day_end;
+  			    $query="SELECT * FROM gozaresh_gharardad, tarh WHERE  $cod_alaghe_analyse and  tarh.cod_tarh = gozaresh_gharardad.cod_tarh AND concat( gozaresh_gharardad.cod_tarh, marhale )   IN ( SELECT concat( cod_tarh, marhale )   FROM  `tarh_indoing` where  submitted='1'  ) and gozaresh_gharardad.date_gozaresh >='$start_time' and   gozaresh_gharardad.date_gozaresh <='$end_time' ";
+  //	 echo $query;
+	   			$result=mysql_query($query) or die("ERror 1 "); 
+  	 //$rf=mysql_fetch_array($result);
+  	 			$cnt=0;
+	 			while($rf=mysql_fetch_array($result))
+  	 			{
+  	 				$mablagh_aghd=$rf["mablagh_aghd_gharardad"];
+  	 				$marhale_percent=$rf["mablagh"];
+  	    
+  	 				$cnt=$cnt+(($mablagh_aghd*$marhale_percent) /100);
+  	 	
+  	 			}
+  	 		    $query="SELECT * FROM daneshkade WHERE  cod_daneshkade='$val'";
+  //	 echo $query;
+	   			$result1=mysql_query($query) or die("ERror 1 ");
+				$rf1=mysql_fetch_array($result1);
+				$daneshkade=$rf1["daneshkade_name"];    
+                echo "<span class='tahoma1'>".number_format($cnt).":".$daneshkade."</span><br>";
+  	 	 }  
+	 $message= "<span class='tahoma1'>".$cnt_all.": مجموع مبلغ پرداخت شده "."</span>";
+  	 message_show($message,"green");
+  	 
+  	 
+  	 
+  	 
+  }
+  else
+  {
+  	 $start_time=$year."-".$month."-".$day;
+  	 $end_time=$year_end."-".$month_end."-".$day_end;
+  	 $query="SELECT * FROM gozaresh_gharardad, tarh WHERE   tarh.cod_tarh = gozaresh_gharardad.cod_tarh AND concat( gozaresh_gharardad.cod_tarh, marhale ) NOT  IN ( SELECT concat( cod_tarh, marhale )    FROM  `tarh_indoing` where submitted='1' ) and gozaresh_gharardad.date_gozaresh >='$start_time' and   gozaresh_gharardad.date_gozaresh <='$end_time' ";
+  	 $result=mysql_query($query) or die("ERror2 ");
+  	  $cnt=0;
+	 while($rf=mysql_fetch_array($result))
+  	 {
+  	 	$mablagh_aghd=$rf["mablagh_aghd_gharardad"];
+  	 	$marhale_percent=$rf["mablagh"];
+  	 
+  	 	$cnt=$cnt+(($mablagh_aghd*$marhale_percent) /100);
+  	 	
+  	 }
+  	 $cnt_all=number_format($cnt);
+  	// $rf=mysql_fetch_array($result);
+  	 //$cnt=number_format($rf["cnt"]);
+  	 
+  	 
+  	       while (list($key, $val) = each($daneshkade1)) 
+		 {
+  			 
+  		 		 $cod_alaghe_analyse="  tarh. cod_daneshkade ='$val'  ";
+  
+			 
+			    $start_time=$year."-".$month."-".$day;
+  	 			$end_time=$year_end."-".$month_end."-".$day_end;
+  			     $query="SELECT * FROM gozaresh_gharardad, tarh WHERE  $cod_alaghe_analyse and  tarh.cod_tarh = gozaresh_gharardad.cod_tarh AND concat( gozaresh_gharardad.cod_tarh, marhale ) NOT  IN ( SELECT concat( cod_tarh, marhale )    FROM  `tarh_indoing` where submitted='1' ) and gozaresh_gharardad.date_gozaresh >='$start_time' and   gozaresh_gharardad.date_gozaresh <='$end_time' ";
+  	             $result=mysql_query($query) or die("ERror2 ");
+  	 //$rf=mysql_fetch_array($result);
+  	 			$cnt=0;
+	 			while($rf=mysql_fetch_array($result))
+  	 			{
+  	 				$mablagh_aghd=$rf["mablagh_aghd_gharardad"];
+  	 				$marhale_percent=$rf["mablagh"];
+  	    
+  	 				$cnt=$cnt+(($mablagh_aghd*$marhale_percent) /100);
+  	 	
+  	 			}
+  	 		    $query="SELECT * FROM daneshkade WHERE  cod_daneshkade='$val'";
+  //	 echo $query;
+	   			$result1=mysql_query($query) or die("ERror 1 ");
+				$rf1=mysql_fetch_array($result1);
+				$daneshkade=$rf1["daneshkade_name"];    
+                echo "<span class='tahoma1'>".number_format($cnt).":".$daneshkade."</span><br>";
+  	 	 }  
+  	 
+  	 
+     $message= $cnt_all.": مجموع مبلغ پرداخت نشده در اين بازه ";
+  	 message_show($message,"green");
+  }
+ // echo $query;
+   footer_forms($admin,$seed);
+    exit();
+}
+
+?>
+
+<script>
+function checkit(){
+	var key
+	key = window.event.keyCode
+	if((key>=48)&&(key<=57))
+	  window.event.returnValue= true
+	else
+	  window.event.returnValue= false;
+
+}
+</script>
+
+<?
+echo "<br>";
+
+
+
+?>
+
+
+
+<? echo "<form name=\"add-tarh\" method=\"post\"  action=\"$PHP_SELF?action=add&admin=$admin&seed=$seed\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="400" border=0>
+  
+  <TR>
+  <TD vAlign=bottom align=right class='tahoma1'>
+گزارش
+  </TD>
+  </TR>
+  
+</TABLE>
+
+  <table border="0"  width="500"     cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  ?>
+    <tr>
+      <td width="100%">
+        <div align="center">
+          <table border="0" width="100%" bgcolor="F0F0FF" height="100%" cellpadding="0" cellspacing="0">
+             
+          
+            <tr>
+    <td width="350" align="right">
+	
+	
+    	   <select size="1" dir="rtl"  name="year" class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option   value="1381">1381</option>
+          <option   value="1382">1382</option>
+          <option   value="1383">1383</option>
+          <option   value="1384">1384</option>
+          <option   value="1385">1385</option>
+	  	  <option   value="1386">1386</option>
+	      <option   value="1387">1387</option>
+	      <option   value="1388">1388</option>
+	      <option   value="1389">1389</option>
+	      <option   value="1390">1390</option>
+	      <option   value="1391">1391</option>
+	      <option   value="1392">1392</option>
+	      <option   value="1393">1393</option>
+	      <option   value="1394">1394</option>
+	      <option   value="1395">1395</option>
+
+        </select>
+        
+      
+        <select size="1" dir="rtl"  name="month"  class="combo-date">
+         <option selected value="-1">انتخاب</option>
+          <option   value="01">فروردين</option>
+          <option   value="02">ارديبهشت</option>
+          <option   value="03">خرداد</option>
+          <option   value="04">تير</option>
+          <option   value="05">مرداد</option>
+          <option   value="06">شهريور</option>
+          <option   value="07">مهر</option>
+          <option   value="08">آبان</option>
+          <option   value="09">آذر</option>
+          <option   value="10">دي</option>
+          <option   value="11">بهمن</option>
+          <option   value="12">اسفند</option>
+        </select>
+ 
+        <select size="1" dir="rtl"  name="day"  class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option   value="01">1</option>
+          <option   value="02">2</option>
+          <option   value="03">3</option>
+          <option   value="04">4</option>
+          <option   value="05">5</option>
+          <option   value="06">6</option>
+          <option   value="07">7</option>
+          <option   value="08">8</option>
+          <option   value="09">9</option>
+          <option   value="10">10</option>
+          <option   value="11">11</option>
+          <option   value="12">12</option>
+          <option   value="13">13</option>
+          <option   value="14">14</option>
+          <option   value="15">15</option>
+          <option   value="16">16</option>
+          <option   value="17">17</option>
+          <option   value="18">18</option>
+          <option   value="19">19</option>
+          <option   value="20">20</option>
+          <option   value="21">21</option>
+		  <option   value="22">22</option>
+		  <option   value="23">23</option>
+		  <option   value="24">24</option>
+		  <option   value="25">25</option>
+		  <option   value="26">26</option>
+		  <option   value="27">27</option>
+		  <option   value="28">28</option>
+		  <option   value="29">29</option>
+		  <option   value="30">30</option>
+		  <option   value="31">31</option>
+        </select>
+ 
+	
+	
+	
+	
+	
+	
+	</td>
+    <td width="150" class="tahoma1"> تاريخ از</td>
+  </tr>
+  
+          <tr>
+    <td width="350" align="right">
+	
+	
+  
+    	   <select size="1" dir="rtl"  name="year_end" class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option   value="1381">1381</option>
+          <option   value="1382">1382</option>
+          <option   value="1383">1383</option>
+          <option   value="1384">1384</option>
+          <option   value="1385">1385</option>
+	  	  <option   value="1386">1386</option>
+	      <option   value="1387">1387</option>
+	      <option   value="1388">1388</option>
+	      <option   value="1389">1389</option>
+	      <option   value="1390">1390</option>
+	      <option   value="1391">1391</option>
+	      <option   value="1392">1392</option>
+	      <option   value="1393">1393</option>
+	      <option   value="1394">1394</option>
+	      <option   value="1395">1395</option>
+	      
+
+        </select>
+        
+      
+        <select size="1" dir="rtl"  name="month_end"  class="combo-date">
+         <option selected value="-1">انتخاب</option>
+          <option   value="01">فروردين</option>
+          <option   value="02">ارديبهشت</option>
+          <option   value="03">خرداد</option>
+          <option   value="04">تير</option>
+          <option   value="05">مرداد</option>
+          <option   value="06">شهريور</option>
+          <option   value="07">مهر</option>
+          <option   value="08">آبان</option>
+          <option   value="09">آذر</option>
+          <option   value="10">دي</option>
+          <option   value="11">بهمن</option>
+          <option   value="12">اسفند</option>
+        </select>
+ 
+        <select size="1" dir="rtl"  name="day_end"  class="combo-date">
+          <option selected value="-1">انتخاب</option>
+          <option   value="01">1</option>
+          <option   value="02">2</option>
+          <option   value="03">3</option>
+          <option   value="04">4</option>
+          <option   value="05">5</option>
+          <option   value="06">6</option>
+          <option   value="07">7</option>
+          <option   value="08">8</option>
+          <option   value="09">9</option>
+          <option   value="10">10</option>
+          <option   value="11">11</option>
+          <option   value="12">12</option>
+          <option   value="13">13</option>
+          <option   value="14">14</option>
+          <option   value="15">15</option>
+          <option   value="16">16</option>
+          <option   value="17">17</option>
+          <option   value="18">18</option>
+          <option   value="19">19</option>
+          <option   value="20">20</option>
+          <option   value="21">21</option>
+		  <option   value="22">22</option>
+		  <option   value="23">23</option>
+		  <option   value="24">24</option>
+		  <option   value="25">25</option>
+		  <option   value="26">26</option>
+		  <option   value="27">27</option>
+		  <option   value="28">28</option>
+		  <option   value="29">29</option>
+		  <option   value="30">30</option>
+		  <option   value="31">31</option>
+        </select>
+ 
+	
+	
+	
+	
+	
+	</td>
+    <td width="150" class="tahoma1"> تاريخ تا</td>
+  </tr>  
+         <tr>
+    <td width="350" align="right">
+    <input type='radio' value='1' name='pay_status'>
+  	</td>
+    <td width="150" class="tahoma1">پرداخت شده</td>
+  </tr>          
+         
+  <tr>
+    <td width="350" align="right">
+    <input type='radio' value='2' name='pay_status'>
+  	</td>
+    <td width="150" class="tahoma1">پرداخت نشده</td>
+  </tr> 
+   <tr>
+      <tr>   
+  <?
+   $Query=mysql_query("select * from daneshkade  ") or die("Error in selecting tarh-type");
+   
+?> 
+    <td width="350"  align="right">
+    <div style="overflow:auto;width:350px;height:75px;border:1px solid #336699;padding-left:5px" class="tahoma1">
+    همه<input type="checkbox" name="checkall" onClick="checkUncheckAll(this);"><br>
+    <?
+    
+    while($row_fetched=mysql_fetch_array($Query))
+  {
+  	echo $row_fetched["daneshkade_name"]."<input type=\"checkbox\" name=\"daneshkade[]\" value=".$row_fetched["cod_daneshkade"]."><br>";
+  }
+    ?>
+	  </div>
+
+    </td>
+    <td width="150" class="tahoma1" valign='top'>دانشکده</td>
+  </tr>
+ 
+  	    
+              <td width="100%" colspan="2" height="32">
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="جستجو" name="submit_tarh"></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
+<br>
+<? 
+   footer_forms($admin,$seed);
+?>
+
+
+

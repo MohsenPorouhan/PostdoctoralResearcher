@@ -1,0 +1,199 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+//require("include/class.phpmailer.php");
+//require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+
+if(isset($action))
+if(strcmp($action,"send_email")==0)
+if(   strlen(trim($subject))>0 )
+{
+     // $letter_body=arabic2utf($letter_body);
+   	   $query="insert into message_to_admin set message_to='$karshenas',subject='$subject' , body='$body', sender='$admin' , sender_type='admin', send_date='".date("Y-m-d")."'";
+//   	   echo $query;
+	   $res=mysql_query($query) or die("Error");
+       
+       message_show("پيام شما ارسال شد","green");
+       footer_forms($admin,$seed);
+       exit();
+       
+   }
+    else
+	 $status="mobile_error";   
+       
+ 
+
+?>
+
+
+
+<? echo "<form name=\"sms\" method=\"post\"  action=\"karshenasan_messages.phtml?action=send_email&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+<TABLE cellSpacing=0 cellPadding=0 width="500" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 width="100%" cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=right class="tahoma1" width="100%" align="right"  height=19>
+    ارسال پيام به کارشناس
+	   </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+
+  <table border="0"  width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+   <?
+      if (strcmp($status,"mobile_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">شماره تلفن همراه موجود در پروفايل مجري صحيح نيست</td>";
+    echo "</tr>";
+  }
+     if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"entry_error_1")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">روي اين شورا کارشناس تعريف شده و قابل حذف نيست</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">چنين موردي قبلا تعريف شده</td>";
+    echo "</tr>";
+  }
+  
+  
+$query="select * from group_karshenasan where is_karshenas='1' ";
+$result=mysql_query($query) or die("Error");
+
+?> 
+ <tr>
+              <td width="66%" align="right">
+                <p align="right"><select size="1" name="karshenas" class="edit-user" dir=rtl>
+                <?
+                echo "<option value=\"all\">همه</option>";
+				  while($rf=mysql_fetch_array($result))
+				  {
+				  	echo "<option value=\"".$rf["username"]."\">".$rf["karshenas_family"]."&nbsp;".$rf["karshenas_name"]."</option>";
+				  }
+				?>
+    							
+ 								 </select>
+								  </td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>کارشناس</td>
+            </tr>
+       
+  <tr>
+              <td width="66%" align="right">
+                <p align="right"><input type="text" name="subject" size="48" class="edit-user" ></td>
+              <td width="24%" align="left">
+                <p align="left" class="tahoma1"><span class="star-message">*</span>موضوع</td>
+            </tr>
+            
+ <tr>
+    <td  width="66%" align="right">
+	<textarea class="edit-user" name="body" wrap="physical" cols="38" rows="5"  dir=RTL    > </textarea>
+
+<!--	<textarea class="edit-user"  name="letter_body" wrap="physical" cols="38" rows="5"
+onKeyDown="textCounter(document.sms.letter_body,document.sms.remLen1,63)"
+onKeyUp="textCounter(document.sms.letter_body,document.sms.remLen1,63)" ></textarea>
+-->
+	
+ </td>
+    <td width="24%" class="tahoma1" valign="top">متن نامه</td>
+  </tr>
+  
+            <tr>
+              <td width="100%" colspan="2" >
+
+                <p align="center"><input class="but-tarh-type" type="submit" value="ارسال" name="submit_tarh"></td>
+            </tr>
+             <tr>
+              <td width="100%" colspan="2" class="tahoma1">
+
+                <p align="center" ><a <? echo "href='message_to_karshenasan.phtml?admin=$admin&seed=$seed'"; ?> target='_blank'>نامه هاي ارسالي توسط مدير سيستم</a></td>
+            </tr>
+          </table>
+          
+</form>
+
+
+
+
+
+<?  
+ $query="select * from message_to_admin where message_to='admin' order by id desc";
+ 
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+ if(mysql_num_rows($result) > 0)
+ {
+ 	echo "<table border=\"1\" width=\"500\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	echo "<tr>";
+	
+	 
+  	echo "<td colspan=\"5\" width=\"20%\" align='center' class=\"tahoma1\" bgcolor=\"$title_color\">نامه هاي دريافتي شما</td>";
+	  echo "</tr>";
+	echo "<tr>";
+	
+	echo "<td width=\"2%\" align='center' class=\"tahoma1\" bgcolor=\"$title_color\">پاسخ</td>";
+	echo "<td width=\"50%\" align='center' class=\"tahoma1\" bgcolor=\"$title_color\">متن نامه</td>";
+ 	echo "<td width=\"20%\" align='center' class=\"tahoma1\" bgcolor=\"$title_color\">عنوان نامه</td>";
+ 	//echo "<td width=\"20%\" align='center' class=\"tahoma1\">گيرنده</td>";
+  	echo "<td width=\"20%\" align='center' class=\"tahoma1\" bgcolor=\"$title_color\">فرستنده</td>";
+  		echo "<td width=\"10%\" align='center' class=\"tahoma1\" bgcolor=\"$title_color\">تاريخ ارسال</td>";
+	  echo "</tr>";
+ 	$color=$list_color_1;
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	$id=$row_fetched["id"];	
+ 	$q="update message_to_admin set readed='1' where id='$id'";
+ 	$res=mysql_query($q) or die("Error");
+ 	 echo "<tr>";
+     $startdate = $row_fetched["send_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $send_date=hijricalender( $startyear , $startmon , $startday );
+ if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+	 
+	 echo "<td width=\"2%\" align='center' class=\"tahoma1\" bgcolor=\"$color\">پاسخ</td>"; 	   	 
+  	 echo "<td width=\"50%\" align='right' class=\"tahoma1\" dir=\"rtl\" bgcolor=\"$color\" >".nl2br($row_fetched["body"])."</td>";
+ 	 echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\" bgcolor=\"$color\">".$row_fetched["subject"]."</td>";
+ 	 //echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["message_to"]."</td>";
+     echo "<td width=\"20%\" align='right' class=\"tahoma1\"  dir=\"rtl\" bgcolor=\"$color\">".$row_fetched["sender"]."</td>";
+     echo "<td width=\"10%\" align='right' class=\"tahoma1\"  dir=\"ltr\" bgcolor=\"$color\">".$send_date."</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ ?>
+        
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

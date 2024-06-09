@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>Warning</title>
+    <meta http-equiv="Content-Language" content="fa">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+</head>
+<body>
+<?
+include("include/styles.phtml");
+
+?>
+<script language="javascript">
+function refreshmain()
+{
+   opener.location="<? echo "$mainwindow?admin=$admin&seed=$seed&action=delete_modir&delete_id=$delete_id"; ?>";
+
+   self.close();
+}
+
+</script>
+
+<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="5">
+<tr>
+<td align="center">
+<p align="center" class="tahoma1">آيا مايل به حذف هستيد ؟
+</td>
+</tr>
+
+<tr>
+<td align="center" colspan="2">
+<input type="button" value="خير" name="delete" class="but-small"  onclick="javascript: window.close()">&nbsp;<input type="button" value="بلي" name="cancel" class="but-small" onclick="refreshmain()" >
+</td>
+</tr>
+</table>
+</body>
+</html>

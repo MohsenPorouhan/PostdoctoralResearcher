@@ -1,0 +1,1111 @@
+<script type="text/javascript">
+function changetextbox()
+{ 
+	var x=document.getElementById("tamin_etebar");
+	var y=document.getElementById("grant_type");
+    if (document.getElementById("tarh_type").value == "3") {
+        
+    	x.style.display = 'block';
+    	y.style.display = 'none';
+    }
+    else if (document.getElementById("tarh_type").value == "2") {
+    	
+        //alert(document.getElementById("tarh_type").value);
+    	x.style.display = 'none';
+    	y.style.display = 'block';    	
+    }
+
+ else if (document.getElementById("tarh_type").value == "1") {
+    	
+        //alert(document.getElementById("tarh_type").value);
+    	y.style.display = 'none';
+    	x.style.display = 'none';
+    	
+    }
+}
+//----------------------------------------------
+
+function disablefield()
+{	
+	var x=document.getElementById("maghta");
+	
+if ( document.getElementById('payanname_yes').checked == true ){
+	x.style.display = 'none';
+//document.getElementById('PhoneNumber').disabled = true
+	}
+ if (document.getElementById('payanname_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	}
+}
+//----------------------------------------------
+function disablefield2()
+{	
+	var x=document.getElementById("mahale_tamin_etebar");
+	var y=document.getElementById("mablagh_tamin_etebar");
+	var z=document.getElementById("nahveye_tamin_etebar");
+		
+if ( document.getElementById('tamin_etebar_yes').checked == true ){
+		//alert("hhhhh");
+		x.style.display = 'none';
+		y.style.display = 'none';
+		z.style.display = 'none';
+
+	}
+ if (document.getElementById('tamin_etebar_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	 y.style.display = 'block';
+	 z.style.display = 'block';
+	}
+}
+//----------------------------------------------
+function disablefield3()
+{	
+	var x=document.getElementById("num_safte");
+	var y=document.getElementById("mablagh_safte");
+	
+if ( document.getElementById('need_safte_yes').checked == true ){
+		//alert("hhhhh");
+	x.style.display = 'none';
+	y.style.display = 'none';
+		
+	}
+ if (document.getElementById('need_safte_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	 y.style.display = 'block';
+	}
+}
+
+//----------------------------------------------
+function disablefield4()
+{	
+	var x=document.getElementById("letter");
+	var y=document.getElementById("letter_no");
+	var z=document.getElementById("mablagh_mosharekat");
+		
+if ( document.getElementById('tarh_moshtarak_yes').checked == true ){
+		//alert("hhhhh");
+	x.style.display = 'none';
+	y.style.display = 'none';
+	z.style.display ='none';
+		
+	}
+ if (document.getElementById('tarh_moshtarak_no').checked == true ){
+	 
+	 x.style.display = 'block';
+	 y.style.display = 'block';
+	 z.style.display = 'block';
+	}
+}
+//-------------------------------------------------
+function disablefield5()
+{	
+	var x=document.getElementById("letter_no_akhlagh");
+	var y=document.getElementById("date");
+	
+	 if (document.getElementById("commite_akhlagh_confirm").value == "3") {
+	        
+	    	x.style.display = 'block';
+	    	y.style.display = 'block';
+	    }
+	    else  {
+	    	
+	        //alert(document.getElementById("tarh_type").value);
+	    	x.style.display = 'none';
+	    	y.style.display = 'none';    	
+	    }
+}
+//-------------------------------------------------
+
+function changetextbox2()
+{ 
+	var x=document.getElementById("tarh_takhiri_no");
+	
+    if (document.getElementById("tarh_takhiri").value == "1") {
+        
+    	x.style.display = 'block';
+    	
+    }
+    else if (document.getElementById("tarh_takhiri").value == "2") {
+    	
+    	x.style.display = 'none';
+    	
+    }
+}
+
+</script>
+
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+
+echo "<br>";
+
+
+$query="select * from group_karshenasan where  username=\"$admin\"";
+$result=mysql_query($query) or die("Error in selecting data from tarh  ");
+$row_fetched = mysql_fetch_array( $result );
+$cod_karshenas=$row_fetched["cod_karshenas"];
+if(isset($action))
+{
+  if (strcmp($action,"edit_control_gharardad")==0)
+  {
+   	
+	        
+   if( $tarh_type!= 0  && strlen(trim($is_payan_name)) >= 0  && strlen(trim($etebar_proposal)) >= 0  &&  strlen(trim($has_tamin_etebar)) >= 0 &&  strlen(trim($tarh_moshtarak)) >= 0 &&  strlen(trim($mablagh_tarh)) > 0 &&  strlen(trim($mablagh_nahaei)) > 0 
+    && $tarh_takhiri!=0 && $shora_cond!=0 && $commite_akhlagh_confirm !=0 && $davar_mali_shorot!= 0 && $karshenas !=0 )
+    {
+    	echo $is_payan_name;
+      $suppliant_date = $year."/". $month."/". $day;
+      //$query="select * from control_gharardad_tarh where (cod_tarh=\"$cod_tarh\") and cod_karshenas=\"$cod_karshenas\"";
+     // $result=mysql_query($query) or die("Error in selecting data from tarh  ");
+
+     // if ( mysql_num_rows($result) <= 0 )
+     // {
+
+   		$mablagh_tarh=str_replace(",","",$mablagh_tarh);
+      	$mablagh_nahaei=str_replace(",","",$mablagh_nahaei);
+      	$mablagh_mosharekat=str_replace(",","",$mablagh_mosharekat);
+      	$mablagh_tamin_etebar=str_replace(",","",$mablagh_tamin_etebar);
+     
+          $year_date = date("Y") - 1921 ;
+  	   $date = $year."-".$month."-".$day; 
+     
+       
+		  $query="update control_gharardad_tarh  set  etebar_proposal='$etebar_proposal',cod_karshenas='$cod_karshenas',mojri_name='$First_mojri_name',vabastegi='$vabastegi',tarh_type='$tarh_type',tamin_etebar='$tamin_etebar',is_payan_name='$is_payan_name',maghta='$maghta',grant_type='$grant_type',has_tamin_etebar='$has_tamin_etebar',mahale_tamin_etebar='$mahale_tamin_etebar',mablagh_tamin_etebar='$mablagh_tamin_etebar',nahveye_tamin_etebar='$nahveye_tamin_etebar',tarh_moshtarak='$tarh_moshtarak',letter='$letter',letter_no='$letter_no',mablagh_mosharekat='$mablagh_mosharekat',mablagh_tarh='$mablagh_tarh',mablagh_nahaei='$mablagh_nahaei',need_safte='$need_safte',num_safte='$num_safte',mablagh_safte='$mablagh_safte',tarh_takhiri='$tarh_takhiri',tarh_takhiri_no='$tarh_takhiri_no',shora_cond='$shora_cond',commite_akhlagh_confirm='$commite_akhlagh_confirm',davar_mali_shorot='$davar_mali_shorot',karshenas='$karshenas',nazer_pishnahadi='$nazer_pishnahadi',letter_no_akhlagh='$letter_no_akhlagh',letter_date_akhlagh='$date',shorot_gharardad='$shorot_gharardad' where cod_tarh='$cod_tarh'";
+		 //echo $query;
+	      $result=mysql_query($query) or die("Error in inserting data into tarh #100");
+	      
+	      $vabastegi="";
+	      $tarh_type="";
+	      $is_payan_name="";
+	      $has_tamin_etebar="";
+	      $davar_mali_shorot="";
+	      $karshenas="";
+	      $tarh_moshtarak="";
+	      $mablagh_tarh="";
+	      $mablagh_nahaei="";
+	      $need_safte="";
+	      $tarh_takhiri="";
+	      $shora_cond="";
+	      $commite_akhlagh_confirm="";
+	      $tamin_etebar="";
+	      $maghta="";
+ 		  $grant_type="";
+ 		  $mahale_tamin_etebar="";
+		  $mablagh_tamin_etebar="";
+		  $nahveye_tamin_etebar="";
+		  $letter="";
+ 		  $letter_no="";
+ 		  $mablagh_mosharekat="";
+ 		  $letter_no_akhlagh="";
+		  $letter_date_akhlagh="";  
+		  $nazer_pishnahadi="";
+		  $num_safte="";
+		  $mablagh_safte="";
+		  $shorot_gharardad="";
+		  $etebar_proposal="";
+ 		  
+	      
+	      
+          $action="ويرايش کنترل قرارداد طرح با کد"."<br>".$cod_tarh;
+           set_log($action,$admin,date("Y-m-d, g:i a"));
+          // savelog("$admin","add","Add a control_gharardad");
+          
+         //  message_show("فرم کنترل قرارداد مربوط به اين طرح ويرايش شد","green");
+		          
+        //  footer_forms($admin,$seed);
+        //  exit();
+        ?>
+         <script language="javascript">
+           window.location="<? echo "tarh_list.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+         </script>  
+           <?
+           
+
+       //  }
+       //  else
+       //   $status="duplicate_entry";
+    }
+  else
+     $status="entry_error";
+  }
+
+}
+
+
+
+
+   
+
+
+echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=edit_control_gharardad&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+   <TD align=left width="249"   height=19>
+     <a style="text-decoration:none" href="tarh_list.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" ><img src=images/return.gif border="0" alt="Return"></a>
+      </TD>
+    
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+ $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+  $mojri_tag="1";
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+  {
+    $mojri_tag="0";
+    $First_mojri_name = "اطلاعات موجود نيست";
+  }
+  
+ $query="select * from control_gharardad_tarh where  cod_tarh ='$cod_tarh'";
+ $result=mysql_query($query) or die("Error in selecting data from  jadval zarayeb ");
+ $row_f=mysql_fetch_array($result);
+ $id=$row_f["id"];
+ $cod_karshenas=$row_f["cod_karshenas"];
+ $vabastegi=$row_f["vabastegi"];
+ $tarh_type=$row_f["tarh_type"];
+ $tamin_etebar=$row_f["tamin_etebar"];
+ $is_payan_name=$row_f["is_payan_name"];
+ $maghta=$row_f["maghta"];
+ $grant_type=$row_f["grant_type"];
+ $has_tamin_etebar=$row_f["has_tamin_etebar"];
+ $mahale_tamin_etebar=$row_f["mahale_tamin_etebar"];
+ $mablagh_tamin_etebar=$row_f["mablagh_tamin_etebar"];
+ $nahveye_tamin_etebar=$row_f["nahveye_tamin_etebar"];
+ $tarh_moshtarak=$row_f["tarh_moshtarak"];
+ $letter=$row_f["letter"];
+ $letter_no=$row_f["letter_no"];
+ $mablagh_mosharekat=$row_f["mablagh_mosharekat"];
+ $mablagh_tarh=$row_f["mablagh_tarh"];
+ $mablagh_nahaei=$row_f["mablagh_nahaei"];
+ $need_safte=$row_f["need_safte"];
+ $num_safte=$row_f["num_safte"];
+ $mablagh_safte=$row_f["mablagh_safte"];
+ $tarh_takhiri=$row_f["tarh_takhiri"];
+ $tarh_takhiri_no=$row_f["tarh_takhiri_no"];
+ $shora_cond=$row_f["shora_cond"];
+ $commite_akhlagh_confirm=$row_f["commite_akhlagh_confirm"];
+ $letter_no_akhlagh=$row_f["letter_no_akhlagh"];
+ $letter_date_akhlagh=$row_f["letter_date_akhlagh"];  
+ $davar_mali_shorot=$row_f["davar_mali_shorot"];
+ $karshenas=$row_f["karshenas"];
+ $nazer_pishnahadi=$row_f["nazer_pishnahadi"];
+ $shorot_gharardad=$row_f["shorot_gharardad"];
+ $etebar_proposal=$row_f["etebar_proposal"];
+
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">.مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0 )
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">کنترل قرارداد اين طرح قبلا ثبت شده است</td>";
+    echo "</tr>";
+  }
+?>
+
+  <tr>
+	    <td width="350" align="right" class="tahoma1"><?echo  $First_mojri_name; ?></td>
+	    <td width="250" align="center" class="tahoma1">نام ثبت کننده طرح</td>
+	  </tr>
+
+<!--  
+<tr>
+ 	<td width="350" align="right" class="tahoma1">
+	 	<input type="radio" value="0" name="vabastegi" <? if(strcmp($vabastegi,"0")==0) echo "checked"  ;?>  >هيات علمي
+	 	<input type="radio" value="1" name="vabastegi" <? if(strcmp($vabastegi,"1")==0) echo "checked"  ;?>  >کارمند: رسمي
+	 	<input type="radio" value="2" name="vabastegi" <? if(strcmp($vabastegi,"2")==0) echo "checked"  ;?>  >پيماني 
+	 	<input type="radio" value="3" name="vabastegi" <? if(strcmp($vabastegi,"3")==0) echo "checked"  ;?> >قراردادي 
+	</td>
+	<td width="150" align="center" class="tahoma1">وضعيت وابستگي</td>
+</tr>-->
+
+ <?
+  if(strcmp($tarh_type,"0")==0)
+    $t0=" selected ";
+  else
+    $t0="";
+    
+  if(strcmp($tarh_type,"1")==0)
+    $t1=" selected ";
+  else
+    $t1="";
+    
+    
+ if(strcmp($tarh_type,"2")==0)
+    $t2=" selected ";
+  else
+    $t2="";  
+
+if(strcmp($tarh_type,"3")==0)
+    $t3=" selected ";
+  else
+    $t3="";  
+		  
+ ?>
+
+   <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" id="tarh_type" name="tarh_type" >
+          <option value="0" <? echo $t0; ?>>انتخاب کنيد</option>
+          <option value="1" <? echo $t1; ?>>معمولي</option>
+          <option value="2" <? echo $t2; ?>> گرنت</option>
+          <option value="3" <? echo $t3; ?>> HSR</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> نوع طرح</td>
+ </tr>
+
+ <?
+  if(strcmp($tamin_etebar,"0")==0)
+    $te0=" selected ";
+  else
+    $te0="";
+    
+  if(strcmp($tamin_etebar,"1")==0)
+    $te1=" selected ";
+  else
+    $te1="";
+    
+    
+ if(strcmp($tamin_etebar,"2")==0)
+    $te2=" selected ";
+  else
+    $te2="";  
+ 
+		  
+ ?>
+  <tr id="tamin_etebar" >
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1"  name="tamin_etebar"  >
+          <option value="0"  <? echo $te0; ?>>انتخاب کنيد</option>
+          <option value="1"  <? echo $te1; ?>> تامين اعتبار طرح HSR از معاونت پژوهشي يا EDC</option>
+          <option value="2"  <? echo $te2; ?>>تامين اعتبار از ساير منابع (معاونت ها، دانشکده ها،مراکز تحقيقاتي ,...)</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1">HSR تامين اعتبار در صورت   </td>
+ </tr>
+
+ <tr id="grant_type"  >
+    <td width="350" align="right"><input type="text"  name="grant_type" size="20"  <? echo "value='$grant_type'"; ?>  class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1"> نوع گرنت </td>
+</tr>
+ 
+
+
+<tr>
+    <td width="350" align="right" class="tahoma1">
+    <input type="radio" value="0" id="payanname_no" name="is_payan_name"  <? if(strcmp($is_payan_name,"0")==0) echo "checked"  ;?>  >نمي باشد
+	<input type="radio" value="1" id="payanname_yes" name="is_payan_name" <? if(strcmp($is_payan_name,"1")==0) echo "checked"  ;?>  >مي باشد 
+	     
+    </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>پايان نامه </td>
+</tr>
+
+<?
+  if(strcmp($maghta,"0")==0)
+    $m0=" selected ";
+  else
+    $m0="";
+    
+  if(strcmp($maghta,"1")==0)
+    $m1=" selected ";
+  else
+    $m1="";
+    
+    
+ if(strcmp($maghta,"2")==0)
+    $m2=" selected ";
+  else
+    $m2="";  
+
+if(strcmp($maghta,"3")==0)
+    $m3=" selected ";
+  else
+    $m3="";  
+		  
+if(strcmp($maghta,"4")==0)
+    $m4=" selected ";
+  else
+    $m4="";
+    
+if(strcmp($maghta,"5")==0)
+    $m5=" selected ";
+  else
+    $m5="";
+    
+if(strcmp($maghta,"6")==0)
+    $m6=" selected ";
+  else
+    $m6="";
+    
+if(strcmp($maghta,"7")==0)
+    $m7=" selected ";
+  else
+    $m7="";
+ ?>
+  <tr id="maghta" >
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" name="maghta"  >
+          <option value="0" <? echo $m0; ?>>انتخاب کنيد</option>
+          <option value="1" <? echo $m1; ?>>عمومي</option>
+          <option value="2" <? echo $m2; ?>> تخصص</option>
+          <option value="3" <? echo $m3; ?>> ارشد</option>
+          <option value="4" <? echo $m4; ?>> فوق تخصص </option>
+          <option value="5" <? echo $m5; ?>> Ph.D</option>
+          <option value="6" <? echo $m6; ?>> MPH</option>
+          <option value="7" <? echo $m7; ?>> PhD By Research</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"> مقطع</td>
+ </tr>
+
+<tr>
+<?// echo $has_tamin_etebar;?>
+    <td width="350" align="right" class="tahoma1">
+    <input type="radio" value="0" id="tamin_etebar_no" name="has_tamin_etebar"  <? if(strcmp($has_tamin_etebar,"0")==0) echo "checked"  ;?> >ندارد
+    <input type="radio" value="1" id="tamin_etebar_yes" name="has_tamin_etebar" <? if(strcmp($has_tamin_etebar,"1")==0) echo "checked"  ;?> >دارد 
+    
+    </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>تامين اعتبار از ساير سازمانها </td>
+</tr>
+  <tr id="mahale_tamin_etebar"  >
+    <td width="350" align="right"><input type="text" name="mahale_tamin_etebar" value="<? echo $mahale_tamin_etebar;?>" size="20"  class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">محل تامين اعتبار</td>
+  </tr>
+  
+    <tr id="mablagh_tamin_etebar" >
+    <td width="350" align="right"><input type="text"  name="mablagh_tamin_etebar" value="<? echo $mablagh_tamin_etebar;?>" size="20"   dir=RTL onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()"></td>
+    <td width="250" align="center" class="tahoma1">مبلغ تامين اعتبار</td>
+  </tr>
+ 
+ <?
+  if(strcmp($nahveye_tamin_etebar,"0")==0)
+    $nte0=" selected ";
+  else
+    $nte0="";
+    
+  if(strcmp($nahveye_tamin_etebar,"1")==0)
+    $nte1=" selected ";
+  else
+    $nte1="";
+    
+    
+ if(strcmp($nahveye_tamin_etebar,"2")==0)
+    $nte2=" selected ";
+  else
+    $nte2="";  
+ 
+    ?> 
+  <tr id="nahveye_tamin_etebar" >
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" name="nahveye_tamin_etebar">
+          <option value="0" <? echo $nte0; ?>>انتخاب کنيد</option>
+          <option value="1" <? echo $nte1; ?>>اعتبار به دانشگاه پرداخت نمي شود</option>
+          <option value="2" <? echo $nte2; ?>>اعتبار به دانشگاه پرداخت مي شود و نامه تامين اعتبار دارد</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1">نحوه تامين اعتبار</td>
+ </tr>
+ 
+<?// echo $tarh_moshtarak;?>
+<tr>
+    <td width="350" align="right" class="tahoma1">
+    <input type="radio" value="0" id="tarh_moshtarak_no" name="tarh_moshtarak"  <? if(strcmp($tarh_moshtarak,"0")==0) echo "checked"  ;?> >نمي  باشد
+	<input type="radio" value="1" id="tarh_moshtarak_yes" name="tarh_moshtarak" <? if(strcmp($tarh_moshtarak,"1")==0) echo "checked"  ;?> >مي باشد  
+	    
+    </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>طرح مشترک با دانشکده/ مرکز ديگر </td>
+</tr>
+<?
+  if(strcmp($letter,"0")==0)
+    $let0=" selected ";
+  else
+    $let0="";
+    
+  if(strcmp($letter,"1")==0)
+    $let1=" selected ";
+  else
+    $let1="";
+    
+    
+ if(strcmp($letter,"2")==0)
+    $let2=" selected ";
+  else
+    $let2="";  
+ 
+    ?> 
+<tr id="letter" >
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1"  name="letter"  >
+          <option value="0" <? echo $let0; ?>>انتخاب کنيد</option>
+          <option value="1" <? echo $let1; ?>>دارد</option>
+          <option value="2" <? echo $let2; ?>> درصورتجلسه دانشکده/ مرکز ذکر شده است</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"> نامه</td>
+ </tr>
+
+<tr id="letter_no" >
+    <td width="350" align="right"><input type="text"  name="letter_no" size="20"  value="<? echo $letter_no;?>" class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">شماره نامه </td>
+</tr>
+
+<tr id="mablagh_mosharekat" >
+    <td width="350" align="right"><input type="text"  name="mablagh_mosharekat" size="20" value="<? echo $mablagh_mosharekat;?>"   dir=RTL  onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()"></td>
+    <td width="250" align="center" class="tahoma1">مبلغ مشارکت مالي </td>
+  </tr>
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="mablagh_tarh" size="20"  value="<? echo $mablagh_tarh;?>"  dir=RTL  onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()"></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>مبلغ طرح در صورتجلسه امضا شده دانشکده/ مرکز</td>
+  </tr>
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="etebar_proposal" size="20"  value="<? echo $etebar_proposal;?>"  dir=RTL  onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()"></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>اعتبار قيد شده در پروپزال</td>
+  </tr>
+  
+  <tr>
+    <td width="350" align="right"><input type="text" name="mablagh_nahaei" size="20" value="<? echo $mablagh_nahaei;?>"   dir=RTL  onkeyup="MakingMoneyForm(this)"  class="edit-user"  onkeypress="return checkit()"></td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>مبلغ نهايي شده در حوزه که هنگام آماده به قرارداد اعلام شده است</td>
+  </tr>
+<?
+
+if(strcmp($need_safte,"0")==0){
+    $ns0=" checked ";
+    $ns1="";
+   
+} else {
+    $ns0="";
+    $ns1="checked";
+}
+     ?>   
+ <!--  <tr>
+    <td width="350" align="right" class="tahoma1">
+	    <input type="radio" value="0" id="need_safte_yes" name="need_safte" <? if(strcmp($need_safte,"0")==0) echo "checked"  ;?> >نياز دارد 
+	    <input type="radio" value="1" id="need_safte_no" name="need_safte"  <? if(strcmp($need_safte,"1")==0) echo "checked"  ;?> >نياز ندارد
+    </td>
+    <td width="250" align="center" class="tahoma1"><span class="star-message">*</span>اخذ سفته </td>
+</tr>
+<tr id="num_safte" >
+    <td width="350" align="right"><input type="text"  name="num_safte" size="20" value="<? echo $num_safte;?>"  class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">تعداد سفته اخذ شده</td>
+ </tr>
+<tr id="mablagh_safte" >
+    <td width="350" align="right"><input type="text"  name="mablagh_safte" size="20" value="<? echo $mablagh_safte;?>"  class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">مبلغ سفته اخذ شده</td>
+ </tr> -->
+<?
+  if(strcmp($tarh_takhiri,"0")==0)
+    $tarh_t0=" selected ";
+  else
+    $tarh_t0="";
+    
+  if(strcmp($tarh_takhiri,"1")==0)
+    $tarh_t1=" selected ";
+  else
+    $tarh_t1="";
+    
+    
+ if(strcmp($tarh_takhiri,"2")==0)
+    $tarh_t2=" selected ";
+  else
+    $tarh_t2="";  
+ 
+    ?>  
+ <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" id="tarh_takhiri" name="tarh_takhiri"   >
+          <option value="0" <? echo $tarh_t0;?>>انتخاب کنيد</option>
+          <option value="1" <? echo $tarh_t1;?>>دارد و در صورت تاييد مديريت قرارداد بسته خواهد شد </option>
+          <option value="2" <? echo $tarh_t2;?>>ندارد </option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> وضعيت مجري از نظر طرح تاخيري</td>
+ </tr>
+
+
+<tr id="tarh_takhiri_no">
+    <td width="350" align="right"><input type="text"  name="tarh_takhiri_no" size="20"  value="<? echo $tarh_takhiri_no;?>" class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">شماره طرح يا طرح هاي تاخيري مجري</td>
+</tr>
+<?
+  if(strcmp($shora_cond,"0")==0)
+    $shora_c0=" selected ";
+  else
+    $shora_c0="";
+    
+  if(strcmp($shora_cond,"1")==0)
+    $shora_c1=" selected ";
+  else
+    $shora_c1="";
+    
+    
+ if(strcmp($shora_cond,"2")==0)
+    $shora_c2=" selected ";
+  else
+    $shora_c2="";  
+ 
+    ?>  
+ <tr>
+ <td align="center" >
+ <select class="edit-user" dir="rtl" size="1" name="shora_cond">
+          <option value="0" <? echo $shora_c0;?>>انتخاب کنيد</option>
+          <option value="1" <? echo $shora_c1;?>>نداشته است </option>
+          <option value="2" <? echo $shora_c2;?>> داشته است و محقق شده است</option>
+ </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> شروط شوراي پژوهش</td>
+ </tr>
+<?
+  if(strcmp($commite_akhlagh_confirm,"0")==0)
+    $cac0=" selected ";
+  else
+    $cac0="";
+    
+  if(strcmp($commite_akhlagh_confirm,"1")==0)
+    $cac1=" selected ";
+  else
+    $cac1="";
+    
+    
+ if(strcmp($commite_akhlagh_confirm,"2")==0)
+    $cac2=" selected ";
+  else
+    $cac2="";
+      
+ if(strcmp($commite_akhlagh_confirm,"3")==0)
+    $cac3=" selected ";
+  else
+    $cac3=""; 
+    ?>
+
+ <tr>
+ <td align="center" >
+	 <select class="edit-user" dir="rtl" size="1" name="commite_akhlagh_confirm" >
+	          <option value="0" <? echo $cac0;?>>انتخاب کنيد</option>
+	          <option value="1" <? echo $cac1;?>>نياز نداشته است</option>
+	          <option value="2" <? echo $cac2;?>> نياز داشته و داخل حوزه تاييد شده</option>
+	          <option value="3" <? echo $cac3;?>> نياز داشته وتوسط کميته تخصصي تاييد شده </option>
+	 </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> تاييديه کميته اخلاق</td>
+ </tr>
+
+ <tr id="letter_no_akhlagh" >
+    <td width="350" align="right"><input type="text"  name="letter_no_akhlagh" size="20"  value="<? echo $letter_no_akhlagh; ?>" class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">(شماره نامه(در صورت داشتن تاييديه اخلاق  </td>
+ </tr>
+ <? /*
+// echo $letter_date_akhlagh;
+
+  //$letter_date_akhlagh = enum2fnum($letter_date_akhlagh);
+  $startyear2 = substr($letter_date_akhlagh,0,4);
+  //echo $startyear1;
+  $startmon2 = substr($letter_date_akhlagh,5,2);
+  $startday2 = substr($letter_date_akhlagh,8,2);
+  $farsistartdate=hijricalender( $startyear2 , $startmon2 , $startday2 );
+  $startyear1 = substr($farsistartdate,0,4);
+  echo $startyear1;
+  $startmon1 = substr($farsistartdate,5,2);
+  $startday1 = substr($farsistartdate,8,2);
+
+  
+ 
+  	 $c1="";
+	 $c2="";
+	 $c3="";
+	 $c4="";
+	 $c5="";
+	 $c6="";
+	 $c7="";
+	 $c8="";
+	 $c9="";
+	 $c10="";
+	 $c11="";
+	 $c12="";
+	 $c13="";
+	 
+	  if(strcmp($startyear1,"1385")==0)
+	    $c1=" selected ";
+	  if(strcmp($startyear1,"1386")==0)
+	    $c2=" selected ";
+	  if(strcmp($startyear1,"1387")==0)
+	    $c3=" selected ";
+	  if(strcmp($startyear1,"1388")==0)
+	    $c4=" selected ";	  
+	  if(strcmp($startyear1,"1389")==0)
+	    $c5=" selected ";
+	 if(strcmp($startyear1,"1390")==0)
+	    $c6=" selected ";
+	  if(strcmp($startyear1,"1391")==0)
+	    $c7=" selected ";
+	  if(strcmp($startyear1,"1392")==0)
+	    $c8=" selected ";	  
+	  if(strcmp($startyear1,"1393")==0)
+	    $c9=" selected ";
+ 
+ ?> 
+ <tr id="date" >
+            <td align="right" ><select class="tahoma1" dir="rtl" size="1" name="year">
+          <option value="0" selected>--&#1587;&#1575;&#1604;--</option>
+          <option value="1385" <? echo $c1;  ?> >&#1777;&#1779;&#1784;&#1781;</option>
+          <option value="1386" <? echo $c2;  ?> >&#1777;&#1779;&#1784;&#1782;</option>
+          <option value="1387" <? echo $c3;  ?> >&#1777;&#1779;&#1784;&#1783;</option>
+          <option value="1388" <? echo $c4;  ?> >&#1777;&#1779;&#1784;&#1784;</option>
+          <option value="1389" <? echo $c5;  ?> >&#1777;&#1779;&#1784;&#1785;</option>
+          <option value="1390" <? echo $c6;  ?> >&#1777;&#1779;&#1785;&#1776;</option>
+          <option value="1391" <? echo $c7;  ?> >&#1777;&#1779;&#1785;&#1777;</option>
+          <option value="1392" <? echo $c8;  ?>>&#1777;&#1779;&#1785;&#1778;</option>
+          <option value="1393" <? echo $c9;  ?> >&#1777;&#1779;&#1785;&#1779;</option>
+        </select>
+  <?
+  	 $c1="";
+	 $c2="";
+	 $c3="";
+	 $c4="";
+	 $c5="";
+	 $c6="";
+	 $c7="";
+	 $c8="";
+	 $c9="";
+	 $c10="";
+	 $c11="";
+	 $c12="";
+	 $c13="";
+	 if(strcmp($startmon1,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($startmon1,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($startmon1,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($startmon1,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($startmon1,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($startmon1,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($startmon1,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($startmon1,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($startmon1,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($startmon1,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($startmon1,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($startmon1,"12")==0)		 
+		    $c12=" selected ";
+  
+  
+  ?>
+      <select class="tahoma1" dir="rtl" size="1" name="month">
+          <option value="0" selected>--&#1605;&#1575;&#1607;--</option>
+          <option value="01" <? echo $c1; ?>  >&#1601;&#1585;&#1608;&#1585;&#1583;&#1610;&#1606;</option>
+          <option value="02" <? echo $c2; ?> >&#1575;&#1585;&#1583;&#1610;&#1576;&#1607;&#1588;&#1578;</option>
+          <option value="03" <? echo $c3; ?> >&#1582;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="04" <? echo $c4; ?> >&#1578;&#1610;&#1585;</option>
+          <option value="05" <? echo $c5; ?> >&#1605;&#1585;&#1583;&#1575;&#1583;</option>
+          <option value="06" <? echo $c6; ?> >&#1588;&#1607;&#1585;&#1610;&#1608;&#1585;</option>
+          <option value="07" <? echo $c7; ?> >&#1605;&#1607;&#1585;</option>
+          <option value="08" <? echo $c8; ?> >&#1570;&#1576;&#1575;&#1606;</option>
+          <option value="09" <? echo $c9; ?> >&#1570;&#1584;&#1585;</option>
+          <option value="10" <? echo $c10; ?> >&#1583;&#1610;</option>
+          <option value="11" <? echo $c11; ?> >&#1576;&#1607;&#1605;&#1606;</option>
+          <option value="12" <? echo $c12; ?> >&#1575;&#1587;&#1601;&#1606;&#1583;</option>
+        </select>
+        
+    <?
+    	$c1="";
+ $c2="";
+ $c3="";
+ $c4="";
+ $c5="";
+ $c6="";
+ $c7="";
+ $c8="";
+ $c9="";
+ $c10="";
+ $c11="";
+ $c12="";
+ $c13="";
+ $c14="";
+ $c15="";
+ $c16="";
+ $c17="";
+ $c18="";
+ $c19="";
+ $c20="";
+ $c21="";
+ $c22="";
+ $c23="";
+ $c24="";
+ $c25="";
+ $c26="";
+ $c27="";
+ $c28="";
+ $c29="";
+ $c30="";
+ $c31="";
+  if(strcmp($startday1,"01")==0)
+		    $c1=" selected ";
+		 if(strcmp($startday1,"02")==0)		 
+		    $c2=" selected ";
+		 if(strcmp($startday1,"03")==0)		 
+		    $c3=" selected ";			    
+         if(strcmp($startday1,"04")==0)		 
+		    $c4=" selected ";
+		 if(strcmp($startday1,"05")==0)		 
+		    $c5=" selected ";
+		 if(strcmp($startday1,"06")==0)		 
+		    $c6=" selected ";
+		 if(strcmp($startday1,"07")==0)		 
+		    $c7=" selected ";
+		 if(strcmp($startday1,"08")==0)		 
+		    $c8=" selected ";
+		 if(strcmp($startday1,"09")==0)		 
+		    $c9=" selected ";
+		 if(strcmp($startday1,"10")==0)		 
+		    $c10=" selected ";
+		 if(strcmp($startday1,"11")==0)		 
+		    $c11=" selected ";
+		 if(strcmp($startday1,"12")==0)		 
+		    $c12=" selected ";
+		 if(strcmp($startday1,"13")==0)		 
+		    $c13=" selected ";
+  		 if(strcmp($startday1,"14")==0)		 
+		    $c14=" selected ";
+		 if(strcmp($startday1,"15")==0)		 
+		    $c15=" selected ";
+		 if(strcmp($startday1,"16")==0)		 
+		    $c16=" selected ";
+		 if(strcmp($startday1,"17")==0)		 
+		    $c17=" selected ";
+		 if(strcmp($startday1,"18")==0)		 
+		    $c18=" selected ";
+		 if(strcmp($startday1,"19")==0)		 
+		    $c19=" selected ";
+		 if(strcmp($startday1,"20")==0)		 
+		    $c20=" selected ";
+		 if(strcmp($startday1,"21")==0)		 
+		    $c21=" selected ";
+		 if(strcmp($startday1,"22")==0)		 
+		    $c22=" selected ";
+		 if(strcmp($startday1,"23")==0)		 
+		    $c23=" selected ";
+		 if(strcmp($startday1,"24")==0)		 
+		    $c24=" selected ";
+		 if(strcmp($startday1,"25")==0)		 
+		    $c25=" selected ";
+		 if(strcmp($startday1,"26")==0)		 
+		    $c26=" selected ";
+		 if(strcmp($startday1,"27")==0)		 
+		    $c27=" selected ";
+		 if(strcmp($startday1,"28")==0)		 
+		    $c28=" selected ";
+		 if(strcmp($startday1,"29")==0)		 
+		    $c29=" selected ";
+		 if(strcmp($startday1,"30")==0)		 
+		    $c30=" selected ";
+		 if(strcmp($startday1,"31")==0)		 
+		    $c31=" selected ";
+    	?>
+       <select class="tahoma1" dir="rtl" size="1" name="day">
+          <option value="0" selected>--&#1585;&#1608;&#1586;--</option>
+          <option value="01" <? echo $c1; ?> >&#1777;</option>
+          <option value="02" <? echo $c2; ?> >&#1778;</option>
+          <option value="03" <? echo $c3; ?>>&#1779;</option>
+          <option value="04" <? echo $c4; ?> >&#1780;</option>
+          <option value="05" <? echo $c5; ?> >&#1781;</option>
+          <option value="06" <? echo $c6; ?> >&#1782;</option>
+          <option value="07" <? echo $c7; ?> >&#1783;</option>
+          <option value="08" <? echo $c8; ?> >&#1784;</option>
+          <option value="09" <? echo $c9; ?> >&#1785;</option>
+          <option value="10" <? echo $c10; ?> >&#1777;&#1776;</option>
+          <option value="11" <? echo $c11; ?> >&#1777;&#1777;</option>
+          <option value="12" <? echo $c12; ?> >&#1777;&#1778;</option>
+          <option value="13" <? echo $c13; ?> >&#1777;&#1779;</option>
+          <option value="14" <? echo $c14; ?> >&#1777;&#1780;</option>
+          <option value="15" <? echo $c15; ?> >&#1777;&#1781;</option>
+          <option value="16" <? echo $c16; ?> >&#1777;&#1782;</option>
+          <option value="17" <? echo $c17; ?> >&#1777;&#1783;</option>
+          <option value="18" <? echo $c18; ?> >&#1777;&#1784;</option>
+          <option value="19" <? echo $c19; ?> >&#1777;&#1785;</option>
+          <option value="20" <? echo $c20; ?> >&#1778;&#1776;</option>
+          <option value="21" <? echo $c21; ?> >&#1778;&#1777;</option>
+          <option value="22" <? echo $c22; ?> >&#1778;&#1778;</option>
+          <option value="23" <? echo $c23; ?> >&#1778;&#1779;</option>
+          <option value="24" <? echo $c24; ?> >&#1778;&#1780;</option>
+          <option value="25" <? echo $c25; ?> >&#1778;&#1781;</option>
+          <option value="26" <? echo $c26; ?> >&#1778;&#1782;</option>
+          <option value="27" <? echo $c27; ?> >&#1778;&#1783;</option>
+          <option value="28" <? echo $c28; ?> >&#1778;&#1784;</option>
+          <option value="29" <? echo $c29; ?> >&#1778;&#1785;</option>
+          <option value="30" <? echo $c30; ?> >&#1779;&#1776;</option>
+          <option value="31" <? echo $c31; ?> >&#1779;&#1777;</option>
+        </select></td>
+
+              <td width="250" align="right">
+                <p align="center" class="tahoma1">تاريخ  </td>
+            </tr>
+   <? */
+  if(strcmp($davar_mali_shorot,"0")==0)
+    $dm0=" selected ";
+  else
+    $dm0="";
+    
+  if(strcmp($davar_mali_shorot,"1")==0)
+    $dm1=" selected ";
+  else
+    $dm1="";
+    
+    
+ if(strcmp($davar_mali_shorot,"2")==0)
+    $dm2=" selected ";
+  else
+    $dm2="";  
+ 
+		  
+ ?>      
+   <tr>
+ <td align="center" >
+	 <select class="edit-user" dir="rtl" size="1" name="davar_mali_shorot">
+	          <option value="0" <? echo $dm0; ?> >انتخاب کنيد</option>
+	          <option value="1" <? echo $dm1; ?> >داشته و در قرارداد لحاظ خواهد شد </option>
+	          <option value="2" <? echo $dm2; ?> > نداشته است</option>
+	 </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> شروط داور مالي</td>
+ </tr>
+ 
+  <tr>
+    <td width="350" align="right"><textarea   rows="4"  name="shorot_gharardad"  class="edit-user"  dir=RTL   ><? echo $shorot_gharardad; ?></textarea></td>
+    <td width="250" align="center" class="tahoma1">شروط خاصي که بايد در متن قرارداد لحاظ شود</td>
+  </tr>
+  <tr>
+  <?
+    $query="select * from control_gharardad_karshenas order by id ";
+    //echo $query;
+    $qresult=mysql_query($query) or die("Error in selecting data from daraje elmi");
+  ?>
+    <td align="center"><select size="1" name="karshenas" class="edit-user" dir="rtl">
+    <option value="-1" class="tahoma1">انتخاب کنيد</option>
+    <?
+//echo $karshenas;
+    while($row_fetched=mysql_fetch_array($qresult))
+    {
+    	
+    	//echo $id=$row_fetched["id"];
+    	
+    	if(strcmp($row_fetched["id"],$karshenas)==0)
+    	   $checked=" selected ";
+    	else
+		   $checked="";
+         echo "<option $checked value=\"".$row_fetched["id"]."\" class=\"tahoma1\">".$row_fetched["karshenas_name"]." ".$row_fetched["karshenas_family"]."</option>";
+    }
+    ?>
+    </select></td>
+    <td width="250" align="left" class="tahoma1"><p align="center" class="tahoma1"><span class="star-message">*</span> نام کارشناس طرح</td>
+  </tr>
+  <!-- 
+    <tr>
+ <td align="center" >
+	 <select class="edit-user" dir="rtl" size="1" name="karshenas">
+	          <option value="0" <? echo $ka0; ?> >انتخاب کنيد</option>
+	          <option value="1" <? echo $ka1; ?> >زهرا احدي </option>
+	          <option value="2" <? echo $ka2; ?> > ناهيد مستوفي</option>
+	          <option value="3" <? echo $ka3; ?> > مريم خليل پور</option>
+	          <option value="4" <? echo $ka4; ?> > هاجر معمايي</option>
+	          <option value="5" <? echo $ka5; ?> > الهه علمدار</option>
+	          <option value="6" <? echo $ka6; ?> > فاطمه سعيدي</option>
+	          <option value="7" <? echo $ka7; ?> > عصمت کريمي</option>
+	          <option value="8" <? echo $ka8; ?> > شبنم نوروز زاده</option>
+	          <option value="9" <? echo $ka9; ?> > نسترن انوشه</option>
+	          <option value="10" <?echo $ka10; ?> > هانيه رستم آبادي</option>
+	 </select>
+ </td> 
+ <td width="250" align="left"><p align="center" class="tahoma1"><span class="star-message">*</span> نام کارشناس طرح</td>
+ </tr>
+
+
+   <tr>
+    <td width="350" align="right"><input type="text" name="nazer_pishnahadi" size="20" value="<? echo $nazer_pishnahadi;?>"  class="edit-user" dir=RTL   ></td>
+    <td width="250" align="center" class="tahoma1">ناظر پيشنهادي کارشناس</td>
+  </tr>
+ -->
+ </table>
+<table border="0" width="600" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+
+  
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit"  value="ثبت" name="B1" class="but-small"></p></td>
+  </tr>
+  
+</table>
+
+
+<script>
+            var temp=document.sabt_tarh.cod_group            
+            function redirect()
+            {
+              for (m=temp.options.length-1;m>0;m--)
+                temp.options[m]=null
+                var myselecteditem = this.sabt_tarh.cod_daneshkade.selectedIndex
+                myselecteditem--
+                
+                if( myselecteditem<0 )
+                  return
+               
+                for (i=0;i<group[myselecteditem].length;i++)
+                {                	
+                  temp.options[i]=new Option(group[myselecteditem][i].value,group[myselecteditem][i].text)
+                }
+                temp.options[0].selected=true
+            }
+            
+
+
+            </script>
+             
+</form>
+<?
+	footer_forms($admin,$seed);
+?>

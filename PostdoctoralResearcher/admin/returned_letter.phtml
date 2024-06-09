@@ -1,0 +1,160 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+
+include("include/styles.phtml");
+include("include/vars.inc.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+require_once('lib/nusoap.php');
+
+echo "<br>";
+
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+$RecPerPage=15;
+ $color="#DADADA";
+ $color="PALETURQUOISE";
+
+//$query="select * from tarh  ";
+
+//$result = mysql_query($query) or die("Error in selecting data from tarh , mojri_tarh");
+///	while($rf=mysql_fetch_array($result)){
+//	$cod_tarh=$rf["cod_tarh"];
+
+ 	$query="select * from modir_daneshkade where  modir_username = '$admin'";
+	$result=mysql_query($query);
+	$row_fetched=mysql_fetch_array($result);
+	$cod_daneshkade=$row_fetched["cod_daneshkade"];
+	$dastresi=$row_fetched["dastresi"];
+	$i=check_field_value($dastresi,"a37");
+    if($i=="on")
+    	$from_letter='1';
+    else 
+    	$from_letter="from_letter='$admin'";
+    	
+    	
+if(isset($name_e))
+{
+  $myname_search = "\"%".trim($name_e)."%\"";
+}
+
+if(isset($name_e))
+{
+  $query="select * from letter_to_mojri where erjaa='1' and $from_letter and (letter_no like $myname_search)  order by id desc";
+}
+else
+  $query="select * from letter_to_mojri where erjaa='1' and $from_letter  order by id desc";
+
+//echo $query;
+
+$result=mysql_query($query) or die("Error in selecting data from tarh 1");
+
+$reccount = mysql_num_rows($result);
+
+ if(isset($name_e))
+{
+  $query="select * from letter_to_mojri where erjaa='1' and $from_letter and (letter_no like $myname_search)  order by id desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ; 
+}
+else
+  $query="select * from letter_to_mojri where erjaa='1' and $from_letter  order by id desc"." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;
+
+
+
+ $result=mysql_query($query) or die("error in selecting data from letter_to_mojri");
+
+
+ echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">";
+ if(mysql_num_rows($result) > 0)
+ {
+ 	
+ 	?>
+ 	 <table  cellSpacing="0" cellPadding="0" width="90%" bgColor="white" border="0">
+ <tr>
+
+ <td align="right" >
+ <input type="submit" name="submit" value="جستجو" class="but-small">
+ <input type="text" name="name_e" size="20" class="edit-small-2"  dir=RTL   >
+ </td>
+
+ </tr>
+ </table>
+ 	
+ 	<?
+ 	 pubshowpages("returned_letter.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"90%","#66CCFF");
+ 	 
+ 	echo "<table border=\"1\" width=\"90%\" cellpadding=\"0\" cellspacing=\"0\">";
+ 	
+ 	echo "<tr>";
+	echo "<td   align='center' colspan='5'height='20'  bgcolor=$color class=\"tahoma1\"><b>ليست نامه هاي ارجاع شده به کارشناسان </b></td>";
+	echo "</tr>";
+	echo "<tr>";
+	echo "<td   align='center' bgcolor=$color class=\"tahoma1\">وضعيت نامه</td>";
+ 	echo "<td   align='center' bgcolor=$color class=\"tahoma1\">متن نامه</td>";
+ 	echo "<td   align='center' bgcolor=$color class=\"tahoma1\">عنوان نامه</td>";
+ 	echo "<td   align='center' bgcolor=$color class=\"tahoma1\">شماره</td>";
+ 	echo "<td   align='center' bgcolor=$color class=\"tahoma1\">تاريخ</td>";
+ 	echo "</tr>";
+ 	
+ 	while($row_fetched=mysql_fetch_array($result))
+ 	{
+ 	$id=$row_fetched["id"];	
+ 	 echo "<tr>";
+     $atf_to=$row_fetched["atf_to_letter"];
+	 if(strlen(trim($atf_to)) > 0)	  
+	    $letter_type="پاسخ مجري";	  
+	  else
+	    $letter_type="نامه به مجري";
+	  
+	   $erjaa=$row_fetched["erjaa"];
+	   $modir_confirm=$row_fetched["admin_confirm"];
+	   
+	 if(strcmp($erjaa,'1')==0){
+	 	$return_reason=$row_fetched["return_reason"];
+	 	//echo $return_reason;
+	  	$confirm="ارجاع"."<br> دليل ارجاع :<br><b>".$return_reason."<b>";
+	 }
+	 else if(strcmp($modir_confirm,"1")==0)
+       $confirm="تاييد مدير";
+     else
+       $confirm="منتظر تاييد مدير";
+	
+   		
+	 $startdate = $row_fetched["letter_date"];
+  $startyear = substr($startdate,0,4);
+  $startmon = substr($startdate,5,2);
+  $startday = substr($startdate,8,2);
+  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+	    
+	 echo "<td   align='right' bgcolor=$color class=\"tahoma1\" dir=\"rtl\">".$confirm."</td>";	   	 
+  	 echo "<td   align='right' bgcolor=$color class=\"tahoma1\" dir=\"rtl\">".$row_fetched["letter_body"]."</td>";
+ 	 echo "<td   align='right' bgcolor=$color class=\"tahoma1\"  dir=\"rtl\">".$row_fetched["letter_subject"]."</td>";
+ 	 echo "<td   align='right' bgcolor=$color class=\"tahoma1\">".$row_fetched["letter_no"]."</td>";
+ 	 echo "<td   align='center' bgcolor=$color class=\"tahoma1\">".$farsistartdate."</td>";
+ 	 echo "</tr>";
+    } 	
+ 	echo "</table>";
+ 	
+ }
+ else 
+  message_show("نامه ارجاعي از شما وجود ندارد","red");
+
+//}
+echo "</form>";
+echo "<br/>";
+ ?>
+
+
+<?
+   footer_forms($admin,$seed);
+?>
+
+
+

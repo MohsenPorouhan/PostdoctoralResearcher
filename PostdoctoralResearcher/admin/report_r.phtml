@@ -1,0 +1,390 @@
+<?
+
+include("include/database-connect.phtml");
+include("include/include.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+require("include/class.phpmailer.php");
+require("include/mailserver-statistics.phtml");
+
+?>
+
+<?
+/*$value_form="";
+      for($i=1;$i<46;$i++)
+  	   {
+	    $var= "a".$i;
+	    if(isset($$var))
+	    {
+		  if(strlen(trim($value_form))<=0)
+		    $value_form=$var."="."\"".addslashes($$var)."\"";
+		  else
+		    $value_form=$value_form.",".$var."="."\"".addslashes($$var)."\"";
+	     
+	    }
+  	   }?>
+<?
+*/
+$query="select * from modir_daneshkade where modir_username='$admin'";
+
+$result=mysql_query($query) or die("Error in selecting data from modir daneshkade");
+$row_fetched=mysql_fetch_array($result);
+$dastresi=$row_fetched["dastresi"];
+if(strcmp($row_fetched["modir_type"],'4') ==0 )
+  $modir_caution=" (tarh.send_moavenat='1' or tarh_type_2='3' or tarh_type_2='4'  or tarh_type_2='9' or tarh_type_2='8' or tarh_type_2='10' or tarh_type_2='11' or tarh_type_2='14' or tarh_type_2='12'  or tarh_type_2='13'  or tarh_type_2='16'  or tarh_type_2='17') ";
+else
+  $modir_caution='1';
+  
+
+
+if(! isset($a1))
+	$a1='0';
+if(! isset($a2))
+	$a2='0';
+if(! isset($a3))
+	$a3='0';
+if(! isset($a4))
+	$a4='0';
+if(! isset($a5))
+	$a5='0';
+if(! isset($a6))
+	$a6='0';
+if(! isset($a7))
+	$a7='0';
+if(! isset($a8))
+	$a8='0';
+if(! isset($a9))
+	$a9='0';
+if(! isset($a10))
+	$a10='0';
+if(! isset($a11))
+	$a11='0';
+if(! isset($a12))
+	$a11='0';
+
+
+	
+
+			
+ $color=$list_color_1;
+if ( ! isset($current))
+    $current = 1;
+
+if( ! isset($startw))
+    $startw = 0;
+
+if ( !isset($endw))
+    $endw = 0;
+    
+ if(isset($showall))
+    if($showall==1)
+    {
+      $RecPerPage=1000;
+      $current=1;
+    }
+    
+    
+  
+         if($start_year!='-1' or $start_month!='-1' or $start_day!='-1'){
+         	// echo $start_year;
+ 		 $hijri_start_date =jalali_to_gregorian($start_year,$start_month,$start_day);
+         $year=$hijri_start_date[0];
+         $month=str_pad($hijri_start_date[1],2,"0",STR_PAD_LEFT);
+         $day=str_pad($hijri_start_date[2],2,"0",STR_PAD_LEFT);
+         $start_date=$year."-".$month."-".$day;
+        //echo  $start_date;
+         }
+         else 
+         $start_date="";
+ 
+
+
+          if($end_year!='-1' or $end_month!='-1' or $end_day!='-1'){
+          $hijri_end_date =jalali_to_gregorian($end_year,$end_month,$end_day);
+         $year=$hijri_end_date[0];
+         $month=str_pad($hijri_end_date[1],2,"0",STR_PAD_LEFT);
+         $day=str_pad($hijri_end_date[2],2,"0",STR_PAD_LEFT);
+         $end_date=$year."-".$month."-".$day;
+          }
+          else 
+          $end_date="";
+          
+
+
+//echo $radio;
+
+  
+  
+  if($radio=='6')
+  {
+  	$vazeiat_tarh=" finalized='1' and tarh_type!='6' and archieved='0'   and $modir_caution ";
+  	echo "<p align='center' class='tahoma1'><font color='black'><b>طرح هاي پايان يافته</b></font><br/><br/>";
+  }
+  
+  if($cod_daneshkade!="-1"){
+  	
+  $cod_daneshkade_cousion=" tarh.cod_daneshkade='$cod_daneshkade' and";
+  }
+  else 
+  	$cod_daneshkade_cousion="";
+
+ 
+  
+   if($start_date!="" or $end_date!=""){
+  
+  	$date_c1="tarh_indoing.date>='$start_date' and tarh_indoing.date<='$end_date'  ";
+  	//echo $date_c1;
+  }
+  else 
+  {
+    $date_c1="1";
+  }
+
+  
+  //$cod_tarh=$row_fetched1["cod_tarh"];
+ 
+  $query="select * from tarh,tarh_indoing,marhale_report  where $cod_daneshkade_cousion tarh.cod_tarh=tarh_indoing.cod_tarh and tarh.cod_tarh=marhale_report.cod_tarh and yes_no='1' and (CHAR_LENGTH(form_6) > 110 or CHAR_LENGTH(form_7) > 110) and $date_c1 and tarh_indoing.marhale='100' and finalized='1' and version='-1' ";
+  //echo $query;
+  $result=mysql_query($query) or die("Error1");
+  $reccount = mysql_num_rows($result);
+  
+  
+  $query="select * from tarh,tarh_indoing,marhale_report  where $cod_daneshkade_cousion tarh.cod_tarh=tarh_indoing.cod_tarh and tarh.cod_tarh=marhale_report.cod_tarh and yes_no='1' and (CHAR_LENGTH(form_6) > 110 or CHAR_LENGTH(form_7) > 110) and $date_c1 and tarh_indoing.marhale='100' and finalized='1' and version='-1' "." limit ".($current-1)*$RecPerPage.",".$RecPerPage ;; 
+ //echo $query;
+  $result=mysql_query($query) or die("Error");
+
+  if(mysql_num_rows($result) >=0 )
+  {	
+  
+  	$myascdescpub=$myascdescpub."&start_year=$start_year&start_month=$start_month&start_day=$start_day&end_year=$end_year&end_month=$end_month&end_day=$end_day&cod_daneshkade=$cod_daneshkade&txt_fee_start=$txt_fee_start&txt_fee_end=$txt_fee_end";
+  	
+  	$myascdescpub=$myascdescpub."a12=$a12&a11=$a11&a10=$a10&a9=$a9&a8=$a8&a7=$a7&a6=$a6&a5=$a5&a4=$a4&a3=$a3&a2=$a2&a1=$a1";
+  	
+  //	echo $myascdescpub;
+	pubshowpages("report_r.phtml",$current,$PageCountShows,$reccount,$startw,$endw,$RecPerPage,$admin,$seed,$myascdescpub,"100%","#66CCFF");
+
+  ?> 	
+   	<table border="0" width="100%" cellpadding="1" cellspacing="1">
+  <tr>
+<? if($a11=="1"){?>
+  <td   bgcolor=<? echo "$title_color"; ?>> 
+      <p align="center" class="tahoma1"><font color="black">چاپ</font></td>
+<?} ?>
+
+<?if($a10=="1"){?>      
+        <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">ويرايشهاي طرح</font></td>
+   <?} ?>
+      
+<?if($a9=="1"){ ?>        
+   <td   bgcolor=<? echo "$title_color"; ?>> 
+      <p align="center" class="tahoma1"><font color="black">تاريخ شروع قرارداد</font></td>
+ <?} ?>
+
+<? if($a8=="1"){?>      
+      <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مبلغ عقد قرارداد</font></td> 
+      <?} ?> 
+      
+ <? if($a12=="1"){?>      
+      <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">گزارش نهايي</font></td> 
+      <?} ?> 
+      
+<?if($a7=='1'){ ?>
+<td  width="30%" bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">هزينه ها</font></td> 
+       <?} ?> 
+      
+<?if($a6=='1'){ ?>
+ <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">دانشکده </font></td>
+       <?} ?> 
+      
+<? if($a5=="1"){?>       
+           <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">نوع طرح</font></td>
+       <?} ?>
+      
+<? if($a4=='1'){?>    
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">تاريخ ارسال</font></td>
+     <?} ?>
+      
+ <?if($a3=='1') { ?>   
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">مجري</font></td>
+     <?} ?>
+     
+ <? if($a2=='1'){ ?>    
+   <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">عنوان فارسي</font></td>
+ <?} ?>
+ 
+      
+      
+ <? if($a1=='1'){ ?>     
+     
+    <td   bgcolor=<? echo "$title_color"; ?>>
+      <p align="center" class="tahoma1"><font color="black">کد طرح</font></td>
+   <?} ?>
+    
+       </tr>
+   	
+  
+   <?}?>
+<?
+
+while($row_fetched=mysql_fetch_array($result))
+ {
+ 	$cod_tarh=$row_fetched["cod_tarh"];
+ 	if(strcmp($color,$list_color_1)==0)
+   $color=$list_color_2;
+  else
+   $color=$list_color_1;
+		echo "<tr>";
+	if($a11=='1')
+	{ 
+		echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a target=\"_blank\" href=\"print_tarh.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><img border=\"0\" src=\"image/print.gif\"   alt=\"Print\" ></a></td>";
+		 
+	}
+ 	
+ 	if($a10=='1')
+ 	{
+ 		echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"versions.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" >ويرايشها</a></td>";
+ 		
+ 	}
+ 	
+ 	if($a9=='1')
+ 	{
+ 	 $cod_tarh=$row_fetched["cod_tarh"];
+ 	 $query="select * from  answer_mojri_gharardad  where cod_tarh='$cod_tarh'";
+	 $rs=mysql_query($query) or die("Error 675556");
+
+if(mysql_num_rows($rs) > 0)
+{
+	$rf1=mysql_fetch_array($rs);
+	$start_time=$rf1["start_time"];
+
+		
+}	//$start_time=$row_fetched["start_time"];
+	
+ echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$italic_line".$rf1["start_time"]."$italic_end_line</font></td>"; 		
+ 	}
+ 	
+ 	
+ 	
+ 	if($a8=='1')
+ 	{
+ 		$mablagh_aghd_gharardad=$row_fetched["mablagh_aghd_gharardad"];
+ 		
+ 		 echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>$italic_line".$mablagh_aghd_gharardad."$italic_end_line</font></a></td>";
+ 	}
+
+ if($a12=='1')
+ 	{
+ 	
+ 		
+ 		 echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"final_report_view.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>گزارش نهايي</font></a></td>";
+ 	}
+ 	
+ 	
+ 	if($a7=='1')
+ 	{
+ 		
+ 		 echo "<td width=\"30%\" bgcolor=$color align=\"center\" class=\"tahoma1\">";
+ 		 $version='-1';
+ 		 echo hazineha_detail_view($cod_tarh , $version);
+ 		 echo "</td>";	
+ 		
+ 	}
+ 	
+ 
+ 	if($a6=='1')
+ 	{
+  $cod_daneshkade=$row_fetched["cod_daneshkade"];
+  $myq="select * from daneshkade where cod_daneshkade='$cod_daneshkade'";
+  $myres=mysql_query($myq);
+  $myrf=mysql_fetch_array($myres);
+  $daneshkade=$myrf["daneshkade_name"];
+  if($a6=='1')
+  {
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$italic_line".$daneshkade."$italic_end_line</font></td>";	
+  }
+ 	}
+ 	
+ 	if($a5=='1')
+ 	{
+ 	$tarh_select=$row_fetched["tarh_select"];
+
+ 	if($tarh_select=='0')
+ 	$tarh_selected="پايان نامه";
+ 	else 
+ 	$tarh_selected="طرح تحقيقاتي";
+ 	//echo  "<tr>";
+  echo "<td   bgcolor=$color align=\"center\" class=\"tahoma1\"><font color=$color_line>$italic_line".$tarh_selected."$italic_end_line</font></td>";		
+ 	//echo  "<tr>";	
+ 	}
+
+ 	if($a4=='1')
+ 	{
+ 		  $startdate = $row_fetched["tarh_time"];
+		  $startyear = substr($startdate,0,4);
+		  $startmon = substr($startdate,5,2);
+		  $startday = substr($startdate,8,2);
+		  $farsistartdate=hijricalender( $startyear , $startmon , $startday );
+		  $farsistartdate = enum2fnum($farsistartdate);
+		  if($a4=='1'){
+		   echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>". $farsistartdate."</font></a></td>";		
+		  }
+ 	}
+ 	
+ 	if($a3=='1')
+ 	{
+ 		
+ $myquery_mojri = "SELECT  * FROM tarh, user_login WHERE tarh.creator = user_login.email AND tarh.cod_tarh = '$cod_tarh'";
+  $myresult_mojri = mysql_query( $myquery_mojri ) or die("Error in selecting data from First mojri");
+
+  if(mysql_num_rows($myresult_mojri) > 0 )
+  {
+    $First_mojri = mysql_fetch_array( $myresult_mojri );
+    $First_mojri_name = $First_mojri["name"]."&nbsp;".$First_mojri["family"];
+  }
+  else
+    $First_mojri_name = "اطلاعات موجود نيست";
+    if($a3=='1'){
+ 	 if(mysql_num_rows($myresult_mojri) > 0 )
+ 	  
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"first_mojri_detail.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>$italic_line".$First_mojri_name."$italic_end_line</font></a></td>";
+  else
+    echo "<td width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\">".$First_mojri_name."</td>";
+   
+ 	}
+ 	}	
+ 	if($a2=='1')
+ 	{
+ 		 if($a2=='1')
+ 		// echo  "<tr>";
+ 		  echo "<td width=\"15%\" bgcolor=$color align=\"right\" class=\"tahoma1\" dir=\"rtl\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>".$row_fetched["tarh_title_farsi"]."</font></a></td>";
+ 		//echo  "</tr>";
+ 	}
+ 	
+ 	
+  	if($a1=='1')
+  	{
+  		 if($a1=='1')
+  		 {
+  		  echo "<td  width=\"10%\" bgcolor=$color align=\"center\" class=\"tahoma1\"><a style=\"text-decoration:none\" href=\"view_tarh_form.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh\" ><font color=$color_line>$italic_line".$row_fetched["cod_tarh"]."$italic_end_line</font></a></td>";
+  		 }
+  		  echo "</tr>";
+   	}
+
+ }
+  
+
+?>
+ </table><br/>	
+<? echo "<a href=\"report.phtml?admin=$admin&seed=$seed\">بازگشت</a> "?> 
+<br/><br/>
+<?  footer_forms($admin,$seed);?>

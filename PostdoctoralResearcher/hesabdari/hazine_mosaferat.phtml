@@ -1,0 +1,166 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_hazine_mosaferat")==0)
+  {
+
+     if(strlen(trim($manzoor_mosaferat)) > 0  && strlen(trim($target)) > 0 && strlen(trim($dafe_safar)) > 0 && strlen(trim($vasile)) > 0 && strlen(trim($persons_cnt)) > 0 && strlen(trim($hazine)) > 0 )
+     {
+        $query  = "insert into hazine_safar set manzoor_mosaferat=\"$manzoor_mosaferat\", target=\"$target\",dafe_safar=\"$dafe_safar\", vasile=\"$vasile\",persons_cnt=\"$persons_cnt\",hazine=\"$hazine\",cod_tarh=\"$cod_tarh\"";
+		//echo $query;
+        $result = mysql_query($query) or die("Error in inserting data into hazine safar");
+        $action=$target."تبت هزينه سفر به مقصد"."<br>".$name."&nbsp;&nbsp;".$family;
+        set_log($action,$admin,date("Y-d-m"));
+
+      }
+     else
+       $status="entry_error";
+  }
+ if (strcmp($action,"delete_hazine_mosaferat")==0)
+ {
+    $query="delete from hazine_safar where cod_hazine_safar = \"$delete_id\" and cod_tarh=\"$cod_tarh\"";
+
+    $result=mysql_query($query) or die("Error in  delete data from hazine azmayesh");
+ }
+}
+
+?>
+
+<? echo "<form name=\"mojri_tarh\" method=\"post\" action=\"$PHP_SELF?action=add_hazine_mosaferat&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+  <TABLE cellSpacing=0 cellPadding=0 border=0>
+  <TBODY>
+    <TR>
+    <TD align=middle width="249"   height=19>
+      </TD>
+      <TD align=middle width="251"  background="image/hazine_mosaferat.gif" height=19>
+      </TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+<table border="0" width="500" bgcolor="#EEE7F8"   cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+  if (strcmp($status,"entry_error")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+
+?>
+  <tr>
+    <td width="350" align="right"><input type="text" name="target" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1"><span class="star-message">*</span>مقصد</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="dafe_safar" size="20" value="" class="edit-user" dir=RTL    ></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>دفعات مسافرت در مدت اجراي طرح</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="vasile" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>نوع وسيله</td>
+  </tr>
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="manzoor_mosaferat" size="20" value="" class="edit-user" dir=RTL   ></td>
+    <td width="150" class="tahoma1" ><span class="star-message">*</span>منظور از انجام مسافرت</td>
+  </tr>
+
+
+ <tr>
+ <td width="350" align="right"><input type="text" name="persons_cnt" size="20" value="" class="edit-user" ></td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>تعداد افراد</td>
+ </tr>
+
+  <tr>
+ <td width="350" align="right"><input type="text" name="hazine" size="20" value="" class="edit-user" ></td>
+ <td width="150" class="tahoma1"><span class="star-message">*</span>هزينه</td>
+ </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+
+</table>
+
+</form>
+
+<table border="0" width="500">
+<tr>
+    <td width="50%" colspan="2" align="center" class="tahoma1"><a style="text-decoration:none" href="hazineha.phtml?<?echo "admin=$admin&seed=$seed&cod_tarh=$cod_tarh" ?>" >بازگشت</a></td>
+  </tr>
+</table>
+
+
+
+  <?
+   $query="select * from  hazine_safar where cod_tarh=\"$cod_tarh\" order by target";
+
+   $result=mysql_query($query) or die("Error in selecting data from hazine safar");
+   if(mysql_num_rows($result) > 0)
+   {
+
+     echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\"  width=\"500\" >";
+     echo "<tr>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">حذف</td>";
+     echo "<td width=\"20%\" align=\"center\" class=\"tahoma1\">هزينه  به ريال</td>";
+     echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">تعداد افراد</td>";
+     echo "<td width=\"26%\"  align=\"center\"  class=\"tahoma1\">نوع وسيله</td>";
+     echo "<td width=\"14%\"  align=\"center\"  class=\"tahoma1\">دفعات مسافرت</td>";
+     echo "<td width=\"20%\"  align=\"center\"  class=\"tahoma1\">مقصد</td>";
+     echo "</tr>";
+
+     $mycount=0;
+     $mycount1=0;
+     while($row_fetched=mysql_fetch_array($result))
+     {
+       echo "<tr>";
+       //echo "<td align=\"center\" class=\"tahoma1\"><img src=\"image/button_drop.png\" border=0 alt=\"Delete\"></td>";
+       echo "<td ><p align=\"center\"><a href=\"#\" onclick='window.open(\"hazf_item_tarh.phtml?mainwindow=hazine_mosaferat.phtml&admin=$admin&seed=$seed&action=delete_hazine_mosaferat&cod_tarh=".$cod_tarh."&delete_id=".$row_fetched["cod_hazine_safar"]."\",\"popupwindow\",\"toolbar=no,status=no,scrollbars=no,width=250,height=120,left=((screen.width-250) / 2),top=((screen.height - 120) / 2),resizable=no\")'><img border=\"0\" src=\"image/button_drop.png\" width=\"11\" height=\"13\" alt=\"Delete\" ></a></td>";
+       $mycount=$mycount+$row_fetched["hazine"];
+       $mycount1=$mycount1+$row_fetched["persons_cnt"];
+       echo "<td width=\"5%\"  align=\"center\" class=\"tahoma1\">".$row_fetched["hazine"]."</td>";
+       //echo "<td align=\"center\"  class=\"tahoma1\" >".$row_fetched["hazine"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\" >".$row_fetched["persons_cnt"]."</td>";
+
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["vasile"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["dafe_safar"]."</td>";
+       echo "<td align=\"center\"  class=\"tahoma1\">".$row_fetched["target"]."</td>";
+       echo "</tr>";
+     }
+      echo "<tr>";
+      echo "<td align=\"center\"  class=\"tahoma1\">&nbsp;</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">".$mycount."</td>";
+      echo "<td align=\"center\"  class=\"tahoma1\">".$mycount1."</td>";
+      echo "<td align=\"right\" colspan=\"4\"  class=\"tahoma1\">مجموع</td>";
+      echo "</tr>";
+     echo "</table>";
+
+   }
+
+ footer_forms($admin,$seed);
+?>
+

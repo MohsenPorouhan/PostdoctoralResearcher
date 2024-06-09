@@ -1,0 +1,92 @@
+<?
+include("include/include.phtml");
+include("include/database-connect.phtml");
+include("include/vars.inc.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+
+
+echo "<br>";
+
+
+if(isset($action))
+{
+  if (strcmp($action,"signup")==0)
+  {
+
+    if( strlen(trim($name)) > 0 &&strlen(trim($family)) > 0  &&  strlen(trim($mobile)) > 0   )
+    {
+      	  
+        $query  = "insert into sms_user  set  name=\"$name\",family=\"$family\",mobile=\"$mobile\" ";      	
+        $result=mysql_query($query) or die("Error in inserting data into karshenas elmi");
+        $action="ثبت شماره موبايل";
+        set_log($action,$admin,date("Y-m-d, g:i a"));
+		 ?>
+           <script language="javascript">
+           window.location="<? echo "send_sms.phtml?admin=$admin&seed=$seed";  ?>";
+           </script>
+           <?
+
+		footer_forms($admin,$seed);
+		exit();
+     
+
+    }
+    else
+      $status="entry_error";
+  }
+
+}
+
+      
+
+?>
+
+
+<? echo "<form name=\"signup\" method=\"post\"  action=\"$PHP_SELF?&admin=$admin&seed=$seed&action=signup\">"; ?>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+ <TR>
+    <TD align=right width="100%" class="tahoma1"  height=19>
+     اضافه کردن شماره موبايل
+      </TD>
+  </TR>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+
+  <tr>
+    <td width="350" align="right"><input type="text" name="name"  size="20" class="edit-sugnup" dir=RTL     ></td>
+    <td width="150" class="tahoma1">نام</td>
+  </tr>
+
+<tr>
+    <td width="350" align="right"><input type="text" name="family" size="20" class="edit-sugnup" dir=RTL     ></td>
+    <td width="150" class="tahoma1">نام خانوادگي</td>
+  </tr>
+
+   <tr>
+    <td width="350" align="right"><input type="text" name="mobile" size="20"  class="edit-sugnup" ></td>
+    <td width="150" class="tahoma1">شماده موبايل</td>
+  </tr>
+
+
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="submit" value="ثبت" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

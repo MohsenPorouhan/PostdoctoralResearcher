@@ -1,0 +1,257 @@
+<?
+include("include/database-connect.phtml");
+include("include/include.phtml");
+header_forms($admin,$seed);
+include("include/styles.phtml");
+?>
+<script language="Javascript1.2"><!-- // load htmlarea
+_editor_url = "";                     // URL to htmlarea files
+var win_ie_ver = parseFloat(navigator.appVersion.split("MSIE")[1]);
+if (navigator.userAgent.indexOf('Mac')        >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Windows CE') >= 0) { win_ie_ver = 0; }
+if (navigator.userAgent.indexOf('Opera')      >= 0) { win_ie_ver = 0; }
+if (win_ie_ver >= 5.5) {
+ document.write('<scr' + 'ipt src="' +_editor_url+ 'editor.js"');
+ document.write(' language="Javascript1.2"></scr' + 'ipt>');
+} else { document.write('<scr'+'ipt>function editor_generate() { return false; }</scr'+'ipt>'); }
+// --></script>
+
+<?
+echo "<br>";
+
+if(isset($action))
+{
+  if (strcmp($action,"add_user_answer")==0)
+  {
+  	
+  	$query="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+  	
+	$result=mysql_query($query) or die("Error");
+	
+	  
+  	if(mysql_num_rows($result) >0 && strlen($time_month) > 0)
+  	{
+  	   $start_time=$year."-".$month."-".$day;	
+  	   $query="update answer_mojri_gharardad set time_month='$time_month' where cod_tarh='$cod_tarh'";
+  	    echo $query;
+		 $result=mysql_query($query) or die("Error 45");
+  	    ?>
+          <script language="javascript">
+           window.location="<? echo "answer_questions3.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";  ?>";
+          </script>
+        <?
+  	}
+  	else
+  	  $status="entry_error";
+  	 
+  }
+
+}
+
+  $query="select * from tarh where cod_tarh='$cod_tarh' ";
+  $result=mysql_query($query) or die("Error in selecting data from karshenas elmi ");
+  $row_fetched=mysql_fetch_array($result);
+  $tarh_name = $row_fetched["tarh_title_farsi"];
+  $zarorat_ejra=$row_fetched["zarorat_ejra"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $bayan_masale=$row_fetched["bayan_masale"];
+  $taarif_vajeh=$row_fetched["taarif_vajeh"];
+  $hadaf_faree=$row_fetched["hadaf_faree"];
+  $hadaf_kolli=$row_fetched["hadaf_kolli"];
+  $hadaf_jozii=$row_fetched["hadaf_jozii"];
+  $hadaf_karbordi=$row_fetched["hadaf_karbordi"];
+  $soalat_pajoheshi=$row_fetched["soalat_pajoheshi"];
+  $farziatt=$row_fetched["farziatt"];
+  $fehrest_manabea=$row_fetched["fehrest_manabea"];
+  
+  
+
+?>
+
+
+<?  echo "<form name=\"sabt_tarh\" method=\"post\"  action=\"$PHP_SELF?action=add_user_answer&admin=$admin&seed=$seed&cod_tarh=$cod_tarh\">"; ?>
+
+<TABLE cellSpacing=0 cellPadding=2 border=0 bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+
+  <TR>
+
+      <TD align=center width="500" class="tahoma1" dir="rtl" height=19 bgcolor="#EEE7F8">
+      <?
+	   echo ""."عنوان طرح   : ".$tarh_name ;
+      ?>
+      </TD>
+  </TR>
+
+</table>
+<br>
+
+<table border="0"  width="500" cellspacing="0" cellpadding="0" >
+<tr>
+<td width="100%">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+ <TBODY>
+  <TR>
+  <TD vAlign=bottom align=left>
+
+
+
+
+ <TABLE cellSpacing=0 cellPadding=0 border=0 width="100%">
+  <TBODY>
+    <TR>
+    <TD align=middle width="100%"   height=19 class="tahoma1" align="right">
+    (پاسخ به سوالات کارشناسان (مرحله دوم 
+	</TD>
+  </TR>
+  </TBODY>
+  </TABLE>
+  
+  </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</TABLE>
+
+
+<table border="0" width="500" bgcolor="#EEE7F8" cellspacing="0" cellpadding="2"  bordercolor="#333333" style="border-style: solid; border-width: 1; ">
+<?
+
+
+/*
+
+ if(mysql_num_rows($r)>0)
+ {
+  while ($l=mysql_fetch_array($r))
+   $max_mon=$l["max(end_mon)"];
+ }
+ $q="select * from activities where cod_tarh='$cod_tarh'  and version='-1'";
+ $r=mysql_query($q) or die("server error2");
+
+
+ $moncounter=$max_mon;
+  
+  $row_number=1;
+  
+ if(mysql_num_rows($r)>0)
+ {
+ 	$sum_week=0;
+ 	$sum_mon=0;
+  while ($l=mysql_fetch_array($r))
+  {
+   $activity=$l["activity"];
+   $myorder=$l["myorder"];
+   $act_code=$l["act_code"];
+   $start_mon=$l["start_mon"];
+   $start_week=$l["start_week"];
+   $end_mon=$l["end_mon"];
+   $end_week=$l["end_week"];
+   $end_by_week=($end_mon*4)-(4-$end_week);
+//   echo "end by week=$end_by_week    end mon=$end_mon";
+   if($start_mon==1)
+     $start_by_week=$start_week-1;
+   else
+   {
+     $var_week=$start_week-1;
+     $start_by_week=($start_mon*4)-(4-$var_week);
+   }
+   $total_time_week=$end_by_week - $start_by_week;
+   $total_mon=(int)($total_time_week/4);
+   $total_week=(int)($total_time_week-$total_mon*4);
+   $weekcounter=$max_mon*4;
+   $moncounter=$max_mon;
+   if($start_by_week<0)
+     $start_by_week=$start_by_week*-1;
+   if($end_by_week<0)
+     $end_by_week=$end_by_week*-1;
+//     echo "$total_week<br>";
+   $sum_week=$sum_week+$total_week;
+   $sum_mon=$sum_mon+$total_mon;
+
+  }
+  */
+  $q="select max(end_mon) as end_mon from activities where cod_tarh='$cod_tarh'  and version='-1'";
+
+ $r=mysql_query($q) or die("server error1");
+
+
+  
+  $rf=mysql_fetch_array($r);
+  $sum_mon1=(int)($sum_week/4);
+  $week_end=(int)($sum_week-$sum_mon1*4);  
+  $mon_end=$sum_mon1+$sum_mon;
+  $mon_end=$rf["end_mon"];
+  
+  $q1="select end_week from activities where cod_tarh='$cod_tarh' and end_mon='$mon_end'  and version='-1'";
+
+ $r1=mysql_query($q1) or die("server error1");
+  $rf1=mysql_fetch_array($r1);
+ $week_end=$rf1["end_week"];
+  
+  
+  if($week_end==4)
+  {
+   $week_end="0";
+  //$mon_end++;
+  }
+  else
+  {
+   $mon_end--;
+  }
+  
+ //   echo "$mon_end:$week_end";
+//echo "mohsen".$week_end;
+    
+// }
+  if (strcmp($status,"entry_error")==0)
+  {
+  	
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">مواردي که با ستاره مشخص شده اند را بطور کامل پر کنيد</td>";
+    echo "</tr>";
+  }
+  if (strcmp($status,"duplicate_entry")==0)
+  {
+    echo "<tr>";
+    echo "<td align=\"center\" class=\"error-message\" width=\"25%\" class=\"tahoma1\" colspan=\"2\">طرحي با اين عنوان توسط شما تعريف شده</td>";
+    echo "</tr>";
+  }
+?>
+
+  <tr>
+   
+    <td width="100%" colspan="2" class="tahoma1" valign="top" align="right"><span class="star-message">زمان طرح شما طبق طرح  <? echo " $mon_end ماه و    $week_end  هفته   "; ?> ميباشد. لطفا طول مدت قرارداد را از تاريخ اعلامي خود وارد کنيد</span></td>
+  </tr>
+  
+  
+  <?
+    $q="select * from answer_mojri_gharardad where cod_tarh='$cod_tarh'";
+    $res=mysql_query($q) or die("error");
+    if(mysql_num_rows($res) > 0)
+    {
+      $rf=mysql_fetch_array($res);
+      $time_month=$rf["time_month"];
+    }
+    else
+      $time_month=0;
+    
+  ?>
+<tr>
+    <td width="60%" align="right"><input type="text" name="time_month" size="20" <? echo "value='$time_month'";?>   class="edit-user" ></td>
+    <td width="40%" class="tahoma1"><span class="star-message">*</span>زمان به ماه</td>
+  </tr>
+
+  <tr>
+    <td width="100%" colspan="2">
+      <p align="center"><input type="button" onclick="javascript: window.location='<? echo "answer_questions.phtml?admin=$admin&seed=$seed&cod_tarh=$cod_tarh";?>'" value="مرحله قبل" name="B2" class="but-small"><input type="submit" value="مرحله بعد" name="B1" class="but-small"></td>
+  </tr>
+</table>
+
+</form>
+
+<?
+  footer_forms($admin,$seed);
+ ?>
+
+
+
+

@@ -1,0 +1,206 @@
+<?
+include("include/styles.phtml");
+include("include/include.phtml");
+require("include/class.phpmailer.php");
+include("soap-email/send_email.php");
+  
+require("include/mailserver-statistics.phtml");
+header_forms();
+echo "<br>";
+  $status="";
+if (strcmp($action,"send_email")==0   )
+{
+	
+    session_start();
+	if ($_POST['code']==$_SESSION['key']) {
+		$cod_error = 1;
+	} else {
+		$cod_error = 0;
+	}
+	//echo $cod_error;
+ if(strcmp($cod_error,'1')==0)
+ {
+  if(strcmp($user_type,'1')==0)  	
+    $query="select * from user_login where email=\"$email\"";
+  
+ 
+  if(strcmp(substr($email,0,2),"09")==0)  
+    $caution="mobile";
+  else
+    $caution="username";  
+    
+  if(strcmp($user_type,'2')==0)
+  
+     $query="select * from karshenasan where $caution=\"$email\""; 
+ 
+  if(strcmp($user_type,'3')==0)
+  
+     $query="select * from group_karshenasan where $caution=\"$email\""; 
+ 
+
+  
+  $result=mysql_query($query);
+  if(mysql_num_rows($result) > 0 )
+  {
+    $row_fetched=mysql_fetch_array($result);
+     if(strcmp($user_type,'1')==0)
+    {
+      $username=$row_fetched["email"];
+      $password=$row_fetched["password"];
+      $email=$username;
+      $name_e=$row_fetched["name_e"];
+      $family_e=$row_fetched["family_e"];
+    }
+    
+	if(strcmp($user_type,'2')==0) 
+    {
+      $username=$row_fetched["username"];
+      $password=$row_fetched["password"];
+      $email=$row_fetched["karshenas_email"];
+      $name_e=$row_fetched["karshenas_name_e"];
+      $family_e=$row_fetched["karshenas_family_e"];	
+    }
+
+	if(strcmp($user_type,'3')==0) 
+    {
+      $username=$row_fetched["username"];
+      $password=$row_fetched["password"];
+      $email=$row_fetched["karshenas_email"];
+      $name_e=$row_fetched["karshenas_name_e"];
+      $family_e=$row_fetched["karshenas_family_e"];	
+    }
+   
+   $subject = "Your Username & password in $url_address (Do not reply this email)";
+     $emailbody="";
+    $emailbody=$emailbody."<br><b>Please Do not reply this email<b><br><br>";
+    $emailbody=$emailbody."<br>For using comprehensive research administration and sending your proposals<br>";
+    $emailbody=$emailbody."<br> using the below username and password<br>";
+    $emailbody=$emailbody."<br>Username: $username<br>Password: $password<br><br>";
+    $emailbody=$emailbody."Please login at: <a href=".$url_address."/login.phtml>Here</a>";
+    $emailbody=$emailbody."<center><font face=Arial size=2 color=green>This email has been sent by <a href=\"".$url_address."\">".$url_address."</a>";
+    $emailbody=$emailbody."<br>Powered by Peyvand Co. (Peyvandco.com).</font></center>";
+ 
+     send_email($subject,$emailbody,$email_username,$email,$email_from_name,$email_from,$email_password);
+
+         message_show("نام کاربري و کلمه عبور به آدرس پست الکترونيکي شما فرستاده شد","green");
+        footer_forms();
+        exit();
+   }
+  }
+ else 
+    $status="security_error";  
+ }
+ //echo $status;
+?>
+  <?
+ if(isset($status) && strcmp($status,"security_error")==0)
+   {
+  
+     message_show("کد مورد در خواست صحيح وارد نشد.","red"); 
+  
+   }
+   else
+   if(isset($status) && strcmp($status,"email_error")==0)
+   {
+  
+     message_show("رکورد اطلاعاتي شما يافت نشد.","red"); 
+  
+   }
+   else
+   {
+  ?>
+<br>
+<br>
+<? echo "<form name=\"change-pass\" method=\"post\"  action=\"$PHP_SELF?action=send_email\">"; ?>
+  <table cellSpacing="0" cellPadding="0" width="300" border="0">
+    <tbody>
+      <tr>
+        <td width="100%">
+          <table cellSpacing="0" cellPadding="0" width="100%" border="0">
+            <tbody>
+              <tr>
+                <td vAlign="bottom" align="left">
+                  <table cellSpacing="0" cellPadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td align="middle" width="160" height="19"></td>
+                        <td align="middle" width="140" background="image/send_pass.gif" height="19"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </tr>
+    </tbody>
+  </table>
+ 
+  <table style="BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid" borderColor="#333333" cellSpacing="0" cellPadding="2" width="300" height="100" bgColor="#eee7f8" border="0">
+    <tbody>
+   <?
+    
+  ?>
+     <tr>
+       
+        <td class="tahoma1" width="500" colspan='2'>در صورتيکه مجري طرح هستيد و ثبت نام کرده ايد ، در صورت اطمينان از صحت شماره موبايل ثبت شده خود ، شماره آن را وارد کرده تا نام کاربري و رمز عبور به موبايل شما ارسال شود</td>
+      </tr>
+     
+      <tr>
+        <td align="right" width="350"><input type="mobile" class="edit-user" name="email" size="20"></td>
+        <td class="tahoma1" width="150">(0912xxxxxxx)شماره تلفن همراه</td>
+      </tr>
+       
+      
+      
+      
+      
+      
+      
+      
+      <tr>
+      
+      <td colspan='2' align='center'>
+<? if (!isset($_POST['Submit'])) { ?>
+<img src="capcha.php">
+<? } else { ?>
+&nbsp;
+<? } ?>
+</td>
+    </tr>
+    <tr>
+      
+      <td align="right"><input name="code" type="text" id="code"  class="edit-user" ></td>
+      <td class='tahoma1'>کد فوق را وارد کنيد</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>
+			<? if (isset($_POST['Submit'])) { ?>
+			<?= $msg?>
+			<? } ?>
+			</td>
+    </tr>
+    <tr>
+
+      
+     
+      
+      <tr>
+        <td width="100%" colSpan="2">
+          <p align="center"><input class="but-small" type="submit" value="ارسال" name="B1"></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+    <?
+   }
+   
+  ?>
+
+</form>
+<br>
+<?
+  footer_forms();
+?>
